@@ -1,19 +1,23 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
-/**
- * Bluecrew.no – forside (pusset)
- * - Moderne hero + tillitspiller
- * - Ryddig kandidat-skjema: vis bare hovedkategorier først; åpne undervalg når man haker av
- * - Kompakt STCW/Dekk uten store bokser
- * - E-post-ruter: /api/submit-candidate og /api/submit-client (allerede satt opp)
- */
+import React, { useMemo, useState, useEffect } from "react";
+
+// Viktig: IKKE importer useSearchParams her.
+// import { useSearchParams } from "next/navigation";  // ← skal IKKE være med
+
+// Hindrer prerender-feil i Vercel hvis noe er bare-klient:
+export const dynamic = "force-dynamic";
 
 export default function Page() {
   const year = useMemo(() => new Date().getFullYear(), []);
-  const searchParams = useSearchParams();
-  const sent = searchParams.get("sent"); // "worker" eller "client"
+
+const [sent, setSent] = useState<string | null>(null);
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const s = new URLSearchParams(window.location.search).get("sent");
+    setSent(s);
+  }
+}, []);
 
  const workerSent = false;
 const clientSent = false;
