@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-
-// Viktig: IKKE importer useSearchParams her.
-// import { useSearchParams } from "next/navigation";  // ← skal IKKE være med
-
-// Hindrer prerender-feil i Vercel hvis noe er bare-klient:
 export const dynamic = "force-dynamic";
-
 export default function Page() {
   const year = useMemo(() => new Date().getFullYear(), []);
 
