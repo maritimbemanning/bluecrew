@@ -54,5 +54,4 @@ export async function POST(req: Request) {
   console.error("❌ Sendefeil (client):", err);
   return new Response("FEIL: " + msg, { status: 500 });
 }
-
 }
