@@ -16,9 +16,12 @@ export default function Page() {
   const sent = searchParams.get("sent"); // "worker" eller "client"
 
   // (Valgfritt lokalt state – beholder for “demo-OK” ved manuell test)
-  const workerSent = false;
-const clientSent = false;
+  const [workerSent, setWorkerSent] = useState(false);
+  const [clientSent, setClientSent] = useState(false);
 
+  // Enkle feilfelt (brukes primært for “required”-utseende)
+  const [wErr, setWErr] = useState<Record<string, string>>({});
+  const [cErr, setCErr] = useState<Record<string, string>>({});
 
   // Epost validering (brukes kun hvis vi en dag går tilbake til JS-submit)
   const emailOk = (v: FormDataEntryValue | null) =>
@@ -147,147 +150,141 @@ const clientSent = false;
           {workerSent || sent === "worker" ? (
             <div style={sx.ok} role="status">Takk! Skjemaet er sendt inn.</div>
           ) : (
-            <form
-              action="/api/submit-candidate"
-              method="POST"
-              encType="multipart/form-data"
-              style={sx.form}
-              noValidate
-            >
-              <Input label="Fullt navn" name="name" required error={wErr.name} />
-              <Input label="E-post" name="email" type="email" required error={wErr.email} />
-              <Input label="Telefon" name="phone" required error={wErr.phone} />
-              <Input label="Bosted (by/kommune)" name="city" required error={wErr.city} />
+<form
+  action="/api/submit-candidate"
+  method="POST"
+  encType="multipart/form-data"
+  style={sx.form}
+  noValidate
+>
+  {/* Kontaktinfo */}
+  <Input label="Fullt navn" name="name" required />
+  <Input label="E-post" name="email" type="email" required />
+  <Input label="Telefon" name="phone" required />
+  <Input label="Bosted (by/kommune)" name="city" required />
 
-              {/* Tilgjengelighet / kompetanse */}
-<Input label="Tilgjengelig fra" name="available_from" type="date" />
-
-
-              {/* ØNSKET ARBEID – kun hovedkategorier synlig; åpne undervalg når man huker av */}
-              <div style={{ gridColumn: "1 / -1" }}>
-                <div style={{ fontWeight: 800, marginBottom: 8 }}>Ønsket arbeid</div>
-                <div style={{ display: "grid", gap: 12 }}>
-                  {Object.keys(WORK).map((main) => {
-                    const open = !!openMain[main];
-                    const subs = WORK[main];
-                    return (
-                      <div key={main} style={{ border: "1px solid #E2E8F0", borderRadius: 12, padding: 12, background: "#fff" }}>
-                        <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-                          <input
-                            type="checkbox"
-                            checked={open}
-                            onChange={() => toggleMain(main)}
-                          />
-                          <span style={{ fontWeight: 700 }}>{main}</span>
-                        </label>
-
-                        {open && (
-                          <div style={{ marginTop: 10 }}>
-                            {/* Undervalg dukker opp først når hovedkategorien er valgt */}
-                            <div style={sx.tags}>
-                              {subs.map((sub) => (
-                                sub === "Annet" ? (
-                                  <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-                                    <label style={sx.label}>
-                                      <span>Annet (kort beskrivelse)</span>
-                                      <input
-                                        name={`other_${main}`}
-                                        placeholder="Skriv kort om ønsket arbeid"
-                                        value={otherText[main] || ""}
-                                        onChange={(e) =>
-                                          setOtherText((p) => ({ ...p, [main]: e.target.value }))
-                                        }
-                                        style={sx.input}
-                                      />
-                                    </label>
-                                  </div>
-                                ) : (
-                                  <label key={sub} style={sx.tagItem}>
-                                    {/* NB: vi sender bare undervalgene til API via name="work_main" */}
-                                    <input type="checkbox" name="work_main" value={`${main}:${sub}`} /> <span>{sub}</span>
-                                  </label>
-                                )
-                              ))}
-                            </div>
-                            <small style={{ color: "#64748b" }}>
-                              Velg undervalg (eller fyll “Annet”). Du kan åpne flere hovedkategorier.
-                            </small>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-          {/* KOMPAKT STCW / DEKK (obligatorisk valg) */}
-<div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-  {/* STCW – påkrevd Har/Har ikke */}
-  <div>
-    <div style={{ fontWeight: 700, marginBottom: 6 }}>STCW – Grunnleggende sikkerhetskurs</div>
-    <div style={sx.inlineRadios}>
-      {/* For at radio-gruppen skal være påkrevd: sett required på ÉN av inputene i gruppen */}
-      <label><input type="radio" name="stcw_has" value="ja" required onChange={() => setHasSTCW("ja")} /> Har</label>
-      <label><input type="radio" name="stcw_has" value="nei" onChange={() => setHasSTCW("nei")} /> Har ikke</label>
-    </div>
-
-    {hasSTCW === "ja" && (
-      <div style={{ marginTop: 8 }}>
-        <div style={{ fontSize: 13, color: "#475569", marginBottom: 6 }}>Huk av relevante moduler</div>
-        <div style={sx.checkGrid}>
-          {STCW_MODULES.map((m) => (
-            <label key={m} style={sx.checkItem}>
-              <input type="checkbox" name="stcw_mod" value={m} /> <span>{m}</span>
+  {/* ØNSKET ARBEID – hovedkategorier først; åpne undervalg når man huker av */}
+  <div style={{ gridColumn: "1 / -1" }}>
+    <div style={{ fontWeight: 800, marginBottom: 8 }}>Ønsket arbeid</div>
+    <div style={{ display: "grid", gap: 12 }}>
+      {Object.keys(WORK).map((main) => {
+        const open = !!openMain[main];
+        const subs = WORK[main];
+        return (
+          <div key={main} style={{ border: "1px solid #E2E8F0", borderRadius: 12, padding: 12, background: "#fff" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={open}
+                onChange={() => toggleMain(main)}
+              />
+              <span style={{ fontWeight: 700 }}>{main}</span>
             </label>
-          ))}
-        </div>
-      </div>
-    )}
+
+            {open && (
+              <div style={{ marginTop: 10 }}>
+                <div style={sx.tags}>
+                  {subs.map((sub) => (
+                    sub === "Annet" ? (
+                      <div key={sub} style={{ flex: 1, minWidth: 240 }}>
+                        <label style={sx.label}>
+                          <span>Annet (kort beskrivelse)</span>
+                          <input
+                            name={`other_${main}`}
+                            placeholder="Skriv kort om ønsket arbeid"
+                            value={otherText[main] || ""}
+                            onChange={(e) =>
+                              setOtherText((p) => ({ ...p, [main]: e.target.value }))
+                            }
+                            style={sx.input}
+                          />
+                        </label>
+                      </div>
+                    ) : (
+                      <label key={sub} style={sx.tagItem}>
+                        <input type="checkbox" name="work_main" value={`${main}:${sub}`} /> <span>{sub}</span>
+                      </label>
+                    )
+                  ))}
+                </div>
+                <small style={{ color: "#64748b" }}>
+                  Velg undervalg (eller fyll “Annet”). Du kan åpne flere hovedkategorier.
+                </small>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
   </div>
 
-  {/* Dekksoffiser – påkrevd Har/Har ikke */}
-  <div>
-    <div style={{ fontWeight: 700, marginBottom: 6 }}>Dekksoffiser-sertifikat</div>
-    <div style={sx.inlineRadios}>
-      <label><input type="radio" name="deck_has" value="ja" required onChange={() => setHasDeck("ja")} /> Har</label>
-      <label><input type="radio" name="deck_has" value="nei" onChange={() => setHasDeck("nei")} /> Har ikke</label>
+  {/* STCW / DEKK – påkrevd “Har/Har ikke” */}
+  <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+    {/* STCW */}
+    <div>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>STCW – Grunnleggende sikkerhetskurs</div>
+      <div style={sx.inlineRadios}>
+        <label><input type="radio" name="stcw_has" value="ja" required onChange={() => setHasSTCW("ja")} /> Har</label>
+        <label><input type="radio" name="stcw_has" value="nei" onChange={() => setHasSTCW("nei")} /> Har ikke</label>
+      </div>
+      {hasSTCW === "ja" && (
+        <div style={{ marginTop: 8 }}>
+          <div style={{ fontSize: 13, color: "#475569", marginBottom: 6 }}>Huk av relevante moduler</div>
+          <div style={sx.checkGrid}>
+            {STCW_MODULES.map((m) => (
+              <label key={m} style={sx.checkItem}>
+                <input type="checkbox" name="stcw_mod" value={m} /> <span>{m}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
 
-    {hasDeck === "ja" && (
-      <div style={{ marginTop: 8 }}>
-        <Select
-          label="Klasse"
-          name="deck_class"
-          options={["1","2","3","4","5","6"]}
-          value={deckClass}
-          onChange={setDeckClass}
-          placeholder="Velg klasse (1–6)"
-        />
-        <small style={{ color: "#475569" }}>1 = høyeste, 6 = laveste (D6).</small>
+    {/* Dekksoffiser */}
+    <div>
+      <div style={{ fontWeight: 700, marginBottom: 6 }}>Dekksoffiser-sertifikat</div>
+      <div style={sx.inlineRadios}>
+        <label><input type="radio" name="deck_has" value="ja" required onChange={() => setHasDeck("ja")} /> Har</label>
+        <label><input type="radio" name="deck_has" value="nei" onChange={() => setHasDeck("nei")} /> Har ikke</label>
       </div>
-    )}
+      {hasDeck === "ja" && (
+        <div style={{ marginTop: 8 }}>
+          <Select
+            label="Klasse"
+            name="deck_class"
+            options={["1","2","3","4","5","6"]}
+            value={deckClass}
+            onChange={setDeckClass}
+            placeholder="Velg klasse (1–6)"
+          />
+          <small style={{ color: "#475569" }}>1 = høyeste, 6 = laveste (D6).</small>
+        </div>
+      )}
+    </div>
   </div>
-</div>
 
-{/* NY: Andre relevante sertifikater og kompetanse (fritekst) */}
-<Textarea label="Andre relevante sertifikater og kompetanse (valgfritt)" name="other_comp" rows={4} full />
+  {/* Tilgjengelighet / kompetanse */}
+  <Input label="Tilgjengelig fra" name="available_from" type="date" />
+  <Textarea label="Kompetanse/kurs (kort)" name="skills" rows={4} full />
+  <Textarea label="Andre relevante sertifikater og kompetanse (valgfritt)" name="other_comp" rows={4} full />
 
+  {/* CV + Sertifikater */}
+  <FileInput label="CV (PDF, maks 10 MB)" name="cv" accept=".pdf" required />
+  <FileInput label="Sertifikater (PDF/zip, valgfritt)" name="certs" accept=".pdf,.zip" />
 
-{/* CV + Sertifikater (CV obligatorisk) */}
-<FileInput label="CV (PDF, maks 10 MB)" name="cv" accept=".pdf" required />
-<FileInput label="Sertifikater + Søknad (PDF/zip, valgfritt)" name="certs" accept=".pdf,.zip" />
+  {/* GDPR + send */}
+  <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
+    <input id="gdpr" type="checkbox" required />
+    <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569" }}>
+      Jeg samtykker til behandling av persondata for bemanning/rekruttering.
+    </label>
+  </div>
+  <div style={{ gridColumn: "1 / -1" }}>
+    <button type="submit" style={sx.btnMain}>Send inn kandidatprofil</button>
+  </div>
+</form>
 
-              {/* GDPR og Submit */}
-              <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
-                <input id="gdpr" type="checkbox" required />
-                <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569" }}>
-                  Jeg samtykker til behandling av persondata for bemanning/rekruttering.
-                </label>
-              </div>
-              <div style={{ gridColumn: "1 / -1" }}>
-                <button type="submit" style={sx.btn}>Send inn kandidatprofil</button>
-              </div>
-            </form>
           )}
         </div>
       </section>
@@ -303,18 +300,19 @@ const clientSent = false;
           {clientSent || sent === "client" ? (
             <div style={sx.ok} role="status">Takk! Forespørselen er sendt inn.</div>
           ) : (
-            <form action="/api/submit-client" method="POST" style={sx.form} noValidate>
-              <Input label="Selskap" name="company" required error={cErr.company} />
-              <Input label="Kontaktperson" name="contact" required error={cErr.contact} />
-              <Input label="E-post" name="c_email" type="email" required error={cErr.c_email} />
-              <Input label="Telefon" name="c_phone" required error={cErr.c_phone} />
-              <Input label="Lokasjon/område" name="location" />
-              <Select label="Type behov" name="need_type" options={Object.keys(WORK)} />
-              <Textarea label="Kort beskrivelse av oppdraget" name="desc" rows={4} full />
-              <div style={{ gridColumn: "1 / -1" }}>
-                <button type="submit" style={sx.btn}>Send forespørsel</button>
-              </div>
-            </form>
+           <form action="/api/submit-client" method="POST" style={sx.form} noValidate>
+  <Input label="Selskap" name="company" required />
+  <Input label="Kontaktperson" name="contact" required />
+  <Input label="E-post" name="c_email" type="email" required />
+  <Input label="Telefon" name="c_phone" required />
+  <Input label="Lokasjon/område" name="location" />
+  <Select label="Type behov" name="need_type" options={Object.keys(WORK)} />
+  <Textarea label="Kort beskrivelse av oppdraget" name="desc" rows={4} full />
+  <div style={{ gridColumn: "1 / -1" }}>
+    <button type="submit" style={sx.btnMain}>Send forespørsel</button>
+  </div>
+</form>
+
           )}
         </div>
       </section>

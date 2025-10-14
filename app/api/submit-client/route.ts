@@ -50,8 +50,9 @@ export async function POST(req: Request) {
     const back = new URL("/?sent=client#kunde", req.url);
     return Response.redirect(back, 303);
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "ukjent";
-    console.error("❌ Sendefeil (client):", err);
-    return new Response("FEIL: " + msg, { status: 500 });
-  }
+  const msg = err instanceof Error ? err.message : String(err);
+  console.error("❌ Sendefeil (client):", err);
+  return new Response("FEIL: " + msg, { status: 500 });
+}
+
 }
