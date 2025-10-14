@@ -15,17 +15,8 @@ export default function Page() {
   const searchParams = useSearchParams();
   const sent = searchParams.get("sent"); // "worker" eller "client"
 
-  // (Valgfritt lokalt state – beholder for “demo-OK” ved manuell test)
-  const [workerSent, setWorkerSent] = useState(false);
-  const [clientSent, setClientSent] = useState(false);
-
-  // Enkle feilfelt (brukes primært for “required”-utseende)
-  const [wErr, setWErr] = useState<Record<string, string>>({});
-  const [cErr, setCErr] = useState<Record<string, string>>({});
-
-  // Epost validering (brukes kun hvis vi en dag går tilbake til JS-submit)
-  const emailOk = (v: FormDataEntryValue | null) =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").toLowerCase());
+ const workerSent = false;
+const clientSent = false;
 
   // Hovedkategorier → undervalg (som ønsket)
   const WORK: Record<string, string[]> = {
