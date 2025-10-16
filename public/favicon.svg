@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Bluecrew favicon</title>
+  <desc id="desc">Initialene Bc på blå gradient</desc>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1F3A" />
+      <stop offset="100%" stop-color="#1E3A8A" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#g)" />
+  <text
+    x="18"
+    y="40"
+    fill="#ffffff"
+    font-family="'Segoe UI', 'Inter', sans-serif"
+    font-weight="700"
+    font-size="24"
+    letter-spacing="-0.02em"
+  >B<tspan fill="#60A5FA">c</tspan></text>
+</svg>
