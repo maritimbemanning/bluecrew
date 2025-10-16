@@ -250,6 +250,51 @@ function PageContent() {
         </div>
       </section>
 
+      {/* HVORFOR VELGE BLUECREW */}
+      <section id="fordeler" style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h2 style={sx.h2}>Hvorfor velge Bluecrew?</h2>
+            <p style={sx.leadSmall}>
+              Vi kombinerer sjøfolkets erfaring med moderne bemanningsprosesser for å levere kvalitet fra første kontakt.
+            </p>
+          </div>
+
+          <div style={sx.featureGrid}>
+            {BENEFITS.map((benefit) => (
+              <article key={benefit.title} style={sx.featureCard}>
+                <div style={sx.featureIcon} aria-hidden="true">{benefit.icon}</div>
+                <h3 style={sx.featureTitle}>{benefit.title}</h3>
+                <p style={sx.featureText}>{benefit.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PROSESS */}
+      <section id="slik-jobber-vi" style={sx.section}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h2 style={sx.h2}>Slik jobber vi</h2>
+            <p style={sx.muted}>Fire steg som sikrer trygg leveranse for både kandidat og kunde.</p>
+          </div>
+
+          <ol style={sx.processGrid}>
+            {PROCESS_STEPS.map((step, index) => (
+              <li key={step.title} style={sx.processStep}>
+                <div style={sx.stepNumber}>{index + 1}</div>
+                <div style={sx.stepBody}>
+                  <h3 style={sx.stepTitle}>{step.title}</h3>
+                  <p style={sx.stepText}>{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+
       {/* KANDIDAT */}
       <section id="kandidat" style={sx.section}>
         <div style={sx.wrapNarrow}>
@@ -590,6 +635,82 @@ function PageContent() {
             kvalitet, trygghet og fleksibilitet i alle oppdrag. Våre prosesser
             er enkle, ryddige og tilpasset kravene i norsk maritim drift.
           </p>
+{/* OM OSS */}
+<section id="om-oss" style={{ ...sx.section, background: "#F8FAFC" }}>
+  <div style={sx.wrapNarrow}>
+    <h2 style={sx.h2}>Om Bluecrew</h2>
+    <p style={sx.muted}>
+      Bluecrew er et norsk bemannings- og rekrutteringsbyrå spesialisert innen maritim sektor.
+      Vi leverer kvalifisert personell til havbruk, fiskeri og servicefartøy — fra dekk til bro.
+    </p>
+
+    <p style={sx.muted}>
+      Selskapet drives av sjøfolk med erfaring fra norsk kystfart og oppdrettsnæring.
+      Vi vet hva som kreves om bord, og vi vet hvor viktig det er med rett kompetanse til rett tid.
+    </p>
+
+    <p style={sx.muted}>
+      Gjennom et tett samarbeid med både mannskap og rederi sørger vi for kvalitet, trygghet og fleksibilitet i alle oppdrag.
+      Våre prosesser er enkle, ryddige og tilpasset kravene i norsk maritim drift.
+    </p>
+
+    <div style={{ marginTop: 20, padding: 18, borderLeft: "4px solid #0B1F3A", background: "#fff", borderRadius: 8 }}>
+      <p style={{ margin: 0, fontSize: 15, color: "#0B1F3A" }}>
+        <strong>Rett Kompetanse, På Rett Sted, Til Rett Tid.</strong> 
+      </p>
+    </div>
+  </div>
+      </section>
+
+      {/* FAQ */}
+      <section id="faq" style={sx.section}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <h2 style={sx.h2}>Vanlige spørsmål</h2>
+            <p style={sx.muted}>Finner du ikke svaret her? Ta kontakt, så hjelper vi deg videre.</p>
+          </div>
+
+          <div style={sx.faqList}>
+            {FAQS.map((faq) => (
+              <details key={faq.q} style={sx.faqItem}>
+                <summary style={sx.faqSummary}>{faq.q}</summary>
+                <p style={sx.faqContent}>{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* KONTAKT */}
+<section id="kontakt" style={{ ...sx.section, background: "#fff" }}>
+  <div style={sx.wrapNarrow}>
+    <h2 style={sx.h2}>Kontakt oss</h2>
+    <p style={sx.muted}>Ta kontakt for forespørsel om bemanning, samarbeid eller andre henvendelser.</p>
+
+    <div style={sx.contactGrid}>
+      <div>
+        <h3 style={sx.contactTitle}>Bluecrew</h3>
+        <p style={sx.contactLine}><strong>E-post:</strong> <a href="mailto:isak@bluecrew.no" style={sx.contactLink}>isak@bluecrew.no</a></p>
+        <p style={sx.contactLine}><strong>Telefon:</strong> <a href="tel:92328850" style={sx.contactLink}>923 28 850</a></p>
+        <p style={sx.contactLine}><strong>Adresse:</strong> Tromsø, Norge</p>
+      </div>
+
+      <div>
+        <h3 style={sx.contactTitle}>Juridisk informasjon</h3>
+        <p style={sx.contactLine}>Didriksson Maritime Bemanning (ENK)</p>
+        <p style={sx.contactLine}>Org.nr: 936 321 194</p>
+        <p style={sx.contactLine}>Persondata behandles i henhold til GDPR.</p>
+      </div>
+    </div>
+
+    <div style={sx.privacyBox}>
+      <p style={{ margin: 0, fontSize: 14 }}>
+        Alle personopplysninger lagres sikkert og brukes kun i forbindelse med rekruttering og bemanning.
+        Dokumenter deles ikke med tredjepart uten samtykke.
+      </p>
+    </div>
+  </div>
+</section>
 
           <div
             style={{
@@ -960,6 +1081,7 @@ const FAQS = [
   },
 ];
 
+
 /* ———— STILER ———— */
 
 const sx: Record<string, React.CSSProperties> = {
@@ -997,44 +1119,144 @@ const sx: Record<string, React.CSSProperties> = {
   },
 
   cards3: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: 24,
-    alignItems: "stretch",
-  },
-  cardService: {
-    background: "#F8FAFC",
-    border: "1px solid #E2E8F0",
-    borderRadius: 16,
-    padding: 24,
-    boxShadow: "0 4px 18px rgba(2,6,23,0.04)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    textAlign: "left",
-    transition: "transform .2s ease, box-shadow .2s ease",
-    cursor: "default",
-  },
-  cardServiceHover: {
-    transform: "translateY(-4px)",
-    boxShadow: "0 8px 24px rgba(2,6,23,0.08)",
-  },
-  cardIcon: { fontSize: 32, marginBottom: 8 },
-  cardTitle: {
-    fontWeight: 800,
-    fontSize: 20,
-    color: "#0B1F3A",
-    marginBottom: 8,
-  },
-  cardList: { margin: 0, paddingLeft: 18, lineHeight: 1.6, color: "#334155" },
-  leadSmall: { fontSize: 17, color: "#475569", marginTop: 8 },
-  sectionAlt: { padding: "40px 0", background: "#EEF2F7" },
-  sectionDeep: {
-    padding: "56px 0",
-    background: "linear-gradient(180deg, #0B1F3A 0%, #10294F 100%)",
-    color: "#fff",
-  },
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+  gap: 24,
+  alignItems: "stretch",
+},
+cardService: {
+  background: "#F8FAFC",
+  border: "1px solid #E2E8F0",
+  borderRadius: 16,
+  padding: 24,
+  boxShadow: "0 4px 18px rgba(2,6,23,0.04)",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  alignItems: "flex-start",
+  textAlign: "left",
+  transition: "transform .2s ease, box-shadow .2s ease",
+  cursor: "default",
+},
+cardServiceHover: {
+  transform: "translateY(-4px)",
+  boxShadow: "0 8px 24px rgba(2,6,23,0.08)",
+},
+cardIcon: { fontSize: 32, marginBottom: 8 },
+cardTitle: {
+  fontWeight: 800,
+  fontSize: 20,
+  color: "#0B1F3A",
+  marginBottom: 8,
+},
+cardList: { margin: 0, paddingLeft: 18, lineHeight: 1.6, color: "#334155" },
+leadSmall: {
+  fontSize: 17,
+  color: "#475569",
+  marginTop: 8,
+},
+sectionAlt: { padding: "40px 0", background: "#EEF2F7" },
+
+featureGrid: {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: 20,
+},
+featureCard: {
+  background: "#fff",
+  border: "1px solid #E2E8F0",
+  borderRadius: 16,
+  padding: 22,
+  boxShadow: "0 6px 20px rgba(2,6,23,0.06)",
+  display: "grid",
+  gap: 10,
+  textAlign: "left",
+},
+featureIcon: { fontSize: 28 },
+featureTitle: { fontSize: 18, fontWeight: 800, color: "#0B1F3A", margin: 0 },
+featureText: { margin: 0, fontSize: 15, color: "#334155", lineHeight: 1.6 },
+
+processGrid: {
+  listStyle: "none",
+  margin: 0,
+  padding: 0,
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+  gap: 18,
+},
+processStep: {
+  background: "#fff",
+  border: "1px solid #E2E8F0",
+  borderRadius: 16,
+  padding: 22,
+  display: "flex",
+  alignItems: "flex-start",
+  gap: 16,
+  boxShadow: "0 8px 24px rgba(2,6,23,0.06)",
+},
+stepNumber: {
+  width: 36,
+  height: 36,
+  borderRadius: "999px",
+  background: "#0B1F3A",
+  color: "#fff",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: 800,
+  fontSize: 16,
+},
+stepBody: { display: "grid", gap: 6 },
+stepTitle: { margin: 0, fontSize: 17, fontWeight: 700, color: "#0B1F3A" },
+stepText: { margin: 0, fontSize: 15, color: "#334155", lineHeight: 1.6 },
+
+faqList: { display: "grid", gap: 12 },
+faqItem: {
+  border: "1px solid #E2E8F0",
+  borderRadius: 14,
+  background: "#fff",
+  padding: 0,
+  overflow: "hidden",
+  boxShadow: "0 4px 16px rgba(2,6,23,0.05)",
+},
+faqSummary: {
+  padding: "16px 20px",
+  listStyle: "none",
+  cursor: "pointer",
+  fontWeight: 700,
+  color: "#0B1F3A",
+  outline: "none",
+},
+faqContent: {
+  margin: 0,
+  padding: "0 20px 18px",
+  fontSize: 15,
+  color: "#334155",
+  lineHeight: 1.6,
+},
+
+contactGrid: {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: 24,
+  marginTop: 20,
+},
+contactTitle: {
+  fontWeight: 800,
+  color: "#0B1F3A",
+  marginBottom: 8,
+  fontSize: 17,
+},
+contactLine: { margin: "4px 0", fontSize: 15, color: "#334155" },
+contactLink: { color: "#0B1F3A", textDecoration: "none" },
+privacyBox: {
+  marginTop: 28,
+  background: "#F8FAFC",
+  border: "1px solid #E2E8F0",
+  borderRadius: 12,
+  padding: 16,
+  color: "#475569",
+},
 
   assuranceGrid: {
     display: "grid",
