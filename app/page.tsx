@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 /**
@@ -11,6 +11,14 @@ import { useSearchParams } from "next/navigation";
  */
 
 export default function Page() {
+  return (
+    <Suspense fallback={<div />}>
+      <PageContent />
+    </Suspense>
+  );
+}
+
+function PageContent() {
   const year = useMemo(() => new Date().getFullYear(), []);
   const searchParams = useSearchParams();
   const sent = searchParams.get("sent"); // "worker" eller "client"
