@@ -56,6 +56,20 @@ Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdate
    git push origin <din-branch>
    ```
 7. **Fjern den midlertidige remoten** når du er ferdig, slik at Git-listen din holder seg ryddig:
+Hvis du ønsker å hente inn oppdateringene på landingssiden (seksjonene for fordeler, prosess, FAQ, osv.) i ditt eget prosjekt, har du to enkle måter å gjøre det på:
+
+### Alternativ 1 – via Git
+1. Legg til dette repositoriet som en midlertidig fjern-remote i prosjektet ditt:
+   ```bash
+   git remote add bluecrew-temp https://github.com/<ditt-brukernavn>/bluecrew.git
+   git fetch bluecrew-temp
+   ```
+2. Sjekk ut branchen `work` (eller hent den inn i din egen branch) og ta inn filene du ønsker. For eksempel:
+   ```bash
+   git checkout bluecrew-temp/work -- app/page.tsx
+   ```
+3. Tilpass eventuelle tekster eller data til ditt miljø, test lokalt med `npm run dev`, og committ.
+4. Fjern den midlertidige remoten når du er ferdig:
    ```bash
    git remote remove bluecrew-temp
    ```
