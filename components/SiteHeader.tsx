@@ -1,0 +1,118 @@
+import type { CSSProperties } from "react";
+import Link from "next/link";
+import Logo from "@/components/Logo";
+
+const headerStyles = {
+  topbar: {
+    width: "100%",
+    borderBottom: "1px solid #E2E8F0",
+    background: "rgba(255,255,255,0.92)",
+    backdropFilter: "blur(12px)",
+    position: "sticky" as const,
+    top: 0,
+    zIndex: 20,
+    boxShadow: "0 14px 45px -32px rgba(15, 23, 42, 0.45)",
+  },
+  wrap: {
+    margin: "0 auto",
+    width: "min(1100px, 92vw)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 20,
+    padding: "18px 0",
+  },
+  brand: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    textDecoration: "none",
+    color: "inherit",
+  },
+  logoBox: {
+    display: "flex",
+    flexDirection: "column" as const,
+    lineHeight: 1.1,
+  },
+  logoText: {
+    fontSize: 24,
+    fontWeight: 800,
+    letterSpacing: "0.02em",
+    color: "#0B1F3A",
+  },
+  logoTag: {
+    fontSize: 11,
+    color: "#1D4ED8",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.28em",
+  },
+  nav: {
+    display: "flex",
+    alignItems: "center",
+    gap: 20,
+  },
+  navLink: {
+    fontSize: 14,
+    fontWeight: 600,
+    color: "#0F172A",
+    textDecoration: "none",
+    padding: "6px 0",
+    position: "relative" as const,
+  },
+  cta: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 18px",
+    borderRadius: 999,
+    background: "#0B1F3A",
+    color: "#fff",
+    fontWeight: 700,
+    textDecoration: "none",
+    fontSize: 13,
+  },
+};
+
+type SiteHeaderProps = {
+  showCtas?: boolean;
+};
+
+export default function SiteHeader({ showCtas = true }: SiteHeaderProps) {
+  return (
+    <header style={headerStyles.topbar}>
+      <div style={headerStyles.wrap}>
+        <Link href="/" style={headerStyles.brand} aria-label="Bluecrew hjem">
+          <Logo size={36} />
+          <span style={headerStyles.logoBox as CSSProperties}>
+            <span style={headerStyles.logoText}>Bluecrew</span>
+            <span style={headerStyles.logoTag}>Bemanning til sjøs</span>
+          </span>
+        </Link>
+        <nav style={headerStyles.nav} aria-label="Hovedmeny">
+          <Link href="/#tjenester" style={headerStyles.navLink}>
+            Tjenester
+          </Link>
+          <Link href="/#leveranse" style={headerStyles.navLink}>
+            Leveranse
+          </Link>
+          <Link href="/#neste" style={headerStyles.navLink}>
+            Neste steg
+          </Link>
+          <Link href="/#kontakt" style={headerStyles.navLink}>
+            Kontakt
+          </Link>
+        </nav>
+        {showCtas ? (
+          <div style={{ display: "flex", gap: 10 }}>
+            <Link href="/kandidat" style={headerStyles.cta}>
+              Registrer kandidat
+            </Link>
+            <Link href="/bemanningsbehov" style={{ ...headerStyles.cta, background: "#1D4ED8" }}>
+              Meld inn behov
+            </Link>
+          </div>
+        ) : null}
+      </div>
+    </header>
+  );
+}
