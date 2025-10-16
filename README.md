@@ -20,6 +20,76 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Hvordan ta i bruk endringene i ditt eget prosjekt
+
+Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdaterte forsiden og de nye undersidene i ditt eget prosjekt – både med Git og ved ren kopiering.
+
+### Filer og mapper du trenger
+
+* `app/page.tsx` – forsiden med seksjoner og navigasjon som peker videre til skjemaene.
+* `app/kandidat/` – inkluderer `page.tsx` og `CandidateForm.tsx` som håndterer kandidatregistreringen.
+* `app/bemanningsbehov/` – inkluderer `page.tsx` og `ClientForm.tsx` for kundeforespørsler.
+* `components/` – inneholder gjenbrukbare komponenter (`SiteHeader`, `SiteFooter`, `Logo`) og skjemakontroller i `components/forms/Controls.tsx`.
+* `public/favicon.svg` – ny favicon med «Bc».
+
+### Alternativ 1 – bruk Git fra terminalen (anbefalt hvis du allerede bruker GitHub)
+1. **Gå til prosjektet ditt** i terminalen (`cd /sti/til/prosjekt`).
+2. **Sørg for at arbeidsmappen er ren** ved å committe eller stash-e egne endringer: `git status` skal vise ingen endringer før du fortsetter.
+3. **Legg til dette repositoriet som midlertidig fjernkilde og hent innholdet:**
+   ```bash
+   git remote add bluecrew-temp https://github.com/<ditt-brukernavn>/bluecrew.git
+   git fetch bluecrew-temp work
+   ```
+4. **Kopier filene du trenger** fra denne branchen inn i prosjektet ditt:
+   ```bash
+   git checkout bluecrew-temp/work -- app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   ```
+5. **Se over og test lokalt:**
+   ```bash
+   npm install        # hopp over hvis avhengighetene allerede er installert
+   npm run dev        # åpne http://localhost:3000 for å sjekke siden
+   ```
+6. **Committ og push til ditt eget repo:**
+   ```bash
+   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git commit -m "Oppdater Bluecrew-nettsiden"
+   git push origin <din-branch>
+   ```
+7. **Fjern den midlertidige remoten** når du er ferdig, slik at Git-listen din holder seg ryddig:
+   ```bash
+   git remote remove bluecrew-temp
+   ```
+
+### Alternativ 2 – kopier filene manuelt (hvis du heller vil lime inn)
+1. Åpne hver av filene listet i seksjonen «Filer og mapper du trenger». For mapper (`app/kandidat`, `app/bemanningsbehov`, `components`) oppretter du samme mappestruktur i ditt prosjekt før du limer inn filene.
+2. Klikk på «Raw»-knappen (på GitHub) eller bruk teksteditoren her i prosjektet for å se **ren** kode uten `+`/`-` i starten av linjene.
+3. Marker hele filen (Ctrl/Cmd + A) og kopier innholdet (Ctrl/Cmd + C).
+4. Lim inn i den tilsvarende filen i ditt prosjekt (Ctrl/Cmd + A → Ctrl/Cmd + V) og lagre.
+5. Gjenta for alle relevante filer. Når du er ferdig, kjør `npm run dev` for å forsikre deg om at alt fungerer i din app.
+6. Hvis du bruker GitHub, legg til, committ og push endringen slik:
+   ```bash
+   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git commit -m "Limt inn oppdatert Bluecrew-nettside"
+   git push origin <din-branch>
+   ```
+
+Begge metodene gir samme sluttresultat – velg den som passer best for deg.
+
+### Hva hvis jeg limer inn en «git apply»-patch og får 1000+ feil?
+
+Det betyr at du har limt inn **selve diffen** (linjer som starter med `+`, `-` og `@@`) i stedet for den ferdige filen. Patch-formatet er laget for at Git skal tolke det, ikke for å limes direkte inn i VS Code. Gjør heller en av disse:
+
+* **Kjør patchen i terminalen:**
+  1. Lagre teksten du fikk som `bluecrew.patch` (for eksempel i prosjektroten din).
+  2. Kjør `git apply bluecrew.patch` fra samme mappe. Da oppdaterer Git filene for deg uten at du trenger å åpne dem manuelt.
+* **Kopier den ferdige filen:** Følg trinnene i «Alternativ 2» over – husk å bruke «Raw»-visningen slik at du kopierer ren kode.
+
+Når du limer inn ren kode eller lar Git bruke patchen, skal TypeScript/ESLint-feilene forsvinne.
+
+## Hva betyr `-392` i en diff?
+
+Når du ser et tall som `-392` i en Git-diff (for eksempel i oversikten `-392 +968`), forteller minustegnet at 392 linjer ble fjernet i den aktuelle commiten. Pluss-tegnet viser hvor mange linjer som ble lagt til. Disse tallene brukes for å gi en rask oversikt over hvor omfattende endringene er.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
