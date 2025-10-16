@@ -199,6 +199,33 @@ function PageContent() {
         </div>
       </section>
 
+      {/* SIKKERHET & SERTIFISERINGER */}
+      <section style={sx.sectionDeep}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h2 style={{ ...sx.h2, color: "#fff" }}>
+              Trygghet i hver bemanning
+            </h2>
+            <p style={{ ...sx.leadSmall, color: "rgba(255,255,255,0.78)" }}>
+              Vi følger norske krav til maritim bemanning, dokumenterer sertifikater
+              og holder tett dialog med både rederi og mannskap.
+            </p>
+          </div>
+
+          <div style={sx.assuranceGrid}>
+            {ASSURANCES.map((item) => (
+              <article key={item.title} style={sx.assuranceCard}>
+                <div style={sx.assuranceIcon} aria-hidden="true">
+                  {item.icon}
+                </div>
+                <h3 style={sx.assuranceTitle}>{item.title}</h3>
+                <p style={sx.assuranceText}>{item.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* PROSESS */}
       <section id="slik-jobber-vi" style={sx.section}>
         <div style={sx.wrapNarrow}>
@@ -859,6 +886,24 @@ const STCW_MODULES = [
   "PSSR",
 ];
 
+const ASSURANCES = [
+  {
+    icon: "📋",
+    title: "Dokumentert kompetanse",
+    text: "Vi kontrollerer STCW, fagbrev og helseerklæringer før utsendelse slik at du får mannskap som er klar for inspeksjon.",
+  },
+  {
+    icon: "🛰️",
+    title: "Vaktplaner i sanntid",
+    text: "Digital oppfølging av rotasjoner og beredskap gjør at vi raskt fyller hull og holder deg oppdatert om tilgjengelighet.",
+  },
+  {
+    icon: "🤝",
+    title: "Langsiktige partnerskap",
+    text: "Vi setter oss inn i fartøy, rutiner og HMS-krav slik at hvert oppdrag bygger videre på forrige leveranse.",
+  },
+];
+
 const BENEFITS = [
   {
     icon: "🧭",
@@ -985,6 +1030,36 @@ const sx: Record<string, React.CSSProperties> = {
   cardList: { margin: 0, paddingLeft: 18, lineHeight: 1.6, color: "#334155" },
   leadSmall: { fontSize: 17, color: "#475569", marginTop: 8 },
   sectionAlt: { padding: "40px 0", background: "#EEF2F7" },
+  sectionDeep: {
+    padding: "56px 0",
+    background: "linear-gradient(180deg, #0B1F3A 0%, #10294F 100%)",
+    color: "#fff",
+  },
+
+  assuranceGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: 20,
+  },
+  assuranceCard: {
+    background: "rgba(15, 23, 42, 0.35)",
+    border: "1px solid rgba(148, 163, 184, 0.3)",
+    borderRadius: 18,
+    padding: 24,
+    display: "grid",
+    gap: 10,
+    textAlign: "left",
+    boxShadow: "0 12px 28px rgba(8, 13, 23, 0.35)",
+    backdropFilter: "blur(6px)",
+  },
+  assuranceIcon: { fontSize: 30 },
+  assuranceTitle: { margin: 0, fontSize: 18, fontWeight: 800, color: "#fff" },
+  assuranceText: {
+    margin: 0,
+    fontSize: 15,
+    color: "rgba(226, 232, 240, 0.9)",
+    lineHeight: 1.6,
+  },
 
   featureGrid: {
     display: "grid",
