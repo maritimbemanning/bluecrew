@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Bluecrew favicon</title>
+  <desc id="desc">Monogrammet Bc på blå gradientbakgrunn</desc>
+  <defs>
+    <linearGradient id="bc-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1F3A" />
+      <stop offset="100%" stop-color="#1E3A8A" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#bc-gradient)" />
+  <text
+    x="50%"
+    y="52%"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    fill="#F8FAFC"
+    font-family="'Inter', 'Segoe UI', sans-serif"
+    font-size="30"
+    font-weight="800"
+    letter-spacing="0.06em"
+  >Bc</text>
+</svg>
