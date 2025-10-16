@@ -1,0 +1,32 @@
+import React from "react";
+
+type LogoProps = {
+  size?: number;
+};
+
+export default function Logo({ size = 28 }: LogoProps) {
+  const s = size;
+  return (
+    <svg
+      width={s}
+      height={s}
+      viewBox="0 0 64 64"
+      role="img"
+      aria-label="Bluecrew logo"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="bluecrew-monogram" x1="12%" y1="8%" x2="88%" y2="92%">
+          <stop offset="0%" stopColor="#0E2A4E" />
+          <stop offset="55%" stopColor="#16539B" />
+          <stop offset="100%" stopColor="#1F7AE3" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="18" fill="url(#bluecrew-monogram)" />
+      <g fill="#F8FAFC" fillRule="evenodd" clipRule="evenodd">
+        <path d="M18 16h11.2c8 0 13.8 4.4 13.8 11.3 0 4.6-2.7 8-7 9.8 4.9 1.6 7.8 5.3 7.8 10.3C43.8 54 37.8 58 29.4 58H18zm11 18c3.2 0 5.2-1.7 5.2-4.5s-2-4.3-5.2-4.3H25v8.8zm0.6 16.6c3.7 0 6-1.8 6-4.8S33.3 41 29.6 41H25v9.6z" opacity="0.96" />
+        <path d="M40 32.4c0-7.8 6-13.8 14.2-13.8 4.2 0 7.5 1 10.5 3.1l-3.2 5c-2-1.5-4.2-2.3-6.6-2.3-4.7 0-7.9 3.2-7.9 8.1v9.4c0 4.9 3.2 8.1 7.9 8.1 2.3 0 4.5-0.7 6.6-2.3l3 4.9c-2.9 2.1-6.2 3.2-10.3 3.2C46 56 40 50.1 40 42.3z" />
+      </g>
+    </svg>
+  );
+}
