@@ -22,73 +22,31 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 ## Hvordan ta i bruk endringene i ditt eget prosjekt
 
-Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdaterte forsiden og de nye undersidene i ditt eget prosjekt – både med Git og ved ren kopiering.
+Hvis du ønsker å hente inn oppdateringene på landingssiden (seksjonene for fordeler, prosess, FAQ, osv.) i ditt eget prosjekt, har du to enkle måter å gjøre det på:
 
-### Filer og mapper du trenger
-
-* `app/page.tsx` – forsiden med seksjoner og navigasjon som peker videre til skjemaene.
-* `app/kandidat/` – inkluderer `page.tsx` og `CandidateForm.tsx` som håndterer kandidatregistreringen.
-* `app/bemanningsbehov/` – inkluderer `page.tsx` og `ClientForm.tsx` for kundeforespørsler.
-* `components/` – inneholder gjenbrukbare komponenter (`SiteHeader`, `SiteFooter`, `Logo`) og skjemakontroller i `components/forms/Controls.tsx`.
-* `public/favicon.svg` – ny favicon med «Bc».
-
-### Alternativ 1 – bruk Git fra terminalen (anbefalt hvis du allerede bruker GitHub)
-1. **Gå til prosjektet ditt** i terminalen (`cd /sti/til/prosjekt`).
-2. **Sørg for at arbeidsmappen er ren** ved å committe eller stash-e egne endringer: `git status` skal vise ingen endringer før du fortsetter.
-3. **Legg til dette repositoriet som midlertidig fjernkilde og hent innholdet:**
+### Alternativ 1 – via Git
+1. Legg til dette repositoriet som en midlertidig fjern-remote i prosjektet ditt:
    ```bash
    git remote add bluecrew-temp https://github.com/<ditt-brukernavn>/bluecrew.git
-   git fetch bluecrew-temp work
+   git fetch bluecrew-temp
    ```
-4. **Kopier filene du trenger** fra denne branchen inn i prosjektet ditt:
+2. Sjekk ut branchen `work` (eller hent den inn i din egen branch) og ta inn filene du ønsker. For eksempel:
    ```bash
-   git checkout bluecrew-temp/work -- app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git checkout bluecrew-temp/work -- app/page.tsx
    ```
-5. **Se over og test lokalt:**
-   ```bash
-   npm install        # hopp over hvis avhengighetene allerede er installert
-   npm run dev        # åpne http://localhost:3000 for å sjekke siden
-   ```
-6. **Committ og push til ditt eget repo:**
-   ```bash
-   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
-   git commit -m "Oppdater Bluecrew-nettsiden"
-   git push origin <din-branch>
-   ```
-7. **Fjern den midlertidige remoten** når du er ferdig, slik at Git-listen din holder seg ryddig:
+3. Tilpass eventuelle tekster eller data til ditt miljø, test lokalt med `npm run dev`, og committ.
+4. Fjern den midlertidige remoten når du er ferdig:
    ```bash
    git remote remove bluecrew-temp
    ```
 
-### Alternativ 2 – kopier filene manuelt (hvis du heller vil lime inn)
-1. Åpne hver av filene listet i seksjonen «Filer og mapper du trenger». For mapper (`app/kandidat`, `app/bemanningsbehov`, `components`) oppretter du samme mappestruktur i ditt prosjekt før du limer inn filene.
-2. Klikk på «Raw»-knappen (på GitHub) eller bruk teksteditoren her i prosjektet for å se **ren** kode uten `+`/`-` i starten av linjene.
-3. Marker hele filen (Ctrl/Cmd + A) og kopier innholdet (Ctrl/Cmd + C).
-4. Lim inn i den tilsvarende filen i ditt prosjekt (Ctrl/Cmd + A → Ctrl/Cmd + V) og lagre.
-5. Gjenta for alle relevante filer. Når du er ferdig, kjør `npm run dev` for å forsikre deg om at alt fungerer i din app.
-6. Hvis du bruker GitHub, legg til, committ og push endringen slik:
-   ```bash
-   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
-   git commit -m "Limt inn oppdatert Bluecrew-nettside"
-   git push origin <din-branch>
-   ```
+### Alternativ 2 – kopier filene manuelt
+1. Åpne `app/page.tsx` i dette repositoriet og kopier komponentene/objektene du trenger (seksjonene ligger samlet i filen).
+2. Lim dem inn i din egen `app/page.tsx` (eller tilsvarende side) og sørg for at eventuelle hjelpekomponenter nederst i filen også blir med.
+3. Start utviklingsserveren din (`npm run dev`) og kontroller at siden fungerer som forventet.
+4. Oppdater tekstinnhold og lenker etter behov.
 
-Begge metodene gir samme sluttresultat – velg den som passer best for deg.
-
-### Hva hvis jeg limer inn en «git apply»-patch og får 1000+ feil?
-
-Det betyr at du har limt inn **selve diffen** (linjer som starter med `+`, `-` og `@@`) i stedet for den ferdige filen. Patch-formatet er laget for at Git skal tolke det, ikke for å limes direkte inn i VS Code. Gjør heller en av disse:
-
-* **Kjør patchen i terminalen:**
-  1. Lagre teksten du fikk som `bluecrew.patch` (for eksempel i prosjektroten din).
-  2. Kjør `git apply bluecrew.patch` fra samme mappe. Da oppdaterer Git filene for deg uten at du trenger å åpne dem manuelt.
-* **Kopier den ferdige filen:** Følg trinnene i «Alternativ 2» over – husk å bruke «Raw»-visningen slik at du kopierer ren kode.
-
-Når du limer inn ren kode eller lar Git bruke patchen, skal TypeScript/ESLint-feilene forsvinne.
-
-## Hva betyr `-392` i en diff?
-
-Når du ser et tall som `-392` i en Git-diff (for eksempel i oversikten `-392 +968`), forteller minustegnet at 392 linjer ble fjernet i den aktuelle commiten. Pluss-tegnet viser hvor mange linjer som ble lagt til. Disse tallene brukes for å gi en rask oversikt over hvor omfattende endringene er.
+Begge metodene gir deg samme sluttresultat – velg den som passer best for arbeidsflyten din.
 
 ## Learn More
 
