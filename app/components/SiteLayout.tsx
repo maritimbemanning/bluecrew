@@ -47,7 +47,20 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
       <main style={sx.main}>{children}</main>
 
       <footer style={sx.footer}>
-        <div style={sx.wrapNarrow}>© {new Date().getFullYear()} Bluecrew AS – Bemanning til sjøs</div>
+        <div style={{ ...sx.wrapNarrow }}>
+          <div style={sx.footerContent}>
+            <div>© {new Date().getFullYear()} Bluecrew AS – Bemanning til sjøs</div>
+            <div style={sx.footerContact}>
+              <span>Østenbekkveien 43, 9011 Tromsø</span>
+              <a href="tel:92328850" style={sx.footerLink}>
+                923 28 850
+              </a>
+              <a href="mailto:isak@bluecrew.no" style={sx.footerLink}>
+                isak@bluecrew.no
+              </a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

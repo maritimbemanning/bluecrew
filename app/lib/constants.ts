@@ -13,32 +13,56 @@ export const STCW_MODULES = [
   "PSSR",
 ];
 
-export const BENEFITS = [
+export const HERO_STATS = [
+  { value: "48 t", label: "Typisk responstid til oppstart" },
+  { value: "120+", label: "Fagpersoner i maritimt nettverk" },
+  { value: "12 år", label: "Operativ erfaring fra sjøen" },
+];
+
+export const TRUST_POINTS = [
   {
     icon: "🧭",
-    title: "Bransjeerfaring",
-    text: "Teamet ledes av sjøfolk som kjenner norsk kystfart, havbruk og fiskeri fra innsiden.",
+    title: "Fra sjøfolk til sjøfolk",
+    text: "Bluecrew AS eies og drives av kapteiner og dekksarbeidere som kjenner hverdagen om bord.",
   },
   {
-    icon: "⚙️",
-    title: "Fleksible leveranser",
-    text: "Vi håndterer alt fra korttidsoppdrag til helbemanning av fartøy – med fokus på tempo og kvalitet.",
+    icon: "⚡",
+    title: "Tempo uten snarveier",
+    text: "Vi kombinerer strukturert screening og referanser med rask responstid for å dekke akutte behov.",
   },
   {
-    icon: "🛡️",
-    title: "Kvalitet & HMS",
-    text: "Grundig verifisering av kompetanse og sertifikater sikrer trygghet for både mannskap og rederi.",
+    icon: "🤝",
+    title: "Forutsigbar leveranse",
+    text: "Tett oppfølging før, under og etter oppdrag sikrer at både mannskap og rederi får riktig match.",
+  },
+];
+
+export const BENEFITS = [
+  {
+    icon: "🛥️",
+    title: "Tilpassede team",
+    text: "Vi setter sammen komplette mannskapsløsninger med sertifisert personell tilpasset fartøy og operasjon.",
+  },
+  {
+    icon: "📜",
+    title: "Sertifikatkontroll",
+    text: "Alle kandidater verifiseres mot krav til kompetanse, helse og sikkerhet før utsendelse.",
+  },
+  {
+    icon: "🌊",
+    title: "Operativ støtte",
+    text: "Du får rådgivning fra folk som kjenner været, logistikken og rytmen ute på sjøen.",
   },
 ];
 
 export const PROCESS_STEPS = [
   {
     title: "Behovsanalyse",
-    text: "Vi kartlegger bemanningsbehov, krav til sertifikater og ønsket oppstart i dialog med deg.",
+    text: "Vi kartlegger fartøy, operasjon og krav til kompetanse sammen med deg og avtaler responstid.",
   },
   {
     title: "Screening og verifisering",
-    text: "Kandidater intervjuers, referansesjekkes og sertifikater kontrolleres før de presenteres.",
+    text: "Kandidater intervjuers, referansesjekkes og sertifikater verifiseres før de presenteres.",
   },
   {
     title: "Match & presentasjon",
@@ -46,7 +70,7 @@ export const PROCESS_STEPS = [
   },
   {
     title: "Oppfølging om bord",
-    text: "Vi følger opp begge parter underveis og justerer ved behov for å sikre smidige leveranser.",
+    text: "Vi følger opp begge parter underveis og justerer ved behov for å sikre presis leveranse.",
   },
 ];
 

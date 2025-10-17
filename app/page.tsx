@@ -1,41 +1,106 @@
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
 import { sx } from "./lib/styles";
-import { BENEFITS, PROCESS_STEPS, FAQS } from "./lib/constants";
+import { BENEFITS, PROCESS_STEPS, FAQS, HERO_STATS, TRUST_POINTS } from "./lib/constants";
 
 export default function Page() {
   return (
     <SiteLayout active="home">
       <section style={sx.hero}>
         <div style={sx.heroWrap}>
-          <div style={sx.heroPill}>Maritim bemanning • Bluecrew AS</div>
-          <h1 style={sx.h1}>Rett mannskap til havbruk, fiskeri og servicefartøy</h1>
-          <p style={sx.h1Sub}>
-            Bluecrew AS leverer sjøfolk med riktig kompetanse, sertifikater og holdninger der du trenger dem.
-          </p>
-          <div style={sx.ctaRow}>
-            <Link href="/kandidat" style={sx.btnMain}>
-              Registrer kandidat
-            </Link>
-            <Link href="/kunde" style={sx.btnGhost}>
-              Meld inn bemanningsbehov
-            </Link>
+          <div style={sx.heroGrid}>
+            <div style={sx.heroIntro}>
+              <div style={sx.heroPill}>
+                <span>Maritim bemanning</span>
+                <span>Bluecrew AS</span>
+              </div>
+              <h1 style={sx.h1}>Bemanning fra sjøfolk som kjenner tempoet ditt</h1>
+              <p style={sx.h1Sub}>
+                Bluecrew AS drives av folk som har stått på broen, i dekk og i merden. Vi vet hvordan hvert skift påvirker
+                operasjonen – derfor leverer vi sertifiserte mannskap raskt og trygt.
+              </p>
+              <div style={sx.heroHighlights}>
+                <div style={sx.highlightItem}>
+                  <span style={sx.highlightIcon}>🧭</span>
+                  <span>Operative eiere med bakgrunn fra havbruk, servicefartøy og fiskeri.</span>
+                </div>
+                <div style={sx.highlightItem}>
+                  <span style={sx.highlightIcon}>⚓</span>
+                  <span>Dokumentert kompetanse, sikkerhetskultur og ryddige avtaler for hvert oppdrag.</span>
+                </div>
+                <div style={sx.highlightItem}>
+                  <span style={sx.highlightIcon}>⚡</span>
+                  <span>Effektive prosesser gjør at du får de rette folka om bord når behovet oppstår.</span>
+                </div>
+              </div>
+              <div style={sx.ctaRow}>
+                <Link href="/kandidat" style={sx.btnMain}>
+                  Registrer kandidat
+                </Link>
+                <Link href="/kunde" style={sx.btnGhost}>
+                  Meld inn bemanningsbehov
+                </Link>
+              </div>
+            </div>
+            <aside style={sx.heroAside}>
+              <h2 style={sx.heroAsideTitle}>Oppdrag vi løser</h2>
+              <p style={sx.heroAsideText}>
+                Fra korttidsvikarer til komplette team. Vi håndterer mobilisering, dokumentasjon og oppfølging før, under og
+                etter utsendelse.
+              </p>
+              <ul style={sx.heroAsideList}>
+                <li style={sx.heroAsideItem}>
+                  <span style={sx.heroAsideBullet}>🚤</span>
+                  <span>Servicefartøy og arbeidsbåter innen havbruk</span>
+                </li>
+                <li style={sx.heroAsideItem}>
+                  <span style={sx.heroAsideBullet}>🐟</span>
+                  <span>Operativ drift av merder og lukkede anlegg</span>
+                </li>
+                <li style={sx.heroAsideItem}>
+                  <span style={sx.heroAsideBullet}>🎣</span>
+                  <span>Fiskeri og sesongbaserte bemanningsbehov</span>
+                </li>
+                <li style={sx.heroAsideItem}>
+                  <span style={sx.heroAsideBullet}>🛡️</span>
+                  <span>Vakthold, dokumentasjon og HMS-støtte</span>
+                </li>
+              </ul>
+            </aside>
           </div>
-          <ul style={sx.badges}>
-            <li style={sx.badge}>
-              <span style={sx.badgeIcon}>🧭</span> Skippere, matroser og akvateknikere klare for oppdrag
-            </li>
-            <li style={sx.badge}>
-              <span style={sx.badgeIcon}>🌊</span> Operativ erfaring fra norsk kystfart og havbruk
-            </li>
-            <li style={sx.badge}>
-              <span style={sx.badgeIcon}>⏱️</span> Rask respons og ryddige avtaler
-            </li>
-          </ul>
+          <div style={sx.statStrip}>
+            {HERO_STATS.map((stat) => (
+              <div key={stat.label} style={sx.statCard}>
+                <div style={sx.statValue}>{stat.value}</div>
+                <div style={sx.statLabel}>{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center" }}>
+            <h2 style={sx.h2}>Sjøfolk som leverer – hver gang</h2>
+            <p style={sx.leadSmall}>
+              Vi er til stede i havbruksnæringen hver dag og vet hvordan oppdrag endrer seg med vær, sesong og logistikk. Det gjør
+              oss i stand til å levere presist bemannede team.
+            </p>
+          </div>
+          <div style={sx.trustGrid}>
+            {TRUST_POINTS.map((point) => (
+              <article key={point.title} style={sx.trustCard}>
+                <div style={sx.trustIcon}>{point.icon}</div>
+                <h3 style={sx.trustTitle}>{point.title}</h3>
+                <p style={sx.trustText}>{point.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.section}>
         <div style={sx.wrapNarrow}>
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={sx.h2}>Våre tjenester</h2>
@@ -116,6 +181,39 @@ export default function Page() {
               </li>
             ))}
           </ol>
+        </div>
+      </section>
+
+      <section style={sx.contactSection}>
+        <div style={sx.contactInner}>
+          <div style={sx.contactIntro}>
+            <h2 style={sx.contactHeadline}>Kontakt oss direkte</h2>
+            <p style={sx.contactLead}>
+              Vi tar telefonen – også etter arbeidstid. Sammen planlegger vi bemanning som gir stabil drift og trygge skift.
+            </p>
+            <div style={sx.contactCTA}>
+              <a href="tel:92328850" style={sx.contactLinkPrimary}>
+                📞 Ring 923 28 850
+              </a>
+              <a href="mailto:isak@bluecrew.no" style={sx.contactLinkSecondary}>
+                isak@bluecrew.no
+              </a>
+              <span>Østenbekkveien 43, 9011 Tromsø</span>
+            </div>
+          </div>
+          <div style={sx.contactCard}>
+            <h3 style={sx.contactCardTitle}>Bluecrew AS</h3>
+            <p style={sx.contactCardText}>
+              Erfaring fra bro, dekk og merd gjør at vi forstår bemanningsbehovet ditt og følger opp folkene våre gjennom hele
+              oppdraget.
+            </p>
+            <p style={sx.contactCardText}>
+              <strong>Org.nr:</strong> 936 321 194
+            </p>
+            <p style={sx.contactCardText}>
+              <strong>Åpningstider:</strong> 08:00 – 16:00, vakttelefon ved akutte behov.
+            </p>
+          </div>
         </div>
       </section>
 

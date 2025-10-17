@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="icon-shell" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06152d" />
+      <stop offset="55%" stop-color="#0f305a" />
+      <stop offset="100%" stop-color="#1b5fd1" />
+    </linearGradient>
+    <linearGradient id="icon-wave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0ea5e9" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="104" height="104" rx="28" fill="url(#icon-shell)" />
+  <path d="M24 60c12 0 18-10 30-10s18 10 30 10 18-10 30-10 18 10 30 10v32H24z" fill="rgba(15,23,42,0.35)" />
+  <path d="M24 68c12 0 18-8 30-8s18 8 30 8 18-8 30-8 18 8 30 8v24H24z" fill="url(#icon-wave)" />
+  <path d="M54 36c0-9.5 7.7-17.2 17.2-17.2h9.6c10.6 0 19.2 8.6 19.2 19.2 0 7.7-4.6 14.6-11.7 17.6 6.6 2.4 11 8.6 11 15.8 0 10-8.1 18.2-18.2 18.2H64c-5.5 0-10-4.5-10-10V36z" fill="rgba(148,197,255,0.38)" />
+  <circle cx="90" cy="34" r="9" fill="#facc15" stroke="#f8fafc" stroke-width="2" />
+</svg>
