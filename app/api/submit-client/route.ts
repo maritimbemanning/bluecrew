@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       text,
     });
 
-    const back = new URL("/?sent=client#kunde", req.url);
+    const back = new URL("/kunde?sent=client", req.url);
     return Response.redirect(back, 303);
   } catch (err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);
