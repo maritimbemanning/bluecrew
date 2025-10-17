@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
 import ClientContent from "./ClientContent";
@@ -11,7 +12,9 @@ export default function Page() {
           <p style={sx.leadSmall}>
             Fortell oss om fartøyet eller oppdraget du trenger folk til. Vi matcher kvalifiserte sjøfolk med riktig kompetanse og tilgjengelighet.
           </p>
-          <ClientContent />
+          <Suspense fallback={null}>
+            <ClientContent />
+          </Suspense>
         </div>
       </section>
     </SiteLayout>
