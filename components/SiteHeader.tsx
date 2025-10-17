@@ -97,11 +97,14 @@ export default function SiteHeader({ showCtas = true }: SiteHeaderProps) {
           <Link href="/#tjenester" style={headerStyles.navLink}>
             Tjenester
           </Link>
-          <Link href="/#leveranse" style={headerStyles.navLink}>
-            Leveranse
+          <Link href="/#kandidat" style={headerStyles.navLink}>
+            Kandidater
           </Link>
-          <Link href="/#neste" style={headerStyles.navLink}>
-            Neste steg
+          <Link href="/#kunde" style={headerStyles.navLink}>
+            Kunder
+          </Link>
+          <Link href="/#om" style={headerStyles.navLink}>
+            Om oss
           </Link>
           <Link href="/#kontakt" style={headerStyles.navLink}>
             Kontakt
@@ -109,10 +112,13 @@ export default function SiteHeader({ showCtas = true }: SiteHeaderProps) {
         </nav>
         {showCtas ? (
           <div style={{ display: "flex", gap: 10 }}>
-            <Link href="/kandidat" style={headerStyles.cta}>
+            <Link href="/#kandidat" style={headerStyles.cta}>
               Registrer kandidat
             </Link>
-            <Link href="/bemanningsbehov" style={{ ...headerStyles.cta, ...headerStyles.ctaSecondary }}>
+            <Link
+              href="/#kunde"
+              style={{ ...headerStyles.cta, ...headerStyles.ctaSecondary }}
+            >
               Meld inn behov
             </Link>
           </div>

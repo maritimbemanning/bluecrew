@@ -24,13 +24,12 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdaterte forsiden og de nye undersidene i ditt eget prosjekt – både med Git og ved ren kopiering.
 
-### Filer og mapper du trenger
+### Filer du trenger
 
-* `app/page.tsx` – forsiden med seksjoner og navigasjon som peker videre til skjemaene.
-* `app/kandidat/` – inkluderer `page.tsx` og `CandidateForm.tsx` som håndterer kandidatregistreringen.
-* `app/bemanningsbehov/` – inkluderer `page.tsx` og `ClientForm.tsx` for kundeforespørsler.
-* `components/` – inneholder gjenbrukbare komponenter (`SiteHeader`, `SiteFooter`, `Logo`) og skjemakontroller i `components/forms/Controls.tsx`.
-* `public/favicon.svg` – ny favicon med «Bc».
+* `app/page.tsx` – forsiden med hero, tjenester og integrerte skjema for kandidater og kunder.
+* `components/Logo.tsx` – vektorlogoen som brukes i toppmeny og footer.
+* `components/SiteHeader.tsx` og `components/SiteFooter.tsx` – felles header/footer for nettsiden.
+* `public/favicon.svg` – faviconen med «Bc» som matcher logoen i toppen.
 
 ### Alternativ 1 – bruk Git fra terminalen (anbefalt hvis du allerede bruker GitHub)
 1. **Gå til prosjektet ditt** i terminalen (`cd /sti/til/prosjekt`).
@@ -42,7 +41,7 @@ Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdate
    ```
 4. **Kopier filene du trenger** fra denne branchen inn i prosjektet ditt:
    ```bash
-   git checkout bluecrew-temp/work -- app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git checkout bluecrew-temp/work -- app/page.tsx components/Logo.tsx components/SiteHeader.tsx components/SiteFooter.tsx public/favicon.svg
    ```
 5. **Se over og test lokalt:**
    ```bash
@@ -51,7 +50,7 @@ Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdate
    ```
 6. **Committ og push til ditt eget repo:**
    ```bash
-   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git add app/page.tsx components/Logo.tsx components/SiteHeader.tsx components/SiteFooter.tsx public/favicon.svg
    git commit -m "Oppdater Bluecrew-nettsiden"
    git push origin <din-branch>
    ```
@@ -61,14 +60,14 @@ Under finner du en helt konkret oppskrift på hvordan du kan få inn den oppdate
    ```
 
 ### Alternativ 2 – kopier filene manuelt (hvis du heller vil lime inn)
-1. Åpne hver av filene listet i seksjonen «Filer og mapper du trenger». For mapper (`app/kandidat`, `app/bemanningsbehov`, `components`) oppretter du samme mappestruktur i ditt prosjekt før du limer inn filene.
+1. Åpne hver av filene listet i seksjonen «Filer du trenger». Opprett mappene `app/` og `components/` dersom de ikke finnes fra før i ditt prosjekt.
 2. Klikk på «Raw»-knappen (på GitHub) eller bruk teksteditoren her i prosjektet for å se **ren** kode uten `+`/`-` i starten av linjene.
 3. Marker hele filen (Ctrl/Cmd + A) og kopier innholdet (Ctrl/Cmd + C).
 4. Lim inn i den tilsvarende filen i ditt prosjekt (Ctrl/Cmd + A → Ctrl/Cmd + V) og lagre.
 5. Gjenta for alle relevante filer. Når du er ferdig, kjør `npm run dev` for å forsikre deg om at alt fungerer i din app.
 6. Hvis du bruker GitHub, legg til, committ og push endringen slik:
    ```bash
-   git add app/page.tsx app/kandidat app/bemanningsbehov components public/favicon.svg
+   git add app/page.tsx components/Logo.tsx components/SiteHeader.tsx components/SiteFooter.tsx public/favicon.svg
    git commit -m "Limt inn oppdatert Bluecrew-nettside"
    git push origin <din-branch>
    ```
