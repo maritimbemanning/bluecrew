@@ -113,7 +113,7 @@ export async function POST(req: Request) {
       attachments,
     });
 
-    const back = new URL("/?sent=worker#kandidat", req.url);
+    const back = new URL("/kandidat?sent=worker", req.url);
     return Response.redirect(back, 303);
   } catch (err: unknown) {
   const msg = err instanceof Error ? err.message : String(err);
