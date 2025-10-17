@@ -443,9 +443,39 @@ function Logo({ size = 28 }: { size?: number }) {
   const s = size;
   return (
     <svg width={s} height={s} viewBox="0 0 64 64" role="img" aria-label="Bluecrew logo" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="32" cy="32" r="30" fill="#0B1F3A" />
-      <path d="M10 36c6 0 9-6 16-6s10 6 16 6 10-6 12-6" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
-      <path d="M10 44c6 0 9-6 16-6s10 6 16 6 10-6 12-6" fill="none" stroke="#60A5FA" strokeWidth="3" strokeLinecap="round" />
+      <defs>
+        <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0b1f3a" />
+          <stop offset="100%" stopColor="#1e3a8a" />
+        </linearGradient>
+        <linearGradient id="logo-wave" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#60a5fa" />
+          <stop offset="100%" stopColor="#38bdf8" />
+        </linearGradient>
+        <clipPath id="logo-clip">
+          <circle cx="32" cy="32" r="30" />
+        </clipPath>
+      </defs>
+      <circle cx="32" cy="32" r="30" fill="url(#logo-bg)" />
+      <g clipPath="url(#logo-clip)">
+        <path
+          d="M-5 38c8 0 12-8 20-8s12 8 20 8 12-8 20-8 12 8 20 8V64H-5z"
+          fill="rgba(255,255,255,0.18)"
+        />
+        <path
+          d="M-5 44c8 0 12-6 20-6s12 6 20 6 12-6 20-6 12 6 20 6V64H-5z"
+          fill="url(#logo-wave)"
+        />
+      </g>
+      <circle cx="22" cy="22" r="6" fill="#ffffff" opacity="0.9" />
+      <path
+        d="M30 18h8a6 6 0 0 1 0 12h-6v6h6a6 6 0 0 1 0 12h-12"
+        fill="none"
+        stroke="#e0f2fe"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
