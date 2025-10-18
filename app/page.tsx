@@ -88,24 +88,27 @@ export default function Page() {
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
-                <li>Driftslag og driftsledere</li>
-                <li>Servicefartøy og ROV</li>
+                <li>Akvateknikere med fagbrev til land- og sjøbaserte anlegg</li>
+                <li>Båtførere for sesongtopper og rutineoperasjoner</li>
+                <li>Avlusings- og serviceteam med oppdatert sikkerhetskompetanse</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>⚓</div>
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
-                <li>Skippere og styrmenn</li>
-                <li>Erfarne mannskap til kyst og hav</li>
+                <li>Skippere, styrmenn og maskinister med riktige sertifikater</li>
+                <li>Erfarne dekksmannskap til kyst- og havflåten</li>
+                <li>Fabrikklag og prosesseringspersonell klare for fangstsesongen</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🛠️</div>
               <div style={sx.cardTitle}>Service & spesialfartøy</div>
               <ul style={sx.cardList}>
-                <li>Logistikk, beredskap og støttefartøy</li>
-                <li>Tekniske spesialister og prosjektteam</li>
+                <li>Skipsførere, overstyrmenn og maskinsjefer for servicefartøy</li>
+                <li>DP-operatører, ROV-teknikere og kranførere til subsea-oppdrag</li>
+                <li>Logistikk- og beredskapsteam for krevende operasjoner</li>
               </ul>
             </article>
           </div>
@@ -113,26 +116,26 @@ export default function Page() {
       </section>
 
       <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ display: "grid", gap: 24, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", alignItems: "center" }}>
-            <div style={{ display: "grid", gap: 16 }}>
-              <h2 style={sx.h2}>For sjøfolk som vil videre</h2>
-              <p style={sx.leadSmall}>
-                Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter.
-                Vi følger deg opp før, under og etter hver seilas.
-              </p>
-              <Link href="/jobbsoker" style={sx.btnGhost}>
+        <div style={sx.journeyWrap}>
+          <article style={sx.journeyPrimary}>
+            <h2 style={sx.journeyTitle}>For sjøfolk som vil videre</h2>
+            <p style={sx.journeyText}>
+              Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter. Vi
+              følger deg opp før, under og etter hver seilas.
+            </p>
+            <div style={sx.journeyActionRow}>
+              <Link href="/jobbsoker" style={sx.journeyAction}>
                 Les mer for jobbsøkere
               </Link>
             </div>
-            <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 22, padding: 28, display: "grid", gap: 12 }}>
-              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Klar for neste skift</h3>
-              <p style={{ margin: 0, lineHeight: 1.6 }}>
-                Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere
-                på jobben om bord.
-              </p>
-            </div>
-          </div>
+          </article>
+          <article style={sx.journeySecondary}>
+            <h3 style={sx.journeySecondaryTitle}>Klar for neste skift</h3>
+            <p style={sx.journeySecondaryText}>
+              Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere på
+              jobben om bord.
+            </p>
+          </article>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, ReactNode, useState } from "react";
+import { FocusEvent, MouseEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -45,12 +45,100 @@ const NAV_ITEMS: NavItem[] = [
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
-  const closeMenu = () => setOpenKey(null);
+  const cancelClose = () => {
+    if (closeTimeout.current) {
+      clearTimeout(closeTimeout.current);
+      closeTimeout.current = null;
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia("(max-width: 768px)");
+
+    const applyMatches = (matches: boolean) => {
+      setIsMobile(matches);
+      if (!matches) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    applyMatches(media.matches);
+
+    const listener = (event: MediaQueryListEvent) => {
+      applyMatches(event.matches);
+    };
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", listener);
+      return () => {
+        media.removeEventListener("change", listener);
+      };
+    }
+
+    media.addListener(listener);
+    return () => {
+      media.removeListener(listener);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (!isMobile) {
+      document.body.style.removeProperty("overflow");
+      return;
+    }
+
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.removeProperty("overflow");
+    }
+
+    return () => {
+      document.body.style.removeProperty("overflow");
+    };
+  }, [isMobile, mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || typeof document === "undefined") return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    closeButtonRef.current?.focus();
+  }, [mobileMenuOpen]);
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimeout.current = setTimeout(() => {
+      setOpenKey(null);
+      closeTimeout.current = null;
+    }, 200);
+  };
 
   const handleBlur = (key: string) => (event: FocusEvent<HTMLDivElement>) => {
     const next = event.relatedTarget as Node | null;
     if (!event.currentTarget.contains(next)) {
+      cancelClose();
       setOpenKey((prev) => (prev === key ? null : prev));
     }
   };
@@ -58,7 +146,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   return (
     <div style={sx.page}>
       <header style={sx.topbar}>
-        <div style={sx.wrap}>
+        <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
           <Link
             href="/"
             style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
@@ -66,11 +154,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           >
             <Logo size={40} />
             <div style={sx.logoBox}>
-              <div style={sx.logoText}>Bluecrew Bemanning til sjøs</div>
-              <div style={sx.logoTag}>Fra brygge til bro</div>
+              <div style={sx.logoBrand}>Bluecrew</div>
+              <div style={sx.logoSlogan}>Bemanning til sjøs</div>
             </div>
           </Link>
-          <nav style={sx.nav} aria-label="Hovedmeny">
+          <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
@@ -95,9 +183,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 <div
                   key={item.key}
                   style={sx.navItem}
-                  onMouseEnter={() => setOpenKey(item.key)}
-                  onMouseLeave={closeMenu}
-                  onFocus={() => setOpenKey(item.key)}
+                  onMouseEnter={() => {
+                    cancelClose();
+                    setOpenKey(item.key);
+                  }}
+                  onMouseLeave={scheduleClose}
+                  onFocus={() => {
+                    cancelClose();
+                    setOpenKey(item.key);
+                  }}
                   onBlur={handleBlur(item.key)}
                 >
                   <Link
@@ -113,7 +207,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     </span>
                   </Link>
                   {isOpen && (
-                    <div style={sx.navDropdown}>
+                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
                       {item.children!.map((child) => (
                         <Link key={child.href} href={child.href} style={sx.navDropdownLink}>
                           {child.label}
@@ -126,6 +220,95 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               );
             })}
           </nav>
+          {isMobile && (
+            <>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                style={sx.mobileToggle}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav"
+              >
+                Meny
+              </button>
+              {mobileMenuOpen && (
+                <div
+                  style={sx.mobileOverlay}
+                  role="presentation"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <div
+                    style={sx.mobileSheet}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="mobile-nav-title"
+                    id="mobile-nav"
+                    onClick={(event: MouseEvent<HTMLDivElement>) => {
+                      event.stopPropagation();
+                    }}
+                  >
+                    <div style={sx.mobileSheetHeader}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Logo size={32} />
+                        <div style={sx.logoBox}>
+                          <div style={sx.logoBrand} id="mobile-nav-title">
+                            Bluecrew
+                          </div>
+                          <div style={sx.logoSlogan}>Bemanning til sjøs</div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setMobileMenuOpen(false)}
+                        style={sx.mobileClose}
+                        aria-label="Lukk meny"
+                        ref={closeButtonRef}
+                      >
+                        Lukk
+                      </button>
+                    </div>
+                    <ul style={sx.mobileNav}>
+                      {NAV_ITEMS.map((item) => {
+                        const isActive = active === item.key;
+                        const hasChildren = !!item.children?.length;
+
+                        return (
+                          <li key={item.key} style={sx.mobileNavItem}>
+                            <Link
+                              href={item.href}
+                              style={{
+                                ...sx.mobileNavLink,
+                                ...(item.accent ? sx.mobileNavLinkAccent : {}),
+                                ...(isActive ? sx.mobileNavLinkActive : {}),
+                              }}
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {item.label}
+                            </Link>
+                            {hasChildren && (
+                              <ul style={sx.mobileChildList}>
+                                {item.children!.map((child) => (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      style={sx.mobileChildLink}
+                                      onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </header>
 
