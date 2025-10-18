@@ -12,7 +12,7 @@ export const sx: Record<string, CSSProperties> = {
   topbar: {
     position: "sticky",
     top: 0,
-    zIndex: 30,
+    zIndex: 160,
     background: "rgba(7, 17, 36, 0.95)",
     color: "#fff",
     backdropFilter: "blur(10px)",
@@ -119,7 +119,7 @@ export const sx: Record<string, CSSProperties> = {
     inset: 0,
     background: "rgba(8, 15, 28, 0.68)",
     backdropFilter: "blur(10px)",
-    zIndex: 60,
+    zIndex: 240,
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "stretch",
@@ -136,6 +136,8 @@ export const sx: Record<string, CSSProperties> = {
     gap: 18,
     overflowY: "auto",
     height: "100%",
+    position: "relative",
+    zIndex: 1,
   },
   mobileSheetHeader: {
     display: "flex",
