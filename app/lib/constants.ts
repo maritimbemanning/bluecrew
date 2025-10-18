@@ -28,10 +28,40 @@ export const HERO_POINTS = [
   },
 ];
 
-export const DELIVERY_STATS = [
-  { value: "< 24 t", label: "Gj.sn. responstid" },
-  { value: "250+", label: "Oppdrag levert" },
-  { value: "98%", label: "Oppdrag fullført" },
+export const HERO_ASSURANCES = [
+  {
+    icon: "📡",
+    title: "24/7 beredskap",
+    text: "Direkte linje til bemanningsleder når vær, drift eller sikkerhet krever raske avklaringer.",
+  },
+  {
+    icon: "🧾",
+    title: "Dokumentasjon i orden",
+    text: "Oppdaterte sertifikater, kontrakter og turnusplaner leveres samlet før avgang.",
+  },
+  {
+    icon: "🤝",
+    title: "Faste kontaktpunkter",
+    text: "Samme rådgiver følger fartøyet gjennom hele oppdraget for sømløs oppfølging.",
+  },
+];
+
+export const STRATEGIC_PILLARS = [
+  {
+    icon: "🌊",
+    title: "Robust drift i krevende farvann",
+    text: "Planer for skift, crew change og logistikk er rigget for værskifter i nordlige farvann.",
+  },
+  {
+    icon: "🛡️",
+    title: "Sikkerhet som konkurransefortrinn",
+    text: "Proaktive HMS-rutiner og tett dialog med skipper reduserer risiko for avbrudd.",
+  },
+  {
+    icon: "⚙️",
+    title: "Digital oversikt over mannskap",
+    text: "Felles dashboard gir kunden transparens på kompetanse, sertifikater og tilgjengelighet.",
+  },
 ];
 
 export const BENEFITS = [

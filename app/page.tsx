@@ -3,10 +3,11 @@ import SiteLayout from "./components/SiteLayout";
 import {
   BENEFITS,
   CONTACT_POINTS,
-  DELIVERY_STATS,
   FAQS,
+  HERO_ASSURANCES,
   HERO_POINTS,
   PROCESS_STEPS,
+  STRATEGIC_PILLARS,
 } from "./lib/constants";
 import { sx } from "./lib/styles";
 
@@ -59,18 +60,47 @@ export default function Page() {
                 Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
                 følger opp til alle er trygt om bord.
               </p>
-              <div style={sx.heroStats}>
-                {DELIVERY_STATS.map((stat) => (
-                  <div key={stat.label} style={sx.heroStat}>
-                    <div style={sx.heroStatValue}>{stat.value}</div>
-                    <div style={sx.heroStatLabel}>{stat.label}</div>
-                  </div>
+              <ul style={sx.heroChecklist}>
+                {HERO_ASSURANCES.map((item) => (
+                  <li key={item.title} style={sx.heroChecklistItem}>
+                    <span style={sx.heroChecklistIcon} aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    <div>
+                      <div style={sx.heroChecklistTitle}>{item.title}</div>
+                      <p style={sx.heroChecklistText}>{item.text}</p>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
               <Link href="/kontakt" style={sx.contactCTA}>
                 Snakk med en bemanningsleder
               </Link>
             </aside>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.sectionSpotlight}>
+        <div style={sx.spotlightWrap}>
+          <div style={sx.spotlightIntro}>
+            <span style={sx.spotlightAccent}>Tilpasset maritim næring</span>
+            <h2 style={sx.spotlightTitle}>Slik styrker vi kundene våre i Blue Economy-markedet</h2>
+            <p style={sx.spotlightText}>
+              Bluecrew kombinerer operativ erfaring med teknologiske verktøy. Strategien gir kundene mindre stillstand, bedre
+              sikkerhet og mer forutsigbar drift i tøffe omgivelser.
+            </p>
+          </div>
+          <div style={sx.spotlightGrid}>
+            {STRATEGIC_PILLARS.map((pillar) => (
+              <article key={pillar.title} style={sx.spotlightCard}>
+                <div style={sx.spotlightIcon} aria-hidden="true">
+                  {pillar.icon}
+                </div>
+                <h3 style={sx.spotlightCardTitle}>{pillar.title}</h3>
+                <p style={sx.spotlightCardText}>{pillar.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
