@@ -28,10 +28,22 @@ export const HERO_POINTS = [
   },
 ];
 
-export const DELIVERY_STATS = [
-  { value: "< 24 t", label: "Gj.sn. responstid" },
-  { value: "250+", label: "Oppdrag levert" },
-  { value: "98%", label: "Oppdrag fullført" },
+export const HERO_CARD_POINTS = [
+  {
+    icon: "🧭",
+    title: "Operativ rådgivning",
+    text: "Vi foreslår mannskap og turnusplan basert på fartøyet ditt og oppdragets krav.",
+  },
+  {
+    icon: "📑",
+    title: "Kontroll på sertifikater",
+    text: "Dokumentasjon verifiseres før avreise slik at revisjoner og inspeksjoner går smertefritt.",
+  },
+  {
+    icon: "📡",
+    title: "Oppfølging til oppdraget er i mål",
+    text: "Vi er tilgjengelige døgnet rundt dersom vær, bemanning eller drift endrer seg underveis.",
+  },
 ];
 
 export const BENEFITS = [

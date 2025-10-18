@@ -3,7 +3,7 @@ import SiteLayout from "./components/SiteLayout";
 import {
   BENEFITS,
   CONTACT_POINTS,
-  DELIVERY_STATS,
+  HERO_CARD_POINTS,
   FAQS,
   HERO_POINTS,
   PROCESS_STEPS,
@@ -55,18 +55,23 @@ export default function Page() {
             </div>
             <aside style={sx.heroCard}>
               <h2 style={sx.heroCardHeading}>Operativ drift fra dag én</h2>
-              <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
-                følger opp til alle er trygt om bord.
+              <p style={sx.heroCardIntro}>
+                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, kvalitetssikrer
+                dokumentasjon og følger opp til alle er trygt om bord.
               </p>
-              <div style={sx.heroStats}>
-                {DELIVERY_STATS.map((stat) => (
-                  <div key={stat.label} style={sx.heroStat}>
-                    <div style={sx.heroStatValue}>{stat.value}</div>
-                    <div style={sx.heroStatLabel}>{stat.label}</div>
-                  </div>
+              <ul style={sx.heroCardList}>
+                {HERO_CARD_POINTS.map((point) => (
+                  <li key={point.title} style={sx.heroCardItem}>
+                    <span style={sx.heroCardIcon} aria-hidden="true">
+                      {point.icon}
+                    </span>
+                    <div>
+                      <div style={sx.heroCardTitle}>{point.title}</div>
+                      <p style={sx.heroCardText}>{point.text}</p>
+                    </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
               <Link href="/kontakt" style={sx.contactCTA}>
                 Snakk med en bemanningsleder
               </Link>
