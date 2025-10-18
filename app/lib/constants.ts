@@ -32,12 +32,6 @@ export const HERO_POINTS = [
   },
 ];
 
-export const DELIVERY_STATS = [
-  { value: "< 24 t", label: "Gj.sn. responstid" },
-  { value: "250+", label: "Oppdrag levert" },
-  { value: "98%", label: "Oppdrag fullført" },
-];
-
 export const BENEFITS = [
   {
     icon: "🧭",

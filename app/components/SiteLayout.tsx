@@ -24,8 +24,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           >
             <Logo size={40} />
             <div style={sx.logoBox}>
-              <div style={sx.logoText}>Bluecrew AS</div>
-              <div style={sx.logoTag}>Bemanning for hele den maritime sektoren</div>
+              <div style={sx.logoText}>Bluecrew Bemanning til sjøs</div>
+              <div style={sx.logoTag}>Fra brygge til bro</div>
             </div>
           </Link>
           <nav style={sx.nav} aria-label="Hovedmeny">
@@ -92,6 +92,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
             </div>
+          </div>
+          <div style={{ marginTop: 32, textAlign: "center" }}>
+            <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
+              Vanlige spørsmål
+            </Link>
           </div>
           <div style={sx.footerLegal}>© {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs</div>
         </div>

@@ -1,13 +1,6 @@
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
-import {
-  BENEFITS,
-  CONTACT_POINTS,
-  DELIVERY_STATS,
-  FAQS,
-  HERO_POINTS,
-  PROCESS_STEPS,
-} from "./lib/constants";
+import { BENEFITS, CONTACT_POINTS, HERO_POINTS, PROCESS_STEPS } from "./lib/constants";
 import { sx } from "./lib/styles";
 
 export default function Page() {
@@ -17,10 +10,10 @@ export default function Page() {
         <div style={sx.heroWrap}>
           <div style={sx.heroGrid}>
             <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Totalleverandør av maritim bemanning</div>
-              <h1 style={sx.h1}>Bemanning for hele den maritime verdikjeden</h1>
+              <div style={sx.heroPill}>Bemanning til sjøs</div>
+              <h1 style={sx.h1}>Mannskap til hele den maritime verdikjeden</h1>
               <p style={sx.h1Sub}>
-                Bluecrew AS bemanner hele den maritime sektoren med sertifiserte sjøfolk. Vi har spisskompetanse innen havbruk,
+                Bluecrew bemanner hele den maritime sektoren med sertifiserte sjøfolk. Vi har spisskompetanse innen havbruk,
                 fiskeri og servicefartøy – og leverer også mannskap til logistikk-, beredskaps- og offshoreoperasjoner.
               </p>
               <ul style={sx.heroPoints}>
@@ -59,14 +52,10 @@ export default function Page() {
                 Teamet vårt har bemannet alt fra oppdretts- og servicefartøy til logistikk- og beredskapsoperasjoner i krevende
                 farvann. Vi planlegger skift, sikrer dokumentasjon og følger opp til alle er trygt om bord.
               </p>
-              <div style={sx.heroStats}>
-                {DELIVERY_STATS.map((stat) => (
-                  <div key={stat.label} style={sx.heroStat}>
-                    <div style={sx.heroStatValue}>{stat.value}</div>
-                    <div style={sx.heroStatLabel}>{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+              <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
+                Vi mobiliserer raskt når du trenger støtte – og sørger for at mannskapet møter forberedt, informert og klar for
+                oppdraget.
+              </p>
               <Link href="/kontakt" style={sx.contactCTA}>
                 Snakk med en bemanningsleder
               </Link>
@@ -92,8 +81,7 @@ export default function Page() {
           <div style={sx.storyPanel}>
             <span style={sx.storyAccent}>Fra brygge til bro</span>
             <p style={sx.quote}>
-              «Det er lite slingringsmonn i sjøen. Vi vet hvor raskt ting må løses og stiller med mannskap som er klare fra første
-              skift.»
+              «Til sjøs er det ikke rom for forsinkelser. Vi bemanner med folk som kjenner tempoet og leverer fra første skift.»
             </p>
             <p style={sx.quoteName}>Didriksson, medgründer og skipper</p>
           </div>
@@ -191,23 +179,6 @@ export default function Page() {
               </li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      <section style={sx.section}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <h2 style={sx.h2}>Vanlige spørsmål</h2>
-            <p style={sx.leadSmall}>Finner du ikke svaret? Ta kontakt – vi hjelper deg gjerne.</p>
-          </div>
-          <div style={sx.faqList}>
-            {FAQS.map((faq) => (
-              <details key={faq.q} style={sx.faqItem}>
-                <summary style={sx.faqSummary}>{faq.q}</summary>
-                <p style={sx.faqContent}>{faq.a}</p>
-              </details>
-            ))}
-          </div>
         </div>
       </section>
 
