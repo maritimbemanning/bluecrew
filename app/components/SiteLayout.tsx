@@ -49,6 +49,12 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const mobileOpenTimestamp = useRef(0);
+
+  const closeMobileMenu = () => {
+    mobileOpenTimestamp.current = 0;
+    setMobileMenuOpen(false);
+  };
 
   const cancelClose = () => {
     if (closeTimeout.current) {
@@ -65,6 +71,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     const applyMatches = (matches: boolean) => {
       setIsMobile(matches);
       if (!matches) {
+        mobileOpenTimestamp.current = 0;
         setMobileMenuOpen(false);
       }
     };
@@ -111,6 +118,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        mobileOpenTimestamp.current = 0;
         setMobileMenuOpen(false);
       }
     };
@@ -224,7 +232,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <>
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(true)}
+                onClick={() => {
+                  mobileOpenTimestamp.current = Date.now();
+                  setMobileMenuOpen(true);
+                }}
                 style={sx.mobileToggle}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -237,7 +248,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   role="presentation"
                   onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
                     if (event.target === event.currentTarget) {
-                      setMobileMenuOpen(false);
+                      if (Date.now() - mobileOpenTimestamp.current < 250) {
+                        return;
+                      }
+                      closeMobileMenu();
                     }
                   }}
                 >
@@ -263,7 +277,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                       </div>
                       <button
                         type="button"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={closeMobileMenu}
                         style={sx.mobileClose}
                         aria-label="Lukk meny"
                         ref={closeButtonRef}
@@ -285,7 +299,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                                 ...(item.accent ? sx.mobileNavLinkAccent : {}),
                                 ...(isActive ? sx.mobileNavLinkActive : {}),
                               }}
-                              onClick={() => setMobileMenuOpen(false)}
+                              onClick={closeMobileMenu}
                             >
                               {item.label}
                             </Link>
@@ -296,7 +310,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                                     <Link
                                       href={child.href}
                                       style={sx.mobileChildLink}
-                                      onClick={() => setMobileMenuOpen(false)}
+                                      onClick={closeMobileMenu}
                                     >
                                       {child.label}
                                     </Link>
