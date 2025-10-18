@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -48,6 +48,18 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const shouldIgnoreOverlay = useRef(false);
+
+  const openMobileMenu = useCallback(() => {
+    shouldIgnoreOverlay.current = true;
+    setMobileMenuOpen(true);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    shouldIgnoreOverlay.current = false;
+    setMobileMenuOpen(false);
+  }, []);
 
   const cancelClose = () => {
     if (closeTimeout.current) {
@@ -61,21 +73,31 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
 
     const media = window.matchMedia("(max-width: 768px)");
 
-    const update = () => {
-      const matches = media.matches;
+    const applyMatches = (matches: boolean) => {
       setIsMobile(matches);
       if (!matches) {
-        setMobileMenuOpen(false);
+        closeMobileMenu();
       }
     };
 
-    update();
-    media.addEventListener("change", update);
+    applyMatches(media.matches);
 
-    return () => {
-      media.removeEventListener("change", update);
+    const listener = (event: MediaQueryListEvent) => {
+      applyMatches(event.matches);
     };
-  }, []);
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", listener);
+      return () => {
+        media.removeEventListener("change", listener);
+      };
+    }
+
+    media.addListener(listener);
+    return () => {
+      media.removeListener(listener);
+    };
+  }, [closeMobileMenu]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -94,6 +116,27 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
       document.body.style.removeProperty("overflow");
     };
   }, [isMobile, mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen || typeof document === "undefined") return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeMobileMenu, mobileMenuOpen]);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    closeButtonRef.current?.focus();
+  }, [mobileMenuOpen]);
 
   const scheduleClose = () => {
     cancelClose();
@@ -192,7 +235,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <>
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen(true)}
+                onClick={openMobileMenu}
+                onPointerDown={() => {
+                  shouldIgnoreOverlay.current = true;
+                }}
                 style={sx.mobileToggle}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -200,21 +246,45 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 Meny
               </button>
               {mobileMenuOpen && (
-                <div style={sx.mobileOverlay}>
-                  <div style={sx.mobileSheet} role="dialog" aria-modal="true" id="mobile-nav">
+                <div
+                  style={sx.mobileOverlay}
+                  role="presentation"
+                  onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                    if (event.target === event.currentTarget) {
+                      if (shouldIgnoreOverlay.current) {
+                        shouldIgnoreOverlay.current = false;
+                        return;
+                      }
+                      closeMobileMenu();
+                    }
+                  }}
+                >
+                  <div
+                    style={sx.mobileSheet}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="mobile-nav-title"
+                    id="mobile-nav"
+                    onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                      event.stopPropagation();
+                    }}
+                  >
                     <div style={sx.mobileSheetHeader}>
                       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         <Logo size={32} />
                         <div style={sx.logoBox}>
-                          <div style={sx.logoBrand}>Bluecrew</div>
+                          <div style={sx.logoBrand} id="mobile-nav-title">
+                            Bluecrew
+                          </div>
                           <div style={sx.logoSlogan}>Bemanning til sjøs</div>
                         </div>
                       </div>
                       <button
                         type="button"
-                        onClick={() => setMobileMenuOpen(false)}
+                        onClick={closeMobileMenu}
                         style={sx.mobileClose}
                         aria-label="Lukk meny"
+                        ref={closeButtonRef}
                       >
                         Lukk
                       </button>
@@ -233,7 +303,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                                 ...(item.accent ? sx.mobileNavLinkAccent : {}),
                                 ...(isActive ? sx.mobileNavLinkActive : {}),
                               }}
-                              onClick={() => setMobileMenuOpen(false)}
+                              onClick={closeMobileMenu}
                             >
                               {item.label}
                             </Link>
@@ -244,7 +314,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                                     <Link
                                       href={child.href}
                                       style={sx.mobileChildLink}
-                                      onClick={() => setMobileMenuOpen(false)}
+                                      onClick={closeMobileMenu}
                                     >
                                       {child.label}
                                     </Link>
