@@ -63,6 +63,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     const media = window.matchMedia("(max-width: 768px)");
 
     const applyMatches = (matches: boolean) => {
+    const update = () => {
+      const matches = media.matches;
       setIsMobile(matches);
       if (!matches) {
         setMobileMenuOpen(false);
@@ -85,6 +87,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     media.addListener(listener);
     return () => {
       media.removeListener(listener);
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
     };
   }, []);
 
@@ -247,6 +254,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                       event.stopPropagation();
                     }}
                   >
+                <div style={sx.mobileOverlay}>
+                  <div style={sx.mobileSheet} role="dialog" aria-modal="true" id="mobile-nav">
                     <div style={sx.mobileSheetHeader}>
                       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         <Logo size={32} />
@@ -254,6 +263,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                           <div style={sx.logoBrand} id="mobile-nav-title">
                             Bluecrew
                           </div>
+                          <div style={sx.logoBrand}>Bluecrew</div>
                           <div style={sx.logoSlogan}>Bemanning til sjøs</div>
                         </div>
                       </div>
