@@ -8,7 +8,8 @@ export default function Page() {
         <div style={sx.wrapNarrow}>
           <h1 style={sx.h2}>Kontakt oss</h1>
           <p style={sx.leadSmall}>
-            Ta kontakt for forespørsel om bemanning, samarbeid eller andre henvendelser. Vi svarer raskt og følger opp tett.
+            Ta kontakt for bemanning i havbruk, fiskeri, logistikk, offshore eller annen maritim virksomhet. Vi svarer raskt og
+            følger opp tett.
           </p>
           <div style={sx.contactGrid}>
             <div>
@@ -20,7 +21,7 @@ export default function Page() {
                 <strong>Telefon:</strong> <a href="tel:92328850" style={sx.contactLink}>923 28 850</a>
               </p>
               <p style={sx.contactLine}>
-                <strong>Adresse:</strong> Østenbekkveien 43, 9011 Tromsø
+                <strong>Adresse:</strong> Østenbekkveien 43, 9403 Harstad
               </p>
             </div>
             <div>
