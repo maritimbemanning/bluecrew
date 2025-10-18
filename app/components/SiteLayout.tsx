@@ -349,15 +349,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           )}
         </div>
       </header>
-
-      <div style={sx.trustBand}>
-        <div style={sx.trustRow}>
-          <span>Lokalt eierskap</span>
-          <span>Sjøfolk med operativ erfaring</span>
-          <span>Bemanning for havbruk, fiskeri, service- og spesialfartøy</span>
-        </div>
-      </div>
-
       <main style={sx.main}>{children}</main>
 
       <footer style={sx.footer}>

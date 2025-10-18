@@ -33,7 +33,7 @@ export default function Page() {
             <Link href="/jobbsoker/registrer" style={sx.btnMain}>
               Registrer deg
             </Link>
-            <Link href="/jobbsoker/oppdrag" style={sx.btnGhost}>
+            <Link href="/jobbsoker/oppdrag" style={sx.btnSecondary}>
               Se hvilke oppdrag vi tilbyr
             </Link>
           </div>

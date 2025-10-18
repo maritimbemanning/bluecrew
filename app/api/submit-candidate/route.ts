@@ -13,7 +13,8 @@ export async function POST(req: Request) {
     const name = String(fd.get("name") || "");
     const email = String(fd.get("email") || "");
     const phone = String(fd.get("phone") || "");
-    const city = String(fd.get("city") || "");
+    const county = String(fd.get("county") || "");
+    const municipality = String(fd.get("municipality") || "");
     const availableFrom = String(fd.get("available_from") || "");
     const skills = String(fd.get("skills") || "");
     const otherComp = String(fd.get("other_comp") || "");
@@ -23,6 +24,7 @@ export async function POST(req: Request) {
     const stcwMods = fd.getAll("stcw_mod").map(String);
     const deckHas = String(fd.get("deck_has") || "");
     const deckClass = String(fd.get("deck_class") || "");
+    const wantsTemporary = String(fd.get("wants_temporary") || "");
 
     const otherNotes: string[] = [];
     for (const [k, v] of fd.entries()) {
@@ -74,13 +76,19 @@ export async function POST(req: Request) {
 
     await transporter.verify();
 
+    const location = municipality
+      ? county
+        ? `${municipality} (${county})`
+        : municipality
+      : county || "-";
+
     const lines: string[] = [];
     lines.push(
       "NY JOBBSØKER",
       `Navn: ${name}`,
       `E-post: ${email}`,
       `Telefon: ${phone}`,
-      `Bosted: ${city}`,
+      `Bosted: ${location}`,
       `Tilgjengelig fra: ${availableFrom || "-"}`,
       ""
     );
@@ -88,6 +96,8 @@ export async function POST(req: Request) {
     lines.push("Ønsket arbeid:");
     if (workChoices.length) lines.push(...workChoices.map(w => `- ${w}`));
     else lines.push("- (ikke valgt)");
+
+    lines.push("", `Åpen for midlertidige oppdrag: ${wantsTemporary || "-"}`);
 
     if (otherNotes.length) {
       lines.push("", "Andre ønsker / «Annet»:", ...otherNotes.map(t => `- ${t}`));
@@ -98,10 +108,10 @@ export async function POST(req: Request) {
       `STCW: ${stcwHas || "-"}` + (stcwHas === "ja" && stcwMods.length ? ` (${stcwMods.join(", ")})` : ""),
       `Dekksoffiser: ${deckHas || "-"}` + (deckHas === "ja" && deckClass ? ` (klasse ${deckClass})` : ""),
       "",
-      "Kompetanse/kurs:",
+      "Kompetanse og erfaring:",
       skills || "-",
       "",
-      "Andre relevante sertifikater/kompetanse:",
+      "Andre kommentarer:",
       otherComp || "-"
     );
 

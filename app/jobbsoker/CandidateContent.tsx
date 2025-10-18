@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
-import { WORK, STCW_MODULES } from "../lib/constants";
+import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
 import { sx } from "../lib/styles";
 
 function createInitialOpen() {
@@ -20,12 +20,18 @@ export default function CandidateContent() {
   const [hasSTCW, setHasSTCW] = useState<"" | "ja" | "nei">("");
   const [hasDeck, setHasDeck] = useState<"" | "ja" | "nei">("");
   const [deckClass, setDeckClass] = useState("");
+  const [county, setCounty] = useState("");
+  const [municipality, setMunicipality] = useState("");
 
   const searchParams = useSearchParams();
   const sent = searchParams.get("sent");
   const submitted = sent === "worker";
 
   const workEntries = useMemo(() => Object.entries(WORK), []);
+  const municipalityOptions = useMemo(
+    () => (county ? MUNICIPALITIES_BY_COUNTY[county] ?? [] : []),
+    [county],
+  );
 
   const toggleMain = (main: string) => {
     setOpenMain((prev) => ({ ...prev, [main]: !prev[main] }));
@@ -40,7 +46,32 @@ export default function CandidateContent() {
       <Input label="Fullt navn" name="name" required />
       <Input label="E-post" name="email" type="email" required />
       <Input label="Telefon" name="phone" required />
-      <Input label="Bosted (by/kommune)" name="city" required />
+      <Select
+        label="Fylke"
+        name="county"
+        options={COUNTIES}
+        value={county}
+        onChange={(value) => {
+          setCounty(value);
+          if (!value) {
+            setMunicipality("");
+          } else if (!(MUNICIPALITIES_BY_COUNTY[value] || []).includes(municipality)) {
+            setMunicipality("");
+          }
+        }}
+        placeholder="Velg fylke"
+        required
+      />
+      <Select
+        label="Kommune"
+        name="municipality"
+        options={municipalityOptions}
+        value={municipality}
+        onChange={setMunicipality}
+        placeholder={county ? "Velg kommune" : "Velg fylke først"}
+        disabled={!county}
+        required
+      />
 
       <div style={{ gridColumn: "1 / -1" }}>
         <div style={{ fontWeight: 800, marginBottom: 8 }}>Ønsket arbeid</div>
@@ -93,15 +124,27 @@ export default function CandidateContent() {
         </div>
       </div>
 
+      <div style={{ gridColumn: "1 / -1" }}>
+        <div style={{ fontWeight: 700, marginBottom: 6 }}>Er du åpen for midlertidige oppdrag?</div>
+        <div style={sx.inlineRadios}>
+          <label style={sx.radioLabel}>
+            <input type="radio" name="wants_temporary" value="ja" required /> Ja
+          </label>
+          <label style={sx.radioLabel}>
+            <input type="radio" name="wants_temporary" value="nei" /> Nei
+          </label>
+        </div>
+      </div>
+
       <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <div>
           <div style={{ fontWeight: 700, marginBottom: 6 }}>STCW – Grunnleggende sikkerhetskurs</div>
           <div style={sx.inlineRadios}>
-            <label>
-              <input type="radio" name="stcw_has" value="ja" required onChange={() => setHasSTCW("ja")} /> Har
+            <label style={sx.radioLabel}>
+              <input type="radio" name="stcw_has" value="ja" required onChange={() => setHasSTCW("ja")} /> Ja
             </label>
-            <label>
-              <input type="radio" name="stcw_has" value="nei" onChange={() => setHasSTCW("nei")} /> Har ikke
+            <label style={sx.radioLabel}>
+              <input type="radio" name="stcw_has" value="nei" onChange={() => setHasSTCW("nei")} /> Nei
             </label>
           </div>
           {hasSTCW === "ja" && (
@@ -121,11 +164,11 @@ export default function CandidateContent() {
         <div>
           <div style={{ fontWeight: 700, marginBottom: 6 }}>Dekksoffiser-sertifikat</div>
           <div style={sx.inlineRadios}>
-            <label>
-              <input type="radio" name="deck_has" value="ja" required onChange={() => setHasDeck("ja")} /> Har
+            <label style={sx.radioLabel}>
+              <input type="radio" name="deck_has" value="ja" required onChange={() => setHasDeck("ja")} /> Ja
             </label>
-            <label>
-              <input type="radio" name="deck_has" value="nei" onChange={() => setHasDeck("nei")} /> Har ikke
+            <label style={sx.radioLabel}>
+              <input type="radio" name="deck_has" value="nei" onChange={() => setHasDeck("nei")} /> Nei
             </label>
           </div>
           {hasDeck === "ja" && (
@@ -145,15 +188,27 @@ export default function CandidateContent() {
       </div>
 
       <Input label="Tilgjengelig fra" name="available_from" type="date" />
-      <Textarea label="Kompetanse/kurs (kort)" name="skills" rows={4} full />
-      <Textarea label="Andre relevante sertifikater og kompetanse (valgfritt)" name="other_comp" rows={4} full />
+      <Textarea
+        label="Kompetanse og erfaring (kort)"
+        name="skills"
+        rows={4}
+        full
+        description="Skriv kort om erfaring, sertifikater og kurs du ønsker å fremheve."
+      />
+      <Textarea
+        label="Andre kommentarer (valgfritt)"
+        name="other_comp"
+        rows={4}
+        full
+        description="Legg til annen informasjon vi bør vite om tilgjengelighet, språk eller preferanser."
+      />
 
       <FileInput label="CV (PDF, maks 10 MB)" name="cv" accept=".pdf" required />
       <FileInput label="Sertifikater (PDF/zip, valgfritt)" name="certs" accept=".pdf,.zip" />
 
       <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
         <input id="gdpr" type="checkbox" required />
-        <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569" }}>
+        <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
           Jeg samtykker til behandling av persondata for bemanning/rekruttering.
         </label>
       </div>
