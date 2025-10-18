@@ -1,16 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  FocusEvent,
-  PointerEvent,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -56,18 +47,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [portalHost, setPortalHost] = useState<Element | null>(null);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const shouldIgnoreOverlay = useRef(false);
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    setPortalHost(document.body);
-    return () => {
-      setPortalHost(null);
-    };
-  }, []);
 
   const openMobileMenu = useCallback(() => {
     shouldIgnoreOverlay.current = true;
@@ -263,93 +245,90 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               >
                 Meny
               </button>
-              {portalHost && mobileMenuOpen
-                ? createPortal(
-                    <div
-                      style={sx.mobileOverlay}
-                      role="presentation"
-                      onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                        if (event.target === event.currentTarget) {
-                          if (shouldIgnoreOverlay.current) {
-                            shouldIgnoreOverlay.current = false;
-                            return;
-                          }
-                          closeMobileMenu();
-                        }
-                      }}
-                    >
-                      <div
-                        style={sx.mobileSheet}
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="mobile-nav-title"
-                        id="mobile-nav"
-                        onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                          event.stopPropagation();
-                        }}
-                      >
-                        <div style={sx.mobileSheetHeader}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                            <Logo size={32} />
-                            <div style={sx.logoBox}>
-                              <div style={sx.logoBrand} id="mobile-nav-title">
-                                Bluecrew
-                              </div>
-                              <div style={sx.logoSlogan}>Bemanning til sjøs</div>
-                            </div>
+              {mobileMenuOpen && (
+                <div
+                  style={sx.mobileOverlay}
+                  role="presentation"
+                  onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                    if (event.target === event.currentTarget) {
+                      if (shouldIgnoreOverlay.current) {
+                        shouldIgnoreOverlay.current = false;
+                        return;
+                      }
+                      closeMobileMenu();
+                    }
+                  }}
+                >
+                  <div
+                    style={sx.mobileSheet}
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="mobile-nav-title"
+                    id="mobile-nav"
+                    onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                      event.stopPropagation();
+                    }}
+                  >
+                    <div style={sx.mobileSheetHeader}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Logo size={32} />
+                        <div style={sx.logoBox}>
+                          <div style={sx.logoBrand} id="mobile-nav-title">
+                            Bluecrew
                           </div>
-                          <button
-                            type="button"
-                            onClick={closeMobileMenu}
-                            style={sx.mobileClose}
-                            aria-label="Lukk meny"
-                            ref={closeButtonRef}
-                          >
-                            Lukk
-                          </button>
+                          <div style={sx.logoSlogan}>Bemanning til sjøs</div>
                         </div>
-                        <ul style={sx.mobileNav}>
-                          {NAV_ITEMS.map((item) => {
-                            const isActive = active === item.key;
-                            const hasChildren = !!item.children?.length;
-
-                            return (
-                              <li key={item.key} style={sx.mobileNavItem}>
-                                <Link
-                                  href={item.href}
-                                  style={{
-                                    ...sx.mobileNavLink,
-                                    ...(item.accent ? sx.mobileNavLinkAccent : {}),
-                                    ...(isActive ? sx.mobileNavLinkActive : {}),
-                                  }}
-                                  onClick={closeMobileMenu}
-                                >
-                                  {item.label}
-                                </Link>
-                                {hasChildren && (
-                                  <ul style={sx.mobileChildList}>
-                                    {item.children!.map((child) => (
-                                      <li key={child.href}>
-                                        <Link
-                                          href={child.href}
-                                          style={sx.mobileChildLink}
-                                          onClick={closeMobileMenu}
-                                        >
-                                          {child.label}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </li>
-                            );
-                          })}
-                        </ul>
                       </div>
-                    </div>,
-                    portalHost,
-                  )
-                : null}
+                      <button
+                        type="button"
+                        onClick={closeMobileMenu}
+                        style={sx.mobileClose}
+                        aria-label="Lukk meny"
+                        ref={closeButtonRef}
+                      >
+                        Lukk
+                      </button>
+                    </div>
+                    <ul style={sx.mobileNav}>
+                      {NAV_ITEMS.map((item) => {
+                        const isActive = active === item.key;
+                        const hasChildren = !!item.children?.length;
+
+                        return (
+                          <li key={item.key} style={sx.mobileNavItem}>
+                            <Link
+                              href={item.href}
+                              style={{
+                                ...sx.mobileNavLink,
+                                ...(item.accent ? sx.mobileNavLinkAccent : {}),
+                                ...(isActive ? sx.mobileNavLinkActive : {}),
+                              }}
+                              onClick={closeMobileMenu}
+                            >
+                              {item.label}
+                            </Link>
+                            {hasChildren && (
+                              <ul style={sx.mobileChildList}>
+                                {item.children!.map((child) => (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      style={sx.mobileChildLink}
+                                      onClick={closeMobileMenu}
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>
