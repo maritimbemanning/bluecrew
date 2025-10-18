@@ -25,7 +25,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <Logo size={40} />
             <div style={sx.logoBox}>
               <div style={sx.logoText}>Bluecrew AS</div>
-              <div style={sx.logoTag}>Maritim bemanning for havbruk, fiskeri og servicefartøy</div>
+              <div style={sx.logoTag}>Spesialister på bemanning i hele den maritime sektoren</div>
             </div>
           </Link>
           <nav style={sx.nav} aria-label="Hovedmeny">
@@ -49,7 +49,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.trustRow}>
           <span>Lokalt eierskap</span>
           <span>Sjøfolk med operativ erfaring</span>
-          <span>Bemanning tilpasset nordlige farvann</span>
+          <span>Bemanning for hele den maritime verdikjeden</span>
         </div>
       </div>
 
@@ -61,8 +61,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <div>
               <div style={sx.footerHeading}>Bluecrew AS</div>
               <p style={sx.footerText}>
-                Vi leverer erfarne sjøfolk til havbruk, fiskeri og servicefartøy. Som tidligere mannskap kjenner vi tempoet og
-                behovene langs norskekysten.
+                Vi leverer erfarne sjøfolk og spesialister til hele den maritime sektoren. Som tidligere mannskap kjenner vi
+                tempoet og behovene langs norskekysten.
               </p>
             </div>
             <div>
@@ -88,7 +88,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               <div style={sx.footerHeading}>Adresse</div>
               <p style={sx.footerText}>
                 Østenbekkveien 43
-                <br />9011 Tromsø
+                <br />9403 Harstad
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
             </div>

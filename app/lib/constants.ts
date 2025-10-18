@@ -16,7 +16,7 @@ export const STCW_MODULES = [
 export const HERO_POINTS = [
   {
     icon: "🚢",
-    text: "Eiere med fartstid fra oppdrett, servicefartøy og fiskeri leder hvert oppdrag.",
+    text: "Eiere med fartstid fra hele den maritime næringen leder hvert oppdrag.",
   },
   {
     icon: "🧾",
@@ -25,6 +25,10 @@ export const HERO_POINTS = [
   {
     icon: "⚡",
     text: "Effektive prosesser gjør at vi løser akutte behov uten å gå på kompromiss med sikkerheten.",
+  },
+  {
+    icon: "🌊",
+    text: "Bemanning tilpasset havbruk, fiskeri, servicefartøy, havn og tekniske støttefunksjoner.",
   },
 ];
 
@@ -38,7 +42,7 @@ export const BENEFITS = [
   {
     icon: "🧭",
     title: "Erfaring fra sjøen",
-    text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som tåler tempoet.",
+    text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som tåler tempoet på tvers av segmenter.",
   },
   {
     icon: "🪝",
@@ -83,7 +87,7 @@ export const FAQS = [
   },
   {
     q: "Hvor raskt kan dere levere personell?",
-    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved akutte tilfeller er vi tilgjengelige på telefon hele døgnet.",
+    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved kritiske behov kan vi sette beredskap utenfor ordinær arbeidstid etter avtale.",
   },
   {
     q: "Hvilke typer kontrakter tilbyr dere?",
@@ -98,5 +102,5 @@ export const FAQS = [
 export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
-  { label: "Besøk oss", value: "Østenbekkveien 43, 9011 Tromsø" },
+  { label: "Besøk oss", value: "Østenbekkveien 43, 9403 Harstad" },
 ];

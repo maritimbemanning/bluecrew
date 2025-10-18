@@ -20,7 +20,7 @@ export default function Page() {
                 <strong>Telefon:</strong> <a href="tel:92328850" style={sx.contactLink}>923 28 850</a>
               </p>
               <p style={sx.contactLine}>
-                <strong>Adresse:</strong> Østenbekkveien 43, 9011 Tromsø
+                <strong>Adresse:</strong> Østenbekkveien 43, 9403 Harstad
               </p>
             </div>
             <div>
