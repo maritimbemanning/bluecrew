@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, PointerEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -49,12 +49,12 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-  const mobileOpenTimestamp = useRef(0);
+  const lastTogglePointerId = useRef<number | null>(null);
 
-  const closeMobileMenu = () => {
-    mobileOpenTimestamp.current = 0;
+  const closeMobileMenu = useCallback(() => {
+    lastTogglePointerId.current = null;
     setMobileMenuOpen(false);
-  };
+  }, []);
 
   const cancelClose = () => {
     if (closeTimeout.current) {
@@ -71,8 +71,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     const applyMatches = (matches: boolean) => {
       setIsMobile(matches);
       if (!matches) {
-        mobileOpenTimestamp.current = 0;
-        setMobileMenuOpen(false);
+        closeMobileMenu();
       }
     };
 
@@ -93,7 +92,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     return () => {
       media.removeListener(listener);
     };
-  }, []);
+  }, [closeMobileMenu]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -118,7 +117,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        mobileOpenTimestamp.current = 0;
+        lastTogglePointerId.current = null;
         setMobileMenuOpen(false);
       }
     };
@@ -233,8 +232,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               <button
                 type="button"
                 onClick={() => {
-                  mobileOpenTimestamp.current = Date.now();
                   setMobileMenuOpen(true);
+                }}
+                onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
+                  lastTogglePointerId.current = event.pointerId;
                 }}
                 style={sx.mobileToggle}
                 aria-expanded={mobileMenuOpen}
@@ -248,7 +249,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   role="presentation"
                   onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
                     if (event.target === event.currentTarget) {
-                      if (Date.now() - mobileOpenTimestamp.current < 250) {
+                      if (lastTogglePointerId.current !== null && event.pointerId === lastTogglePointerId.current) {
+                        lastTogglePointerId.current = null;
                         return;
                       }
                       closeMobileMenu();
