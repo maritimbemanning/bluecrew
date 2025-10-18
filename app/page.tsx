@@ -17,11 +17,11 @@ export default function Page() {
         <div style={sx.heroWrap}>
           <div style={sx.heroGrid}>
             <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Erfarne sjøfolk som kjenner tempoet</div>
-              <h1 style={sx.h1}>Mannskapet som holder driften i gang – selv når det stormer</h1>
+              <div style={sx.heroPill}>Totalleverandør av maritim bemanning</div>
+              <h1 style={sx.h1}>Bemanning for hele den maritime verdikjeden</h1>
               <p style={sx.h1Sub}>
-                Bluecrew AS bemanner havbruk, fiskeri og servicefartøy med sertifiserte sjøfolk. Vi kombinerer operativ erfaring
-                med effektive prosesser slik at du får rett mannskap på plass når behovet oppstår.
+                Bluecrew AS bemanner hele den maritime sektoren med sertifiserte sjøfolk. Vi har spisskompetanse innen havbruk,
+                fiskeri og servicefartøy – og leverer også mannskap til logistikk-, beredskaps- og offshoreoperasjoner.
               </p>
               <ul style={sx.heroPoints}>
                 {HERO_POINTS.map((point) => (
@@ -43,21 +43,21 @@ export default function Page() {
               </div>
               <ul style={sx.badges}>
                 <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>✔️</span> Dokumentert kompetanse og referanser
+                  <span style={sx.badgeIcon}>🌊</span> Spisskompetanse i havbruk, fiskeri og servicefartøy
                 </li>
                 <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>🛟</span> HMS og sikkerhet i hvert oppdrag
+                  <span style={sx.badgeIcon}>🧭</span> Leveranser til logistikk, beredskap og offshore støttefartøy
                 </li>
                 <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>📍</span> Lokalt nærvær i Nord-Norge
+                  <span style={sx.badgeIcon}>🛡️</span> Dokumentert kompetanse, referanser og HMS i hvert oppdrag
                 </li>
               </ul>
             </div>
             <aside style={sx.heroCard}>
               <h2 style={sx.heroCardHeading}>Operativ drift fra dag én</h2>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
-                følger opp til alle er trygt om bord.
+                Teamet vårt har bemannet alt fra oppdretts- og servicefartøy til logistikk- og beredskapsoperasjoner i krevende
+                farvann. Vi planlegger skift, sikrer dokumentasjon og følger opp til alle er trygt om bord.
               </p>
               <div style={sx.heroStats}>
                 {DELIVERY_STATS.map((stat) => (
@@ -78,14 +78,15 @@ export default function Page() {
       <section style={sx.sectionDeep}>
         <div style={sx.storyGrid}>
           <div>
-            <h2 style={sx.h2Light}>Vi kjenner livet om bord</h2>
+            <h2 style={sx.h2Light}>Vi kjenner hele den maritime operasjonen</h2>
             <p style={sx.leadLight}>
               Bluecrew er startet av folk som selv har stått i skift på dekk. Derfor vet vi hvordan vaktlistene fungerer, hvilke
-              sertifikater som kreves – og hvordan man bygger et mannskap som samarbeider godt under press.
+              sertifikater som kreves – og hvordan man bygger mannskap som samarbeider godt på tvers av fartøystyper.
             </p>
             <p style={sx.leadLight}>
               Vi tar ansvar for planlegging, kontrakter og oppfølging slik at du kan konsentrere deg om driften. Når forholdene
-              snur, tilpasser vi oss raskt og løser bemanningen uten friksjon.
+              snur, tilpasser vi oss raskt og løser bemanningen – enten det gjelder oppdrett, fiskeri, logistikk eller
+              spesialoppdrag.
             </p>
           </div>
           <div style={sx.storyPanel}>
@@ -102,9 +103,10 @@ export default function Page() {
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={sx.h2}>Våre tjenester</h2>
+            <h2 style={sx.h2}>Våre tjenesteområder</h2>
             <p style={sx.leadSmall}>
-              Rekruttering og innleie av maritimt personell – fra korttidsoppdrag til komplette mannskapsløsninger.
+              Rekruttering og innleie av maritimt personell til hele verdikjeden – fra korttidsoppdrag til komplette
+              mannskapsløsninger.
             </p>
           </div>
           <div style={sx.cards3}>
@@ -113,8 +115,8 @@ export default function Page() {
               <div style={sx.cardTitle}>Servicefartøy</div>
               <ul style={sx.cardList}>
                 <li>Skipper og styrmann</li>
-                <li>Matroser og dekksarbeid</li>
-                <li>Kokk og forpleining</li>
+                <li>Matroser, ROV- og dekksoperasjoner</li>
+                <li>Kokk, forpleining og HSE-koordinatorer</li>
               </ul>
             </article>
             <article style={sx.cardService}>
@@ -122,8 +124,8 @@ export default function Page() {
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
                 <li>Operativ drift av oppdrettsanlegg</li>
-                <li>Akvatekniker med fagbrev</li>
-                <li>Laser- og fôringsoperatører</li>
+                <li>Akvateknikere og driftsledere</li>
+                <li>Fôrings-, ROV- og miljøoperatører</li>
               </ul>
             </article>
             <article style={sx.cardService}>
@@ -131,8 +133,17 @@ export default function Page() {
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
                 <li>Skippere og styrmenn</li>
-                <li>Erfarne matroser</li>
-                <li>Sesong- og vikaroppdrag</li>
+                <li>Erfarne matroser og fabrikkpersonell</li>
+                <li>Sesong-, vikar- og kombinasjonsoppdrag</li>
+              </ul>
+            </article>
+            <article style={sx.cardService}>
+              <div style={sx.cardIcon}>🚛</div>
+              <div style={sx.cardTitle}>Logistikk & spesialfartøy</div>
+              <ul style={sx.cardList}>
+                <li>Havn, terminal og slepebåt</li>
+                <li>Beredskap, SAR og inspeksjon</li>
+                <li>Offshore støtte- og prosjektskip</li>
               </ul>
             </article>
           </div>
@@ -220,13 +231,13 @@ export default function Page() {
               }}
             >
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">⚙️</span> Skreddersydde team for havbruk, fiskeri og servicefartøy
+                <span aria-hidden="true">⚙️</span> Skreddersydde team for hele den maritime sektoren
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <span aria-hidden="true">🕑</span> Oppstart på kort varsel når situasjonen krever det
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten
+                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten og offshorefelt
               </li>
             </ul>
             <Link href="/kontakt" style={sx.contactCTA}>
@@ -237,7 +248,7 @@ export default function Page() {
             <div style={{ display: "grid", gap: 10 }}>
               <h3 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#f8fafc" }}>Bluecrew AS</h3>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge.
+                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge og resten av norskekysten.
               </p>
             </div>
             <ul style={sx.contactList}>
