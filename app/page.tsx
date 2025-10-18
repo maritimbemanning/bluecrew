@@ -113,26 +113,26 @@ export default function Page() {
       </section>
 
       <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ display: "grid", gap: 24, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", alignItems: "center" }}>
-            <div style={{ display: "grid", gap: 16 }}>
-              <h2 style={sx.h2}>For sjøfolk som vil videre</h2>
-              <p style={sx.leadSmall}>
-                Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter.
-                Vi følger deg opp før, under og etter hver seilas.
-              </p>
-              <Link href="/jobbsoker" style={sx.btnGhost}>
+        <div style={sx.journeyWrap}>
+          <article style={sx.journeyPrimary}>
+            <h2 style={sx.journeyTitle}>For sjøfolk som vil videre</h2>
+            <p style={sx.journeyText}>
+              Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter. Vi
+              følger deg opp før, under og etter hver seilas.
+            </p>
+            <div style={sx.journeyActionRow}>
+              <Link href="/jobbsoker" style={sx.journeyAction}>
                 Les mer for jobbsøkere
               </Link>
             </div>
-            <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 22, padding: 28, display: "grid", gap: 12 }}>
-              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Klar for neste skift</h3>
-              <p style={{ margin: 0, lineHeight: 1.6 }}>
-                Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere
-                på jobben om bord.
-              </p>
-            </div>
-          </div>
+          </article>
+          <article style={sx.journeySecondary}>
+            <h3 style={sx.journeySecondaryTitle}>Klar for neste skift</h3>
+            <p style={sx.journeySecondaryText}>
+              Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere på
+              jobben om bord.
+            </p>
+          </article>
         </div>
       </section>
 
