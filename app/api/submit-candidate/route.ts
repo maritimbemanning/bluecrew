@@ -76,7 +76,7 @@ export async function POST(req: Request) {
 
     const lines: string[] = [];
     lines.push(
-      "NY KANDIDAT",
+      "NY JOBBSØKER",
       `Navn: ${name}`,
       `E-post: ${email}`,
       `Telefon: ${phone}`,
@@ -108,17 +108,17 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: process.env.FROM_EMAIL,
       to: process.env.TO_EMAIL,
-      subject: `Bluecrew kandidat: ${name || "(uten navn)"}`,
+      subject: `Bluecrew jobbsøker: ${name || "(uten navn)"}`,
       text: lines.join("\n"),
       attachments,
     });
 
-    const back = new URL("/kandidat?sent=worker", req.url);
+    const back = new URL("/jobbsoker/registrer?sent=worker", req.url);
     return Response.redirect(back, 303);
   } catch (err: unknown) {
-  const msg = err instanceof Error ? err.message : String(err);
-  console.error("❌ Sendefeil (candidate):", err);
-  return new Response("FEIL: " + msg, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("❌ Sendefeil (candidate):", err);
+    return new Response("FEIL: " + msg, { status: 500 });
+  }
 }
 
-}
