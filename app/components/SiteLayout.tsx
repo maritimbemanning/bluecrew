@@ -49,10 +49,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-  const lastTogglePointerId = useRef<number | null>(null);
+  const shouldIgnoreOverlay = useRef(false);
+
+  const openMobileMenu = useCallback(() => {
+    shouldIgnoreOverlay.current = true;
+    setMobileMenuOpen(true);
+  }, []);
 
   const closeMobileMenu = useCallback(() => {
-    lastTogglePointerId.current = null;
+    shouldIgnoreOverlay.current = false;
     setMobileMenuOpen(false);
   }, []);
 
@@ -117,8 +122,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        lastTogglePointerId.current = null;
-        setMobileMenuOpen(false);
+        closeMobileMenu();
       }
     };
 
@@ -127,7 +131,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [mobileMenuOpen]);
+  }, [closeMobileMenu, mobileMenuOpen]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -231,11 +235,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <>
               <button
                 type="button"
-                onClick={() => {
-                  setMobileMenuOpen(true);
-                }}
-                onPointerDown={(event: PointerEvent<HTMLButtonElement>) => {
-                  lastTogglePointerId.current = event.pointerId;
+                onClick={openMobileMenu}
+                onPointerDown={() => {
+                  shouldIgnoreOverlay.current = true;
                 }}
                 style={sx.mobileToggle}
                 aria-expanded={mobileMenuOpen}
@@ -249,8 +251,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   role="presentation"
                   onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
                     if (event.target === event.currentTarget) {
-                      if (lastTogglePointerId.current !== null && event.pointerId === lastTogglePointerId.current) {
-                        lastTogglePointerId.current = null;
+                      if (shouldIgnoreOverlay.current) {
+                        shouldIgnoreOverlay.current = false;
                         return;
                       }
                       closeMobileMenu();
