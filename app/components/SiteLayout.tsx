@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, ReactNode, useState } from "react";
+import { FocusEvent, ReactNode, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -45,12 +45,27 @@ const NAV_ITEMS: NavItem[] = [
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const closeMenu = () => setOpenKey(null);
+  const cancelClose = () => {
+    if (closeTimeout.current) {
+      clearTimeout(closeTimeout.current);
+      closeTimeout.current = null;
+    }
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimeout.current = setTimeout(() => {
+      setOpenKey(null);
+      closeTimeout.current = null;
+    }, 200);
+  };
 
   const handleBlur = (key: string) => (event: FocusEvent<HTMLDivElement>) => {
     const next = event.relatedTarget as Node | null;
     if (!event.currentTarget.contains(next)) {
+      cancelClose();
       setOpenKey((prev) => (prev === key ? null : prev));
     }
   };
@@ -66,7 +81,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           >
             <Logo size={40} />
             <div style={sx.logoBox}>
-              <div style={sx.logoText}>Bluecrew Bemanning til sjøs</div>
+              <div style={sx.logoBrand}>Bluecrew</div>
+              <div style={sx.logoSlogan}>Bemanning til sjøs</div>
               <div style={sx.logoTag}>Fra brygge til bro</div>
             </div>
           </Link>
@@ -95,9 +111,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 <div
                   key={item.key}
                   style={sx.navItem}
-                  onMouseEnter={() => setOpenKey(item.key)}
-                  onMouseLeave={closeMenu}
-                  onFocus={() => setOpenKey(item.key)}
+                  onMouseEnter={() => {
+                    cancelClose();
+                    setOpenKey(item.key);
+                  }}
+                  onMouseLeave={scheduleClose}
+                  onFocus={() => {
+                    cancelClose();
+                    setOpenKey(item.key);
+                  }}
                   onBlur={handleBlur(item.key)}
                 >
                   <Link
@@ -113,7 +135,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     </span>
                   </Link>
                   {isOpen && (
-                    <div style={sx.navDropdown}>
+                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
                       {item.children!.map((child) => (
                         <Link key={child.href} href={child.href} style={sx.navDropdownLink}>
                           {child.label}
