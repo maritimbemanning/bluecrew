@@ -88,24 +88,27 @@ export default function Page() {
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
-                <li>Driftslag og driftsledere</li>
-                <li>Servicefartøy og ROV</li>
+                <li>Akvateknikere med fagbrev til land- og sjøbaserte anlegg</li>
+                <li>Båtførere for sesongtopper og rutineoperasjoner</li>
+                <li>Avlusings- og serviceteam med oppdatert sikkerhetskompetanse</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>⚓</div>
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
-                <li>Skippere og styrmenn</li>
-                <li>Erfarne mannskap til kyst og hav</li>
+                <li>Skippere, styrmenn og maskinister med riktige sertifikater</li>
+                <li>Erfarne dekksmannskap til kyst- og havflåten</li>
+                <li>Fabrikklag og prosesseringspersonell klare for fangstsesongen</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🛠️</div>
               <div style={sx.cardTitle}>Service & spesialfartøy</div>
               <ul style={sx.cardList}>
-                <li>Logistikk, beredskap og støttefartøy</li>
-                <li>Tekniske spesialister og prosjektteam</li>
+                <li>Skipsførere, overstyrmenn og maskinsjefer for servicefartøy</li>
+                <li>DP-operatører, ROV-teknikere og kranførere til subsea-oppdrag</li>
+                <li>Logistikk- og beredskapsteam for krevende operasjoner</li>
               </ul>
             </article>
           </div>

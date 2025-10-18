@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, ReactNode, useRef, useState } from "react";
+import { FocusEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -45,6 +45,8 @@ const NAV_ITEMS: NavItem[] = [
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const cancelClose = () => {
@@ -53,6 +55,45 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
       closeTimeout.current = null;
     }
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const media = window.matchMedia("(max-width: 768px)");
+
+    const update = () => {
+      const matches = media.matches;
+      setIsMobile(matches);
+      if (!matches) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (!isMobile) {
+      document.body.style.removeProperty("overflow");
+      return;
+    }
+
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.removeProperty("overflow");
+    }
+
+    return () => {
+      document.body.style.removeProperty("overflow");
+    };
+  }, [isMobile, mobileMenuOpen]);
 
   const scheduleClose = () => {
     cancelClose();
@@ -73,7 +114,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   return (
     <div style={sx.page}>
       <header style={sx.topbar}>
-        <div style={sx.wrap}>
+        <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
           <Link
             href="/"
             style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
@@ -85,7 +126,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               <div style={sx.logoSlogan}>Bemanning til sjøs</div>
             </div>
           </Link>
-          <nav style={sx.nav} aria-label="Hovedmeny">
+          <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
@@ -147,6 +188,79 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               );
             })}
           </nav>
+          {isMobile && (
+            <>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                style={sx.mobileToggle}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav"
+              >
+                Meny
+              </button>
+              {mobileMenuOpen && (
+                <div style={sx.mobileOverlay}>
+                  <div style={sx.mobileSheet} role="dialog" aria-modal="true" id="mobile-nav">
+                    <div style={sx.mobileSheetHeader}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                        <Logo size={32} />
+                        <div style={sx.logoBox}>
+                          <div style={sx.logoBrand}>Bluecrew</div>
+                          <div style={sx.logoSlogan}>Bemanning til sjøs</div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setMobileMenuOpen(false)}
+                        style={sx.mobileClose}
+                        aria-label="Lukk meny"
+                      >
+                        Lukk
+                      </button>
+                    </div>
+                    <ul style={sx.mobileNav}>
+                      {NAV_ITEMS.map((item) => {
+                        const isActive = active === item.key;
+                        const hasChildren = !!item.children?.length;
+
+                        return (
+                          <li key={item.key} style={sx.mobileNavItem}>
+                            <Link
+                              href={item.href}
+                              style={{
+                                ...sx.mobileNavLink,
+                                ...(item.accent ? sx.mobileNavLinkAccent : {}),
+                                ...(isActive ? sx.mobileNavLinkActive : {}),
+                              }}
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {item.label}
+                            </Link>
+                            {hasChildren && (
+                              <ul style={sx.mobileChildList}>
+                                {item.children!.map((child) => (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      style={sx.mobileChildLink}
+                                      onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </header>
 
