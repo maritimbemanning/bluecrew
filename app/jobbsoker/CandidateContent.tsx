@@ -159,7 +159,7 @@ export default function CandidateContent() {
       </div>
       <div style={{ gridColumn: "1 / -1" }}>
         <button type="submit" style={sx.btnMain}>
-          Send inn kandidatprofil
+          Send inn jobbsøkerprofil
         </button>
       </div>
     </form>

@@ -1,13 +1,6 @@
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
-import {
-  BENEFITS,
-  CONTACT_POINTS,
-  DELIVERY_STATS,
-  FAQS,
-  HERO_POINTS,
-  PROCESS_STEPS,
-} from "./lib/constants";
+import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
 import { sx } from "./lib/styles";
 
 export default function Page() {
@@ -15,13 +8,13 @@ export default function Page() {
     <SiteLayout active="home">
       <section style={sx.hero}>
         <div style={sx.heroWrap}>
-          <div style={sx.heroGrid}>
+          <div style={{ display: "grid", gap: 28, maxWidth: 720 }}>
             <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Erfarne sjøfolk som kjenner tempoet</div>
-              <h1 style={sx.h1}>Mannskapet som holder driften i gang – selv når det stormer</h1>
+              <div style={sx.heroPill}>Bemanning til sjøs</div>
+              <h1 style={sx.h1}>Mannskap og rekruttering for hele den maritime sektoren</h1>
               <p style={sx.h1Sub}>
-                Bluecrew AS bemanner havbruk, fiskeri og servicefartøy med sertifiserte sjøfolk. Vi kombinerer operativ erfaring
-                med effektive prosesser slik at du får rett mannskap på plass når behovet oppstår.
+                Bluecrew bemanner havbruk, fiskeri, service-, logistikk- og spesialfartøy. Vi leverer sertifiserte sjøfolk som er
+                klare fra første skift – og følger opp til oppdraget er gjennomført.
               </p>
               <ul style={sx.heroPoints}>
                 {HERO_POINTS.map((point) => (
@@ -34,96 +27,69 @@ export default function Page() {
                 ))}
               </ul>
               <div style={sx.ctaRow}>
-                <Link href="/kandidat" style={sx.btnMain}>
-                  Registrer kandidat
+                <Link href="/jobbsoker/registrer" style={sx.btnMain}>
+                  Registrer jobbsøker
                 </Link>
-                <Link href="/kunde" style={sx.btnGhost}>
+                <Link href="/kunde/registrer-behov" style={sx.btnGhost}>
                   Meld inn bemanningsbehov
                 </Link>
               </div>
-              <ul style={sx.badges}>
-                <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>✔️</span> Dokumentert kompetanse og referanser
-                </li>
-                <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>🛟</span> HMS og sikkerhet i hvert oppdrag
-                </li>
-                <li style={sx.badge}>
-                  <span style={sx.badgeIcon}>📍</span> Lokalt nærvær i Nord-Norge
-                </li>
-              </ul>
             </div>
-            <aside style={sx.heroCard}>
-              <h2 style={sx.heroCardHeading}>Operativ drift fra dag én</h2>
-              <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
-                følger opp til alle er trygt om bord.
-              </p>
-              <div style={sx.heroStats}>
-                {DELIVERY_STATS.map((stat) => (
-                  <div key={stat.label} style={sx.heroStat}>
-                    <div style={sx.heroStatValue}>{stat.value}</div>
-                    <div style={sx.heroStatLabel}>{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-              <Link href="/kontakt" style={sx.contactCTA}>
-                Snakk med en bemanningsleder
-              </Link>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      <section style={sx.sectionDeep}>
-        <div style={sx.storyGrid}>
-          <div>
-            <h2 style={sx.h2Light}>Vi kjenner livet om bord</h2>
-            <p style={sx.leadLight}>
-              Bluecrew er startet av folk som selv har stått i skift på dekk. Derfor vet vi hvordan vaktlistene fungerer, hvilke
-              sertifikater som kreves – og hvordan man bygger et mannskap som samarbeider godt under press.
-            </p>
-            <p style={sx.leadLight}>
-              Vi tar ansvar for planlegging, kontrakter og oppfølging slik at du kan konsentrere deg om driften. Når forholdene
-              snur, tilpasser vi oss raskt og løser bemanningen uten friksjon.
-            </p>
-          </div>
-          <div style={sx.storyPanel}>
-            <span style={sx.storyAccent}>Fra brygge til bro</span>
-            <p style={sx.quote}>
-              «Det er lite slingringsmonn i sjøen. Vi vet hvor raskt ting må løses og stiller med mannskap som er klare fra første
-              skift.»
-            </p>
-            <p style={sx.quoteName}>Didriksson, medgründer og skipper</p>
           </div>
         </div>
       </section>
 
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={sx.h2}>Våre tjenester</h2>
+          <div style={{ display: "grid", gap: 28 }}>
+            <div style={{ display: "grid", gap: 16 }}>
+              <h2 style={sx.h2}>Fra planlegging til bemannet fartøy</h2>
+              <p style={sx.leadSmall}>
+                Vi tar ansvar for hele prosessen: behovsavklaring, screening, dokumentkontroll og oppfølging om bord. Slik får du en
+                partner som kjenner tempoet, regelverket og hverdagen i norsk sjøfart.
+              </p>
+            </div>
+            <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
+              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
+                <strong style={{ fontSize: 16 }}>Operativ innsikt</strong>
+                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+                  Teamet vårt kommer fra bro, dekk og teknisk drift. Det gir deg rådgivere som forstår hvilke roller som trengs i
+                  praksis.
+                </p>
+              </div>
+              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
+                <strong style={{ fontSize: 16 }}>Fleksible leveranser</strong>
+                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+                  Vi leverer både innleie og rekruttering. Enten du trenger et team for sesongen eller en fast skipper, får du ett
+                  kontaktpunkt hos oss.
+                </p>
+              </div>
+              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
+                <strong style={{ fontSize: 16 }}>Kvalitet og trygghet</strong>
+                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+                  Vi kvalitetssikrer sertifikater, referanser og HMS. Rapportering skjer gjennom hele oppdraget for å sikre trygg drift.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.section}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <h2 style={sx.h2}>Tjenesteområder</h2>
             <p style={sx.leadSmall}>
-              Rekruttering og innleie av maritimt personell – fra korttidsoppdrag til komplette mannskapsløsninger.
+              Vi bygger mannskap og finner nøkkelpersonell til fartøy og operasjoner over hele norskekysten.
             </p>
           </div>
           <div style={sx.cards3}>
             <article style={sx.cardService}>
-              <div style={sx.cardIcon}>🛥️</div>
-              <div style={sx.cardTitle}>Servicefartøy</div>
-              <ul style={sx.cardList}>
-                <li>Skipper og styrmann</li>
-                <li>Matroser og dekksarbeid</li>
-                <li>Kokk og forpleining</li>
-              </ul>
-            </article>
-            <article style={sx.cardService}>
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
-                <li>Operativ drift av oppdrettsanlegg</li>
-                <li>Akvatekniker med fagbrev</li>
-                <li>Laser- og fôringsoperatører</li>
+                <li>Driftslag og driftsledere</li>
+                <li>Servicefartøy og ROV</li>
               </ul>
             </article>
             <article style={sx.cardService}>
@@ -131,71 +97,41 @@ export default function Page() {
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
                 <li>Skippere og styrmenn</li>
-                <li>Erfarne matroser</li>
-                <li>Sesong- og vikaroppdrag</li>
+                <li>Erfarne mannskap til kyst og hav</li>
+              </ul>
+            </article>
+            <article style={sx.cardService}>
+              <div style={sx.cardIcon}>🛠️</div>
+              <div style={sx.cardTitle}>Service & spesialfartøy</div>
+              <ul style={sx.cardList}>
+                <li>Logistikk, beredskap og støttefartøy</li>
+                <li>Tekniske spesialister og prosjektteam</li>
               </ul>
             </article>
           </div>
         </div>
       </section>
 
-      <section style={sx.section}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={sx.h2}>Hvorfor velge Bluecrew?</h2>
-            <p style={sx.leadSmall}>
-              Vi kombinerer sjøfolkets erfaring med moderne prosesser og kvalitetssikring.
-            </p>
-          </div>
-          <div style={sx.featureGrid}>
-            {BENEFITS.map((benefit) => (
-              <article key={benefit.title} style={sx.featureCard}>
-                <div style={sx.featureIcon} aria-hidden="true">
-                  {benefit.icon}
-                </div>
-                <h3 style={sx.featureTitle}>{benefit.title}</h3>
-                <p style={sx.featureText}>{benefit.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={sx.h2}>Slik jobber vi</h2>
-            <p style={sx.leadSmall}>
-              Fire steg som sikrer trygg leveranse for både kandidat og kunde.
-            </p>
-          </div>
-          <ol style={sx.processGrid}>
-            {PROCESS_STEPS.map((step, index) => (
-              <li key={step.title} style={sx.processStep}>
-                <div style={sx.stepNumber}>{index + 1}</div>
-                <div style={sx.stepBody}>
-                  <h3 style={sx.stepTitle}>{step.title}</h3>
-                  <p style={sx.stepText}>{step.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section style={sx.section}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <h2 style={sx.h2}>Vanlige spørsmål</h2>
-            <p style={sx.leadSmall}>Finner du ikke svaret? Ta kontakt – vi hjelper deg gjerne.</p>
-          </div>
-          <div style={sx.faqList}>
-            {FAQS.map((faq) => (
-              <details key={faq.q} style={sx.faqItem}>
-                <summary style={sx.faqSummary}>{faq.q}</summary>
-                <p style={sx.faqContent}>{faq.a}</p>
-              </details>
-            ))}
+          <div style={{ display: "grid", gap: 24, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", alignItems: "center" }}>
+            <div style={{ display: "grid", gap: 16 }}>
+              <h2 style={sx.h2}>For sjøfolk som vil videre</h2>
+              <p style={sx.leadSmall}>
+                Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter.
+                Vi følger deg opp før, under og etter hver seilas.
+              </p>
+              <Link href="/jobbsoker" style={sx.btnGhost}>
+                Les mer for jobbsøkere
+              </Link>
+            </div>
+            <div style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 22, padding: 28, display: "grid", gap: 12 }}>
+              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Klar for neste skift</h3>
+              <p style={{ margin: 0, lineHeight: 1.6 }}>
+                Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere
+                på jobben om bord.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -204,9 +140,9 @@ export default function Page() {
         <div style={sx.contactSplit}>
           <div style={sx.contactIntro}>
             <h2 style={sx.h2}>Kontakt oss</h2>
-            <p style={sx.leadContact}>
-              Trenger du mannskap til neste tur eller en langsiktig partner på bemanning? Vi svarer raskt og setter oss inn i
-              driften din før vi foreslår løsninger.
+            <p style={sx.leadSmall}>
+              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Vi svarer raskt og tilpasser leveransen til
+              operasjonen din.
             </p>
             <ul
               style={{
@@ -220,13 +156,13 @@ export default function Page() {
               }}
             >
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">⚙️</span> Skreddersydde team for havbruk, fiskeri og servicefartøy
+                <span aria-hidden="true">⚙️</span> Skreddersydde team for hele den maritime sektoren
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
                 <span aria-hidden="true">🕑</span> Oppstart på kort varsel når situasjonen krever det
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten
+                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten og offshorefelt
               </li>
             </ul>
             <Link href="/kontakt" style={sx.contactCTA}>
@@ -237,7 +173,7 @@ export default function Page() {
             <div style={{ display: "grid", gap: 10 }}>
               <h3 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#f8fafc" }}>Bluecrew AS</h3>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge.
+                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge og resten av norskekysten.
               </p>
             </div>
             <ul style={sx.contactList}>
