@@ -17,11 +17,11 @@ export default function Page() {
         <div style={sx.heroWrap}>
           <div style={sx.heroGrid}>
             <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Erfarne sjøfolk som kjenner tempoet</div>
-              <h1 style={sx.h1}>Mannskapet som holder driften i gang – selv når det stormer</h1>
+              <div style={sx.heroPill}>Profesjonell bemanning for maritime operasjoner</div>
+              <h1 style={sx.h1}>Din faste partner for komplett maritim bemanning</h1>
               <p style={sx.h1Sub}>
-                Bluecrew AS bemanner havbruk, fiskeri og servicefartøy med sertifiserte sjøfolk. Vi kombinerer operativ erfaring
-                med effektive prosesser slik at du får rett mannskap på plass når behovet oppstår.
+                Bluecrew AS leverer sertifiserte sjøfolk til havbruk, fiskeri og servicefartøy. Vår kombinasjon av operativ
+                erfaring og strukturert kvalitetsarbeid gjør at du får riktig bemanning på plass – hver gang.
               </p>
               <ul style={sx.heroPoints}>
                 {HERO_POINTS.map((point) => (
@@ -54,10 +54,10 @@ export default function Page() {
               </ul>
             </div>
             <aside style={sx.heroCard}>
-              <h2 style={sx.heroCardHeading}>Operativ drift fra dag én</h2>
+              <h2 style={sx.heroCardHeading}>Leveranse med dokumentert kvalitet</h2>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
-                følger opp til alle er trygt om bord.
+                Våre bemanningsledere har selv stått i operativ drift. Vi planlegger skift, kvalitetssikrer sertifikater og følger
+                opp helt til oppdraget er lukket.
               </p>
               <div style={sx.heroStats}>
                 {DELIVERY_STATS.map((stat) => (
@@ -78,14 +78,14 @@ export default function Page() {
       <section style={sx.sectionDeep}>
         <div style={sx.storyGrid}>
           <div>
-            <h2 style={sx.h2Light}>Vi kjenner livet om bord</h2>
+            <h2 style={sx.h2Light}>Operativ innsikt fra bro til brygge</h2>
             <p style={sx.leadLight}>
-              Bluecrew er startet av folk som selv har stått i skift på dekk. Derfor vet vi hvordan vaktlistene fungerer, hvilke
-              sertifikater som kreves – og hvordan man bygger et mannskap som samarbeider godt under press.
+              Bluecrew er startet av folk som selv har stått i skift på dekk. Vi vet hvilke krav som stilles til dokumentasjon,
+              sertifisering og samspill når marginene er små.
             </p>
             <p style={sx.leadLight}>
               Vi tar ansvar for planlegging, kontrakter og oppfølging slik at du kan konsentrere deg om driften. Når forholdene
-              snur, tilpasser vi oss raskt og løser bemanningen uten friksjon.
+              endrer seg, mobiliserer vi raskt og leverer uten friksjon.
             </p>
           </div>
           <div style={sx.storyPanel}>
@@ -104,7 +104,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <h2 style={sx.h2}>Våre tjenester</h2>
             <p style={sx.leadSmall}>
-              Rekruttering og innleie av maritimt personell – fra korttidsoppdrag til komplette mannskapsløsninger.
+              Rekruttering og innleie av maritimt personell fra enkeltoppdrag til komplette mannskapsløsninger.
             </p>
           </div>
           <div style={sx.cards3}>
@@ -144,7 +144,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <h2 style={sx.h2}>Hvorfor velge Bluecrew?</h2>
             <p style={sx.leadSmall}>
-              Vi kombinerer sjøfolkets erfaring med moderne prosesser og kvalitetssikring.
+              Vi kombinerer operasjonell erfaring med moderne prosesser, compliance og kvalitetssikring.
             </p>
           </div>
           <div style={sx.featureGrid}>
@@ -205,8 +205,8 @@ export default function Page() {
           <div style={sx.contactIntro}>
             <h2 style={sx.h2}>Kontakt oss</h2>
             <p style={sx.leadContact}>
-              Trenger du mannskap til neste tur eller en langsiktig partner på bemanning? Vi svarer raskt og setter oss inn i
-              driften din før vi foreslår løsninger.
+              Trenger du mannskap til neste tur eller en langsiktig partner på bemanning? Vi svarer raskt, analyserer behovet og
+              foreslår løsninger tilpasset driften din.
             </p>
             <ul
               style={{
@@ -237,7 +237,7 @@ export default function Page() {
             <div style={{ display: "grid", gap: 10 }}>
               <h3 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#f8fafc" }}>Bluecrew AS</h3>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge.
+                Daglig bemanning og strategiske avtaler for fartøy i hele Nord-Norge.
               </p>
             </div>
             <ul style={sx.contactList}>

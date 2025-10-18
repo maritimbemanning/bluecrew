@@ -16,11 +16,11 @@ export const STCW_MODULES = [
 export const HERO_POINTS = [
   {
     icon: "🚢",
-    text: "Eiere med fartstid fra oppdrett, servicefartøy og fiskeri leder hvert oppdrag.",
+    text: "Eiere med fartstid fra oppdrett, servicefartøy og fiskeri leder hvert oppdrag personlig.",
   },
   {
     icon: "🧾",
-    text: "Sertifikater, referanser og tilgjengelighet verifiseres før kandidat presenteres.",
+    text: "Sertifikater, referanser og tilgjengelighet verifiseres og dokumenteres før kandidat presenteres.",
   },
   {
     icon: "⚡",
@@ -38,29 +38,29 @@ export const BENEFITS = [
   {
     icon: "🧭",
     title: "Erfaring fra sjøen",
-    text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som tåler tempoet.",
+    text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som leverer stabilt over tid.",
   },
   {
     icon: "🪝",
     title: "Rask mobilisering",
-    text: "Eget nettverk av sertifiserte sjøfolk gjør at vi kan mobilisere på kort varsel over hele kysten.",
+    text: "Eget nettverk av sertifiserte sjøfolk gjør at vi mobiliserer på kort varsel over hele kysten.",
   },
   {
     icon: "🛡️",
     title: "Kvalitet og trygghet",
-    text: "Strukturerte prosesser, HMS-fokus og tett oppfølging gir forutsigbare leveranser.",
+    text: "Strukturerte prosesser, HMS-fokus og kontinuerlig rapportering gir forutsigbare leveranser.",
   },
   {
     icon: "🤝",
     title: "Langsiktige partnerskap",
-    text: "Vi lærer kunden å kjenne, bygger team rundt fartøyet og følger opp gjennom hele oppdraget.",
+    text: "Vi lærer kunden å kjenne, bygger robuste team rundt fartøyet og følger opp gjennom hele oppdraget.",
   },
 ];
 
 export const PROCESS_STEPS = [
   {
     title: "Behovsavklaring",
-    text: "Samtale om fartøy, oppdrag og kompetansekrav – inklusive sertifikater og turnus.",
+    text: "Felles gjennomgang av fartøy, oppdrag og kompetansekrav – inklusive sertifikater, turnus og HMS.",
   },
   {
     title: "Screening & verifisering",
@@ -68,35 +68,35 @@ export const PROCESS_STEPS = [
   },
   {
     title: "Presentasjon & oppstart",
-    text: "Du får klare forslag med tilgjengelighet og løsningsforslag. Vi koordinerer oppstarten.",
+    text: "Du får klare kandidatlister med tilgjengelighet, betingelser og tiltak. Vi koordinerer oppstarten.",
   },
   {
     title: "Oppfølging om bord",
-    text: "Teamet vårt holder dialogen med skipper og mannskap og sikrer at alt fungerer som avtalt.",
+    text: "Teamet vårt holder dialogen med skipper og mannskap og sikrer rapportering på det som er avtalt.",
   },
 ];
 
 export const FAQS = [
   {
     q: "Hvordan registrerer jeg meg som kandidat?",
-    a: "Bruk skjemaet under «For kandidater» og last opp CVen din. Vi kontakter deg når vi har et oppdrag som matcher erfaringen din.",
+    a: "Bruk skjemaet under «For kandidater» og last opp CVen din. Vi kontakter deg når vi har et oppdrag som matcher erfaringen og sertifikatene dine.",
   },
   {
     q: "Hvor raskt kan dere levere personell?",
-    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved akutte tilfeller er vi tilgjengelige på telefon hele døgnet.",
+    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved akutte tilfeller er vi tilgjengelige på telefon hele døgnet og kan mobilisere direkte.",
   },
   {
     q: "Hvilke typer kontrakter tilbyr dere?",
-    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement. Vi tilpasser oss kundens struktur.",
+    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement. Løsningsforslagene tilpasses kundens struktur og avtaleverk.",
   },
   {
     q: "Hvordan ivaretas personvern?",
-    a: "Alle søknader lagres sikkert og deles ikke med tredjepart uten samtykke. Vi følger GDPR og interne retningslinjer for datasikkerhet.",
+    a: "Alle søknader lagres sikkert og deles ikke med tredjepart uten samtykke. Vi følger GDPR og egne retningslinjer for datasikkerhet og tilgangsstyring.",
   },
 ];
 
 export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
-  { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
+  { label: "Send e-post", value: "post@bluecrew.no", href: "mailto:post@bluecrew.no" },
   { label: "Besøk oss", value: "Østenbekkveien 43, 9011 Tromsø" },
 ];
