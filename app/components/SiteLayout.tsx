@@ -83,7 +83,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <div style={sx.logoBox}>
               <div style={sx.logoBrand}>Bluecrew</div>
               <div style={sx.logoSlogan}>Bemanning til sjøs</div>
-              <div style={sx.logoTag}>Fra brygge til bro</div>
             </div>
           </Link>
           <nav style={sx.nav} aria-label="Hovedmeny">
