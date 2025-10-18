@@ -28,10 +28,13 @@ export const HERO_POINTS = [
   },
 ];
 
-export const DELIVERY_STATS = [
-  { value: "< 24 t", label: "Gj.sn. responstid" },
-  { value: "250+", label: "Oppdrag levert" },
-  { value: "98%", label: "Oppdrag fullført" },
+export const HERO_ASSURANCES = [
+  { icon: "📞", text: "Vakttelefon 24/7 for akutte bemanningsbehov." },
+  { icon: "🌊", text: "Lokale team som dekker hele norskekysten." },
+  {
+    icon: "🧑‍✈️",
+    text: "Langsiktige relasjoner med sertifiserte sjøfolk og skippere.",
+  },
 ];
 
 export const BENEFITS = [

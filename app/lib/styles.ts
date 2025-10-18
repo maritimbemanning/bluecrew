@@ -155,21 +155,24 @@ export const sx: Record<string, CSSProperties> = {
     color: "#f8fafc",
     margin: 0,
   },
-  heroStats: {
+  heroHighlights: {
+    listStyle: "none",
+    margin: 0,
+    padding: 0,
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
-    gap: 18,
+    gap: 12,
   },
-  heroStat: {
+  heroHighlight: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 12,
     background: "rgba(15, 23, 42, 0.55)",
     borderRadius: 16,
-    padding: "16px 18px",
+    padding: "14px 18px",
     border: "1px solid rgba(148, 197, 255, 0.18)",
-    display: "grid",
-    gap: 4,
   },
-  heroStatValue: { fontSize: 26, fontWeight: 800, color: "#38bdf8" },
-  heroStatLabel: { fontSize: 13, color: "#dbeafe", letterSpacing: ".04em", textTransform: "uppercase" },
+  heroHighlightIcon: { fontSize: 20, lineHeight: "1" },
+  heroHighlightText: { color: "#dbeafe", fontSize: 15, lineHeight: 1.5 },
   badges: {
     display: "flex",
     gap: 14,

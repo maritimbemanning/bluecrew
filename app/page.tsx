@@ -3,7 +3,7 @@ import SiteLayout from "./components/SiteLayout";
 import {
   BENEFITS,
   CONTACT_POINTS,
-  DELIVERY_STATS,
+  HERO_ASSURANCES,
   FAQS,
   HERO_POINTS,
   PROCESS_STEPS,
@@ -59,14 +59,16 @@ export default function Page() {
                 Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
                 følger opp til alle er trygt om bord.
               </p>
-              <div style={sx.heroStats}>
-                {DELIVERY_STATS.map((stat) => (
-                  <div key={stat.label} style={sx.heroStat}>
-                    <div style={sx.heroStatValue}>{stat.value}</div>
-                    <div style={sx.heroStatLabel}>{stat.label}</div>
-                  </div>
+              <ul style={sx.heroHighlights}>
+                {HERO_ASSURANCES.map((item) => (
+                  <li key={item.text} style={sx.heroHighlight}>
+                    <span style={sx.heroHighlightIcon} aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    <span style={sx.heroHighlightText}>{item.text}</span>
+                  </li>
                 ))}
-              </div>
+              </ul>
               <Link href="/kontakt" style={sx.contactCTA}>
                 Snakk med en bemanningsleder
               </Link>
