@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { CONTACT_POINTS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
@@ -50,6 +51,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const shouldIgnoreOverlay = useRef(false);
+  const [canPortal, setCanPortal] = useState(false);
 
   const openMobileMenu = useCallback(() => {
     shouldIgnoreOverlay.current = true;
@@ -137,6 +139,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     if (!mobileMenuOpen) return;
     closeButtonRef.current?.focus();
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    setCanPortal(typeof document !== "undefined");
+
+    return () => {
+      setCanPortal(false);
+    };
+  }, []);
 
   const scheduleClose = () => {
     cancelClose();
@@ -245,90 +255,96 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               >
                 Meny
               </button>
-              {mobileMenuOpen && (
-                <div
-                  style={sx.mobileOverlay}
-                  role="presentation"
-                  onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                    if (event.target === event.currentTarget) {
-                      if (shouldIgnoreOverlay.current) {
-                        shouldIgnoreOverlay.current = false;
-                        return;
-                      }
-                      closeMobileMenu();
-                    }
-                  }}
-                >
+              {mobileMenuOpen && (() => {
+                const menu = (
                   <div
-                    style={sx.mobileSheet}
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="mobile-nav-title"
-                    id="mobile-nav"
+                    style={sx.mobileOverlay}
+                    role="presentation"
                     onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                      event.stopPropagation();
+                      if (event.target === event.currentTarget) {
+                        if (shouldIgnoreOverlay.current) {
+                          shouldIgnoreOverlay.current = false;
+                          return;
+                        }
+                        closeMobileMenu();
+                      }
                     }}
                   >
-                    <div style={sx.mobileSheetHeader}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                        <Logo size={32} />
-                        <div style={sx.logoBox}>
-                          <div style={sx.logoBrand} id="mobile-nav-title">
-                            Bluecrew
+                    <div
+                      style={sx.mobileSheet}
+                      role="dialog"
+                      aria-modal="true"
+                      aria-labelledby="mobile-nav-title"
+                      id="mobile-nav"
+                      onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
+                        event.stopPropagation();
+                      }}
+                    >
+                      <div style={sx.mobileSheetHeader}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <Logo size={32} />
+                          <div style={sx.logoBox}>
+                            <div style={sx.logoBrand} id="mobile-nav-title">
+                              Bluecrew
+                            </div>
+                            <div style={sx.logoSlogan}>Bemanning til sjøs</div>
                           </div>
-                          <div style={sx.logoSlogan}>Bemanning til sjøs</div>
                         </div>
+                        <button
+                          type="button"
+                          onClick={closeMobileMenu}
+                          style={sx.mobileClose}
+                          aria-label="Lukk meny"
+                          ref={closeButtonRef}
+                        >
+                          Lukk
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={closeMobileMenu}
-                        style={sx.mobileClose}
-                        aria-label="Lukk meny"
-                        ref={closeButtonRef}
-                      >
-                        Lukk
-                      </button>
-                    </div>
-                    <ul style={sx.mobileNav}>
-                      {NAV_ITEMS.map((item) => {
-                        const isActive = active === item.key;
-                        const hasChildren = !!item.children?.length;
+                      <ul style={sx.mobileNav}>
+                        {NAV_ITEMS.map((item) => {
+                          const isActive = active === item.key;
+                          const hasChildren = !!item.children?.length;
 
-                        return (
-                          <li key={item.key} style={sx.mobileNavItem}>
-                            <Link
-                              href={item.href}
-                              style={{
-                                ...sx.mobileNavLink,
-                                ...(item.accent ? sx.mobileNavLinkAccent : {}),
-                                ...(isActive ? sx.mobileNavLinkActive : {}),
-                              }}
-                              onClick={closeMobileMenu}
-                            >
-                              {item.label}
-                            </Link>
-                            {hasChildren && (
-                              <ul style={sx.mobileChildList}>
-                                {item.children!.map((child) => (
-                                  <li key={child.href}>
-                                    <Link
-                                      href={child.href}
-                                      style={sx.mobileChildLink}
-                                      onClick={closeMobileMenu}
-                                    >
-                                      {child.label}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                          return (
+                            <li key={item.key} style={sx.mobileNavItem}>
+                              <Link
+                                href={item.href}
+                                style={{
+                                  ...sx.mobileNavLink,
+                                  ...(item.accent ? sx.mobileNavLinkAccent : {}),
+                                  ...(isActive ? sx.mobileNavLinkActive : {}),
+                                }}
+                                onClick={closeMobileMenu}
+                              >
+                                {item.label}
+                              </Link>
+                              {hasChildren && (
+                                <ul style={sx.mobileChildList}>
+                                  {item.children!.map((child) => (
+                                    <li key={child.href}>
+                                      <Link
+                                        href={child.href}
+                                        style={sx.mobileChildLink}
+                                        onClick={closeMobileMenu}
+                                      >
+                                        {child.label}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+
+                return canPortal && typeof document !== "undefined"
+                  ? createPortal(menu, document.body)
+                  : menu;
+              })()}
             </>
           )}
         </div>

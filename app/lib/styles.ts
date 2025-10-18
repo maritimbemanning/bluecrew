@@ -119,7 +119,7 @@ export const sx: Record<string, CSSProperties> = {
     inset: 0,
     background: "rgba(8, 15, 28, 0.68)",
     backdropFilter: "blur(10px)",
-    zIndex: 240,
+    zIndex: 9999,
     display: "flex",
     justifyContent: "flex-end",
     alignItems: "stretch",
