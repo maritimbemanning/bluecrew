@@ -16,7 +16,7 @@ export const STCW_MODULES = [
 export const HERO_POINTS = [
   {
     icon: "🚢",
-    text: "Eiere med fartstid fra oppdrett, servicefartøy og fiskeri leder hvert oppdrag.",
+    text: "Oppdragene ledes av eiere med fartstid fra oppdrett, servicefartøy og fiskeri.",
   },
   {
     icon: "🧾",
@@ -24,7 +24,7 @@ export const HERO_POINTS = [
   },
   {
     icon: "⚡",
-    text: "Effektive prosesser gjør at vi løser akutte behov uten å gå på kompromiss med sikkerheten.",
+    text: "Effektive prosedyrer løser akutte behov uten å gå på kompromiss med sikkerheten.",
   },
 ];
 
@@ -38,29 +38,47 @@ export const BENEFITS = [
   {
     icon: "🧭",
     title: "Erfaring fra sjøen",
-    text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som tåler tempoet.",
+    text: "Våre rådgivere har selv stått på bro og dekk og kjenner kravene til robust drift.",
   },
   {
     icon: "🪝",
     title: "Rask mobilisering",
-    text: "Eget nettverk av sertifiserte sjøfolk gjør at vi kan mobilisere på kort varsel over hele kysten.",
+    text: "Forhåndsplanlagte vaktlag og sertifiserte kandidater gjør at vi kan mobilisere på kort varsel.",
   },
   {
     icon: "🛡️",
     title: "Kvalitet og trygghet",
-    text: "Strukturerte prosesser, HMS-fokus og tett oppfølging gir forutsigbare leveranser.",
+    text: "Strukturerte prosesser, HMS-fokus og systematisk rapportering gir forutsigbare leveranser.",
   },
   {
     icon: "🤝",
     title: "Langsiktige partnerskap",
-    text: "Vi lærer kunden å kjenne, bygger team rundt fartøyet og følger opp gjennom hele oppdraget.",
+    text: "Vi lærer kunden å kjenne, bygger stabile team rundt fartøyet og følger opp gjennom hele oppdraget.",
+  },
+];
+
+export const QUALITY_PILLARS = [
+  {
+    icon: "📑",
+    title: "Dokumentert etterlevelse",
+    text: "Standardiserte sjekklister for STCW, fartøyssertifikat og referanser før hver utsendelse.",
+  },
+  {
+    icon: "🧭",
+    title: "Dedikert bemanningsleder",
+    text: "En kontaktperson styrer planlegging, rapportering og logistikk gjennom hele oppdraget.",
+  },
+  {
+    icon: "🛟",
+    title: "Sikker onboarding",
+    text: "Vi koordinerer reise, verneutstyr og sikkerhetsbrief slik at mannskapet møter klart til vakt.",
   },
 ];
 
 export const PROCESS_STEPS = [
   {
-    title: "Behovsavklaring",
-    text: "Samtale om fartøy, oppdrag og kompetansekrav – inklusive sertifikater og turnus.",
+    title: "Behovsanalyse",
+    text: "Briefing av fartøy, oppdrag og kompetansekrav – inkludert sertifikater, turnus og HMS-forhold.",
   },
   {
     title: "Screening & verifisering",
@@ -68,7 +86,7 @@ export const PROCESS_STEPS = [
   },
   {
     title: "Presentasjon & oppstart",
-    text: "Du får klare forslag med tilgjengelighet og løsningsforslag. Vi koordinerer oppstarten.",
+    text: "Du får tydelige kandidatprofiler med tilgjengelighet. Vi koordinerer oppstarten.",
   },
   {
     title: "Oppfølging om bord",
@@ -79,7 +97,7 @@ export const PROCESS_STEPS = [
 export const FAQS = [
   {
     q: "Hvordan registrerer jeg meg som kandidat?",
-    a: "Bruk skjemaet under «For kandidater» og last opp CVen din. Vi kontakter deg når vi har et oppdrag som matcher erfaringen din.",
+    a: "Bruk skjemaet under «For kandidater» og last opp CV-en din. Vi kontakter deg når vi har et oppdrag som matcher erfaringen din.",
   },
   {
     q: "Hvor raskt kan dere levere personell?",
@@ -87,7 +105,7 @@ export const FAQS = [
   },
   {
     q: "Hvilke typer kontrakter tilbyr dere?",
-    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement. Vi tilpasser oss kundens struktur.",
+    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement og tilpasser oss kundens struktur.",
   },
   {
     q: "Hvordan ivaretas personvern?",
@@ -99,4 +117,5 @@ export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
   { label: "Besøk oss", value: "Østenbekkveien 43, 9011 Tromsø" },
+  { label: "Åpningstider", value: "Mandag–fredag 08:00–16:00" },
 ];

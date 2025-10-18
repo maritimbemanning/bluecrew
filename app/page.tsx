@@ -7,6 +7,7 @@ import {
   FAQS,
   HERO_POINTS,
   PROCESS_STEPS,
+  QUALITY_PILLARS,
 } from "./lib/constants";
 import { sx } from "./lib/styles";
 
@@ -17,11 +18,11 @@ export default function Page() {
         <div style={sx.heroWrap}>
           <div style={sx.heroGrid}>
             <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Erfarne sjøfolk som kjenner tempoet</div>
-              <h1 style={sx.h1}>Mannskapet som holder driften i gang – selv når det stormer</h1>
+              <div style={sx.heroPill}>Operativ bemanning levert av sjøfolk</div>
+              <h1 style={sx.h1}>Pålitelig maritim bemanning når driften ikke kan stoppe</h1>
               <p style={sx.h1Sub}>
-                Bluecrew AS bemanner havbruk, fiskeri og servicefartøy med sertifiserte sjøfolk. Vi kombinerer operativ erfaring
-                med effektive prosesser slik at du får rett mannskap på plass når behovet oppstår.
+                Bluecrew AS bemanner havbruk, fiskeri og servicefartøy med sertifiserte sjøfolk. Som operative ressurser i egen
+                virksomhet vet vi hvordan skift, dokumentasjon og sikkerhet må håndteres for å holde fartøyet i produksjon.
               </p>
               <ul style={sx.heroPoints}>
                 {HERO_POINTS.map((point) => (
@@ -54,10 +55,10 @@ export default function Page() {
               </ul>
             </div>
             <aside style={sx.heroCard}>
-              <h2 style={sx.heroCardHeading}>Operativ drift fra dag én</h2>
+              <h2 style={sx.heroCardHeading}>Leveringsklar besetning</h2>
               <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
-                Teamet vårt har bemannet fartøy i krevende vær og korte tidsvinduer. Vi planlegger skift, sikrer dokumentasjon og
-                følger opp til alle er trygt om bord.
+                Teamet vårt har koordinert bemanning i krevende vær og korte tidsvinduer. Vi planlegger vakter, sikrer
+                dokumentasjon og følger opp helt til mannskapet er trygt om bord.
               </p>
               <div style={sx.heroStats}>
                 {DELIVERY_STATS.map((stat) => (
@@ -68,9 +69,31 @@ export default function Page() {
                 ))}
               </div>
               <Link href="/kontakt" style={sx.contactCTA}>
-                Snakk med en bemanningsleder
+                Avklar behov med en bemanningsleder
               </Link>
             </aside>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 40 }}>
+            <h2 style={sx.h2}>Kvalitet som tåler revisjon</h2>
+            <p style={sx.leadSmall}>
+              Våre prosesser er bygget for å møte krav fra rederi, oppdrett og myndigheter – og dokumenteres i hvert oppdrag.
+            </p>
+          </div>
+          <div style={sx.featureGrid}>
+            {QUALITY_PILLARS.map((pillar) => (
+              <article key={pillar.title} style={sx.featureCard}>
+                <div style={sx.featureIcon} aria-hidden="true">
+                  {pillar.icon}
+                </div>
+                <h3 style={sx.featureTitle}>{pillar.title}</h3>
+                <p style={sx.featureText}>{pillar.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -80,19 +103,19 @@ export default function Page() {
           <div>
             <h2 style={sx.h2Light}>Vi kjenner livet om bord</h2>
             <p style={sx.leadLight}>
-              Bluecrew er startet av folk som selv har stått i skift på dekk. Derfor vet vi hvordan vaktlistene fungerer, hvilke
-              sertifikater som kreves – og hvordan man bygger et mannskap som samarbeider godt under press.
+              Bluecrew er startet av folk som selv har stått i skift på dekk. Vi kjenner kravene til vakter, sertifikater og
+              hvordan man bygger et mannskap som samarbeider trygt under press.
             </p>
             <p style={sx.leadLight}>
               Vi tar ansvar for planlegging, kontrakter og oppfølging slik at du kan konsentrere deg om driften. Når forholdene
-              snur, tilpasser vi oss raskt og løser bemanningen uten friksjon.
+              snur, justerer vi raskt og løser bemanningen uten friksjon.
             </p>
           </div>
           <div style={sx.storyPanel}>
             <span style={sx.storyAccent}>Fra brygge til bro</span>
             <p style={sx.quote}>
-              «Det er lite slingringsmonn i sjøen. Vi vet hvor raskt ting må løses og stiller med mannskap som er klare fra første
-              skift.»
+              «Det er lite slingringsmonn i sjøen. Vi vet hvor raskt ting må løses og stiller med mannskap som er klare til
+              oppstart fra første vakt.»
             </p>
             <p style={sx.quoteName}>Didriksson, medgründer og skipper</p>
           </div>
@@ -104,7 +127,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <h2 style={sx.h2}>Våre tjenester</h2>
             <p style={sx.leadSmall}>
-              Rekruttering og innleie av maritimt personell – fra korttidsoppdrag til komplette mannskapsløsninger.
+              Rekruttering og innleie av maritimt personell – fra akutte oppdrag til komplette mannskapsløsninger.
             </p>
           </div>
           <div style={sx.cards3}>
@@ -144,7 +167,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <h2 style={sx.h2}>Hvorfor velge Bluecrew?</h2>
             <p style={sx.leadSmall}>
-              Vi kombinerer sjøfolkets erfaring med moderne prosesser og kvalitetssikring.
+              Vi kombinerer sjøfolkets erfaring med moderne prosesser, kvalitetssikring og dokumentert oppfølging.
             </p>
           </div>
           <div style={sx.featureGrid}>
@@ -166,7 +189,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             <h2 style={sx.h2}>Slik jobber vi</h2>
             <p style={sx.leadSmall}>
-              Fire steg som sikrer trygg leveranse for både kandidat og kunde.
+              Fire steg som sikrer trygg leveranse og tydelig ansvar for både kandidat og kunde.
             </p>
           </div>
           <ol style={sx.processGrid}>
@@ -187,7 +210,7 @@ export default function Page() {
         <div style={sx.wrapNarrow}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <h2 style={sx.h2}>Vanlige spørsmål</h2>
-            <p style={sx.leadSmall}>Finner du ikke svaret? Ta kontakt – vi hjelper deg gjerne.</p>
+            <p style={sx.leadSmall}>Finner du ikke svaret? Ta kontakt – vi svarer raskt og konkret.</p>
           </div>
           <div style={sx.faqList}>
             {FAQS.map((faq) => (
@@ -220,13 +243,13 @@ export default function Page() {
               }}
             >
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">⚙️</span> Skreddersydde team for havbruk, fiskeri og servicefartøy
+                <span aria-hidden="true">⚙️</span> Skreddersydde team tilpasset havbruk, fiskeri og servicefartøy
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">🕑</span> Oppstart på kort varsel når situasjonen krever det
+                <span aria-hidden="true">🕑</span> Oppstart på kort varsel med planlagt mobilisering og onboarding
               </li>
               <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten
+                <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten og myndighetskravene
               </li>
             </ul>
             <Link href="/kontakt" style={sx.contactCTA}>
