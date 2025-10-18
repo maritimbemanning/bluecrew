@@ -15,20 +15,16 @@ export const STCW_MODULES = [
 
 export const HERO_POINTS = [
   {
-    icon: "🚢",
-    text: "Eiere med fartstid fra hele den maritime næringen leder hvert oppdrag – fra kysttrafikk til offshore støtte.",
+    icon: "🧭",
+    text: "Operativ erfaring fra bro og dekk gjør at vi forstår tempoet i alle maritime disipliner.",
   },
   {
-    icon: "🧾",
-    text: "Sertifikater, referanser og tilgjengelighet verifiseres før kandidat presenteres.",
+    icon: "📋",
+    text: "Vi kvalitetssikrer sertifikater, referanser og tilgjengelighet før vi foreslår mannskap.",
   },
   {
-    icon: "⚡",
-    text: "Effektive prosesser gjør at vi løser bemanningsbehov raskt uten å gå på kompromiss med sikkerheten.",
-  },
-  {
-    icon: "🧩",
-    text: "Multidisiplinære team dekker havbruk, fiskeri, service-, logistikk- og spesialfartøy.",
+    icon: "⚓",
+    text: "Bemanning på tvers av havbruk, fiskeri, service-, logistikk- og offshorefartøy.",
   },
 ];
 

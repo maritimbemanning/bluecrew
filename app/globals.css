@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+a[data-dropdown-link]:hover,
+a[data-dropdown-link]:focus-visible {
+  background: rgba(56, 189, 248, 0.16);
+  color: #38bdf8;
+  outline: none;
+}
