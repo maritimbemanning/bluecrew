@@ -16,15 +16,15 @@ export const STCW_MODULES = [
 export const HERO_POINTS = [
   {
     icon: "🚢",
-    text: "Eiere med fartstid fra oppdrett, servicefartøy og fiskeri leder hvert oppdrag.",
+    text: "Operativ ledelse fra folk som selv har stått med ansvar på bro og dekk.",
   },
   {
     icon: "🧾",
-    text: "Sertifikater, referanser og tilgjengelighet verifiseres før kandidat presenteres.",
+    text: "Komplette kandidatmapper med verifiserte sertifikater, referanser og tilgjengelighet.",
   },
   {
     icon: "⚡",
-    text: "Effektive prosesser gjør at vi løser akutte behov uten å gå på kompromiss med sikkerheten.",
+    text: "24/7-beredskap og faste prosedyrer for å håndtere hasteoppdrag uten friksjon.",
   },
 ];
 
@@ -99,4 +99,49 @@ export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
   { label: "Besøk oss", value: "Østenbekkveien 43, 9011 Tromsø" },
+];
+
+export const QUALITY_PILLARS = [
+  {
+    icon: "🛡️",
+    title: "Kontroll på compliance",
+    text: "Standardiserte kontroller sikrer at alle sertifikater, helseattester og sikkerhetskurs er gyldige før ombordstigning.",
+  },
+  {
+    icon: "🤝",
+    title: "Dedikert kontaktperson",
+    text: "Én bemanningsleder følger opp hele leveransen, fra planlegging av vaktlister til rapportering etter avsluttet oppdrag.",
+  },
+  {
+    icon: "📊",
+    title: "Proaktiv rapportering",
+    text: "Vi deler statusoppdateringer, timelister og læringspunkter slik at du alltid har kontroll på bemanningssituasjonen.",
+  },
+];
+
+export const CASE_POINTS = [
+  "Mannskap på plass i Finnmark 48 timer etter forespørsel midt i februar.",
+  "Plan for overlapping og overlevering dokumentert til reder og driftssjef.",
+  "Kontinuerlig rapportering på HMS og vedlikehold gjennom hele prosjektet.",
+];
+
+export const CASE_STATS = [
+  { value: "48 t", label: "Fra forespørsel til avreise" },
+  { value: "6", label: "Sertifiserte sjøfolk mobilisert" },
+  { value: "0", label: "Avvik registrert" },
+];
+
+export const CREDENTIALS = [
+  {
+    badge: "Achilles JQS",
+    description: "Prekvalifisert leverandør – dokumentert kvalitetssystem og HMS-prosedyrer for energi- og maritim sektor.",
+  },
+  {
+    badge: "ISPS- og sikkerhetskurs",
+    description: "Alle i operativ leveranse har oppdaterte kurs innen sikkerhet, førstehjelp og beredskap.",
+  },
+  {
+    badge: "GDPR-tilpassede prosesser",
+    description: "Persondata håndteres i sikre systemer med tydelige slette- og samtykkerutiner.",
+  },
 ];

@@ -2,11 +2,15 @@ import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
 import {
   BENEFITS,
+  CASE_POINTS,
+  CASE_STATS,
   CONTACT_POINTS,
+  CREDENTIALS,
   DELIVERY_STATS,
   FAQS,
   HERO_POINTS,
   PROCESS_STEPS,
+  QUALITY_PILLARS,
 } from "./lib/constants";
 import { sx } from "./lib/styles";
 
@@ -41,6 +45,7 @@ export default function Page() {
                   Meld inn bemanningsbehov
                 </Link>
               </div>
+              <p style={sx.heroNote}>Tilgjengelig hele døgnet for kritiske bemanningsoppdrag</p>
               <ul style={sx.badges}>
                 <li style={sx.badge}>
                   <span style={sx.badgeIcon}>✔️</span> Dokumentert kompetanse og referanser
@@ -71,6 +76,28 @@ export default function Page() {
                 Snakk med en bemanningsleder
               </Link>
             </aside>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <h2 style={sx.h2}>Leveransekvalitet i hvert oppdrag</h2>
+            <p style={sx.leadSmall}>
+              Vi kombinerer operativ erfaring med dokumenterte rutiner og gir deg én tydelig partner for hele bemanningsløpet.
+            </p>
+          </div>
+          <div style={sx.pillarsGrid}>
+            {QUALITY_PILLARS.map((pillar) => (
+              <article key={pillar.title} style={sx.pillarCard}>
+                <span style={sx.pillarIcon} aria-hidden="true">
+                  {pillar.icon}
+                </span>
+                <h3 style={sx.pillarTitle}>{pillar.title}</h3>
+                <p style={sx.pillarText}>{pillar.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -135,6 +162,57 @@ export default function Page() {
                 <li>Sesong- og vikaroppdrag</li>
               </ul>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.caseSection}>
+        <div style={sx.caseGrid}>
+          <div style={sx.caseBody}>
+            <span style={sx.storyAccent}>Case fra felt</span>
+            <h2 style={sx.h2Light}>Rask mobilisering i Finnmark</h2>
+            <p style={sx.leadLight}>
+              Et servicefartøy mistet nøkkelpersonell tre døgn før planlagt operasjon. Vi organiserte nytt mannskap, sørget for
+              innkvartering langs ruta og leverte en sømløs overlevering i havn.
+            </p>
+            <ul style={sx.caseHighlights}>
+              {CASE_POINTS.map((point) => (
+                <li key={point} style={sx.caseHighlight}>
+                  <span aria-hidden="true">✔️</span>
+                  <span>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <aside style={sx.caseStats}>
+            <h3 style={{ margin: 0, fontSize: 18, fontWeight: 800, color: "#f8fafc" }}>Resultater</h3>
+            <div style={{ display: "grid", gap: 14 }}>
+              {CASE_STATS.map((stat) => (
+                <div key={stat.label} style={sx.caseStat}>
+                  <div style={sx.caseStatValue}>{stat.value}</div>
+                  <div style={sx.caseStatLabel}>{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section style={sx.credentialSection}>
+        <div style={sx.credentialWrap}>
+          <div style={sx.credentialIntro}>
+            <h2 style={sx.h2}>Sertifiseringer og medlemskap</h2>
+            <p style={sx.leadSmall}>
+              Vi investerer i kvalitetssystemer, sikkerhetskurs og ansvarlig personvern for å være en profesjonell samarbeidspartner.
+            </p>
+          </div>
+          <div style={sx.credentialList}>
+            {CREDENTIALS.map((item) => (
+              <article key={item.badge} style={sx.credentialItem}>
+                <span style={sx.credentialBadge}>{item.badge}</span>
+                <p style={sx.credentialText}>{item.description}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
