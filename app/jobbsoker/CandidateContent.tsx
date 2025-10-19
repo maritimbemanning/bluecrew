@@ -105,8 +105,16 @@ export default function CandidateContent() {
     }
 
     const certs = files.certs;
-    if (certs && typeof certs !== "string" && certs.size > 10 * 1024 * 1024) {
-      nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
+    if (certs && typeof certs !== "string") {
+      if (certs.size > 10 * 1024 * 1024) {
+        nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
+      } else {
+        const lower = (certs.name || "").toLowerCase();
+        const allowed = [".pdf", ".zip", ".doc", ".docx"];
+        if (!allowed.some((ext) => lower.endsWith(ext))) {
+          nextFileErrors.certs = "Vedlegg må være PDF, ZIP eller DOC/DOCX";
+        }
+      }
     }
 
     // Honeypot (må matche feltnavnet i skjemaet, se note under)
@@ -459,9 +467,9 @@ export default function CandidateContent() {
         onChange={() => clearFileError("cv")}
       />
       <FileInput
-        label="Sertifikater (PDF/zip, valgfritt)"
+        label="Sertifikater (PDF/ZIP/DOC/DOCX, valgfritt)"
         name="certs"
-        accept=".pdf,.zip"
+        accept=".pdf,.zip,.doc,.docx"
         error={fileErrors.certs}
         onChange={() => clearFileError("certs")}
       />

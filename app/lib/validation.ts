@@ -142,7 +142,7 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     deck_has: getString("deck_has"),
     deck_class: getString("deck_class") || undefined,
     gdpr: getString("gdpr") === "yes",
-    honey: getString("website"),
+    honey: getString("honey"),
   };
 
   const files: CandidateFiles = {
@@ -169,6 +169,6 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     need_type: getString("need_type"),
     need_duration: getString("need_duration"),
     desc: getString("desc") || undefined,
-    honey: getString("website"),
+    honey: getString("honey"),
   };
 }

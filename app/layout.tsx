@@ -4,16 +4,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 const title = "Bluecrew AS – Maritim bemanning";
 const description =
   "Bluecrew AS leverer erfarne sjøfolk og komplette bemanningsløsninger til havbruk, fiskeri og servicefartøy.";
@@ -100,9 +90,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="no">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         {children}
         <CookieBanner />
         {plausibleDomain ? (
