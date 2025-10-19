@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useCallback, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input, Select, Textarea } from "../components/FormControls";
 import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
@@ -12,6 +12,16 @@ type FieldErrors = Record<string, string>;
 export default function ClientContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "client";
+
+  useEffect(() => {
+    if (!submitted || typeof window === "undefined") return;
+    const plausible = (window as typeof window & {
+      plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
+    }).plausible;
+    if (typeof plausible === "function") {
+      plausible("Lead Submitted", { props: { form: "client" } });
+    }
+  }, [submitted]);
 
   const [county, setCounty] = useState("");
   const [municipality, setMunicipality] = useState("");

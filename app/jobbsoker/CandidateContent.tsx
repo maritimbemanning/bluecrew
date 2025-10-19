@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useCallback, useMemo, useState } from "react";
+import Link from "next/link";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
 import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
@@ -20,6 +21,16 @@ function createInitialOpen() {
 export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
+
+  useEffect(() => {
+    if (!submitted || typeof window === "undefined") return;
+    const plausible = (window as typeof window & {
+      plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
+    }).plausible;
+    if (typeof plausible === "function") {
+      plausible("Lead Submitted", { props: { form: "candidate" } });
+    }
+  }, [submitted]);
 
   const [openMain, setOpenMain] = useState<Record<string, boolean>>(() => createInitialOpen());
   const [otherText, setOtherText] = useState<Record<string, string>>({});
@@ -94,8 +105,16 @@ export default function CandidateContent() {
     }
 
     const certs = files.certs;
-    if (certs && typeof certs !== "string" && certs.size > 10 * 1024 * 1024) {
-      nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
+    if (certs && typeof certs !== "string") {
+      if (certs.size > 10 * 1024 * 1024) {
+        nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
+      } else {
+        const lower = (certs.name || "").toLowerCase();
+        const allowed = [".pdf", ".zip", ".doc", ".docx"];
+        if (!allowed.some((ext) => lower.endsWith(ext))) {
+          nextFileErrors.certs = "Vedlegg må være PDF, ZIP eller DOC/DOCX";
+        }
+      }
     }
 
     // Honeypot (må matche feltnavnet i skjemaet, se note under)
@@ -448,9 +467,9 @@ export default function CandidateContent() {
         onChange={() => clearFileError("cv")}
       />
       <FileInput
-        label="Sertifikater (PDF/zip, valgfritt)"
+        label="Sertifikater (PDF/ZIP/DOC/DOCX, valgfritt)"
         name="certs"
-        accept=".pdf,.zip"
+        accept=".pdf,.zip,.doc,.docx"
         error={fileErrors.certs}
         onChange={() => clearFileError("certs")}
       />
@@ -467,7 +486,11 @@ export default function CandidateContent() {
           onChange={() => clearFieldError("gdpr")}
         />
         <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
-          Jeg samtykker til behandling av persondata for bemanning/rekruttering.
+          Jeg samtykker til behandling av persondata for bemanning/rekruttering. {" "}
+          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
+            Les personvernerklæringen
+          </Link>
+          .
         </label>
         {fieldErrors.gdpr ? (
           <div id="gdpr-err" style={sx.errText} role="alert">

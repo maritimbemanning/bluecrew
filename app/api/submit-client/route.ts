@@ -3,6 +3,7 @@ import { clientSchema, extractClientForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendNotificationEmail } from "../../lib/server/email";
 import { insertSupabaseRow } from "../../lib/server/supabase";
+import { captureServerException } from "../../lib/server/observability";
 
 export const runtime = "nodejs";
 
@@ -74,12 +75,18 @@ export async function POST(req: Request) {
           submitted_at: new Date().toISOString(),
           source_ip: getClientIp(req),
         },
-      }).catch((e) => console.error("⚠️ Supabase-feil (client):", e)),
+      }).catch((error) => {
+        captureServerException(error, { scope: "client-insert", table: "leads" });
+        console.error("⚠️ Supabase-feil (client):", error);
+      }),
       sendNotificationEmail({
         subject: `Bluecrew kunde: ${d.company || "(uten selskap)"}`,
         text: lines.join("\n"),
         replyTo: d.c_email,
-      }).catch((e) => console.error("❌ Sendefeil (client):", e)),
+      }).catch((error) => {
+        captureServerException(error, { scope: "client-email" });
+        console.error("❌ Sendefeil (client):", error);
+      }),
     ]);
 
     // Suksess → redirect til takk
@@ -87,6 +94,7 @@ export async function POST(req: Request) {
     return Response.redirect(back, 303);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
+    captureServerException(err, { scope: "client-handler" });
     console.error("❌ Uventet feil (client):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
