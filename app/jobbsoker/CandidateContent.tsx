@@ -220,48 +220,47 @@ export default function CandidateContent() {
                   <input type="checkbox" checked={open} onChange={() => toggleMain(main)} />
                   <span style={{ fontWeight: 700 }}>{main}</span>
                 </label>
-                {open && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={sx.tags}}>
-                      {subs.map((sub) =>
-                        sub === "Annet" ? (
-                          <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-                            <label style={sx.label}>
-                              <span>Annet (kort beskrivelse)</span>
-                              <input
-                                name={`other_${main}`}
-                                placeholder="Skriv kort om ønsket arbeid"
-                                value={otherText[main] || ""}
-                                onChange={(e) =>
-                                  setOtherText((prev) => ({ ...prev, [main]: e.target.value }))
-                                }
-                                style={sx.input}
-                              />
-                            </label>
-                          </div>
-                        ) : (
-                          <label key={sub} style={sx.tagItem}>
-                            <input
-                              type="checkbox"
-                              name="work_main"
-                              value={`${main}:${sub}`}
-                              onChange={() => clearFieldError("work_main")}
-                            />
-                            <span>{sub}</span>
-                          </label>
-                        ),
-                      )}
-                    </div>
-                    <small style={{ color: "#64748b" }}>
-                      Velg undervalg (eller fyll «Annet»). Du kan åpne flere hovedkategorier.
-                    </small>
-                    {fieldErrors.work_main ? (
-                      <div style={sx.errText} role="alert">
-                        {fieldErrors.work_main}
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+               {open && (
+  <div style={{ marginTop: 10 }}>
+    <div style={sx.tags}>
+      {subs.map((sub) =>
+        sub === "Annet" ? (
+          <div key={sub} style={{ flex: 1, minWidth: 240 }}>
+            <label style={sx.label}>
+              <span>Annet (kort beskrivelse)</span>
+              <input
+                name={`other_${main}`}
+                placeholder="Skriv kort om ønsket arbeid"
+                value={otherText[main] || ""}
+                onChange={(e) => setOtherText((prev) => ({ ...prev, [main]: e.target.value }))}
+                style={sx.input}
+              />
+            </label>
+          </div>
+        ) : (
+          <label key={sub} style={sx.tagItem}>
+            <input
+              type="checkbox"
+              name="work_main"
+              value={`${main}:${sub}`}
+              onChange={() => clearFieldError("work_main")}
+            />
+            <span>{sub}</span>
+          </label>
+        )
+      )}
+    </div>
+    <small style={{ color: "#64748b" }}>
+      Velg undervalg (eller fyll «Annet». Du kan åpne flere hovedkategorier.)
+    </small>
+    {fieldErrors.work_main ? (
+      <div style={sx.errText} role="alert">
+        {fieldErrors.work_main}
+      </div>
+    ) : null}
+  </div>
+)}
+
               </div>
             );
           })}
