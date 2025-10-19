@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 import ClientContent from "../ClientContent";
@@ -12,7 +13,9 @@ export default function Page() {
             Del informasjon om fartøyet eller operasjonen du trenger mannskap til. Vi matcher kvalifiserte sjøfolk med riktig
             erfaring, sertifikater og tilgjengelighet.
           </p>
-          <ClientContent />
+          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
+            <ClientContent />
+          </Suspense>
         </div>
       </section>
     </SiteLayout>

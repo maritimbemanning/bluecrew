@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 import CandidateContent from "../CandidateContent";
@@ -12,7 +13,9 @@ export default function Page() {
             Fyll ut skjemaet og last opp CV og sertifikater. Vi kobler deg på oppdrag når vi finner en match med erfaringen og
             tilgjengeligheten din.
           </p>
-          <CandidateContent />
+          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
+            <CandidateContent />
+          </Suspense>
         </div>
       </section>
     </SiteLayout>
