@@ -6,6 +6,11 @@ type EnvCheck = {
   NEXT_PUBLIC_SUPABASE_URL: boolean;
   NEXT_PUBLIC_SUPABASE_ANON_KEY: boolean;
   SUPABASE_SERVICE_ROLE_KEY: boolean;
+  UPSTASH_REDIS_REST_URL: boolean;
+  UPSTASH_REDIS_REST_TOKEN: boolean;
+  ADMIN_TOKEN: boolean;
+  NEXT_PUBLIC_PLAUSIBLE_DOMAIN: boolean;
+  SENTRY_DSN: boolean;
 };
 
 export async function GET() {
@@ -13,6 +18,11 @@ export async function GET() {
     NEXT_PUBLIC_SUPABASE_URL: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
+    UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+    ADMIN_TOKEN: !!process.env.ADMIN_TOKEN,
+    NEXT_PUBLIC_PLAUSIBLE_DOMAIN: !!process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    SENTRY_DSN: !!process.env.SENTRY_DSN,
   };
 
   return NextResponse.json({

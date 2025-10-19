@@ -22,6 +22,16 @@ export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
 
+  useEffect(() => {
+    if (!submitted || typeof window === "undefined") return;
+    const plausible = (window as typeof window & {
+      plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
+    }).plausible;
+    if (typeof plausible === "function") {
+      plausible("Lead Submitted", { props: { form: "candidate" } });
+    }
+  }, [submitted]);
+
   const [openMain, setOpenMain] = useState<Record<string, boolean>>(() => createInitialOpen());
   const [otherText, setOtherText] = useState<Record<string, string>>({});
   const [hasSTCW, setHasSTCW] = useState<"" | "ja" | "nei">("");

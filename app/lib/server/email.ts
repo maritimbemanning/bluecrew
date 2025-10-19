@@ -13,7 +13,16 @@ type SendEmailOptions = {
 
 export async function sendNotificationEmail(options: SendEmailOptions) {
   const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL || process.env.FROM_EMAIL;
+  const disabled = process.env.RESEND_DISABLED === "1";
+  if (disabled) {
+    console.info("ℹ️ Resend er deaktivert (RESEND_DISABLED=1). Hopper over utsendelse.");
+    return { skipped: true };
+  }
+
+  const from =
+    process.env.RESEND_FROM_EMAIL ||
+    process.env.FROM_EMAIL ||
+    (process.env.NODE_ENV === "production" ? "onboarding@resend.dev" : "dev@resend.dev");
   const to = process.env.RESEND_TO_EMAIL || process.env.TO_EMAIL;
 
   if (!apiKey || !from || !to) {
@@ -45,6 +54,10 @@ export async function sendNotificationEmail(options: SendEmailOptions) {
 
   if (!response.ok) {
     const detail = await response.text();
+    if (response.status === 403) {
+      console.warn("⚠️ Resend avviste forespørselen (403). Kontroller domenekonfigurasjon.");
+      return { skipped: true };
+    }
     throw new Error(`Resend-feil ${response.status}: ${detail}`);
   }
 

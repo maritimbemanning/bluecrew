@@ -2,7 +2,14 @@
 import { candidateSchema, extractCandidateForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendNotificationEmail } from "../../lib/server/email";
-import { insertSupabaseRow } from "../../lib/server/supabase";
+import { insertSupabaseRow, uploadSupabaseObject } from "../../lib/server/supabase";
+import {
+  buildCertificatePath,
+  buildCvPath,
+  createCandidateStorageBase,
+  extractExtension,
+} from "../../lib/server/candidate-files";
+import { captureServerException } from "../../lib/server/observability";
 
 export const runtime = "nodejs";
 
@@ -54,11 +61,29 @@ export async function POST(req: Request) {
       return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
     }
 
+    const submittedAt = new Date().toISOString();
+    const storageBase = createCandidateStorageBase(data.email, submittedAt);
+    const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
+    const cvPath = buildCvPath(storageBase);
+
+    try {
+      await uploadSupabaseObject({
+        bucket: "candidates-private",
+        object: cvPath,
+        body: cvBuffer,
+        contentType: cvFile.type || "application/pdf",
+      });
+    } catch (error) {
+      captureServerException(error, { scope: "candidate-upload-cv" });
+      console.error("❌ Klarte ikke å lagre CV i Supabase", error);
+      return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
+    }
+
     // Bygg e-postvedlegg (base64 for Resend REST API)
     const attachments: { filename: string; content: string; contentType?: string }[] = [
       {
         filename: cvFile.name || "CV.pdf",
-        content: Buffer.from(await cvFile.arrayBuffer()).toString("base64"),
+        content: cvBuffer.toString("base64"),
         contentType: cvFile.type || "application/pdf",
       },
     ];
@@ -74,9 +99,24 @@ export async function POST(req: Request) {
       if (!allowed.some((ext) => nm.endsWith(ext))) {
         return new Response("FEIL: Vedlegg må være PDF, ZIP eller DOC/DOCX", { status: 400 });
       }
+      const ext = extractExtension(certsFile.name || "") || ".pdf";
+      const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
+      const certificatePath = buildCertificatePath(storageBase, ext);
+      try {
+        await uploadSupabaseObject({
+          bucket: "candidates-private",
+          object: certificatePath,
+          body: certificateBuffer,
+          contentType: certsFile.type || "application/octet-stream",
+        });
+      } catch (error) {
+        captureServerException(error, { scope: "candidate-upload-certificate" });
+        console.error("❌ Klarte ikke å lagre sertifikater i Supabase", error);
+        return new Response("FEIL: Kunne ikke lagre sertifikater", { status: 500 });
+      }
       attachments.push({
-        filename: certsFile.name || "sertifikater",
-        content: Buffer.from(await certsFile.arrayBuffer()).toString("base64"),
+        filename: certsFile.name || `sertifikater${ext}`,
+        content: certificateBuffer.toString("base64"),
         contentType: certsFile.type || "application/octet-stream",
       });
     }
@@ -137,10 +177,11 @@ export async function POST(req: Request) {
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
-          submitted_at: new Date().toISOString(),
+          submitted_at: submittedAt,
           source_ip: getClientIp(req),
         },
       }).catch((error) => {
+        captureServerException(error, { scope: "candidate-insert", table: "candidates" });
         console.error("⚠️ Supabase-feil (candidate):", error);
       }),
       sendNotificationEmail({
@@ -149,6 +190,7 @@ export async function POST(req: Request) {
         replyTo: data.email,
         attachments,
       }).catch((error) => {
+        captureServerException(error, { scope: "candidate-email" });
         console.error("❌ Sendefeil (candidate):", error);
       }),
     ]);
@@ -158,6 +200,7 @@ export async function POST(req: Request) {
     return Response.redirect(back, 303);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
+    captureServerException(err, { scope: "candidate-handler" });
     console.error("❌ Uventet feil (candidate):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
