@@ -1,4 +1,8 @@
-import nodemailer from "nodemailer";
+import { clientSchema, extractClientForm } from "../../lib/validation";
+import { enforceRateLimit } from "../../lib/server/rate-limit";
+import { sendNotificationEmail } from "../../lib/server/email";
+import { insertSupabaseRow } from "../../lib/server/supabase";
+
 export const runtime = "nodejs";
 
 export async function GET() {
@@ -7,60 +11,95 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    const rateKey = getClientKey(req, "client");
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return new Response("For mange forespørsler. Prøv igjen senere.", {
+        status: 429,
+        headers: { "Retry-After": String(rate.resetSeconds || 60) },
+      });
+    }
+
     const fd = await req.formData();
-    const company   = String(fd.get("company") || "");
-    const contact   = String(fd.get("contact") || "");
-    const email     = String(fd.get("c_email") || "");
-    const phone     = String(fd.get("c_phone") || "");
-    const county    = String(fd.get("c_county") || "");
-    const municipality = String(fd.get("c_municipality") || "");
-    const needType  = String(fd.get("need_type") || "");
-    const duration  = String(fd.get("need_duration") || "");
-    const desc      = String(fd.get("desc") || "");
+    const values = extractClientForm(fd);
 
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: false,
-      requireTLS: true,
-      auth: { user: process.env.SMTP_USER as string, pass: process.env.SMTP_PASS as string },
-      authMethod: "LOGIN",
-      tls: { minVersion: "TLSv1.2", servername: "mail.bluecrew.no" },
-    });
-    await transporter.verify();
+    if (values.honey) {
+      return new Response(null, { status: 204 });
+    }
 
-    const clientLocation = municipality
-      ? county
-        ? `${municipality} (${county})`
-        : municipality
-      : county || "-";
+    const parsed = clientSchema.safeParse(values);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      return new Response(`FEIL: ${message}`, { status: 400 });
+    }
 
-    const text = [
+    const data = parsed.data;
+    const location = data.c_municipality
+      ? data.c_county
+        ? `${data.c_municipality} (${data.c_county})`
+        : data.c_municipality
+      : data.c_county || "-";
+
+    const lines = [
       "NY KUNDEFORESPØRSEL",
-      `Selskap: ${company}`,
-      `Kontaktperson: ${contact}`,
-      `E-post: ${email}`,
-      `Telefon: ${phone}`,
-      `Lokasjon: ${clientLocation}`,
-      `Type behov: ${needType}`,
-      `Oppdragstype: ${duration || "-"}`,
+      `Selskap: ${data.company}`,
+      `Kontaktperson: ${data.contact}`,
+      `E-post: ${data.c_email}`,
+      `Telefon: ${data.c_phone}`,
+      `Lokasjon: ${location}`,
+      `Type behov: ${data.need_type}`,
+      `Oppdragstype: ${data.need_duration}`,
       "",
       "Beskrivelse:",
-      desc || "-",
-    ].join("\n");
+      data.desc || "-",
+    ];
 
-    await transporter.sendMail({
-      from: process.env.FROM_EMAIL,
-      to: process.env.TO_EMAIL,
-      subject: `Bluecrew kunde: ${company || "(uten selskap)"} – ${needType || "Behov"}`,
-      text,
-    });
+    await Promise.all([
+      sendNotificationEmail({
+        subject: `Bluecrew kunde: ${data.company || "(uten selskap)"}`,
+        text: lines.join("\n"),
+        replyTo: data.c_email,
+      }).catch((error) => {
+        console.error("❌ Sendefeil (client):", error);
+      }),
+      insertSupabaseRow({
+        table: "leads",
+        payload: {
+          company: data.company,
+          contact: data.contact,
+          email: data.c_email,
+          phone: data.c_phone,
+          county: data.c_county,
+          municipality: data.c_municipality || null,
+          need_type: data.need_type,
+          need_duration: data.need_duration,
+          description: data.desc || null,
+          submitted_at: new Date().toISOString(),
+          source_ip: getClientIp(req),
+        },
+      }).catch((error) => {
+        console.error("⚠️ Supabase-feil (client):", error);
+      }),
+    ]);
 
     const back = new URL("/kunde?sent=client", req.url);
     return Response.redirect(back, 303);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("❌ Sendefeil (client):", err);
+    console.error("❌ Uventet feil (client):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
+}
+
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
+}
+
+function getClientKey(req: Request, prefix: string) {
+  return `${prefix}:${getClientIp(req)}`;
 }
