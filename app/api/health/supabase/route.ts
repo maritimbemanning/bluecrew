@@ -9,7 +9,8 @@ export async function GET() {
     const { error } = await sb.from("leads").select("*", { head: true, count: "exact" });
     if (error) return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message ?? "unknown" }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "unknown";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }
