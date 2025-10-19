@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
 import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
