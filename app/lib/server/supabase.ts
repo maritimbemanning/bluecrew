@@ -1,33 +1,22 @@
-type InsertOptions = {
+// lib/server/supabase.ts
+import { createClient } from "@supabase/supabase-js";
+
+export function supabaseServer() {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY");
+  }
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
+
+export async function insertSupabaseRow<T extends Record<string, any>>(opts: {
   table: string;
-  payload: Record<string, unknown>;
-};
-
-export async function insertSupabaseRow({ table, payload }: InsertOptions) {
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-  if (!url || !key) {
-    console.warn(`⚠️ Supabase-konfig mangler. Kunne ikke skrive til tabell ${table}.`);
-    return { skipped: true };
-  }
-
-  const endpoint = `${url.replace(/\/$/, "")}/rest/v1/${table}`;
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-      Prefer: "return=minimal",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Supabase-feil ${response.status}: ${detail}`);
-  }
-
-  return { ok: true };
+  payload: T;
+}) {
+  const sb = supabaseServer();
+  const { error } = await sb.from(opts.table).insert(opts.payload);
+  if (error) throw error;
 }

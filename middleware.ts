@@ -65,3 +65,4 @@ export const config = {
   // Kjør middleware på alle ruter
   matcher: ["/:path*"],
 };
+
