@@ -47,16 +47,21 @@ export function Textarea({
   name,
   rows = 4,
   full = false,
+  description,
 }: {
   label: string;
   name: string;
   rows?: number;
   full?: boolean;
+  description?: string;
 }) {
   const id = `${name}-id`;
   return (
     <label style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }} htmlFor={id}>
       <span>{label}</span>
+      {description ? (
+        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
+      ) : null}
       <textarea id={id} name={name} rows={rows} style={{ ...sx.input, height: rows * 24 }} />
     </label>
   );
@@ -71,6 +76,7 @@ export function Select({
   placeholder,
   disabled,
   error,
+  required,
 }: {
   label: string;
   name: string;
@@ -80,6 +86,7 @@ export function Select({
   placeholder?: string;
   disabled?: boolean;
   error?: string;
+  required?: boolean;
 }) {
   const id = `${name}-id`;
   const errId = `${name}-err`;
@@ -89,12 +96,18 @@ export function Select({
       <select
         id={id}
         name={name}
-        value={value ?? ""}
+        value={value !== undefined ? value : undefined}
         onChange={(e) => (onChange ? onChange(e.target.value) : undefined)}
         disabled={disabled}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
-        style={{ ...sx.input, opacity: disabled ? 0.6 : 1, ...(error ? sx.inputErr : null) }}
+        required={required}
+        style={{
+          ...sx.input,
+          opacity: disabled ? 0.6 : 1,
+          cursor: disabled ? "not-allowed" : "pointer",
+          ...(error ? sx.inputErr : null),
+        }}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((op) => (
@@ -128,7 +141,7 @@ export function FileInput({
   const id = `${name}-id`;
   const errId = `${name}-err`;
   return (
-    <label style={sx.label} htmlFor={id}>
+    <label style={{ ...sx.label, cursor: "pointer" }} htmlFor={id}>
       <span>
         {label}
         {required ? " *" : ""}
@@ -141,7 +154,7 @@ export function FileInput({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
-        style={sx.input}
+        style={{ ...sx.input, cursor: "pointer" }}
       />
       {error ? (
         <div id={errId} style={sx.errText} role="alert">
