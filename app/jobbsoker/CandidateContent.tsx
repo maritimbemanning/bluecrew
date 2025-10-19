@@ -197,7 +197,7 @@ export default function CandidateContent() {
         value={municipality}
         onChange={(value) => {
           setMunicipality(value);
-          clearFieldError("municipility");
+          clearFieldError("municipality");
         }}
         placeholder={county ? "Velg kommune" : "Velg fylke først"}
         disabled={!county}
