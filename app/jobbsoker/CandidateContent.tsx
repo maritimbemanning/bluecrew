@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
 import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
 import { sx } from "../lib/styles";
@@ -17,6 +18,9 @@ function createInitialOpen() {
 }
 
 export default function CandidateContent() {
+  const searchParams = useSearchParams();
+  const submitted = searchParams.get("sent") === "worker";
+
   const [openMain, setOpenMain] = useState<Record<string, boolean>>(() => createInitialOpen());
   const [otherText, setOtherText] = useState<Record<string, string>>({});
   const [hasSTCW, setHasSTCW] = useState<"" | "ja" | "nei">("");
@@ -28,20 +32,6 @@ export default function CandidateContent() {
   const [fileErrors, setFileErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(() => {
-    if (typeof window === "undefined") {
-      return false;
-    }
-    return new URLSearchParams(window.location.search).get("sent") === "worker";
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    const params = new URLSearchParams(window.location.search);
-    setSubmitted(params.get("sent") === "worker");
-  }, []);
 
   const workEntries = useMemo(() => Object.entries(WORK), []);
   const municipalityOptions = useMemo(
@@ -108,6 +98,7 @@ export default function CandidateContent() {
       nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
     }
 
+    // Honeypot (må matche feltnavnet i skjemaet, se note under)
     if (values.honey) {
       event.preventDefault();
       setFieldErrors({});
@@ -116,7 +107,9 @@ export default function CandidateContent() {
       return;
     }
 
-    const hasErrors = Object.keys(nextFieldErrors).length > 0 || Object.keys(nextFileErrors).length > 0;
+    const hasErrors =
+      Object.keys(nextFieldErrors).length > 0 || Object.keys(nextFileErrors).length > 0;
+
     if (hasErrors) {
       event.preventDefault();
       setFieldErrors(nextFieldErrors);
@@ -126,6 +119,7 @@ export default function CandidateContent() {
       return;
     }
 
+    // La browseren sende form til /api/submit-candidate (ingen preventDefault).
     setFieldErrors({});
     setFileErrors({});
     setFormError(null);
@@ -203,7 +197,7 @@ export default function CandidateContent() {
         value={municipality}
         onChange={(value) => {
           setMunicipality(value);
-          clearFieldError("municipality");
+          clearFieldError("municipility");
         }}
         placeholder={county ? "Velg kommune" : "Velg fylke først"}
         disabled={!county}
@@ -228,7 +222,7 @@ export default function CandidateContent() {
                 </label>
                 {open && (
                   <div style={{ marginTop: 10 }}>
-                    <div style={sx.tags}>
+                    <div style={sx.tags}}>
                       {subs.map((sub) =>
                         sub === "Annet" ? (
                           <div key={sub} style={{ flex: 1, minWidth: 240 }}>
@@ -483,10 +477,11 @@ export default function CandidateContent() {
         ) : null}
       </div>
 
+      {/* Honeypot: NB! navnet må matche values.honey */}
       <div aria-hidden="true" style={sx.honeypot}>
         <label>
           <span>Dette feltet skal stå tomt</span>
-          <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+          <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
 
