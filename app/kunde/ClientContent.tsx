@@ -12,6 +12,7 @@ type FieldErrors = Record<string, string>;
 export default function ClientContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "client";
+
   const [county, setCounty] = useState("");
   const [municipality, setMunicipality] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -48,6 +49,7 @@ export default function ClientContent() {
       }
     }
 
+    // Honeypot: må matche input-navnet under
     if (values.honey) {
       event.preventDefault();
       setFieldErrors({});
@@ -66,6 +68,7 @@ export default function ClientContent() {
     setFieldErrors({});
     setFormError(null);
     setIsSubmitting(true);
+    // Ikke preventDefault ved OK – la browseren poste til /api/submit-client
   }, []);
 
   if (submitted) {
@@ -113,6 +116,7 @@ export default function ClientContent() {
         error={fieldErrors.c_phone}
         onChange={() => clearFieldError("c_phone")}
       />
+
       <Select
         label="Fylke"
         name="c_county"
@@ -132,6 +136,7 @@ export default function ClientContent() {
         error={fieldErrors.c_county}
         onBlur={() => clearFieldError("c_county")}
       />
+
       <Select
         label="Kommune/by"
         name="c_municipality"
@@ -147,6 +152,7 @@ export default function ClientContent() {
         error={fieldErrors.c_municipality}
         onBlur={() => clearFieldError("c_municipality")}
       />
+
       <Select
         label="Type behov"
         name="need_type"
@@ -157,6 +163,7 @@ export default function ClientContent() {
         onBlur={() => clearFieldError("need_type")}
         onChange={() => clearFieldError("need_type")}
       />
+
       <Select
         label="Oppdragstype"
         name="need_duration"
@@ -167,6 +174,7 @@ export default function ClientContent() {
         onBlur={() => clearFieldError("need_duration")}
         onChange={() => clearFieldError("need_duration")}
       />
+
       <Textarea
         label="Kort beskrivelse av oppdraget"
         name="desc"
@@ -176,10 +184,11 @@ export default function ClientContent() {
         onBlur={() => clearFieldError("desc")}
       />
 
+      {/* Honeypot: må matche values.honey */}
       <div aria-hidden="true" style={sx.honeypot}>
         <label>
           <span>Dette feltet skal stå tomt</span>
-          <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+          <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
 

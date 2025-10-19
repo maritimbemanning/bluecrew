@@ -18,6 +18,9 @@ function createInitialOpen() {
 }
 
 export default function CandidateContent() {
+  const searchParams = useSearchParams();
+  const submitted = searchParams.get("sent") === "worker";
+
   const [openMain, setOpenMain] = useState<Record<string, boolean>>(() => createInitialOpen());
   const [otherText, setOtherText] = useState<Record<string, string>>({});
   const [hasSTCW, setHasSTCW] = useState<"" | "ja" | "nei">("");
@@ -29,9 +32,6 @@ export default function CandidateContent() {
   const [fileErrors, setFileErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const searchParams = useSearchParams();
-  const submitted = searchParams.get("sent") === "worker";
 
   const workEntries = useMemo(() => Object.entries(WORK), []);
   const municipalityOptions = useMemo(
@@ -98,6 +98,7 @@ export default function CandidateContent() {
       nextFileErrors.certs = "Sertifikater kan maks være 10 MB";
     }
 
+    // Honeypot (må matche feltnavnet i skjemaet, se note under)
     if (values.honey) {
       event.preventDefault();
       setFieldErrors({});
@@ -106,7 +107,9 @@ export default function CandidateContent() {
       return;
     }
 
-    const hasErrors = Object.keys(nextFieldErrors).length > 0 || Object.keys(nextFileErrors).length > 0;
+    const hasErrors =
+      Object.keys(nextFieldErrors).length > 0 || Object.keys(nextFileErrors).length > 0;
+
     if (hasErrors) {
       event.preventDefault();
       setFieldErrors(nextFieldErrors);
@@ -116,6 +119,7 @@ export default function CandidateContent() {
       return;
     }
 
+    // La browseren sende form til /api/submit-candidate (ingen preventDefault).
     setFieldErrors({});
     setFileErrors({});
     setFormError(null);
@@ -216,48 +220,47 @@ export default function CandidateContent() {
                   <input type="checkbox" checked={open} onChange={() => toggleMain(main)} />
                   <span style={{ fontWeight: 700 }}>{main}</span>
                 </label>
-                {open && (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={sx.tags}>
-                      {subs.map((sub) =>
-                        sub === "Annet" ? (
-                          <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-                            <label style={sx.label}>
-                              <span>Annet (kort beskrivelse)</span>
-                              <input
-                                name={`other_${main}`}
-                                placeholder="Skriv kort om ønsket arbeid"
-                                value={otherText[main] || ""}
-                                onChange={(e) =>
-                                  setOtherText((prev) => ({ ...prev, [main]: e.target.value }))
-                                }
-                                style={sx.input}
-                              />
-                            </label>
-                          </div>
-                        ) : (
-                          <label key={sub} style={sx.tagItem}>
-                            <input
-                              type="checkbox"
-                              name="work_main"
-                              value={`${main}:${sub}`}
-                              onChange={() => clearFieldError("work_main")}
-                            />
-                            <span>{sub}</span>
-                          </label>
-                        ),
-                      )}
-                    </div>
-                    <small style={{ color: "#64748b" }}>
-                      Velg undervalg (eller fyll «Annet»). Du kan åpne flere hovedkategorier.
-                    </small>
-                    {fieldErrors.work_main ? (
-                      <div style={sx.errText} role="alert">
-                        {fieldErrors.work_main}
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+               {open && (
+  <div style={{ marginTop: 10 }}>
+    <div style={sx.tags}>
+      {subs.map((sub) =>
+        sub === "Annet" ? (
+          <div key={sub} style={{ flex: 1, minWidth: 240 }}>
+            <label style={sx.label}>
+              <span>Annet (kort beskrivelse)</span>
+              <input
+                name={`other_${main}`}
+                placeholder="Skriv kort om ønsket arbeid"
+                value={otherText[main] || ""}
+                onChange={(e) => setOtherText((prev) => ({ ...prev, [main]: e.target.value }))}
+                style={sx.input}
+              />
+            </label>
+          </div>
+        ) : (
+          <label key={sub} style={sx.tagItem}>
+            <input
+              type="checkbox"
+              name="work_main"
+              value={`${main}:${sub}`}
+              onChange={() => clearFieldError("work_main")}
+            />
+            <span>{sub}</span>
+          </label>
+        )
+      )}
+    </div>
+    <small style={{ color: "#64748b" }}>
+      Velg undervalg (eller fyll «Annet». Du kan åpne flere hovedkategorier.)
+    </small>
+    {fieldErrors.work_main ? (
+      <div style={sx.errText} role="alert">
+        {fieldErrors.work_main}
+      </div>
+    ) : null}
+  </div>
+)}
+
               </div>
             );
           })}
@@ -473,10 +476,11 @@ export default function CandidateContent() {
         ) : null}
       </div>
 
+      {/* Honeypot: NB! navnet må matche values.honey */}
       <div aria-hidden="true" style={sx.honeypot}>
         <label>
           <span>Dette feltet skal stå tomt</span>
-          <input name="website" type="text" tabIndex={-1} autoComplete="off" />
+          <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
 
