@@ -13,7 +13,7 @@ export default function Page() {
             Fyll ut skjemaet og last opp CV og sertifikater. Vi kobler deg på oppdrag når vi finner en match med erfaringen og
             tilgjengeligheten din.
           </p>
-          <Suspense fallback={<div style={sx.loading}>Laster inn skjema …</div>}>
+          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
             <CandidateContent />
           </Suspense>
         </div>

@@ -13,7 +13,7 @@ export default function Page() {
             Del informasjon om fartøyet eller operasjonen du trenger mannskap til. Vi matcher kvalifiserte sjøfolk med riktig
             erfaring, sertifikater og tilgjengelighet.
           </p>
-          <Suspense fallback={<div style={sx.loading}>Laster inn skjema …</div>}>
+          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
             <ClientContent />
           </Suspense>
         </div>
