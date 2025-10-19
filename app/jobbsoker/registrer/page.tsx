@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 import CandidateContent from "../CandidateContent";
