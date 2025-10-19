@@ -9,12 +9,18 @@ export function Input({
   type = "text",
   required,
   error,
+  onChange,
+  onBlur,
+  defaultValue,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
   error?: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  defaultValue?: string;
 }) {
   const id = `${name}-id`;
   const errId = `${name}-err`;
@@ -31,7 +37,10 @@ export function Input({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
+        defaultValue={defaultValue}
         style={{ ...sx.input, ...(error ? sx.inputErr : null) }}
+        onChange={onChange}
+        onBlur={onBlur}
       />
       {error ? (
         <div id={errId} style={sx.errText} role="alert">
@@ -48,12 +57,18 @@ export function Textarea({
   rows = 4,
   full = false,
   description,
+  error,
+  onChange,
+  onBlur,
 }: {
   label: string;
   name: string;
   rows?: number;
   full?: boolean;
   description?: string;
+  error?: string;
+  onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 }) {
   const id = `${name}-id`;
   return (
@@ -62,7 +77,21 @@ export function Textarea({
       {description ? (
         <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
       ) : null}
-      <textarea id={id} name={name} rows={rows} style={{ ...sx.input, height: rows * 24 }} />
+      <textarea
+        id={id}
+        name={name}
+        rows={rows}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${id}-err` : undefined}
+        style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}
+        onChange={onChange}
+        onBlur={onBlur}
+      />
+      {error ? (
+        <div id={`${id}-err`} style={sx.errText} role="alert">
+          {error}
+        </div>
+      ) : null}
     </label>
   );
 }
@@ -77,6 +106,7 @@ export function Select({
   disabled,
   error,
   required,
+  onBlur,
 }: {
   label: string;
   name: string;
@@ -87,6 +117,7 @@ export function Select({
   disabled?: boolean;
   error?: string;
   required?: boolean;
+  onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
 }) {
   const id = `${name}-id`;
   const errId = `${name}-err`;
@@ -108,6 +139,7 @@ export function Select({
           cursor: disabled ? "not-allowed" : "pointer",
           ...(error ? sx.inputErr : null),
         }}
+        onBlur={onBlur}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}
         {options.map((op) => (
@@ -131,12 +163,14 @@ export function FileInput({
   accept,
   error,
   required,
+  onChange,
 }: {
   label: string;
   name: string;
   accept?: string;
   error?: string;
   required?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   const id = `${name}-id`;
   const errId = `${name}-err`;
@@ -155,6 +189,7 @@ export function FileInput({
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
         style={{ ...sx.input, cursor: "pointer" }}
+        onChange={onChange}
       />
       {error ? (
         <div id={errId} style={sx.errText} role="alert">
