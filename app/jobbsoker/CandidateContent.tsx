@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useCallback, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
@@ -467,7 +468,11 @@ export default function CandidateContent() {
           onChange={() => clearFieldError("gdpr")}
         />
         <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
-          Jeg samtykker til behandling av persondata for bemanning/rekruttering.
+          Jeg samtykker til behandling av persondata for bemanning/rekruttering. {" "}
+          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
+            Les personvernerklæringen
+          </Link>
+          .
         </label>
         {fieldErrors.gdpr ? (
           <div id="gdpr-err" style={sx.errText} role="alert">
