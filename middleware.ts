@@ -8,9 +8,9 @@ const csp = [
   "frame-ancestors 'none'",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob:",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.in https://*.supabase.net https://*.upstash.io",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.in https://*.supabase.net https://*.upstash.io https://plausible.io",
   "manifest-src 'self'",
   "media-src 'self'",
 ].join("; ");
@@ -32,14 +32,34 @@ function applySecurityHeaders(response: NextResponse) {
  *  - Alle ruter sendes til /maintenance
  *  - Unntak: /maintenance selv og Next sine statiske filer
  */
-export function middleware(req: NextRequest) {
-  const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE === "1";
+function isAdminPath(pathname: string) {
+  return pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
+}
 
-  if (!isMaintenance) {
-    return applySecurityHeaders(NextResponse.next());
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  if (isAdminPath(pathname)) {
+    const expectedToken = process.env.ADMIN_TOKEN;
+    if (!expectedToken) {
+      const response = new NextResponse("ADMIN_TOKEN ikke konfigurert", { status: 500 });
+      return applySecurityHeaders(response);
+    }
+
+    const headerToken = req.headers.get("x-admin-token");
+    const cookieToken = req.cookies.get("admin-token")?.value;
+    if (headerToken !== expectedToken && cookieToken !== expectedToken) {
+      const response = new NextResponse("Unauthorized", { status: 401 });
+      response.headers.set("WWW-Authenticate", "Bearer realm=admin");
+      return applySecurityHeaders(response);
+    }
   }
 
-  const { pathname } = req.nextUrl;
+  const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE === "1";
+
+  if (!isMaintenance || isAdminPath(pathname)) {
+    return applySecurityHeaders(NextResponse.next());
+  }
 
   // Tillat disse å gå gjennom (selve vedlikeholdssiden + Next sine filer)
   const allow =

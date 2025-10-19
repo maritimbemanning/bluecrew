@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
@@ -46,6 +47,8 @@ const iconMarkup = `
 `;
 
 const iconDataUrl = `data:image/svg+xml,${encodeURIComponent(iconMarkup)}`;
+
+const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 export const metadata: Metadata = {
   title: {
@@ -102,6 +105,14 @@ export default function RootLayout({
       >
         {children}
         <CookieBanner />
+        {plausibleDomain ? (
+          <Script
+            defer
+            data-domain={plausibleDomain}
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );
