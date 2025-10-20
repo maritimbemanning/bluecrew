@@ -1,3 +1,4 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -8,9 +9,11 @@ const csp = [
   "frame-ancestors 'none'",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob:",
+  // Merk: 'unsafe-inline'/'unsafe-eval' beholdes som i prosjektet for kompatibilitet
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.in https://*.supabase.net https://*.upstash.io https://plausible.io",
+  // FIX: komplett connect-src
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io",
   "manifest-src 'self'",
   "media-src 'self'",
 ].join("; ");
@@ -28,9 +31,7 @@ function applySecurityHeaders(response: NextResponse) {
 }
 
 /**
- * Når NEXT_PUBLIC_MAINTENANCE = "1":
- *  - Alle ruter sendes til /maintenance
- *  - Unntak: /maintenance selv og Next sine statiske filer
+ * Admin-paths krever ADMIN_TOKEN (via header x-admin-token eller cookie admin-token)
  */
 function isAdminPath(pathname: string) {
   return pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
@@ -39,6 +40,7 @@ function isAdminPath(pathname: string) {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // Admin-gating
   if (isAdminPath(pathname)) {
     const expectedToken = process.env.ADMIN_TOKEN;
     if (!expectedToken) {
@@ -55,13 +57,13 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  // Vedlikeholdsmodus
   const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE === "1";
-
   if (!isMaintenance || isAdminPath(pathname)) {
     return applySecurityHeaders(NextResponse.next());
   }
 
-  // Tillat disse å gå gjennom (selve vedlikeholdssiden + Next sine filer)
+  // Tillatte paths under maintenance
   const allow =
     pathname.startsWith("/maintenance") ||
     pathname.startsWith("/_next") ||
@@ -75,14 +77,12 @@ export function middleware(req: NextRequest) {
     return applySecurityHeaders(NextResponse.next());
   }
 
-  // Alt annet: send til /maintenance
+  // Alt annet → /maintenance
   const url = req.nextUrl.clone();
   url.pathname = "/maintenance";
   return applySecurityHeaders(NextResponse.rewrite(url));
 }
 
 export const config = {
-  // Kjør middleware på alle ruter
   matcher: ["/:path*"],
 };
-

@@ -1,6 +1,8 @@
+// app/api/admin/storage/route.ts
 import { NextResponse } from "next/server";
 import { createSupabaseSignedUrl } from "../../../lib/server/supabase";
 import { captureServerException } from "../../../lib/server/observability";
+import { enforceRateLimit } from "../../../lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -8,7 +10,26 @@ function isAllowedPath(path: string) {
   return path.startsWith("cv/") || path.startsWith("cert/");
 }
 
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
+}
+
 export async function POST(req: Request) {
+  // Admin-token håndteres av middleware – her legger vi kun på enkel rate-limit
+  const ip = getClientIp(req);
+  const { allowed, resetSeconds } = await enforceRateLimit(`admin:${ip}:storage`);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too Many Requests", retryAfterSeconds: resetSeconds },
+      { status: 429, headers: { "Retry-After": String(resetSeconds) } }
+    );
+  }
+
   try {
     const form = await req.formData();
     const path = form.get("path");
