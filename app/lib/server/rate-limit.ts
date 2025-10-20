@@ -1,56 +1,24 @@
-// lib/server/rate-limit.ts
-// Distribuert rate limit via Upstash Redis: LIMIT requests per WINDOW sekunder per key (IP).
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
-const WINDOW_SECONDS = 60;
-const LIMIT = 8;
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
 
-type Rate = { allowed: boolean; resetSeconds: number };
+const limiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(8, "1 m"), // 8 requests per minute per IP
+  analytics: true,
+});
 
-function getRedisConfig() {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!url || !token) {
-    throw new Error("Missing Upstash Redis configuration");
+export async function enforceRateLimit(key: string) {
+  try {
+    const { success, reset } = await limiter.limit(key);
+    return { allowed: success, resetSeconds: Math.ceil((reset - Date.now()) / 1000) };
+  } catch (err) {
+    console.error("⚠️ Rate-limit error:", err);
+    // fallback: allow request (fails open)
+    return { allowed: true, resetSeconds: 60 };
   }
-
-  return { url, token };
-}
-
-async function callPipeline(commands: (string | number)[][]) {
-  const { url, token } = getRedisConfig();
-  const response = await fetch(`${url}/pipeline`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(commands),
-  });
-
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(`Upstash request failed: ${response.status} ${detail}`.trim());
-  }
-
-  return (await response.json()) as { result: unknown }[];
-}
-
-export async function enforceRateLimit(key: string): Promise<Rate> {
-  const redisKey = `rl:${key}`;
-
-  const results = await callPipeline([
-    ["INCR", redisKey],
-    ["EXPIRE", redisKey, WINDOW_SECONDS, "NX"],
-    ["PTTL", redisKey],
-  ]);
-
-  const count = Number(results[0]?.result ?? 0);
-  const ttlMs = Number(results[2]?.result ?? WINDOW_SECONDS * 1000);
-  const resetSeconds = ttlMs > 0 ? Math.ceil(ttlMs / 1000) : WINDOW_SECONDS;
-
-  return {
-    allowed: count <= LIMIT,
-    resetSeconds,
-  };
 }
