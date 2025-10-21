@@ -2,6 +2,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+// Streng Content Security Policy. Behold 'unsafe-inline' midlertidig for kompatibilitet.
+// Bytt til eksakt Supabase-domene (co/net) for prosjektet ditt om ønskelig.
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -9,13 +11,9 @@ const csp = [
   "frame-ancestors 'none'",
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob:",
-  // Merk: 'unsafe-inline'/'unsafe-eval' beholdes som i prosjektet for kompatibilitet
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  // FIX: komplett connect-src
   "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io",
-  "manifest-src 'self'",
-  "media-src 'self'",
 ].join("; ");
 
 function applySecurityHeaders(response: NextResponse) {
@@ -30,9 +28,7 @@ function applySecurityHeaders(response: NextResponse) {
   return response;
 }
 
-/**
- * Admin-paths krever ADMIN_TOKEN (via header x-admin-token eller cookie admin-token)
- */
+// Admin-paths krever ADMIN_TOKEN (via header x-admin-token eller cookie admin-token)
 function isAdminPath(pathname: string) {
   return pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
 }
@@ -47,40 +43,17 @@ export function middleware(req: NextRequest) {
       const response = new NextResponse("ADMIN_TOKEN ikke konfigurert", { status: 500 });
       return applySecurityHeaders(response);
     }
-
     const headerToken = req.headers.get("x-admin-token");
     const cookieToken = req.cookies.get("admin-token")?.value;
-    if (headerToken !== expectedToken && cookieToken !== expectedToken) {
+    const allow = headerToken === expectedToken || cookieToken === expectedToken;
+    if (!allow) {
       const response = new NextResponse("Unauthorized", { status: 401 });
-      response.headers.set("WWW-Authenticate", "Bearer realm=admin");
       return applySecurityHeaders(response);
     }
-  }
-
-  // Vedlikeholdsmodus
-  const isMaintenance = process.env.NEXT_PUBLIC_MAINTENANCE === "1";
-  if (!isMaintenance || isAdminPath(pathname)) {
     return applySecurityHeaders(NextResponse.next());
   }
 
-  // Tillatte paths under maintenance
-  const allow =
-    pathname.startsWith("/maintenance") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/robots.txt") ||
-    pathname.startsWith("/sitemap.xml") ||
-    pathname.startsWith("/images") ||
-    pathname.startsWith("/assets");
-
-  if (allow) {
-    return applySecurityHeaders(NextResponse.next());
-  }
-
-  // Alt annet → /maintenance
-  const url = req.nextUrl.clone();
-  url.pathname = "/maintenance";
-  return applySecurityHeaders(NextResponse.rewrite(url));
+  return applySecurityHeaders(NextResponse.next());
 }
 
 export const config = {
