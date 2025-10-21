@@ -14,9 +14,17 @@ export const STCW_MODULES = [
 ];
 
 export const HERO_POINTS = [
-  { icon: "🚢", text: "Operativ erfaring fra havbruk, fiskeri, logistikk og spesialfartøy." },
-  { icon: "⚡", text: "Rask mobilisering med ferdig kontrollert dokumentasjon og skiftplan." },
-  { icon: "🤝", text: "Bemanning og rekruttering levert av sjøfolk for sjøfolk." },
+  { icon: "🧑‍✈️", text: "Bemanning ledet av tidligere sjøfolk med kontroll på sertifikater og HMS." },
+  { icon: "⚓", text: "Sjøklart mannskap tilpasset turnus, fartøy og operasjon før avgang." },
+  { icon: "🤝", text: "Fast kontaktpunkt som følger opp både kunde og mannskap gjennom hele oppdraget." },
+];
+
+export const SOCIAL_LINKS = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/bluecrew-no/",
+    description: "Oppdateringer fra prosjekter og teamet vårt",
+  },
 ];
 
 export const BENEFITS = [

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { CONTACT_POINTS } from "../lib/constants";
+import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
 
@@ -355,11 +355,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Bluecrew AS</div>
+              <div style={sx.footerHeading}>Om Bluecrew</div>
               <p style={sx.footerText}>
-                Vi leverer erfarne sjøfolk til hele den maritime næringen. Som tidligere mannskap kjenner vi tempoet og behovene
-                langs norskekysten og offshorefelt.
+                Vi er sjøfolk som bemanner fartøy for havbruk, fiskeri, service- og spesialoperasjoner. Oppdragene løses i tett
+                dialog med kunder og mannskap for trygg drift til sjøs.
               </p>
+              <Link href="/om-oss" style={sx.footerLink}>
+                Bli kjent med teamet vårt
+              </Link>
             </div>
             <div>
               <div style={sx.footerHeading}>Kontakt</div>
@@ -381,6 +384,17 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   </li>
                 ))}
               </ul>
+            </div>
+            <div>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <div style={sx.footerSocial}>
+                {SOCIAL_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} style={sx.footerSocialLink}>
+                    <span style={sx.footerSocialLabel}>{link.label}</span>
+                    <span style={sx.footerSocialDescription}>{link.description}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
             <div>
               <div style={sx.footerHeading}>Adresse</div>
