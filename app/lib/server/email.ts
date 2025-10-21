@@ -100,21 +100,26 @@ export async function sendReceiptToSender(payload: ContactPayload) {
 
 /**
  * GENERISK helper brukt av andre API-ruter (tilbakekomp.)
- * Bruk:
- *   await sendNotificationEmail({ subject, html, replyTo: "bruker@eksempel.no" })
+ * - Lager automatisk minimal HTML hvis `html` ikke gis.
  */
 export async function sendNotificationEmail(args: {
   subject: string;
-  html: string;
+  html?: string;
   replyTo?: string | string[];
 }) {
   if (!resend || !fromEmail || toList.length === 0) return null;
+
+  const safeHtml =
+    args.html ??
+    `<div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif">
+       <p>${esc(args.subject)}</p>
+     </div>`;
 
   const result = await resend.emails.send({
     from: `Bluecrew <${fromEmail}>`,
     to: toList,
     subject: args.subject,
-    html: args.html,
+    html: safeHtml,
     replyTo: args.replyTo
       ? Array.isArray(args.replyTo)
         ? args.replyTo
