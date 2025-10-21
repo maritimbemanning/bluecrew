@@ -355,11 +355,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Bluecrew AS</div>
+              <div style={sx.footerHeading}>Om Bluecrew</div>
               <p style={sx.footerText}>
-                Vi leverer erfarne sjøfolk til hele den maritime næringen. Som tidligere mannskap kjenner vi tempoet og behovene
-                langs norskekysten og offshorefelt.
+                Bluecrew er drevet av tidligere sjøfolk som bemanner fartøy over hele kysten. Vi kombinerer operativ erfaring
+                med strukturert oppfølging av både mannskap og rederi.
               </p>
+              <Link href="/om-oss" style={sx.footerLink}>
+                Les mer om oss ↗
+              </Link>
             </div>
             <div>
               <div style={sx.footerHeading}>Kontakt</div>
@@ -389,6 +392,22 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 <br />9403 Harstad
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
+            </div>
+            <div style={sx.footerSocial}>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <ul style={sx.footerSocialList}>
+                <li>
+                  <Link
+                    href="https://www.linkedin.com/company/bluecrew-as/"
+                    style={sx.footerSocialLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span aria-hidden="true">in</span>
+                    LinkedIn
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>

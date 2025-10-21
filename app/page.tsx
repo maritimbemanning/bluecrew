@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
 import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
@@ -8,33 +9,58 @@ export default function Page() {
     <SiteLayout active="home">
       <section style={sx.hero}>
         <div style={sx.heroWrap}>
-          <div style={{ display: "grid", gap: 28, maxWidth: 720 }}>
-            <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Bemanning til sjøs</div>
-              <h1 style={sx.h1}>Mannskap og rekruttering for hele den maritime sektoren</h1>
-              <p style={sx.h1Sub}>
-                Bluecrew bemanner havbruk, fiskeri, service-, logistikk- og spesialfartøy. Vi leverer sertifiserte sjøfolk som er
-                klare fra første skift – og følger opp til oppdraget er gjennomført.
-              </p>
-              <ul style={sx.heroPoints}>
-                {HERO_POINTS.map((point) => (
-                  <li key={point.text} style={sx.heroPoint}>
-                    <span style={sx.heroPointIcon} aria-hidden="true">
-                      {point.icon}
-                    </span>
-                    <span>{point.text}</span>
-                  </li>
-                ))}
-              </ul>
-              <div style={sx.ctaRow}>
-                <Link href="/jobbsoker/registrer" style={sx.btnMain}>
-                  Registrer jobbsøker
-                </Link>
-                <Link href="/kunde/registrer-behov" style={sx.btnGhost}>
-                  Meld inn bemanningsbehov
-                </Link>
+          <div style={sx.heroGrid}>
+            <div style={{ display: "grid", gap: 28 }}>
+              <div style={sx.heroContent}>
+                <div style={sx.heroPill}>Bemanning til sjøs</div>
+                <h1 style={sx.h1}>Rett mannskap. Riktig tid. Trygg drift til sjøs.</h1>
+                <p style={sx.h1Sub}>
+                  Bluecrew leverer kvalifiserte sjøfolk til havbruk, fiskeri, service-, logistikk- og spesialfartøy. Vi følger opp
+                  menneskene om bord – ikke bare vaktene på planen.
+                </p>
+                <ul style={sx.heroPoints}>
+                  {HERO_POINTS.map((point) => (
+                    <li key={point.text} style={sx.heroPoint}>
+                      <span style={sx.heroPointIcon} aria-hidden="true">
+                        {point.icon}
+                      </span>
+                      <span>{point.text}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div style={sx.ctaRow}>
+                  <Link href="/jobbsoker/registrer" style={sx.btnMain}>
+                    Registrer jobbsøker
+                  </Link>
+                  <Link href="/kunde/registrer-behov" style={sx.btnGhost}>
+                    Meld inn bemanningsbehov
+                  </Link>
+                  <Link href="/jobbsoker/oppdrag" style={sx.btnSoft}>
+                    Se ledige stillinger
+                  </Link>
+                </div>
               </div>
             </div>
+            <aside style={sx.heroMedia}>
+              <div style={sx.heroMediaGlow} aria-hidden="true" />
+              <div style={sx.heroPhotoFrame}>
+                <div style={sx.heroPhotoBadge}>
+                  <span aria-hidden="true">🧑‍✈️</span>
+                  På oppdrag nå
+                </div>
+                <Image
+                  src="/crew-hero.svg"
+                  alt="Tre av Bluecrews sjøfolk gjør seg klare for neste skift på dekk."
+                  width={640}
+                  height={520}
+                  priority
+                  style={sx.heroPhoto}
+                />
+              </div>
+              <p style={sx.heroPhotoCaption}>
+                «Vi leverer bare folk vi selv ville hatt om bord.» – Tor Martin, bemanningsrådgiver og tidligere overstyrmann.
+              </p>
+            </aside>
           </div>
         </div>
       </section>
@@ -88,29 +114,45 @@ export default function Page() {
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
-                <li>Akvateknikere med fagbrev til land- og sjøbaserte anlegg</li>
-                <li>Båtførere for sesongtopper og rutineoperasjoner</li>
-                <li>Avlusings- og serviceteam med oppdatert sikkerhetskompetanse</li>
+                <li>Skippere, matroser og teknikere klare for oppdrett og service.</li>
+                <li>Team som håndterer avlusing, vedlikehold og døgnkontinuerlig drift.</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>⚓</div>
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
-                <li>Skippere, styrmenn og maskinister med riktige sertifikater</li>
-                <li>Erfarne dekksmannskap til kyst- og havflåten</li>
-                <li>Fabrikklag og prosesseringspersonell klare for fangstsesongen</li>
+                <li>Skippere, styrmenn og maskinister med gyldige sertifikater.</li>
+                <li>Dekkslag som kjenner sesongtopper fra kyst- og havflåten.</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🛠️</div>
               <div style={sx.cardTitle}>Service & spesialfartøy</div>
               <ul style={sx.cardList}>
-                <li>Skipsførere, overstyrmenn og maskinsjefer for servicefartøy</li>
-                <li>DP-operatører, ROV-teknikere og kranførere til subsea-oppdrag</li>
-                <li>Logistikk- og beredskapsteam for krevende operasjoner</li>
+                <li>DP-operatører, ROV-teknikere og kranførere til subsea og beredskap.</li>
+                <li>Mannskap som sikrer logistikk, riggflytting og prosjektleveranser.</li>
               </ul>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.section}>
+        <div style={sx.jobsHighlight}>
+          <span style={sx.jobsBadge}>For jobbsøkere</span>
+          <h2 style={sx.jobsTitle}>Finn din neste jobb til sjøs</h2>
+          <p style={sx.jobsText}>
+            Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
+            turnus, fartøy og mannskap som passer ambisjonene dine.
+          </p>
+          <div style={sx.jobsActions}>
+            <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
+              Se ledige stillinger
+            </Link>
+            <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
+              Registrer CV
+            </Link>
           </div>
         </div>
       </section>

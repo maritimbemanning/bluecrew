@@ -14,9 +14,9 @@ export const STCW_MODULES = [
 ];
 
 export const HERO_POINTS = [
-  { icon: "🚢", text: "Operativ erfaring fra havbruk, fiskeri, logistikk og spesialfartøy." },
-  { icon: "⚡", text: "Rask mobilisering med ferdig kontrollert dokumentasjon og skiftplan." },
-  { icon: "🤝", text: "Bemanning og rekruttering levert av sjøfolk for sjøfolk." },
+  { icon: "🧑‍✈️", text: "Sjøfolk som har stått på bro og dekk – vi vet hva som kreves om bord." },
+  { icon: "📅", text: "Rask mobilisering, planlagte skift og støtte gjennom hele oppdraget." },
+  { icon: "🤝", text: "Én kontaktflate for både rederi og mannskap når behovet endrer seg." },
 ];
 
 export const BENEFITS = [
