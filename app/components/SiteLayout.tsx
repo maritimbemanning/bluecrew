@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { CONTACT_POINTS } from "../lib/constants";
+import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
 
@@ -355,10 +355,16 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Bluecrew AS</div>
+              <div style={sx.footerHeading}>Om oss</div>
               <p style={sx.footerText}>
-                Vi leverer erfarne sjøfolk til hele den maritime næringen. Som tidligere mannskap kjenner vi tempoet og behovene
-                langs norskekysten og offshorefelt.
+                Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
+                sammen med kundene våre.
+              </p>
+              <p style={sx.footerAbout}>
+                <Link href="/om-oss" style={sx.footerLink}>
+                  Les om hvordan vi bemanner trygt og effektivt
+                </Link>{" "}
+                – møt menneskene bak leveransene.
               </p>
             </div>
             <div>
@@ -389,6 +395,26 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 <br />9403 Harstad
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
+            </div>
+            <div>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <div style={sx.footerSocials}>
+                {SOCIAL_LINKS.map((social) => (
+                  <Link
+                    key={social.href}
+                    href={social.href}
+                    style={sx.footerSocialLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${social.label} – ${social.description}`}
+                  >
+                    <span aria-hidden="true" style={sx.footerSocialIcon}>
+                      in
+                    </span>
+                    <span>{social.label}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
