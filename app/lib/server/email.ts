@@ -228,6 +228,50 @@ export async function sendClientReceipt(payload: { name?: string; email?: string
   });
 }
 
+export async function sendCandidateReceipt(payload: { name?: string; email?: string }) {
+  if (!resend || !fromEmail || !payload.email) return null;
+
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
+    <p>Hei ${esc(payload.name || "")},</p>
+    <p>Takk for at du sendte inn jobbsøkerprofilen din til Bluecrew.</p>
+    <p>Vi går gjennom informasjonen din og tar kontakt så snart vi har et oppdrag som passer.</p>
+    <p style="margin-top:20px">Hilsen Bluecrew-teamet</p>
+    <p style="color:#64748b;font-size:12px;margin-top:16px">Denne e-posten er sendt automatisk – svar gjerne hvis du har spørsmål.</p>
+  </div>`;
+
+  const result = await resend.emails.send({
+    from: `Bluecrew <${fromEmail}>`,
+    to: payload.email,
+    subject: "Takk for søknaden din til Bluecrew",
+    html,
+  });
+
+  return result;
+}
+
+export async function sendClientReceipt(payload: { name?: string; email?: string; company?: string }) {
+  if (!resend || !fromEmail || !payload.email) return null;
+
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
+    <p>Hei ${esc(payload.name || "")},</p>
+    <p>Takk for henvendelsen${payload.company ? ` fra ${esc(payload.company)}` : ""}!</p>
+    <p>Teamet vårt ser gjennom behovet og kontakter deg så snart som mulig.</p>
+    <p style="margin-top:20px">Hilsen Bluecrew-teamet</p>
+    <p style="color:#64748b;font-size:12px;margin-top:16px">Denne e-posten er sendt automatisk – svar gjerne dersom du har oppfølging.</p>
+  </div>`;
+
+  const result = await resend.emails.send({
+    from: `Bluecrew <${fromEmail}>`,
+    to: payload.email,
+    subject: "Takk for henvendelsen til Bluecrew",
+    html,
+  });
+
+  return result;
+}
+
 /**
  * GENERISK helper brukt av andre API-ruter.
  */

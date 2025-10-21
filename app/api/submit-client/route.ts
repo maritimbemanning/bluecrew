@@ -54,84 +54,54 @@ export async function POST(req: Request) {
 
     const html = buildClientHtml({ ...data, location });
 
-    await Promise.all([
-      insertSupabaseRow({
-        table: "leads",
-        payload: {
-          company: data.company,
-          contact: data.contact,
-          email: data.c_email,
-          phone: data.c_phone,
-          county: data.c_county,
-          municipality: data.c_municipality,
-          need_type: data.need_type,
-          need_duration: data.need_duration,
-          description: data.desc || null,
-          submitted_at: new Date().toISOString(),
-          source_ip: getClientIp(req),
-        },
-      }).catch((error) => {
-        captureServerException(error, { scope: "client-insert", table: "leads" });
-        console.error("⚠️ Supabase-feil (client):", error);
-      }),
-      sendNotificationEmail({
-        subject: `Bluecrew kunde: ${data.company || "(uten selskap)"}`,
-        text: lines.join("\n"),
-        html,
-        replyTo: data.c_email,
-      }).catch((error) => {
-        captureServerException(error, { scope: "client-email" });
-        console.error("❌ Sendefeil (client):", error);
-      }),
-      sendClientReceipt({
-        name: data.contact,
-        email: data.c_email,
-        company: data.company,
-      }).catch((error) => {
-        captureServerException(error, { scope: "client-receipt" });
-        console.error("⚠️ Sendte ikke kvittering (client):", error);
-      }),
-    ]);
+  const contentType = req.headers.get("content-type") || "";
+  const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
+  const isJsonPayload = contentType.includes("application/json");
 
-    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
-    if (acceptsJson) {
-      return NextResponse.json({ ok: true });
-    }
+  let form: FormData | null = null;
+  let json: Record<string, unknown> = {};
 
-    const back = new URL("/kunde/registrer-behov?sent=client", req.url);
-    return NextResponse.redirect(back, { status: 303 });
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    captureServerException(err, { scope: "client-handler" });
-    console.error("❌ Uventet feil (client):", err);
-    return new Response("FEIL: " + msg, { status: 500 });
+  if (isJsonPayload) {
+    json = (await req.json().catch(() => ({}))) as Record<string, unknown>;
+  } else {
+    form = await req.formData();
   }
-}
 
-function buildClientHtml(data: {
-  company: string;
-  contact: string;
-  c_email: string;
-  c_phone: string;
-  location?: string | null;
-  need_type: string;
-  need_duration: string;
-  desc?: string | null;
-}) {
-  return `
+  const read = (key: string) => {
+    if (form) {
+      const value = form.get(key);
+      return value == null ? "" : value.toString().trim();
+    }
+    const value = json[key];
+    return value == null ? "" : String(value).trim();
+  };
+
+  const company = read("company");
+  const contact = read("contact") || read("name");
+  const email = read("c_email") || read("email");
+  const phone = read("c_phone") || read("phone");
+  const county = read("c_county") || read("county");
+  const municipality = read("c_municipality") || read("municipality");
+  const needType = read("need_type") || read("needs");
+  const needDuration = read("need_duration") || read("duration");
+  const desc = read("desc") || read("message");
+
+  const subject = `Bluecrew kundehenvendelse: ${company || contact || "-"}`;
+  const html = `
     <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
       <h2 style="margin:0 0 8px">Ny kundehenvendelse</h2>
       <table style="border-collapse:collapse">
-        <tr><td style=\"padding:4px 8px\"><b>Kontaktperson</b></td><td style=\"padding:4px 8px\">${esc(data.contact)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.c_email)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.c_phone)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Selskap</b></td><td style=\"padding:4px 8px\">${esc(data.company)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Lokasjon</b></td><td style=\"padding:4px 8px\">${esc(data.location || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Type behov</b></td><td style=\"padding:4px 8px\">${esc(data.need_type)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Oppdragstype</b></td><td style=\"padding:4px 8px\">${esc(data.need_duration)}</td></tr>
-        <tr><td style=\"padding:4px 8px;vertical-align:top\"><b>Beskrivelse</b></td><td style=\"padding:4px 8px;white-space:pre-wrap\">${esc(
-          data.desc || "",
+        <tr><td style="padding:4px 8px"><b>Kontaktperson</b></td><td style="padding:4px 8px">${esc(contact || "-")}</td></tr>
+        <tr><td style="padding:4px 8px"><b>E-post</b></td><td style="padding:4px 8px">${esc(email || "-")}</td></tr>
+        <tr><td style="padding:4px 8px"><b>Telefon</b></td><td style="padding:4px 8px">${esc(phone || "-")}</td></tr>
+        <tr><td style="padding:4px 8px"><b>Selskap</b></td><td style="padding:4px 8px">${esc(company || "-")}</td></tr>
+        <tr><td style="padding:4px 8px"><b>Lokasjon</b></td><td style="padding:4px 8px">${esc(
+          [county, municipality].filter(Boolean).join(", ") || "-",
         )}</td></tr>
+        <tr><td style="padding:4px 8px"><b>Type behov</b></td><td style="padding:4px 8px">${esc(needType || "-")}</td></tr>
+        <tr><td style="padding:4px 8px"><b>Oppdragstype</b></td><td style="padding:4px 8px">${esc(needDuration || "-")}</td></tr>
+        <tr><td style="padding:4px 8px;vertical-align:top"><b>Beskrivelse</b></td>
+            <td style="padding:4px 8px;white-space:pre-wrap">${esc(desc || "")}</td></tr>
       </table>
     </div>
   `;
@@ -150,6 +120,16 @@ function getClientIp(req: Request) {
   return req.headers.get("x-real-ip") || "unknown";
 }
 
-function getClientKey(req: Request, prefix: string) {
-  return `${prefix}:${getClientIp(req)}`;
+  await sendClientReceipt({
+    name: contact,
+    email,
+    company,
+  });
+
+  if (acceptsJson || isJsonPayload) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const redirectUrl = new URL("/kunde?sent=client", req.url);
+  return NextResponse.redirect(redirectUrl, { status: 303 });
 }
