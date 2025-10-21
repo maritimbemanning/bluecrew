@@ -1,20 +1,48 @@
+import Image from "next/image";
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
 import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
 import { sx } from "./lib/styles";
+
+const CREW_STORIES = [
+  {
+    name: "Iselin",
+    role: "Matros på servicefartøy",
+    quote:
+      "Bluecrew følger opp før, under og etter hvert skift. Jeg føler meg sett, og kundene vet at jeg møter forberedt.",
+    image:
+      "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    name: "Tore",
+    role: "Skipper innen havbruk",
+    quote:
+      "Vi får mannskap som kjenner anlegget og rutinene. Det gjør at båten er klar når oppdraget starter.",
+    image:
+      "https://images.unsplash.com/photo-1521208914987-3424ed53b2ea?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    name: "Maja",
+    role: "Bemanningsrådgiver",
+    quote:
+      "Hver utsendelse er personlig. Vi kjenner sjøfolkene våre og matcher dem med oppdrag der de lykkes.",
+    image:
+      "https://images.unsplash.com/photo-1532974297617-c0f05fe48bff?auto=format&fit=crop&w=900&q=80",
+  },
+];
 
 export default function Page() {
   return (
     <SiteLayout active="home">
       <section style={sx.hero}>
         <div style={sx.heroWrap}>
-          <div style={{ display: "grid", gap: 28, maxWidth: 720 }}>
+          <div style={sx.heroGrid}>
             <div style={sx.heroContent}>
               <div style={sx.heroPill}>Bemanning til sjøs</div>
-              <h1 style={sx.h1}>Mannskap og rekruttering for hele den maritime sektoren</h1>
+              <h1 style={sx.h1}>Rett mannskap. Riktig tid, trygg drift til sjøs.</h1>
               <p style={sx.h1Sub}>
-                Bluecrew bemanner havbruk, fiskeri, service-, logistikk- og spesialfartøy. Vi leverer sertifiserte sjøfolk som er
-                klare fra første skift – og følger opp til oppdraget er gjennomført.
+                Bluecrew leverer kvalifisert mannskap til havbruk, fiskeri, service-, logistikk- og spesialfartøy. Vi sørger for at
+                skipene dine er bemannet trygt og effektivt fra første skift.
               </p>
               <ul style={sx.heroPoints}>
                 {HERO_POINTS.map((point) => (
@@ -33,6 +61,35 @@ export default function Page() {
                 <Link href="/kunde/registrer-behov" style={sx.btnGhost}>
                   Meld inn bemanningsbehov
                 </Link>
+                <Link href="/stillinger" style={sx.btnSecondary}>
+                  Se ledige stillinger
+                </Link>
+              </div>
+              <div style={sx.jobsBar}>
+                <span style={sx.jobsTag}>
+                  <span aria-hidden="true">🧑‍✈️</span> Jobber pågående innen havbruk, logistikk og offshore
+                </span>
+                <Link href="/jobbsoker" style={sx.ctaHelper}>
+                  Finn din neste jobb
+                </Link>
+              </div>
+            </div>
+            <div style={sx.heroMedia}>
+              <div style={sx.heroMediaImage}>
+                <Image
+                  src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80"
+                  alt="Mannskap på dekk ser utover havet"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 520px"
+                  style={{ objectFit: "cover" }}
+                  priority
+                />
+              </div>
+              <div style={sx.heroMediaOverlay}>
+                <p style={sx.heroMediaQuote}>
+                  «Folka fra Bluecrew møter forberedt, og vi får støtte hele veien. Det gir oss ro på broa.»
+                </p>
+                <span style={sx.heroMediaName}>Kunde i havbruk</span>
               </div>
             </div>
           </div>
@@ -79,38 +136,68 @@ export default function Page() {
         <div style={sx.wrapNarrow}>
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={sx.h2}>Tjenesteområder</h2>
-            <p style={sx.leadSmall}>
-              Vi bygger mannskap og finner nøkkelpersonell til fartøy og operasjoner over hele norskekysten.
-            </p>
+            <p style={sx.leadSmall}>Tre tydelige fagområder – og team som er klare når du trenger dem.</p>
           </div>
           <div style={sx.cards3}>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
               <ul style={sx.cardList}>
-                <li>Akvateknikere med fagbrev til land- og sjøbaserte anlegg</li>
-                <li>Båtførere for sesongtopper og rutineoperasjoner</li>
-                <li>Avlusings- og serviceteam med oppdatert sikkerhetskompetanse</li>
+                <li>Akvateknikere og operatører med oppdatert sertifikatportefølje.</li>
+                <li>Skippere og dekksmannskap til serviceflåte og støtteoperasjoner.</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>⚓</div>
               <div style={sx.cardTitle}>Fiskeri</div>
               <ul style={sx.cardList}>
-                <li>Skippere, styrmenn og maskinister med riktige sertifikater</li>
-                <li>Erfarne dekksmannskap til kyst- og havflåten</li>
-                <li>Fabrikklag og prosesseringspersonell klare for fangstsesongen</li>
+                <li>Skippere, styrmenn og maskinister klare for korte og lange tokt.</li>
+                <li>Erfarent dekksmannskap og fabrikkteam for fangstsesongen.</li>
               </ul>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🛠️</div>
               <div style={sx.cardTitle}>Service & spesialfartøy</div>
               <ul style={sx.cardList}>
-                <li>Skipsførere, overstyrmenn og maskinsjefer for servicefartøy</li>
-                <li>DP-operatører, ROV-teknikere og kranførere til subsea-oppdrag</li>
-                <li>Logistikk- og beredskapsteam for krevende operasjoner</li>
+                <li>Skipsførere, overstyrmenn og maskinsjefer for spesialiserte fartøy.</li>
+                <li>DP-operatører, teknikere og beredskapsteam til krevende operasjoner.</li>
               </ul>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.crewSection}>
+        <div style={sx.crewWrap}>
+          <div style={sx.crewIntro}>
+            <h2 style={sx.h2Light}>Ekte sjøfolk. Ekte historier.</h2>
+            <p style={sx.leadLight}>
+              Vi er tett på folkene våre – fra første intervju til siste turnus. Slik bygger vi relasjoner som varer og leveranser som
+              gir trygg drift.
+            </p>
+          </div>
+          <div style={sx.crewGrid}>
+            {CREW_STORIES.map((story) => (
+              <article key={story.name} style={sx.crewCard}>
+                <div style={sx.crewPortrait}>
+                  <Image
+                    src={story.image}
+                    alt={`${story.name} – ${story.role}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 320px"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <div>
+                  <div style={sx.crewCaption}>Fra feltet</div>
+                  <p style={sx.crewQuote}>“{story.quote}”</p>
+                </div>
+                <div>
+                  <p style={sx.crewName}>{story.name}</p>
+                  <p style={sx.crewRole}>{story.role}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -126,6 +213,9 @@ export default function Page() {
             <div style={sx.journeyActionRow}>
               <Link href="/jobbsoker" style={sx.journeyAction}>
                 Les mer for jobbsøkere
+              </Link>
+              <Link href="/stillinger" style={sx.journeyAction}>
+                Se ledige stillinger
               </Link>
             </div>
           </article>
