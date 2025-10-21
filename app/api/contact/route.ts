@@ -1,15 +1,20 @@
 // app/api/contact/route.ts
 import { NextResponse } from "next/server";
-import {
-  sendContactToTeam,
-  sendReceiptToSender,
-  type ContactPayload,
-} from "@/app/lib/server/email";
+import { sendNotificationEmail } from "@/app/lib/server/email";
 
 function readField(d: any, key: string) {
   const v = (d?.[key] ?? "").toString().trim();
   return v.length ? v : undefined;
 }
+
+type ContactPayload = {
+  name?: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  subject?: string;
+  message: string;
+};
 
 export async function POST(req: Request) {
   try {
@@ -27,8 +32,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Melding kan ikke være tom." }, { status: 400 });
     }
 
-    await sendContactToTeam(payload);
-    await sendReceiptToSender(payload); // valgfritt – fjern hvis du ikke vil sende kvittering
+    const lines = [
+      "NY KONTAKTFORESPØRSEL",
+      payload.name ? `Navn: ${payload.name}` : undefined,
+      payload.email ? `E-post: ${payload.email}` : undefined,
+      payload.phone ? `Telefon: ${payload.phone}` : undefined,
+      payload.company ? `Selskap: ${payload.company}` : undefined,
+      payload.subject ? `Emne: ${payload.subject}` : undefined,
+      "",
+      payload.message,
+    ].filter(Boolean);
+
+    await sendNotificationEmail({
+      subject: `Kontaktforespørsel: ${payload.subject || payload.name || "(uten emne)"}`,
+      text: lines.join("\n"),
+      replyTo: payload.email,
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {

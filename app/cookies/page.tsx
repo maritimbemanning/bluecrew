@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import SiteLayout from "../components/SiteLayout";
-import { clearConsent, getConsent, setConsent, type ConsentPrefs } from "../lib/consent";
+import { getConsent, setConsent, type ConsentPrefs, CONSENT_COOKIE } from "../lib/consent";
 
 const ui = {
   hero: {
@@ -154,7 +154,7 @@ export default function CookiesPage() {
 
   function resetConsent() {
     // Slett cookie og reload for å trigge banner på nytt
-    clearConsent();
+    document.cookie = `${CONSENT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
     window.location.reload();
   }
 

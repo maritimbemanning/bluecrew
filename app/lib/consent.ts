@@ -19,26 +19,9 @@ export function getConsent(): ConsentPrefs | null {
   }
 }
 
-function buildCookieAttributes() {
-  const attrs = ["Path=/", "SameSite=Lax"];
-  if (typeof window !== "undefined" && window.location.protocol === "https:") {
-    attrs.push("Secure");
-  }
-  return attrs;
-}
-
 export function setConsent(prefs: ConsentPrefs) {
   if (typeof document === "undefined") return;
   const value = encodeURIComponent(JSON.stringify(prefs));
-  const attrs = buildCookieAttributes();
-  attrs.push(`Max-Age=${COOKIE_MAX_AGE}`);
-  document.cookie = `${CONSENT_COOKIE}=${value}; ${attrs.join("; ")}`;
-}
-
-export function clearConsent() {
-  if (typeof document === "undefined") return;
-  const attrs = buildCookieAttributes();
-  attrs.push("Max-Age=0");
-  attrs.push("Expires=Thu, 01 Jan 1970 00:00:00 GMT");
-  document.cookie = `${CONSENT_COOKIE}=; ${attrs.join("; ")}`;
+  const maxAge = COOKIE_MAX_AGE;
+  document.cookie = `${CONSENT_COOKIE}=${value}; Path=/; Max-Age=${maxAge}; SameSite=Lax`;
 }

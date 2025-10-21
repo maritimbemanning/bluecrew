@@ -1,10 +1,7 @@
-import { NextResponse } from "next/server";
+// app/api/submit-candidate/route.ts
 import { candidateSchema, extractCandidateForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
-import {
-  sendCandidateReceipt,
-  sendNotificationEmail,
-} from "../../lib/server/email";
+import { sendNotificationEmail } from "../../lib/server/email";
 import { insertSupabaseRow, uploadSupabaseObject } from "../../lib/server/supabase";
 import {
   buildCertificatePath,
@@ -22,6 +19,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    // Rate limit per IP
     const rateKey = getClientKey(req, "candidate");
     const rate = await enforceRateLimit(rateKey);
     if (!rate.allowed) {
@@ -31,21 +29,26 @@ export async function POST(req: Request) {
       });
     }
 
-    const formData = await req.formData();
-    const { values, files } = extractCandidateForm(formData);
+    // Parse form
+    const fd = await req.formData();
+    const { values, files } = extractCandidateForm(fd);
 
+    // Honeypot
     if (values.honey) {
       return new Response(null, { status: 204 });
     }
 
+    // Valider felt
     const parsed = candidateSchema.safeParse(values);
     if (!parsed.success) {
-      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      const message =
+        parsed.error.issues.map((issue: { message: string }) => issue.message).join("; ") ||
+        "Ugyldige felter";
       return new Response(`FEIL: ${message}`, { status: 400 });
     }
-
     const data = parsed.data;
 
+    // ---- Filer (CV: påkrevd, PDF <= 10MB) ----
     const cvFile = files.cv;
     if (!cvFile || typeof cvFile === "string" || cvFile.size === 0) {
       return new Response("FEIL: CV (PDF) er påkrevd", { status: 400 });
@@ -76,6 +79,7 @@ export async function POST(req: Request) {
       return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
     }
 
+    // Bygg e-postvedlegg (base64 for Resend REST API)
     const attachments: { filename: string; content: string; contentType?: string }[] = [
       {
         filename: cvFile.name || "CV.pdf",
@@ -84,14 +88,15 @@ export async function POST(req: Request) {
       },
     ];
 
+    // Sertifikater (valgfritt, PDF/ZIP/DOC/DOCX, <= 10MB)
     const certsFile = files.certs;
     if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
       if (certsFile.size > 10 * 1024 * 1024) {
         return new Response("FEIL: Vedlegg for stort (maks 10 MB)", { status: 400 });
       }
       const allowed = [".pdf", ".zip", ".doc", ".docx"];
-      const lowerName = (certsFile.name || "sertifikater").toLowerCase();
-      if (!allowed.some((ext) => lowerName.endsWith(ext))) {
+      const nm = (certsFile.name || "sertifikater").toLowerCase();
+      if (!allowed.some((ext) => nm.endsWith(ext))) {
         return new Response("FEIL: Vedlegg må være PDF, ZIP eller DOC/DOCX", { status: 400 });
       }
       const ext = extractExtension(certsFile.name || "") || ".pdf";
@@ -116,6 +121,7 @@ export async function POST(req: Request) {
       });
     }
 
+    // Tekst-oppsummering til e-post
     const stcwSummary =
       data.stcw_has === "ja"
         ? `Ja${data.stcw_mod?.length ? ` (${data.stcw_mod.join(", ")})` : ""}`
@@ -152,13 +158,7 @@ export async function POST(req: Request) {
       data.other_comp || "-",
     ];
 
-    const html = buildHtmlSummary({
-      ...data,
-      stcwSummary,
-      deckSummary,
-      location,
-    });
-
+    // Sidelagring + e-post i parallell (e-post feiler ikke innsending)
     await Promise.all([
       insertSupabaseRow({
         table: "candidates",
@@ -187,29 +187,17 @@ export async function POST(req: Request) {
       sendNotificationEmail({
         subject: `Bluecrew jobbsøker: ${data.name || "(uten navn)"}`,
         text: lines.join("\n"),
-        html,
         replyTo: data.email,
         attachments,
       }).catch((error) => {
         captureServerException(error, { scope: "candidate-email" });
         console.error("❌ Sendefeil (candidate):", error);
       }),
-      sendCandidateReceipt({
-        name: data.name,
-        email: data.email,
-      }).catch((error) => {
-        captureServerException(error, { scope: "candidate-receipt" });
-        console.error("⚠️ Sendte ikke kvittering (candidate):", error);
-      }),
     ]);
 
-    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
-    if (acceptsJson) {
-      return NextResponse.json({ ok: true });
-    }
-
+    // Suksess → redirect til takk-side
     const back = new URL("/jobbsoker/registrer?sent=worker", req.url);
-    return NextResponse.redirect(back, { status: 303 });
+    return Response.redirect(back, 303);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     captureServerException(err, { scope: "candidate-handler" });
@@ -218,72 +206,7 @@ export async function POST(req: Request) {
   }
 }
 
-function buildHtmlSummary(data: {
-  name?: string;
-  email?: string;
-  phone?: string;
-  county?: string | null;
-  municipality?: string | null;
-  available_from?: string | null;
-  wants_temporary?: string | null;
-  stcw_has?: string | null;
-  stcw_mod?: string[] | null;
-  deck_has?: string | null;
-  deck_class?: string | null;
-  work_main?: string[] | null;
-  skills?: string | null;
-  other_comp?: string | null;
-  stcwSummary: string;
-  deckSummary: string;
-  location: string;
-}) {
-  const workList = (data.work_main ?? [])
-    .map((entry) => {
-      const [main, sub] = entry.split(":");
-      const subLabel = sub ? ` – ${esc(sub)}` : "";
-      return `<li>${esc(main)}${subLabel}</li>`;
-    })
-    .join("");
-
-  return `
-    <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-      <h2 style="margin:0 0 8px">Ny jobbsøker</h2>
-      <table style="border-collapse:collapse">
-        <tr><td style=\"padding:4px 8px\"><b>Navn</b></td><td style=\"padding:4px 8px\">${esc(data.name || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.email || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.phone || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Bosted</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>STCW</b></td><td style=\"padding:4px 8px\">${esc(data.stcwSummary)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Dekksoffiser</b></td><td style=\"padding:4px 8px\">${esc(data.deckSummary)}</td></tr>
-      </table>
-      <div style="margin-top:16px">
-        <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>
-        ${workList ? `<ul style=\"margin:0 0 12px;padding-left:18px\">${workList}</ul>` : "<p>Ingen valg</p>"}
-      </div>
-      ${
-        data.skills
-          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Kompetanse</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.skills,
-            )}</p></div>`
-          : ""
-      }
-      ${
-        data.other_comp
-          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Andre kommentarer</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.other_comp,
-            )}</p></div>`
-          : ""
-      }
-    </div>
-  `;
-}
-
-function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
-}
-
+// ---- Hjelpere ----
 function getClientIp(req: Request) {
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) {
@@ -292,7 +215,6 @@ function getClientIp(req: Request) {
   }
   return req.headers.get("x-real-ip") || "unknown";
 }
-
 function getClientKey(req: Request, prefix: string) {
   return `${prefix}:${getClientIp(req)}`;
 }
