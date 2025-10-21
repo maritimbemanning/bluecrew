@@ -1,44 +1,12 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
+import PlausibleLoader from "./components/PlausibleLoader";
 
 const title = "Bluecrew AS – Maritim bemanning";
 const description =
   "Bluecrew AS leverer erfarne sjøfolk og komplette bemanningsløsninger til havbruk, fiskeri og servicefartøy.";
-
-const iconMarkup = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Bluecrew ikon">
-    <defs>
-      <linearGradient id="bcIconBg" x1="12%" y1="0%" x2="88%" y2="100%">
-        <stop offset="0%" stop-color="#0f1f3d" />
-        <stop offset="45%" stop-color="#13406f" />
-        <stop offset="100%" stop-color="#38bdf8" />
-      </linearGradient>
-      <linearGradient id="bcIconWave" x1="0%" y1="100%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#38bdf8" />
-        <stop offset="100%" stop-color="#0ea5e9" />
-      </linearGradient>
-    </defs>
-    <rect width="64" height="64" rx="16" fill="url(#bcIconBg)" />
-    <path
-      d="M20 14h13.2c9 0 15.8 5.2 15.8 12.8 0 6.7-4.8 11.4-12 12.4 4.4.9 6.8 3.7 6.8 7.7 0 6.4-5.1 10.9-12.9 10.9H20V14Zm12.1 18.4c5.2 0 8.6-2.8 8.6-6.9 0-4.4-3.4-6.8-9.2-6.8H25.7v13.7H32.1Zm-.8 19.9c5.3 0 8.7-2.4 8.7-6.6 0-4.2-3.3-6.5-9.6-6.5H25.7v13.1h5.6Z"
-      fill="#f8fafc"
-      opacity="0.92"
-    />
-    <path
-      d="M8 44c6.6-3.1 14.7-5.1 22.3-5.1 8.2 0 15 2 20.8 5.1 4.1 2.2 10.3 2.6 13.9.3C60 52.9 50.4 58 39.1 58 27.1 58 16 52.9 8 44Z"
-      fill="url(#bcIconWave)"
-      opacity="0.85"
-    />
-    <circle cx="48" cy="14" r="5" fill="#facc15" stroke="#f8fafc" stroke-width="1.5" />
-  </svg>
-`;
-
-const iconDataUrl = `data:image/svg+xml,${encodeURIComponent(iconMarkup)}`;
-
-const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 export const metadata: Metadata = {
   title: {
@@ -50,57 +18,21 @@ export const metadata: Metadata = {
     "bemanning",
     "maritim bemanning",
     "havbruk",
-    "servicefartøy",
     "fiskeri",
-    "Bluecrew",
+    "servicefartøy",
+    "vikarbyrå",
+    "rekruttering",
   ],
-  openGraph: {
-    title,
-    description,
-    type: "website",
-    siteName: "Bluecrew AS",
-    locale: "nb_NO",
-    url: "https://bluecrew.no",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title,
-    description,
-  },
-  icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
-      { url: iconDataUrl, type: "image/svg+xml", sizes: "any" },
-    ],
-    shortcut: [
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "any" },
-      { url: iconDataUrl, type: "image/svg+xml", sizes: "any" },
-    ],
-    apple: [
-      { url: "/icon.svg", type: "image/svg+xml", sizes: "180x180" },
-      { url: iconDataUrl, type: "image/svg+xml", sizes: "180x180" },
-    ],
-  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"),
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="no">
       <body>
         {children}
         <CookieBanner />
-        {plausibleDomain ? (
-          <Script
-            defer
-            data-domain={plausibleDomain}
-            src="https://plausible.io/js/script.js"
-            strategy="afterInteractive"
-          />
-        ) : null}
+        <PlausibleLoader />
       </body>
     </html>
   );
