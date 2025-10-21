@@ -88,6 +88,26 @@ export default function Page() {
                 <span style={sx.heroQuoteMeta}>Karoline, bemanningsleder</span>
               </div>
             </div>
+            <aside style={sx.heroMedia}>
+              <div style={sx.heroMediaGlow} aria-hidden="true" />
+              <div style={sx.heroPhotoFrame}>
+                <div style={sx.heroPhotoBadge}>
+                  <span aria-hidden="true">🧑‍✈️</span>
+                  På oppdrag nå
+                </div>
+                <Image
+                  src="/crew-hero.svg"
+                  alt="Tre av Bluecrews sjøfolk gjør seg klare for neste skift på dekk."
+                  width={640}
+                  height={520}
+                  priority
+                  style={sx.heroPhoto}
+                />
+              </div>
+              <p style={sx.heroPhotoCaption}>
+                «Vi leverer bare folk vi selv ville hatt om bord.» – Tor Martin, bemanningsrådgiver og tidligere overstyrmann.
+              </p>
+            </aside>
           </div>
         </div>
       </section>
@@ -196,6 +216,25 @@ export default function Page() {
                 </div>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.section}>
+        <div style={sx.jobsHighlight}>
+          <span style={sx.jobsBadge}>For jobbsøkere</span>
+          <h2 style={sx.jobsTitle}>Finn din neste jobb til sjøs</h2>
+          <p style={sx.jobsText}>
+            Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
+            turnus, fartøy og mannskap som passer ambisjonene dine.
+          </p>
+          <div style={sx.jobsActions}>
+            <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
+              Se ledige stillinger
+            </Link>
+            <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
+              Registrer CV
+            </Link>
           </div>
         </div>
       </section>

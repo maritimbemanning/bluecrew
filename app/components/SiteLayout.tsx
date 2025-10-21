@@ -404,6 +404,22 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
             </div>
+            <div style={sx.footerSocial}>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <ul style={sx.footerSocialList}>
+                <li>
+                  <Link
+                    href="https://www.linkedin.com/company/bluecrew-as/"
+                    style={sx.footerSocialLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <span aria-hidden="true">in</span>
+                    LinkedIn
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
             <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
