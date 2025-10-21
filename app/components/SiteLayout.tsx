@@ -366,6 +366,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 </Link>{" "}
                 – møt menneskene bak leveransene.
               </p>
+              <Link href="/om-oss" style={sx.footerLink}>
+                Bli kjent med teamet vårt
+              </Link>
             </div>
             <div>
               <div style={sx.footerHeading}>Kontakt</div>
@@ -387,6 +390,17 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   </li>
                 ))}
               </ul>
+            </div>
+            <div>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <div style={sx.footerSocial}>
+                {SOCIAL_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} style={sx.footerSocialLink}>
+                    <span style={sx.footerSocialLabel}>{link.label}</span>
+                    <span style={sx.footerSocialDescription}>{link.description}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
             <div>
               <div style={sx.footerHeading}>Adresse</div>

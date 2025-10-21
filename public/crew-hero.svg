@@ -1,0 +1,50 @@
+<svg width="640" height="520" viewBox="0 0 640 520" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Bluecrew maritime staffing team</title>
+  <desc id="desc">Illustration of three maritime crew members standing together on a pier with a vessel in the background.</desc>
+  <defs>
+    <linearGradient id="sky" x1="320" y1="0" x2="320" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f172a" />
+      <stop offset="1" stop-color="#1d3a6b" />
+    </linearGradient>
+    <linearGradient id="sea" x1="320" y1="280" x2="320" y2="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b2647" />
+      <stop offset="1" stop-color="#0f476c" />
+    </linearGradient>
+    <linearGradient id="highlight" x1="120" y1="80" x2="520" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.45" />
+      <stop offset="1" stop-color="#0ea5e9" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="640" height="520" rx="32" fill="url(#sky)" />
+  <rect y="280" width="640" height="240" fill="url(#sea)" />
+  <path d="M520 310L620 320L640 380L520 360Z" fill="#1a365d" />
+  <path d="M440 300L520 310L520 360L440 340Z" fill="#13294a" />
+  <path d="M480 250C480 250 528 238 556 244C584 250 612 272 612 272L560 300L480 290V250Z" fill="#1f3f68" />
+  <path d="M0 360H640" stroke="rgba(148, 197, 255, 0.35)" stroke-width="3" stroke-dasharray="10 14" />
+  <circle cx="140" cy="140" r="88" fill="url(#highlight)" />
+  <g transform="translate(96 200)">
+    <path d="M52 0C38 0 24 12 24 30C24 45 36 56 52 56C68 56 80 45 80 30C80 12 66 0 52 0Z" fill="#f8fafc" />
+    <path d="M28 58H76V74C76 84 68 92 58 92H46C36 92 28 84 28 74V58Z" fill="#1f3f68" />
+    <path d="M20 74H84L96 166H8L20 74Z" fill="#1a365d" />
+    <path d="M8 166H96V196H8V166Z" fill="#0f2442" />
+    <path d="M0 196H104V212H0V196Z" fill="#0b2036" />
+  </g>
+  <g transform="translate(256 168)">
+    <path d="M60 0C44 0 30 14 30 34C30 52 42 66 60 66C78 66 90 52 90 34C90 14 76 0 60 0Z" fill="#f1f5f9" />
+    <path d="M32 74H88L104 210H16L32 74Z" fill="#2563eb" />
+    <path d="M24 54H96L104 74H16L24 54Z" fill="#1d4ed8" />
+    <path d="M16 210H104V236H16V210Z" fill="#172554" />
+    <path d="M8 236H112V252H8V236Z" fill="#0f172a" />
+  </g>
+  <g transform="translate(408 204)">
+    <path d="M56 0C42 0 30 12 30 30C30 46 42 58 56 58C70 58 82 46 82 30C82 12 70 0 56 0Z" fill="#f8fafc" />
+    <path d="M24 60H88L96 96H16L24 60Z" fill="#1d4ed8" />
+    <path d="M12 96H100L92 168H20L12 96Z" fill="#0f3c71" />
+    <path d="M20 168H92V196H20V168Z" fill="#0c305b" />
+    <path d="M12 196H100V212H12V196Z" fill="#0b2543" />
+  </g>
+  <path d="M120 428H520" stroke="rgba(148, 197, 255, 0.22)" stroke-width="2" stroke-linecap="round" />
+  <circle cx="164" cy="448" r="12" fill="#38bdf8" />
+  <circle cx="212" cy="448" r="8" fill="#60a5fa" />
+  <circle cx="260" cy="448" r="6" fill="#93c5fd" />
+</svg>

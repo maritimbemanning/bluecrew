@@ -4,6 +4,30 @@ import SiteLayout from "./components/SiteLayout";
 import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
 import { sx } from "./lib/styles";
 
+const crewStories = [
+  {
+    name: "Mats",
+    role: "Skipper på servicefartøy",
+    quote:
+      "Bluecrew sørger for at teamet er klart før vi legger fra kai. Dokumentasjon, reiser og avløsere er avklart i god tid.",
+    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    name: "Selma",
+    role: "Rekrutteringsrådgiver",
+    quote:
+      "Vi kjenner sjøfolkene våre ved navn og følger dem tett gjennom hvert oppdrag. Det gir trygghet både for kandidat og kunde.",
+    image: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    name: "Jonas",
+    role: "Matros innen havbruk",
+    quote:
+      "Oppdragene passer kompetansen min, og jeg får raske svar når turnusen endres. Det merkes at Bluecrew selv kommer fra sjøen.",
+    image: "https://images.unsplash.com/photo-1500043201424-482c8263b48d?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
 export default function Page() {
   return (
     <SiteLayout active="home">
@@ -62,6 +86,26 @@ export default function Page() {
                 </div>
               </div>
             </div>
+            <aside style={sx.heroMedia}>
+              <div style={sx.heroMediaGlow} aria-hidden="true" />
+              <div style={sx.heroPhotoFrame}>
+                <div style={sx.heroPhotoBadge}>
+                  <span aria-hidden="true">🧑‍✈️</span>
+                  På oppdrag nå
+                </div>
+                <Image
+                  src="/crew-hero.svg"
+                  alt="Tre av Bluecrews sjøfolk gjør seg klare for neste skift på dekk."
+                  width={640}
+                  height={520}
+                  priority
+                  style={sx.heroPhoto}
+                />
+              </div>
+              <p style={sx.heroPhotoCaption}>
+                «Vi leverer bare folk vi selv ville hatt om bord.» – Tor Martin, bemanningsrådgiver og tidligere overstyrmann.
+              </p>
+            </aside>
           </div>
         </div>
       </section>
@@ -148,7 +192,7 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={sx.h2}>Tjenesteområder</h2>
             <p style={sx.leadSmall}>
-              Vi bygger mannskap og finner nøkkelpersonell til fartøy og operasjoner over hele norskekysten.
+              Vi bemanner fartøy og operasjoner langs hele norskekysten – med mannskap som er klare fra første skift.
             </p>
           </div>
           <div style={sx.cards3}>
@@ -176,6 +220,62 @@ export default function Page() {
                 <li>Logistikk- og beredskapsteam for krevende operasjoner.</li>
               </ul>
             </article>
+          </div>
+          <div style={{ marginTop: 32, display: "flex", justifyContent: "center" }}>
+            <Link href="/kunde/bemanning" style={sx.btnSecondary}>
+              Se hvordan vi bemanner
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={{ display: "grid", gap: 18, textAlign: "center" }}>
+            <span style={sx.teamAccent}>Menneskene i Bluecrew</span>
+            <h2 style={sx.h2}>Virkelige sjøfolk. Virkelige historier.</h2>
+            <p style={sx.leadSmall}>
+              Vi møter kundene med folk som har vært på dekk selv. Slik bygger vi tillit og leverer mannskap som fungerer fra dag én.
+            </p>
+          </div>
+          <div style={sx.teamGrid}>
+            {crewStories.map((story) => (
+              <article key={story.name} style={sx.teamCard}>
+                <div style={sx.teamPortrait}>
+                  <Image
+                    src={story.image}
+                    alt={`${story.name} – ${story.role}`}
+                    fill
+                    sizes="(min-width: 1024px) 320px, 90vw"
+                    style={{ objectFit: "cover" }}
+                  />
+                </div>
+                <p style={sx.teamQuote}>“{story.quote}”</p>
+                <div style={sx.teamMeta}>
+                  <span style={sx.teamName}>{story.name}</span>
+                  <span style={sx.teamRole}>{story.role}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={sx.section}>
+        <div style={sx.jobsHighlight}>
+          <span style={sx.jobsBadge}>For jobbsøkere</span>
+          <h2 style={sx.jobsTitle}>Finn din neste jobb til sjøs</h2>
+          <p style={sx.jobsText}>
+            Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
+            turnus, fartøy og mannskap som passer ambisjonene dine.
+          </p>
+          <div style={sx.jobsActions}>
+            <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
+              Se ledige stillinger
+            </Link>
+            <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
+              Registrer CV
+            </Link>
           </div>
         </div>
       </section>
