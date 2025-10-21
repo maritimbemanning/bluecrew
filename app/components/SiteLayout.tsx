@@ -5,7 +5,6 @@ import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, us
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
-import Logo from "./Logo";
 
 type NavChild = { href: string; label: string; description?: string };
 type NavItem = {
@@ -171,12 +170,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           <Link
             href="/"
             style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
-            aria-label="Bluecrew forside"
+            aria-label="Bluecrew – bemanning til sjøs"
           >
-            <Logo size={40} />
-            <div style={sx.logoBox}>
-              <div style={sx.logoBrand}>Bluecrew</div>
-              <div style={sx.logoSlogan}>Bemanning til sjøs</div>
+            <div style={sx.brandMark}>
+              <span style={sx.brandWordmark}>Bluecrew</span>
+              <span style={sx.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
           <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
@@ -282,12 +280,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     >
                       <div style={sx.mobileSheetHeader}>
                         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <Logo size={32} />
-                          <div style={sx.logoBox}>
-                            <div style={sx.logoBrand} id="mobile-nav-title">
+                          <div style={sx.brandMarkMobile}>
+                            <span style={sx.brandWordmarkMobile} id="mobile-nav-title">
                               Bluecrew
-                            </div>
-                            <div style={sx.logoSlogan}>Bemanning til sjøs</div>
+                            </span>
+                            <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
                           </div>
                         </div>
                         <button
