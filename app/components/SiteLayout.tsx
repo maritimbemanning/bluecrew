@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { CONTACT_POINTS } from "../lib/constants";
+import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import Logo from "./Logo";
 
@@ -357,11 +357,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             <div>
               <div style={sx.footerHeading}>Om Bluecrew</div>
               <p style={sx.footerText}>
-                Bluecrew er drevet av tidligere sjøfolk som bemanner fartøy over hele kysten. Vi kombinerer operativ erfaring
-                med strukturert oppfølging av både mannskap og rederi.
+                Vi er sjøfolk som bemanner fartøy for havbruk, fiskeri, service- og spesialoperasjoner. Oppdragene løses i tett
+                dialog med kunder og mannskap for trygg drift til sjøs.
               </p>
               <Link href="/om-oss" style={sx.footerLink}>
-                Les mer om oss ↗
+                Bli kjent med teamet vårt
               </Link>
             </div>
             <div>
@@ -384,6 +384,17 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   </li>
                 ))}
               </ul>
+            </div>
+            <div>
+              <div style={sx.footerHeading}>Følg oss</div>
+              <div style={sx.footerSocial}>
+                {SOCIAL_LINKS.map((link) => (
+                  <Link key={link.href} href={link.href} style={sx.footerSocialLink}>
+                    <span style={sx.footerSocialLabel}>{link.label}</span>
+                    <span style={sx.footerSocialDescription}>{link.description}</span>
+                  </Link>
+                ))}
+              </div>
             </div>
             <div>
               <div style={sx.footerHeading}>Adresse</div>

@@ -14,9 +14,17 @@ export const STCW_MODULES = [
 ];
 
 export const HERO_POINTS = [
-  { icon: "🧑‍✈️", text: "Sjøfolk som har stått på bro og dekk – vi vet hva som kreves om bord." },
-  { icon: "📅", text: "Rask mobilisering, planlagte skift og støtte gjennom hele oppdraget." },
-  { icon: "🤝", text: "Én kontaktflate for både rederi og mannskap når behovet endrer seg." },
+  { icon: "🧑‍✈️", text: "Bemanning ledet av tidligere sjøfolk med kontroll på sertifikater og HMS." },
+  { icon: "⚓", text: "Sjøklart mannskap tilpasset turnus, fartøy og operasjon før avgang." },
+  { icon: "🤝", text: "Fast kontaktpunkt som følger opp både kunde og mannskap gjennom hele oppdraget." },
+];
+
+export const SOCIAL_LINKS = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/bluecrew-no/",
+    description: "Oppdateringer fra prosjekter og teamet vårt",
+  },
 ];
 
 export const BENEFITS = [
