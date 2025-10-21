@@ -65,15 +65,16 @@ export default function Page() {
             <div style={sx.heroMedia}>
               <div style={sx.heroMediaFrame}>
                 <Image
-                  src="/crew-collage.svg"
-                  alt="Illustrasjon av Bluecrew-mannskap i arbeid"
-                  width={480}
+                  src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+                  alt="Mannskap på dekk som gjør klar fortøyning"
+                  width={520}
                   height={360}
                   priority
+                  style={{ objectFit: "cover", borderRadius: 18 }}
                 />
               </div>
               <p style={sx.heroMediaCaption}>
-                Menneskene i Bluecrew har selv stått på bro, dekk og maskin – vi bemanner med innsikt fra sjøen.
+                Bildene er hentet fra virkelige oppdrag og viser folkene som møter kundene våre til sjøs.
               </p>
               <div style={sx.heroStatRow}>
                 <div style={sx.heroStatChip}>
@@ -94,8 +95,8 @@ export default function Page() {
                   På oppdrag nå
                 </div>
                 <Image
-                  src="/crew-hero.svg"
-                  alt="Tre av Bluecrews sjøfolk gjør seg klare for neste skift på dekk."
+                  src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=80"
+                  alt="Tre sjøfolk gjør klar utstyr på dekk"
                   width={640}
                   height={520}
                   priority
@@ -192,33 +193,30 @@ export default function Page() {
           <div style={{ textAlign: "center", marginBottom: 36 }}>
             <h2 style={sx.h2}>Tjenesteområder</h2>
             <p style={sx.leadSmall}>
-              Vi bemanner fartøy og operasjoner langs hele norskekysten – med mannskap som er klare fra første skift.
+              Vi bemanner fartøy og operasjoner langs hele norskekysten med sertifisert personell på kort varsel.
             </p>
           </div>
           <div style={sx.cards3}>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🐟</div>
               <div style={sx.cardTitle}>Havbruk</div>
-              <ul style={sx.cardListTerse}>
-                <li>Skippere og båtførere klare for produksjon og service.</li>
-                <li>Akvateknikere og operatører med oppdatert HMS.</li>
-              </ul>
+              <p style={sx.cardListLead}>
+                Skippere, båtførere og akvateknikere som kjenner linjene, rutinene og HMS-kravene dine.
+              </p>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>⚓</div>
               <div style={sx.cardTitle}>Fiskeri</div>
-              <ul style={sx.cardListTerse}>
-                <li>Styrmenn og maskinister med dokumentert fartstid.</li>
-                <li>Matroser og fabrikkpersonell klare for sesong.</li>
-              </ul>
+              <p style={sx.cardListLead}>
+                Styrmenn, maskinister og matroser med dokumentert fartstid og oppdatert sikkerhetstrening.
+              </p>
             </article>
             <article style={sx.cardService}>
               <div style={sx.cardIcon}>🛠️</div>
               <div style={sx.cardTitle}>Service & spesialfartøy</div>
-              <ul style={sx.cardListTerse}>
-                <li>ROV-, kran- og DP-personell med gyldige sertifikat.</li>
-                <li>Logistikk- og beredskapsteam for krevende operasjoner.</li>
-              </ul>
+              <p style={sx.cardListLead}>
+                ROV-, kran- og DP-personell samt logistikkteam som holder prosjektet trygt i gang.
+              </p>
             </article>
           </div>
           <div style={{ marginTop: 32, display: "flex", justifyContent: "center" }}>
@@ -276,28 +274,6 @@ export default function Page() {
             <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
               Registrer CV
             </Link>
-          </div>
-        </div>
-      </section>
-
-      <section style={sx.sectionAlt}>
-        <div style={sx.jobStripWrap}>
-          <div style={sx.jobStrip}>
-            <div style={sx.jobStripContent}>
-              <h2 style={sx.jobStripTitle}>Finn din neste jobb til sjøs</h2>
-              <p style={sx.jobStripText}>
-                Vi publiserer oppdrag fortløpende og matcher deg med rederier som trenger kompetansen din. Oppdater preferansene dine
-                når som helst.
-              </p>
-            </div>
-            <div style={sx.jobStripActions}>
-              <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
-                Se ledige stillinger
-              </Link>
-              <Link href="/jobbsoker/registrer" style={sx.btnOutline}>
-                Registrer CV
-              </Link>
-            </div>
           </div>
         </div>
       </section>

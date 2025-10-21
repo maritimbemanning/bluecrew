@@ -6,14 +6,27 @@ import {
   type ContactPayload,
 } from "@/app/lib/server/email";
 
-function readField(d: any, key: string) {
-  const v = (d?.[key] ?? "").toString().trim();
-  return v.length ? v : undefined;
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function readField(data: Record<string, unknown>, key: string) {
+  const value = data[key];
+  const formatted =
+    typeof value === "string"
+      ? value
+      : typeof value === "number" || typeof value === "boolean"
+      ? value.toString()
+      : "";
+
+  const trimmed = formatted.trim();
+  return trimmed.length ? trimmed : undefined;
 }
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json().catch(() => ({}));
+    const unknownData = (await req.json().catch(() => ({}))) as unknown;
+    const data = isRecord(unknownData) ? unknownData : {};
     const payload: ContactPayload = {
       name: readField(data, "name"),
       email: readField(data, "email"),

@@ -32,12 +32,16 @@ export default async function AdminPage() {
             </thead>
             <tbody>
               {Array.isArray(candidates) && candidates.length > 0 ? (
-                candidates.map((c: any) => (
-                  <tr key={c.id}>
-                    <td style={td}>{c.name || "-"}</td>
-                    <td style={td}>{c.email || "-"}</td>
-                    <td style={td}>{c.phone || "-"}</td>
-                    <td style={td}>{c.created_at ? new Date(c.created_at).toLocaleString("no-NO") : "-"}</td>
+                candidates.map((candidate) => (
+                  <tr key={candidate.id}>
+                    <td style={td}>{candidate.name || "-"}</td>
+                    <td style={td}>{candidate.email || "-"}</td>
+                    <td style={td}>{candidate.phone || "-"}</td>
+                    <td style={td}>
+                      {candidate.created_at
+                        ? new Date(candidate.created_at).toLocaleString("no-NO")
+                        : "-"}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -65,13 +69,17 @@ export default async function AdminPage() {
             </thead>
             <tbody>
               {Array.isArray(leads) && leads.length > 0 ? (
-                leads.map((l: any) => (
-                  <tr key={l.id}>
-                    <td style={td}>{l.name || "-"}</td>
-                    <td style={td}>{l.email || "-"}</td>
-                    <td style={td}>{l.phone || "-"}</td>
-                    <td style={td}>{l.company || "-"}</td>
-                    <td style={td}>{l.created_at ? new Date(l.created_at).toLocaleString("no-NO") : "-"}</td>
+                leads.map((lead) => (
+                  <tr key={lead.id}>
+                    <td style={td}>{lead.name || "-"}</td>
+                    <td style={td}>{lead.email || "-"}</td>
+                    <td style={td}>{lead.phone || "-"}</td>
+                    <td style={td}>{lead.company || "-"}</td>
+                    <td style={td}>
+                      {lead.created_at
+                        ? new Date(lead.created_at).toLocaleString("no-NO")
+                        : "-"}
+                    </td>
                   </tr>
                 ))
               ) : (

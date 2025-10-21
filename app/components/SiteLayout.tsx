@@ -360,12 +360,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
                 sammen med kundene våre.
               </p>
-              <p style={sx.footerAbout}>
-                <Link href="/om-oss" style={sx.footerLink}>
-                  Les om hvordan vi bemanner trygt og effektivt
-                </Link>{" "}
-                – møt menneskene bak leveransene.
-              </p>
               <Link href="/om-oss" style={sx.footerLink}>
                 Bli kjent med teamet vårt
               </Link>
@@ -393,25 +387,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
             </div>
             <div>
               <div style={sx.footerHeading}>Følg oss</div>
-              <div style={sx.footerSocial}>
-                {SOCIAL_LINKS.map((link) => (
-                  <Link key={link.href} href={link.href} style={sx.footerSocialLink}>
-                    <span style={sx.footerSocialLabel}>{link.label}</span>
-                    <span style={sx.footerSocialDescription}>{link.description}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div style={sx.footerHeading}>Adresse</div>
-              <p style={sx.footerText}>
-                Østenbekkveien 43
-                <br />9403 Harstad
-              </p>
-              <p style={sx.footerText}>Org.nr: 936 321 194</p>
-            </div>
-            <div>
-              <div style={sx.footerHeading}>Følg oss</div>
               <div style={sx.footerSocials}>
                 {SOCIAL_LINKS.map((social) => (
                   <Link
@@ -430,13 +405,44 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 ))}
               </div>
             </div>
+            <div>
+              <div style={sx.footerHeading}>Retningslinjer</div>
+              <ul style={sx.footerList}>
+                <li style={sx.footerListItem}>
+                  <Link href="/personvern" style={sx.footerLink}>
+                    Personvern og GDPR
+                  </Link>
+                </li>
+                <li style={sx.footerListItem}>
+                  <Link href="/vilkar" style={sx.footerLink}>
+                    Vilkår for kandidater
+                  </Link>
+                </li>
+                <li style={sx.footerListItem}>
+                  <Link href="/cookies" style={sx.footerLink}>
+                    Informasjonskapsler
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div style={sx.footerHeading}>Adresse</div>
+              <p style={sx.footerText}>
+                Østenbekkveien 43
+                <br />9403 Harstad
+              </p>
+              <p style={sx.footerText}>Org.nr: 936 321 194</p>
+            </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
             <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
               Vanlige spørsmål
             </Link>
           </div>
-          <div style={sx.footerLegal}>© {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs</div>
+          <div style={sx.footerLegal}>
+            © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov
+            og veiledning fra Datatilsynet i all behandling av kandidatdata.
+          </div>
         </div>
       </footer>
     </div>
