@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItem[] = [
     key: "jobbsoker",
     children: [
       { href: "/jobbsoker/registrer", label: "Registrer deg" },
-      { href: "/jobbsoker/oppdrag", label: "Oppdrag" },
+      { href: "/stillinger", label: "Stillinger" },
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
@@ -355,11 +355,20 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Bluecrew AS</div>
-              <p style={sx.footerText}>
-                Vi leverer erfarne sjøfolk til hele den maritime næringen. Som tidligere mannskap kjenner vi tempoet og behovene
-                langs norskekysten og offshorefelt.
+              <div style={sx.footerHeading}>Om Bluecrew</div>
+              <p style={sx.footerAbout}>
+                Bluecrew er bygget av sjøfolk for sjøfolk. Vi kombinerer operativ erfaring med moderne rekruttering slik at hvert oppdrag
+                får riktig mannskap og trygg oppfølging.
               </p>
+              <Link href="/om-oss" style={sx.footerLink}>
+                Les mer om teamet vårt
+              </Link>
+              <div style={sx.footerSocial}>
+                <Link href="https://www.linkedin.com/company/bluecrew-as/" style={sx.footerSocialLink}>
+                  <span aria-hidden="true">in</span>
+                  LinkedIn
+                </Link>
+              </div>
             </div>
             <div>
               <div style={sx.footerHeading}>Kontakt</div>

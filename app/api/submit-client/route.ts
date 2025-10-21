@@ -1,55 +1,115 @@
-import { NextResponse } from "next/server";
+// app/api/submit-client/route.ts
+import { clientSchema, extractClientForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendNotificationEmail } from "../../lib/server/email";
+import { insertSupabaseRow } from "../../lib/server/supabase";
+import { captureServerException } from "../../lib/server/observability";
 
-/** Enkel HTML-escaping */
-function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+export const runtime = "nodejs";
+
+export async function GET() {
+  return new Response("submit-client API er oppe. Bruk POST fra skjemaet.", { status: 200 });
 }
 
-/**
- * Minimal, robust versjon:
- * - Leser formData direkte
- * - Sender e-post med sikker HTML
- * - Beholder rate limit
- */
 export async function POST(req: Request) {
   try {
-    await enforceRateLimit("submit-client");
-  } catch (e) {
-    console.warn("[submit-client] rate limit warning:", e);
+    // Rate limit per IP
+    const rateKey = getClientKey(req, "client");
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return new Response("For mange forespørsler. Prøv igjen senere.", {
+        status: 429,
+        headers: { "Retry-After": String(rate.resetSeconds || 60) },
+      });
+    }
+
+    // Hent formdata
+    const fd = await req.formData();
+    const values = extractClientForm(fd);
+
+    // Honeypot
+    if (values.honey) {
+      return new Response(null, { status: 204 });
+    }
+
+    // Valider
+    const parsed = clientSchema.safeParse(values);
+    if (!parsed.success) {
+      const message =
+        parsed.error.issues.map((i: { message: string }) => i.message).join("; ") || "Ugyldige felter";
+      return new Response("FEIL: " + message, { status: 400 });
+    }
+
+    const d = parsed.data;
+
+    // Lag e-postinnhold
+    const location = d.c_municipality ? `${d.c_municipality} (${d.c_county})` : d.c_county;
+    const lines: string[] = [
+      "NY KUNDEFORESPØRSEL",
+      `Selskap: ${d.company}`,
+      `Kontaktperson: ${d.contact}`,
+      `E-post: ${d.c_email}`,
+      `Telefon: ${d.c_phone}`,
+      `Lokasjon: ${location}`,
+      `Type behov: ${d.need_type}`,
+      `Oppdragstype: ${d.need_duration}`,
+      "",
+      "Beskrivelse:",
+      d.desc || "-",
+    ];
+
+    // Lagring i Supabase + varselmail (sendefeil stopper ikke innsendingen)
+    await Promise.all([
+      insertSupabaseRow({
+        table: "leads",
+        payload: {
+          company: d.company,
+          contact: d.contact,
+          email: d.c_email,
+          phone: d.c_phone,
+          county: d.c_county,
+          municipality: d.c_municipality,
+          need_type: d.need_type,
+          need_duration: d.need_duration,
+          description: d.desc || null,
+          submitted_at: new Date().toISOString(),
+          source_ip: getClientIp(req),
+        },
+      }).catch((error) => {
+        captureServerException(error, { scope: "client-insert", table: "leads" });
+        console.error("⚠️ Supabase-feil (client):", error);
+      }),
+      sendNotificationEmail({
+        subject: `Bluecrew kunde: ${d.company || "(uten selskap)"}`,
+        text: lines.join("\n"),
+        replyTo: d.c_email,
+      }).catch((error) => {
+        captureServerException(error, { scope: "client-email" });
+        console.error("❌ Sendefeil (client):", error);
+      }),
+    ]);
+
+    // Suksess → redirect til takk
+    const back = new URL("/kunde/registrer-behov?sent=client", req.url);
+    return Response.redirect(back, 303);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    captureServerException(err, { scope: "client-handler" });
+    console.error("❌ Uventet feil (client):", err);
+    return new Response("FEIL: " + msg, { status: 500 });
   }
+}
 
-  const form = await req.formData();
+// ---- Hjelpere ----
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
+}
 
-  const name = (form.get("name")?.toString() ?? "").trim();
-  const email = (form.get("email")?.toString() ?? "").trim();
-  const phone = (form.get("phone")?.toString() ?? "").trim();
-  const company = (form.get("company")?.toString() ?? "").trim();
-  const needs = (form.get("needs")?.toString() ?? "").trim();
-  const message = (form.get("message")?.toString() ?? "").trim();
-
-  const subject = `Bluecrew kundehenvendelse: ${company || name || "-"}`;
-  const html = `
-    <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-      <h2 style="margin:0 0 8px">Ny kundehenvendelse</h2>
-      <table style="border-collapse:collapse">
-        <tr><td style="padding:4px 8px"><b>Navn</b></td><td style="padding:4px 8px">${esc(name || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>E-post</b></td><td style="padding:4px 8px">${esc(email || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Telefon</b></td><td style="padding:4px 8px">${esc(phone || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Selskap</b></td><td style="padding:4px 8px">${esc(company || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Behov</b></td><td style="padding:4px 8px">${esc(needs || "-")}</td></tr>
-        <tr><td style="padding:4px 8px;vertical-align:top"><b>Melding</b></td>
-            <td style="padding:4px 8px;white-space:pre-wrap">${esc(message || "")}</td></tr>
-      </table>
-    </div>
-  `;
-
-  await sendNotificationEmail({
-    subject,
-    html,
-    replyTo: email || undefined,
-  });
-
-  return NextResponse.json({ ok: true });
+function getClientKey(req: Request, prefix: string) {
+  return `${prefix}:${getClientIp(req)}`;
 }
