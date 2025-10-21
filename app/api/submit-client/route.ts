@@ -1,27 +1,58 @@
 import { NextResponse } from "next/server";
+import { clientSchema, extractClientForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
-import {
-  sendClientReceipt,
-  sendNotificationEmail,
-} from "../../lib/server/email";
+import { sendClientReceipt, sendNotificationEmail } from "../../lib/server/email";
+import { insertSupabaseRow } from "../../lib/server/supabase";
+import { captureServerException } from "../../lib/server/observability";
 
-/** Enkel HTML-escaping */
-function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+export const runtime = "nodejs";
+
+export async function GET() {
+  return new Response("submit-client API er oppe. Bruk POST fra skjemaet.", { status: 200 });
 }
 
-/**
- * Minimal, robust versjon:
- * - Leser formData direkte
- * - Sender e-post med sikker HTML
- * - Beholder rate limit
- */
 export async function POST(req: Request) {
   try {
-    await enforceRateLimit("submit-client");
-  } catch (e) {
-    console.warn("[submit-client] rate limit warning:", e);
-  }
+    const rateKey = getClientKey(req, "client");
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return new Response("For mange forespørsler. Prøv igjen senere.", {
+        status: 429,
+        headers: { "Retry-After": String(rate.resetSeconds || 60) },
+      });
+    }
+
+    const formData = await req.formData();
+    const values = extractClientForm(formData);
+
+    if (values.honey) {
+      return new Response(null, { status: 204 });
+    }
+
+    const parsed = clientSchema.safeParse(values);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      return new Response("FEIL: " + message, { status: 400 });
+    }
+
+    const data = parsed.data;
+    const location = data.c_municipality ? `${data.c_municipality} (${data.c_county})` : data.c_county;
+
+    const lines: string[] = [
+      "NY KUNDEFORESPØRSEL",
+      `Selskap: ${data.company}`,
+      `Kontaktperson: ${data.contact}`,
+      `E-post: ${data.c_email}`,
+      `Telefon: ${data.c_phone}`,
+      `Lokasjon: ${location}`,
+      `Type behov: ${data.need_type}`,
+      `Oppdragstype: ${data.need_duration}`,
+      "",
+      "Beskrivelse:",
+      data.desc || "-",
+    ];
+
+    const html = buildClientHtml({ ...data, location });
 
   const contentType = req.headers.get("content-type") || "";
   const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
@@ -74,12 +105,20 @@ export async function POST(req: Request) {
       </table>
     </div>
   `;
+}
 
-  await sendNotificationEmail({
-    subject,
-    html,
-    replyTo: email || undefined,
-  });
+function esc(s: string = "") {
+  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
+}
 
   await sendClientReceipt({
     name: contact,

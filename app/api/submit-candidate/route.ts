@@ -1,117 +1,243 @@
 import { NextResponse } from "next/server";
+import { candidateSchema, extractCandidateForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import {
   sendCandidateReceipt,
   sendNotificationEmail,
 } from "../../lib/server/email";
+import { insertSupabaseRow, uploadSupabaseObject } from "../../lib/server/supabase";
+import {
+  buildCertificatePath,
+  buildCvPath,
+  createCandidateStorageBase,
+  extractExtension,
+} from "../../lib/server/candidate-files";
+import { captureServerException } from "../../lib/server/observability";
 
-/** Enkel HTML-escaping */
-function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+export const runtime = "nodejs";
+
+export async function GET() {
+  return new Response("submit-candidate API er oppe. Bruk POST fra skjemaet.", { status: 200 });
 }
 
-/**
- * Denne versjonen unngår alle types/SDK-mismatch:
- * - Leser formData direkte (uavhengig av schema-typer)
- * - Sender e-post med sikker HTML
- * - Beholder rate limiting
- */
 export async function POST(req: Request) {
-  // Rate limit med stabil nøkkel (enforceRateLimit forventer trolig 1 string-arg)
   try {
-    await enforceRateLimit("submit-candidate");
-  } catch (e) {
-    // Hvis rate limit ikke er konfigurert i dev, svarer vi mildt
-    console.warn("[submit-candidate] rate limit warning:", e);
-  }
-
-  const contentType = req.headers.get("content-type") || "";
-  const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
-  const isJsonPayload = contentType.includes("application/json");
-
-  const asStringArray = (value: unknown): string[] => {
-    if (Array.isArray(value)) {
-      return value.map((item) => (item == null ? "" : String(item).trim())).filter(Boolean);
+    const rateKey = getClientKey(req, "candidate");
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return new Response("For mange forespørsler. Prøv igjen senere.", {
+        status: 429,
+        headers: { "Retry-After": String(rate.resetSeconds || 60) },
+      });
     }
-    if (typeof value === "string") {
-      return value
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean);
+
+    const formData = await req.formData();
+    const { values, files } = extractCandidateForm(formData);
+
+    if (values.honey) {
+      return new Response(null, { status: 204 });
     }
-    return [];
-  };
 
-  let form: FormData | null = null;
-  let json: Record<string, unknown> = {};
-
-  if (isJsonPayload) {
-    json = (await req.json().catch(() => ({}))) as Record<string, unknown>;
-  } else {
-    form = await req.formData();
-  }
-
-  const read = (key: string) => {
-    if (form) {
-      const value = form.get(key);
-      return value == null ? "" : value.toString().trim();
+    const parsed = candidateSchema.safeParse(values);
+    if (!parsed.success) {
+      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      return new Response(`FEIL: ${message}`, { status: 400 });
     }
-    const value = json[key];
-    return value == null ? "" : String(value).trim();
-  };
 
-  // Les kjente felter (fallback tom streng hvis ikke finnes)
-  const name = read("name");
-  const email = read("email");
-  const phone = read("phone");
-  const county = read("county");
-  const municipality = read("municipality");
-  const availableFrom = read("available_from");
-  const wantsTemporary = read("wants_temporary");
-  const stcwHas = read("stcw_has");
-  const deckHas = read("deck_has");
-  const deckClass = read("deck_class");
-  const skills = read("skills");
-  const otherComp = read("other_comp");
-  const legacyMessage = read("message");
+    const data = parsed.data;
 
-  const workChoices = form
-    ? form
-        .getAll("work_main")
-        .map((item) => (item == null ? "" : item.toString().trim()))
-        .filter(Boolean)
-    : asStringArray(json["work_main"]);
+    const cvFile = files.cv;
+    if (!cvFile || typeof cvFile === "string" || cvFile.size === 0) {
+      return new Response("FEIL: CV (PDF) er påkrevd", { status: 400 });
+    }
+    const cvName = (cvFile.name || "CV.pdf").toLowerCase();
+    if (!cvName.endsWith(".pdf")) {
+      return new Response("FEIL: CV må være PDF", { status: 400 });
+    }
+    if (cvFile.size > 10 * 1024 * 1024) {
+      return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
+    }
 
-  const stcwModules = form
-    ? form
-        .getAll("stcw_mod")
-        .map((item) => (item == null ? "" : item.toString().trim()))
-        .filter(Boolean)
-    : asStringArray(json["stcw_mod"]);
+    const submittedAt = new Date().toISOString();
+    const storageBase = createCandidateStorageBase(data.email, submittedAt);
+    const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
+    const cvPath = buildCvPath(storageBase);
 
-  const otherNotes: Record<string, string> = {};
-  if (form) {
-    for (const [key, value] of form.entries()) {
-      if (key.startsWith("other_") && typeof value === "string") {
-        const trimmed = value.trim();
-        if (trimmed) {
-          otherNotes[key.replace(/^other_/, "")] = trimmed;
-        }
+    try {
+      await uploadSupabaseObject({
+        bucket: "candidates-private",
+        object: cvPath,
+        body: cvBuffer,
+        contentType: cvFile.type || "application/pdf",
+      });
+    } catch (error) {
+      captureServerException(error, { scope: "candidate-upload-cv" });
+      console.error("❌ Klarte ikke å lagre CV i Supabase", error);
+      return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
+    }
+
+    const attachments: { filename: string; content: string; contentType?: string }[] = [
+      {
+        filename: cvFile.name || "CV.pdf",
+        content: cvBuffer.toString("base64"),
+        contentType: cvFile.type || "application/pdf",
+      },
+    ];
+
+    const certsFile = files.certs;
+    if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
+      if (certsFile.size > 10 * 1024 * 1024) {
+        return new Response("FEIL: Vedlegg for stort (maks 10 MB)", { status: 400 });
       }
-    }
-  } else if (json["other_notes"] && typeof json["other_notes"] === "object") {
-    const notes = json["other_notes"] as Record<string, unknown>;
-    for (const [key, value] of Object.entries(notes)) {
-      if (typeof value === "string") {
-        const trimmed = value.trim();
-        if (trimmed) {
-          otherNotes[key] = trimmed;
-        }
+      const allowed = [".pdf", ".zip", ".doc", ".docx"];
+      const lowerName = (certsFile.name || "sertifikater").toLowerCase();
+      if (!allowed.some((ext) => lowerName.endsWith(ext))) {
+        return new Response("FEIL: Vedlegg må være PDF, ZIP eller DOC/DOCX", { status: 400 });
       }
+      const ext = extractExtension(certsFile.name || "") || ".pdf";
+      const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
+      const certificatePath = buildCertificatePath(storageBase, ext);
+      try {
+        await uploadSupabaseObject({
+          bucket: "candidates-private",
+          object: certificatePath,
+          body: certificateBuffer,
+          contentType: certsFile.type || "application/octet-stream",
+        });
+      } catch (error) {
+        captureServerException(error, { scope: "candidate-upload-certificate" });
+        console.error("❌ Klarte ikke å lagre sertifikater i Supabase", error);
+        return new Response("FEIL: Kunne ikke lagre sertifikater", { status: 500 });
+      }
+      attachments.push({
+        filename: certsFile.name || `sertifikater${ext}`,
+        content: certificateBuffer.toString("base64"),
+        contentType: certsFile.type || "application/octet-stream",
+      });
     }
-  }
 
-  const workList = workChoices
+    const stcwSummary =
+      data.stcw_has === "ja"
+        ? `Ja${data.stcw_mod?.length ? ` (${data.stcw_mod.join(", ")})` : ""}`
+        : "Nei";
+    const deckSummary =
+      data.deck_has === "ja" ? `Ja${data.deck_class ? ` (klasse ${data.deck_class})` : ""}` : "Nei";
+
+    const location = data.municipality
+      ? data.county
+        ? `${data.municipality} (${data.county})`
+        : data.municipality
+      : data.county || "-";
+
+    const lines: string[] = [
+      "NY JOBBSØKER",
+      `Navn: ${data.name}`,
+      `E-post: ${data.email}`,
+      `Telefon: ${data.phone}`,
+      `Bosted: ${location}`,
+      `Tilgjengelig fra: ${data.available_from || "-"}`,
+      "",
+      "Ønsket arbeid:",
+      ...(data.work_main?.length ? data.work_main.map((w) => `- ${w}`) : ["- (ikke valgt)"]),
+      "",
+      `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
+      "",
+      `STCW: ${stcwSummary}`,
+      `Dekksoffiser: ${deckSummary}`,
+      "",
+      "Kompetanse og erfaring:",
+      data.skills || "-",
+      "",
+      "Andre kommentarer:",
+      data.other_comp || "-",
+    ];
+
+    const html = buildHtmlSummary({
+      ...data,
+      stcwSummary,
+      deckSummary,
+      location,
+    });
+
+    await Promise.all([
+      insertSupabaseRow({
+        table: "candidates",
+        payload: {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          county: data.county,
+          municipality: data.municipality,
+          available_from: data.available_from || null,
+          wants_temporary: data.wants_temporary,
+          stcw_has: data.stcw_has,
+          stcw_mod: data.stcw_mod ?? [],
+          deck_has: data.deck_has,
+          deck_class: data.deck_class || null,
+          work_main: data.work_main ?? [],
+          skills: data.skills || null,
+          other_comp: data.other_comp || null,
+          submitted_at: submittedAt,
+          source_ip: getClientIp(req),
+        },
+      }).catch((error) => {
+        captureServerException(error, { scope: "candidate-insert", table: "candidates" });
+        console.error("⚠️ Supabase-feil (candidate):", error);
+      }),
+      sendNotificationEmail({
+        subject: `Bluecrew jobbsøker: ${data.name || "(uten navn)"}`,
+        text: lines.join("\n"),
+        html,
+        replyTo: data.email,
+        attachments,
+      }).catch((error) => {
+        captureServerException(error, { scope: "candidate-email" });
+        console.error("❌ Sendefeil (candidate):", error);
+      }),
+      sendCandidateReceipt({
+        name: data.name,
+        email: data.email,
+      }).catch((error) => {
+        captureServerException(error, { scope: "candidate-receipt" });
+        console.error("⚠️ Sendte ikke kvittering (candidate):", error);
+      }),
+    ]);
+
+    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
+    if (acceptsJson) {
+      return NextResponse.json({ ok: true });
+    }
+
+    const back = new URL("/jobbsoker/registrer?sent=worker", req.url);
+    return NextResponse.redirect(back, { status: 303 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    captureServerException(err, { scope: "candidate-handler" });
+    console.error("❌ Uventet feil (candidate):", err);
+    return new Response("FEIL: " + msg, { status: 500 });
+  }
+}
+
+function buildHtmlSummary(data: {
+  name?: string;
+  email?: string;
+  phone?: string;
+  county?: string | null;
+  municipality?: string | null;
+  available_from?: string | null;
+  wants_temporary?: string | null;
+  stcw_has?: string | null;
+  stcw_mod?: string[] | null;
+  deck_has?: string | null;
+  deck_class?: string | null;
+  work_main?: string[] | null;
+  skills?: string | null;
+  other_comp?: string | null;
+  stcwSummary: string;
+  deckSummary: string;
+  location: string;
+}) {
+  const workList = (data.work_main ?? [])
     .map((entry) => {
       const [main, sub] = entry.split(":");
       const subLabel = sub ? ` – ${esc(sub)}` : "";
@@ -119,78 +245,54 @@ export async function POST(req: Request) {
     })
     .join("");
 
-  const otherList = Object.entries(otherNotes)
-    .map(([key, value]) => `<li><b>${esc(key)}</b>: ${esc(value)}</li>`)
-    .join("");
-
-  // Bygg trygg HTML uansett hva som er gitt (Resend krever html eller text)
-  const subject = `Bluecrew jobbsøker: ${name || "Uten navn"}`;
-  const html = `
+  return `
     <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
       <h2 style="margin:0 0 8px">Ny jobbsøker</h2>
       <table style="border-collapse:collapse">
-        <tr><td style="padding:4px 8px"><b>Navn</b></td><td style="padding:4px 8px">${esc(name || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>E-post</b></td><td style="padding:4px 8px">${esc(email || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Telefon</b></td><td style="padding:4px 8px">${esc(phone || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Fylke</b></td><td style="padding:4px 8px">${esc(county || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Kommune</b></td><td style="padding:4px 8px">${esc(municipality || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Tilgjengelig fra</b></td><td style="padding:4px 8px">${esc(availableFrom || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Midlertidige oppdrag</b></td><td style="padding:4px 8px">${esc(wantsTemporary || "-")}</td></tr>
-        <tr><td style="padding:4px 8px"><b>STCW</b></td><td style="padding:4px 8px">${esc(
-          stcwHas ? `${stcwHas}${stcwModules.length ? ` (${stcwModules.join(", ")})` : ""}` : "-",
-        )}</td></tr>
-        <tr><td style="padding:4px 8px"><b>Dekksoffiser</b></td><td style="padding:4px 8px">${esc(
-          deckHas
-            ? `${deckHas}${deckClass ? ` (klasse ${deckClass})` : ""}`
-            : "-",
-        )}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Navn</b></td><td style=\"padding:4px 8px\">${esc(data.name || "-")}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.email || "-")}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.phone || "-")}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Bosted</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>STCW</b></td><td style=\"padding:4px 8px\">${esc(data.stcwSummary)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Dekksoffiser</b></td><td style=\"padding:4px 8px\">${esc(data.deckSummary)}</td></tr>
       </table>
       <div style="margin-top:16px">
         <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>
-        ${workList ? `<ul style="margin:0 0 12px;padding-left:18px">${workList}</ul>` : "<p>Ingen valg</p>"}
-        ${
-          otherList
-            ? `<div style="margin-top:8px"><strong>Tilleggsnotater</strong><ul style="margin:4px 0 12px;padding-left:18px">${otherList}</ul></div>`
-            : ""
-        }
+        ${workList ? `<ul style=\"margin:0 0 12px;padding-left:18px\">${workList}</ul>` : "<p>Ingen valg</p>"}
       </div>
       ${
-        skills
-          ? `<div style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:16px">Kompetanse</h3><p style="margin:0;white-space:pre-wrap">${esc(
-              skills,
+        data.skills
+          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Kompetanse</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
+              data.skills,
             )}</p></div>`
           : ""
       }
       ${
-        otherComp
-          ? `<div style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:16px">Andre kommentarer</h3><p style="margin:0;white-space:pre-wrap">${esc(
-              otherComp,
-            )}</p></div>`
-          : ""
-      }
-      ${
-        legacyMessage && legacyMessage !== otherComp
-          ? `<div style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:16px">Ekstra melding</h3><p style="margin:0;white-space:pre-wrap">${esc(
-              legacyMessage,
+        data.other_comp
+          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Andre kommentarer</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
+              data.other_comp,
             )}</p></div>`
           : ""
       }
     </div>
   `;
+}
 
-  // Send e-post til team (replyTo settes hvis bruker oppga e-post)
-  await sendNotificationEmail({
-    subject,
-    html,
-    replyTo: email || undefined,
-  });
+function esc(s: string = "") {
+  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
 
-  await sendCandidateReceipt({ name, email });
-
-  if (acceptsJson || isJsonPayload) {
-    return NextResponse.json({ ok: true });
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
   }
+  return req.headers.get("x-real-ip") || "unknown";
+}
 
-  const redirectUrl = new URL("/jobbsoker?sent=worker", req.url);
-  return NextResponse.redirect(redirectUrl, { status: 303 });
+function getClientKey(req: Request, prefix: string) {
+  return `${prefix}:${getClientIp(req)}`;
 }
