@@ -11,35 +11,39 @@ type SendEmailOptions = {
   attachments?: EmailAttachment[];
 };
 
+function withComplianceFooter(text: string) {
+  const footer = [
+    "",
+    "--",
+    "Bluecrew AS · Org.nr 936 321 194",
+    "Østenbekkveien 43, 9403 Harstad",
+    "E-post: isak@bluecrew.no · https://bluecrew.no",
+    "Personvern: https://bluecrew.no/personvern",
+  ].join("\n");
+  return `${text}${footer}`;
+}
+
 export async function sendNotificationEmail(options: SendEmailOptions) {
   const apiKey = process.env.RESEND_API_KEY;
   const disabled = process.env.RESEND_DISABLED === "1";
-  if (disabled) {
-    console.info("ℹ️ Resend er deaktivert (RESEND_DISABLED=1). Hopper over utsendelse.");
-    return { skipped: true };
-  }
+  const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.FROM_EMAIL || "noreply@bluecrew.no";
+  const toEmail = process.env.RESEND_TO_EMAIL || process.env.TO_EMAIL || "isak@bluecrew.no";
 
-  const from =
-    process.env.RESEND_FROM_EMAIL ||
-    process.env.FROM_EMAIL ||
-    (process.env.NODE_ENV === "production" ? "onboarding@resend.dev" : "dev@resend.dev");
-  const to = process.env.RESEND_TO_EMAIL || process.env.TO_EMAIL;
-
-  if (!apiKey || !from || !to) {
-    console.warn("⚠️ Resend-konfig mangler. Hopper over utsendelse.");
+  if (!apiKey || disabled) {
+    console.warn("✉️ Resend er deaktivert eller mangler API-nøkkel – hopper over e-post.");
     return { skipped: true };
   }
 
   const payload = {
-    from,
-    to: Array.isArray(to) ? to : [to],
+    from: fromEmail,
+    to: [toEmail],
     subject: options.subject,
-    text: options.text,
-    reply_to: options.replyTo,
-    attachments: options.attachments?.map((att) => ({
-      filename: att.filename,
-      content: att.content,
-      content_type: att.contentType,
+    text: withComplianceFooter(options.text),
+    reply_to: options.replyTo || undefined,
+    attachments: options.attachments?.map((a) => ({
+      filename: a.filename,
+      content: a.content,
+      content_type: a.contentType || "application/octet-stream",
     })),
   };
 
