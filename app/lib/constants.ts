@@ -14,16 +14,17 @@ export const STCW_MODULES = [
 ];
 
 export const HERO_POINTS = [
-  { icon: "🧑‍✈️", text: "Bemanning ledet av tidligere sjøfolk med kontroll på sertifikater og HMS." },
-  { icon: "⚓", text: "Sjøklart mannskap tilpasset turnus, fartøy og operasjon før avgang." },
-  { icon: "🤝", text: "Fast kontaktpunkt som følger opp både kunde og mannskap gjennom hele oppdraget." },
-];
-
-export const SOCIAL_LINKS = [
   {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/company/bluecrew-no/",
-    description: "Oppdateringer fra prosjekter og teamet vårt",
+    icon: "🧑‍✈️",
+    text: "Erfarne skipsførere og mannskap følger opp oppdraget sammen med deg.",
+  },
+  {
+    icon: "🌊",
+    text: "Bemanning for havbruk, fiskeri og spesialfartøy levert når operasjonen krever det.",
+  },
+  {
+    icon: "🛡️",
+    text: "GDPR-trygg prosess med kontrollert dokumentasjon og dedikert støtte.",
   },
 ];
 
@@ -476,4 +477,12 @@ export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
   { label: "Besøk oss", value: "Østenbekkveien 43, 9403 Harstad" },
+];
+
+export const SOCIAL_LINKS = [
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/bluecrew-as/",
+    description: "Følg oss for innsikt fra prosjektene våre",
+  },
 ];

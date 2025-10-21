@@ -355,10 +355,16 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Om Bluecrew</div>
+              <div style={sx.footerHeading}>Om oss</div>
               <p style={sx.footerText}>
-                Vi er sjøfolk som bemanner fartøy for havbruk, fiskeri, service- og spesialoperasjoner. Oppdragene løses i tett
-                dialog med kunder og mannskap for trygg drift til sjøs.
+                Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
+                sammen med kundene våre.
+              </p>
+              <p style={sx.footerAbout}>
+                <Link href="/om-oss" style={sx.footerLink}>
+                  Les om hvordan vi bemanner trygt og effektivt
+                </Link>{" "}
+                – møt menneskene bak leveransene.
               </p>
               <Link href="/om-oss" style={sx.footerLink}>
                 Bli kjent med teamet vårt
@@ -404,21 +410,25 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               </p>
               <p style={sx.footerText}>Org.nr: 936 321 194</p>
             </div>
-            <div style={sx.footerSocial}>
+            <div>
               <div style={sx.footerHeading}>Følg oss</div>
-              <ul style={sx.footerSocialList}>
-                <li>
+              <div style={sx.footerSocials}>
+                {SOCIAL_LINKS.map((social) => (
                   <Link
-                    href="https://www.linkedin.com/company/bluecrew-as/"
+                    key={social.href}
+                    href={social.href}
                     style={sx.footerSocialLink}
                     target="_blank"
                     rel="noreferrer"
+                    aria-label={`${social.label} – ${social.description}`}
                   >
-                    <span aria-hidden="true">in</span>
-                    LinkedIn
+                    <span aria-hidden="true" style={sx.footerSocialIcon}>
+                      in
+                    </span>
+                    <span>{social.label}</span>
                   </Link>
-                </li>
-              </ul>
+                ))}
+              </div>
             </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
