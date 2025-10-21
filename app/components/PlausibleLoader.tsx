@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Script from "next/script";
-import { getConsent, CONSENT_COOKIE } from "../lib/consent";
+import { getConsent } from "../lib/consent";
 
 export default function PlausibleLoader() {
   const [enabled, setEnabled] = useState(false);

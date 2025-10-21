@@ -4,7 +4,24 @@
  * Henter siste 50 candidates og leads fra Supabase – PÅ SERVEREN.
  * (Lekker ikke SUPABASE_SERVICE_ROLE_KEY til klienten.)
  */
-export async function loadAdminData() {
+export interface AdminCandidate {
+  id: string;
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  created_at: string | null;
+}
+
+export interface AdminLead extends AdminCandidate {
+  company: string | null;
+}
+
+export interface AdminData {
+  candidates: AdminCandidate[];
+  leads: AdminLead[];
+}
+
+export async function loadAdminData(): Promise<AdminData> {
   const base = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1`;
   const headers = {
     apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -29,6 +46,10 @@ export async function loadAdminData() {
     throw new Error(`Supabase leads failed: ${leadsRes.status} ${await leadsRes.text()}`);
   }
 
-  const [candidates, leads] = await Promise.all([candidatesRes.json(), leadsRes.json()]);
+  const [candidates, leads] = await Promise.all([
+    candidatesRes.json<AdminCandidate[]>(),
+    leadsRes.json<AdminLead[]>(),
+  ]);
+
   return { candidates, leads };
 }

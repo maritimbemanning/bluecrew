@@ -583,6 +583,12 @@ export const sx: Record<string, CSSProperties> = {
   },
   cardList: { margin: 0, paddingLeft: 18, lineHeight: 1.6, color: "#334155", fontSize: "clamp(15px, 4vw, 16px)" },
   cardListTerse: { margin: 0, paddingLeft: 18, lineHeight: 1.5, color: "#334155", fontSize: 15 },
+  cardListLead: {
+    margin: 0,
+    color: "#334155",
+    lineHeight: 1.6,
+    fontSize: "clamp(15px, 4vw, 16px)",
+  },
   featureGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
