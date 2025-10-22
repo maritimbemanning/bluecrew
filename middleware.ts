@@ -2,60 +2,73 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Streng Content Security Policy. Behold 'unsafe-inline' midlertidig for kompatibilitet.
-// Bytt til eksakt Supabase-domene (co/net) for prosjektet ditt om ønskelig.
+/**
+ * Streng, men praktisk Content Security Policy (CSP)
+ * - Tillater Google Fonts og Plausible
+ * - Tillater nødvendige utgående forbindelser (Resend, Supabase, Upstash, Sentry, Plausible)
+ * - NB: 'unsafe-inline' er midlertidig for stil/skript. Fjern/stram inn når mulig.
+ */
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob:",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
+  "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o*.ingest.sentry.io",
+  // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
+  "upgrade-insecure-requests",
 ].join("; ");
 
-function applySecurityHeaders(response: NextResponse) {
-  response.headers.set("Content-Security-Policy", csp);
-  response.headers.set("X-Frame-Options", "DENY");
-  response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-  response.headers.set("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
-  response.headers.set("Cross-Origin-Resource-Policy", "same-origin");
-  response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
-  return response;
+/**
+ * Legger på sikkerhets-headere for ALLE responser.
+ * Beholdt uavhengig av path; ingen admin-sjekk lenger.
+ */
+function applySecurityHeaders(res: NextResponse) {
+  // Content Security Policy
+  res.headers.set("Content-Security-Policy", csp);
+
+  // Andre anbefalte headere
+  res.headers.set("Referrer-Policy", "no-referrer");
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-Frame-Options", "DENY"); // dekkes også av CSP frame-ancestors
+  res.headers.set("X-XSS-Protection", "0");   // slått av; moderne browsere bruker CSP
+  res.headers.set(
+    "Strict-Transport-Security",
+    "max-age=63072000; includeSubDomains; preload"
+  );
+  res.headers.set("Permissions-Policy", [
+    "accelerometer=()",
+    "autoplay=()",
+    "camera=()",
+    "clipboard-read=()",
+    "clipboard-write=(self)",
+    "geolocation=()",
+    "microphone=()",
+    "payment=()",
+    "usb=()",
+    // Topics/FLoC (moderne navn):
+    "browsing-topics=()",
+  ].join(", "));
+
+  // CORP/COOP for ekstra isolasjon (valgfritt; slå på hvis testet)
+  res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+
+  return res;
 }
 
-// Admin-paths krever ADMIN_TOKEN (via header x-admin-token eller cookie admin-token)
-function isAdminPath(pathname: string) {
-  return pathname.startsWith("/admin") || pathname.startsWith("/api/admin");
-}
-
-export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  // Admin-gating
-  if (isAdminPath(pathname)) {
-    const expectedToken = process.env.ADMIN_TOKEN;
-    if (!expectedToken) {
-      const response = new NextResponse("ADMIN_TOKEN ikke konfigurert", { status: 500 });
-      return applySecurityHeaders(response);
-    }
-    const headerToken = req.headers.get("x-admin-token");
-    const cookieToken = req.cookies.get("admin-token")?.value;
-    const allow = headerToken === expectedToken || cookieToken === expectedToken;
-    if (!allow) {
-      const response = new NextResponse("Unauthorized", { status: 401 });
-      return applySecurityHeaders(response);
-    }
-    return applySecurityHeaders(NextResponse.next());
-  }
-
+/**
+ * Minimal middleware uten admin-gating.
+ * Alle requests går videre, men får sikkerhets-headere.
+ */
+export function middleware(_req: NextRequest) {
   return applySecurityHeaders(NextResponse.next());
 }
 
+/** Kjør på hele nettstedet */
 export const config = {
   matcher: ["/:path*"],
 };

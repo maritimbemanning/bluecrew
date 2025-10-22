@@ -8,7 +8,6 @@ type EnvCheck = {
   SUPABASE_SERVICE_ROLE_KEY: boolean;
   UPSTASH_REDIS_REST_URL: boolean;
   UPSTASH_REDIS_REST_TOKEN: boolean;
-  ADMIN_TOKEN: boolean;
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: boolean;
   SENTRY_DSN: boolean;
 };
@@ -20,7 +19,6 @@ export async function GET() {
     SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     UPSTASH_REDIS_REST_URL: !!process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
-    ADMIN_TOKEN: !!process.env.ADMIN_TOKEN,
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: !!process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
     SENTRY_DSN: !!process.env.SENTRY_DSN,
   };
