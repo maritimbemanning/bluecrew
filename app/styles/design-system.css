@@ -1,0 +1,83 @@
+:root {
+  --ds-font-sans: var(--font-geist-sans);
+  --ds-font-mono: var(--font-geist-mono);
+
+  --ds-color-page: #f1f5f9;
+  --ds-color-ink-strong: #0f172a;
+  --ds-color-ink-muted: #1e293b;
+  --ds-color-ink-soft: #334155;
+  --ds-color-ink-subtle: #94a3b8;
+  --ds-color-ink-inverse: #e2e8f0;
+  --ds-color-ink-highlight: #bae6fd;
+
+  --ds-color-brand-primary: #38bdf8;
+  --ds-color-brand-secondary: #0ea5e9;
+  --ds-color-brand-tertiary: #2563eb;
+
+  --ds-gradient-hero: radial-gradient(circle at 20% -10%, rgba(56, 189, 248, 0.45), transparent 55%),
+    radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.35), transparent 58%),
+    linear-gradient(180deg, #051426 0%, #0b1d3b 48%, #0f284d 100%);
+  --ds-gradient-secondary: linear-gradient(150deg, #0f172a 0%, #1f3356 100%);
+  --ds-gradient-jobs: linear-gradient(135deg, rgba(8, 21, 38, 0.9) 0%, rgba(11, 37, 64, 0.85) 52%, rgba(13, 52, 86, 0.88) 100%);
+  --ds-gradient-journey: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%);
+  --ds-gradient-contact: linear-gradient(180deg, #f8fafc 0%, #e0f2fe 100%);
+
+  --ds-color-surface-topbar: rgba(7, 17, 36, 0.95);
+  --ds-color-surface-default: #ffffff;
+  --ds-color-surface-alt: #f8fafc;
+  --ds-color-surface-deep: linear-gradient(135deg, #0b1f3a 0%, #112d52 52%, #132b4b 100%);
+  --ds-color-surface-contrast: #0b162b;
+  --ds-color-surface-card-dark: #0f172a;
+
+  --ds-border-soft: rgba(148, 197, 255, 0.25);
+  --ds-border-strong: rgba(15, 23, 42, 0.18);
+  --ds-border-subtle: #e2e8f0;
+  --ds-border-contrast: rgba(15, 23, 42, 0.5);
+
+  --ds-radius-sm: 10px;
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 14px;
+  --ds-radius-xl: 18px;
+  --ds-radius-2xl: 24px;
+  --ds-radius-3xl: 28px;
+  --ds-radius-full: 999px;
+
+  --ds-space-1: 0.25rem;
+  --ds-space-1-5: 0.375rem;
+  --ds-space-2: 0.5rem;
+  --ds-space-2-5: 0.625rem;
+  --ds-space-3: 0.75rem;
+  --ds-space-3-5: 0.875rem;
+  --ds-space-4: 1rem;
+  --ds-space-4-5: 1.125rem;
+  --ds-space-5: 1.25rem;
+  --ds-space-5-5: 1.375rem;
+  --ds-space-6: 1.5rem;
+  --ds-space-6-5: 1.625rem;
+  --ds-space-7: 1.75rem;
+  --ds-space-8: 2rem;
+  --ds-space-9: 2.5rem;
+  --ds-space-10: 3rem;
+  --ds-space-11: 3.5rem;
+  --ds-space-12: 4rem;
+
+  --ds-container-max: 1180px;
+  --ds-container-narrow: 980px;
+  --ds-container-tight: 880px;
+
+  --ds-shadow-topbar: 0 18px 40px rgba(15, 23, 42, 0.28);
+  --ds-shadow-elevated: 0 24px 60px rgba(8, 18, 36, 0.45);
+  --ds-shadow-card: 0 18px 36px rgba(15, 23, 42, 0.08);
+  --ds-shadow-card-strong: 0 28px 68px rgba(6, 14, 24, 0.6);
+  --ds-shadow-card-dark: 0 32px 70px rgba(15, 23, 42, 0.45);
+  --ds-shadow-contact: 0 24px 50px rgba(15, 23, 42, 0.22);
+}
+
+@media (max-width: 768px) {
+  :root {
+    --ds-space-9: 2rem;
+    --ds-space-10: 2.5rem;
+    --ds-space-11: 3rem;
+    --ds-space-12: 3.5rem;
+  }
+}
