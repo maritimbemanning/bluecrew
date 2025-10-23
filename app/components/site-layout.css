@@ -1,0 +1,215 @@
+.site-nav {
+  display: flex;
+  gap: 22px;
+  margin-left: auto;
+  align-items: center;
+}
+
+.site-nav__link,
+.site-nav__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(226, 240, 255, 0.92);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  outline: none;
+  background: transparent;
+}
+
+.site-nav__trigger {
+  border: none;
+  cursor: pointer;
+}
+
+.site-nav__link:hover,
+.site-nav__trigger:hover {
+  color: #f8fafc;
+  background: rgba(148, 197, 255, 0.1);
+}
+
+.site-nav__link:focus-visible,
+.site-nav__trigger:focus-visible {
+  color: #f8fafc;
+  background: rgba(148, 197, 255, 0.18);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.6);
+}
+
+.site-nav__link--active {
+  color: #7dd3fc;
+}
+
+.site-nav__caret {
+  font-size: 12px;
+  margin-top: 1px;
+  transition: transform 0.2s ease;
+}
+
+.site-nav__menu--open .site-nav__caret {
+  transform: rotate(180deg);
+}
+
+.site-nav__menu {
+  position: relative;
+}
+
+.site-nav__dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  min-width: 232px;
+  background: rgba(7, 22, 43, 0.96);
+  border-radius: 18px;
+  border: 1px solid rgba(148, 197, 255, 0.25);
+  box-shadow: 0 24px 60px rgba(8, 18, 36, 0.45);
+  padding: 16px;
+  display: grid;
+  gap: 8px;
+  z-index: 60;
+}
+
+.site-nav__dropdownLink {
+  display: grid;
+  gap: 4px;
+  text-decoration: none;
+  color: rgba(241, 245, 249, 0.95);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  padding: 10px 12px;
+  border-radius: 12px;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  outline: none;
+}
+
+.site-nav__dropdownLink:hover,
+.site-nav__dropdownLink:focus-visible {
+  background: rgba(148, 197, 255, 0.18);
+  color: #f8fafc;
+  box-shadow: 0 0 0 2px rgba(148, 197, 255, 0.35);
+}
+
+.site-nav__dropdownLabel {
+  font-weight: 700;
+}
+
+.site-nav__dropdownDescription {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(224, 231, 255, 0.7);
+}
+
+.site-nav__cta {
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border 0.2s ease;
+  outline: none;
+  border: 1px solid transparent;
+}
+
+.cta-button:hover {
+  transform: translateY(-1px);
+}
+
+.cta-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(148, 197, 255, 0.35);
+}
+
+.cta-button--primary {
+  background: linear-gradient(180deg, #38bdf8 0%, #0ea5e9 100%);
+  color: #0f172a;
+  border-color: rgba(148, 197, 255, 0.4);
+  box-shadow: 0 18px 38px rgba(56, 189, 248, 0.35);
+}
+
+.cta-button--primary:hover {
+  box-shadow: 0 20px 40px rgba(56, 189, 248, 0.4);
+}
+
+.cta-button--secondary {
+  background: rgba(14, 165, 233, 0.18);
+  color: #0ea5e9;
+  border-color: rgba(56, 189, 248, 0.65);
+  box-shadow: 0 16px 32px rgba(14, 165, 233, 0.22);
+}
+
+.cta-button--secondary:hover {
+  box-shadow: 0 18px 36px rgba(14, 165, 233, 0.28);
+}
+
+.cta-button--ghost {
+  background: rgba(15, 23, 42, 0.45);
+  color: #e2e8f0;
+  border-color: rgba(226, 232, 240, 0.4);
+}
+
+.cta-button--ghost:hover {
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.cta-button--outline {
+  background: #ffffff;
+  color: #0b1f3a;
+  border-color: rgba(15, 23, 42, 0.18);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.cta-button--outline:hover {
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.12);
+}
+
+.footer-link {
+  color: #e2e8f0;
+  text-decoration: none;
+  padding: 6px 0;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  outline: none;
+}
+
+.footer-link:hover {
+  color: #7dd3fc;
+}
+
+.footer-link:focus-visible {
+  color: #f8fafc;
+  background: rgba(148, 197, 255, 0.18);
+  box-shadow: 0 0 0 2px rgba(148, 197, 255, 0.35);
+}
+
+.footer-link--social {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.footer-link--social:hover {
+  background: rgba(15, 23, 42, 0.7);
+}
+
+.footer-link--social:focus-visible {
+  background: rgba(15, 23, 42, 0.7);
+}

@@ -510,10 +510,10 @@ export default function CandidateContent() {
       <div style={{ gridColumn: "1 / -1" }}>
         <button
           type="submit"
+          className="cta-button cta-button--primary"
           style={{
-            ...sx.btnMain,
             opacity: isSubmitting ? 0.7 : 1,
-            cursor: isSubmitting ? "wait" : sx.btnMain.cursor,
+            cursor: isSubmitting ? "wait" : undefined,
           }}
           disabled={isSubmitting}
         >

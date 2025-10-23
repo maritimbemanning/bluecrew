@@ -51,13 +51,13 @@ export default function Page() {
                 ))}
               </ul>
               <div style={sx.ctaRow}>
-                <Link href="/jobbsoker/registrer" style={sx.btnMain}>
+                <Link href="/jobbsoker/registrer" className="cta-button cta-button--primary">
                   Registrer jobbsøker
                 </Link>
-                <Link href="/kunde/registrer-behov" style={sx.btnGhost}>
+                <Link href="/kunde/registrer-behov" className="cta-button cta-button--ghost">
                   Meld inn bemanningsbehov
                 </Link>
-                <Link href="/jobbsoker/oppdrag" style={sx.btnOutline}>
+                <Link href="/jobbsoker/oppdrag" className="cta-button cta-button--outline">
                   Se ledige stillinger
                 </Link>
               </div>
@@ -220,7 +220,7 @@ export default function Page() {
             </article>
           </div>
           <div style={{ marginTop: 32, display: "flex", justifyContent: "center" }}>
-            <Link href="/kunde/bemanning" style={sx.btnSecondary}>
+            <Link href="/kunde/bemanning" className="cta-button cta-button--secondary">
               Se hvordan vi bemanner
             </Link>
           </div>
@@ -268,7 +268,7 @@ export default function Page() {
             turnus, fartøy og mannskap som passer ambisjonene dine.
           </p>
           <div style={sx.jobsActions}>
-            <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
+            <Link href="/jobbsoker/oppdrag" className="cta-button cta-button--primary">
               Se ledige stillinger
             </Link>
             <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
@@ -290,7 +290,7 @@ export default function Page() {
               <Link href="/jobbsoker" style={sx.journeyAction}>
                 Les mer for jobbsøkere
               </Link>
-              <Link href="/jobbsoker/oppdrag" style={sx.btnOutline}>
+              <Link href="/jobbsoker/oppdrag" className="cta-button cta-button--outline">
                 Se ledige stillinger
               </Link>
             </div>
@@ -334,7 +334,7 @@ export default function Page() {
                 <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten og offshorefelt
               </li>
             </ul>
-            <Link href="/kontakt" style={sx.contactCTA}>
+            <Link href="/kontakt" className="cta-button cta-button--secondary">
               Planlegg bemanningen sammen med oss
             </Link>
           </div>

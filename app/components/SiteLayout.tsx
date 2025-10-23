@@ -1,10 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import {
+  PointerEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
+import "./site-layout.css";
 
 type NavChild = { href: string; label: string; description?: string };
 type NavItem = {
@@ -44,10 +53,8 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
-  const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const shouldIgnoreOverlay = useRef(false);
   const [canPortal, setCanPortal] = useState(false);
@@ -61,13 +68,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     shouldIgnoreOverlay.current = false;
     setMobileMenuOpen(false);
   }, []);
-
-  const cancelClose = () => {
-    if (closeTimeout.current) {
-      clearTimeout(closeTimeout.current);
-      closeTimeout.current = null;
-    }
-  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -147,22 +147,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
     };
   }, []);
 
-  const scheduleClose = () => {
-    cancelClose();
-    closeTimeout.current = setTimeout(() => {
-      setOpenKey(null);
-      closeTimeout.current = null;
-    }, 200);
-  };
-
-  const handleBlur = (key: string) => (event: FocusEvent<HTMLDivElement>) => {
-    const next = event.relatedTarget as Node | null;
-    if (!event.currentTarget.contains(next)) {
-      cancelClose();
-      setOpenKey((prev) => (prev === key ? null : prev));
-    }
-  };
-
   return (
     <div style={sx.page}>
       <header style={sx.topbar}>
@@ -177,66 +161,32 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               <span style={sx.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
-          <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+          <nav
+            className="site-nav"
+            style={isMobile ? { display: "none" } : undefined}
+            aria-label="Hovedmeny"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
-              const hasChildren = !!item.children?.length;
-              const isOpen = openKey === item.key;
 
-              if (!hasChildren) {
+              if (!item.children?.length) {
                 return (
                   <Link
                     key={item.key}
                     href={item.href}
-                    style={{
-                      ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink),
-                      ...(isActive && !item.accent ? sx.navLinkActive : {}),
-                    }}
+                    className={[
+                      item.accent ? "cta-button cta-button--secondary site-nav__cta" : "site-nav__link",
+                      !item.accent && isActive ? "site-nav__link--active" : null,
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
                   >
                     {item.label}
                   </Link>
                 );
               }
 
-              return (
-                <div
-                  key={item.key}
-                  style={sx.navItem}
-                  onMouseEnter={() => {
-                    cancelClose();
-                    setOpenKey(item.key);
-                  }}
-                  onMouseLeave={scheduleClose}
-                  onFocus={() => {
-                    cancelClose();
-                    setOpenKey(item.key);
-                  }}
-                  onBlur={handleBlur(item.key)}
-                >
-                  <Link
-                    href={item.href}
-                    style={{
-                      ...sx.navTrigger,
-                      ...(isActive ? sx.navLinkActive : {}),
-                    }}
-                  >
-                    {item.label}
-                    <span aria-hidden="true" style={sx.navCaret}>
-                      ▾
-                    </span>
-                  </Link>
-                  {isOpen && (
-                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
-                      {item.children!.map((child) => (
-                        <Link key={child.href} href={child.href} style={sx.navDropdownLink}>
-                          {child.label}
-                          {child.description && <span style={sx.navDropdownDescription}>{child.description}</span>}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
+              return <NavDropdown key={item.key} item={item} isActive={isActive} />;
             })}
           </nav>
           {isMobile && (
@@ -351,28 +301,24 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
       <footer style={sx.footer}>
         <div style={sx.footerWrap}>
           <div style={sx.footerGrid}>
-            <div>
-              <div style={sx.footerHeading}>Om oss</div>
+            <div style={sx.footerColumn}>
+              <div style={sx.footerHeading}>Bluecrew</div>
               <p style={sx.footerText}>
-                Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
-                sammen med kundene våre.
+                Sertifisert maritim bemanning til havbruk, fiskeri og servicefartøy. Vi setter sammen erfarne team som løser
+                kritiske oppgaver på sjøen.
               </p>
-              <Link href="/om-oss" style={sx.footerLink}>
-                Bli kjent med teamet vårt
+              <Link href="/om-oss" className="footer-link">
+                Møt teamet vårt
               </Link>
             </div>
-            <div>
-              <div style={sx.footerHeading}>Kontakt</div>
+            <div style={sx.footerColumn}>
+              <div style={sx.footerHeading}>Kontakt oss</div>
               <ul style={sx.footerList}>
                 {CONTACT_POINTS.map((point) => (
                   <li key={point.label} style={sx.footerListItem}>
-                    <span
-                      style={{ display: "block", fontSize: 12, opacity: 0.7, letterSpacing: ".08em", textTransform: "uppercase" }}
-                    >
-                      {point.label}
-                    </span>
+                    <span style={sx.footerListLabel}>{point.label}</span>
                     {point.href ? (
-                      <Link href={point.href} style={sx.footerLink}>
+                      <Link href={point.href} className="footer-link">
                         {point.value}
                       </Link>
                     ) : (
@@ -382,14 +328,58 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 ))}
               </ul>
             </div>
-            <div>
+            <div style={sx.footerColumn}>
+              <div style={sx.footerHeading}>Snarveier</div>
+              <ul style={sx.footerListStack}>
+                <li>
+                  <ul style={sx.footerList}>
+                    <li style={sx.footerListItem}>
+                      <Link href="/jobbsoker" className="footer-link">
+                        Jobbsøker
+                      </Link>
+                    </li>
+                    <li style={sx.footerListItem}>
+                      <Link href="/kunde" className="footer-link">
+                        Kunde
+                      </Link>
+                    </li>
+                    <li style={sx.footerListItem}>
+                      <Link href="/faq" className="footer-link">
+                        Vanlige spørsmål
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <div style={sx.footerSubheading}>Retningslinjer</div>
+                  <ul style={sx.footerList}>
+                    <li style={sx.footerListItem}>
+                      <Link href="/personvern" className="footer-link">
+                        Personvern og GDPR
+                      </Link>
+                    </li>
+                    <li style={sx.footerListItem}>
+                      <Link href="/vilkar" className="footer-link">
+                        Vilkår for kandidater
+                      </Link>
+                    </li>
+                    <li style={sx.footerListItem}>
+                      <Link href="/cookies" className="footer-link">
+                        Informasjonskapsler
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+            <div style={sx.footerColumn}>
               <div style={sx.footerHeading}>Følg oss</div>
               <div style={sx.footerSocials}>
                 {SOCIAL_LINKS.map((social) => (
                   <Link
                     key={social.href}
                     href={social.href}
-                    style={sx.footerSocialLink}
+                    className="footer-link footer-link--social"
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`${social.label} – ${social.description}`}
@@ -401,38 +391,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   </Link>
                 ))}
               </div>
-            </div>
-            <div>
-              <div style={sx.footerHeading}>Retningslinjer</div>
-              <ul style={sx.footerList}>
-                <li style={sx.footerListItem}>
-                  <Link href="/personvern" style={sx.footerLink}>
-                    Personvern og GDPR
-                  </Link>
-                </li>
-                <li style={sx.footerListItem}>
-                  <Link href="/vilkar" style={sx.footerLink}>
-                    Vilkår for kandidater
-                  </Link>
-                </li>
-                <li style={sx.footerListItem}>
-                  <Link href="/cookies" style={sx.footerLink}>
-                    Informasjonskapsler
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <div style={sx.footerHeading}>Adresse</div>
-              <p style={sx.footerText}>
+              <div style={sx.footerMeta}>
                 Østenbekkveien 43
                 <br />9403 Harstad
-              </p>
-              <p style={sx.footerText}>Org.nr: 936 321 194</p>
+                <br />Org.nr: 936 321 194
+              </div>
             </div>
           </div>
-          <div style={{ marginTop: 32, textAlign: "center" }}>
-            <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
+          <div style={sx.footerCta}>
+            <Link href="/faq" className="cta-button cta-button--ghost">
               Vanlige spørsmål
             </Link>
           </div>
@@ -447,3 +414,105 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
 }
 
 export default SiteLayout;
+
+type NavDropdownProps = {
+  item: NavItem;
+  isActive: boolean;
+};
+
+function NavDropdown({ item, isActive }: NavDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const buttonId = useId();
+  const menuId = useId();
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointer = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (!menuRef.current?.contains(target) && !buttonRef.current?.contains(target)) {
+        setOpen(false);
+      }
+    };
+
+    const handleFocus = (event: FocusEvent) => {
+      const target = event.target as Node;
+      if (!menuRef.current?.contains(target) && !buttonRef.current?.contains(target)) {
+        setOpen(false);
+      }
+    };
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointer);
+    document.addEventListener("focusin", handleFocus);
+    document.addEventListener("keydown", handleKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointer);
+      document.removeEventListener("focusin", handleFocus);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [open]);
+
+  const handleToggle = () => {
+    setOpen((prev) => !prev);
+  };
+
+  const handleLinkClick = useCallback(() => {
+    setOpen(false);
+  }, []);
+
+  const menuItems: NavChild[] = [
+    { href: item.href, label: `Gå til ${item.label}` },
+    ...(item.children ?? []),
+  ];
+
+  return (
+    <div className={`site-nav__menu${open ? " site-nav__menu--open" : ""}`}>
+      <button
+        type="button"
+        ref={buttonRef}
+        className={["site-nav__trigger", isActive ? "site-nav__link--active" : null].filter(Boolean).join(" ")}
+        aria-expanded={open}
+        aria-controls={menuId}
+        id={buttonId}
+        onClick={handleToggle}
+      >
+        {item.label}
+        <span aria-hidden="true" className="site-nav__caret">
+          ▾
+        </span>
+      </button>
+      {open && (
+        <div
+          ref={menuRef}
+          className="site-nav__dropdown"
+          role="menu"
+          aria-labelledby={buttonId}
+          id={menuId}
+        >
+          {menuItems.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href}
+              className="site-nav__dropdownLink"
+              role="menuitem"
+              onClick={handleLinkClick}
+            >
+              <span className="site-nav__dropdownLabel">{child.label}</span>
+              {child.description && <span className="site-nav__dropdownDescription">{child.description}</span>}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

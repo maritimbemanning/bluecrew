@@ -25,7 +25,7 @@ export default function FAQPage() {
             ))}
           </div>
           <div style={{ marginTop: 48, textAlign: "center" }}>
-            <Link href="/kontakt" style={sx.btnMain}>
+            <Link href="/kontakt" className="cta-button cta-button--secondary">
               Ta kontakt med oss
             </Link>
           </div>

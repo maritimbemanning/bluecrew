@@ -30,10 +30,10 @@ export default function Page() {
             </div>
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginTop: 32 }}>
-            <Link href="/kunde/registrer-behov" style={sx.btnMain}>
+            <Link href="/kunde/registrer-behov" className="cta-button cta-button--primary">
               Registrer behov
             </Link>
-            <Link href="/kontakt" style={sx.btnGhost}>
+            <Link href="/kontakt" className="cta-button cta-button--secondary">
               Snakk med en bemanningsleder
             </Link>
           </div>
