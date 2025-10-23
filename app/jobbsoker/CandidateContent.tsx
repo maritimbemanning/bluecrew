@@ -5,7 +5,7 @@ import { FormEvent, useCallback, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { FileInput, Input, Select, Textarea } from "../components/FormControls";
 import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
-import { sx } from "../lib/styles";
+import styles from "./candidate-content.module.css";
 import { candidateSchema, extractCandidateForm } from "../lib/validation";
 
 type FieldErrors = Record<string, string>;
@@ -147,7 +147,7 @@ export default function CandidateContent() {
 
   if (submitted) {
     return (
-      <div style={sx.ok} role="status">
+      <div className={styles.success} role="status">
         Takk! Søknaden er mottatt. Vi tar kontakt når vi har et oppdrag som matcher profilen din.
       </div>
     );
@@ -158,12 +158,12 @@ export default function CandidateContent() {
       action="/api/submit-candidate"
       method="POST"
       encType="multipart/form-data"
-      style={sx.form}
+      className={styles.formWrapper}
       noValidate
       onSubmit={handleSubmit}
     >
       {formError ? (
-        <div style={sx.formError} role="alert">
+        <div className={styles.formError} role="alert">
           {formError}
         </div>
       ) : null}
@@ -225,60 +225,59 @@ export default function CandidateContent() {
         onBlur={() => clearFieldError("municipality")}
       />
 
-      <div style={{ gridColumn: "1 / -1" }}>
-        <div style={{ fontWeight: 800, marginBottom: 8 }}>Ønsket arbeid</div>
-        <div style={{ display: "grid", gap: 12 }}>
+      <div className={styles.sectionGroup}>
+        <div className={styles.sectionHeader}>Ønsket arbeid</div>
+        <div className={styles.workWrapper}>
           {workEntries.map(([main, subs]) => {
             const open = !!openMain[main];
             return (
-              <div
-                key={main}
-                style={{ border: "1px solid #E2E8F0", borderRadius: 12, padding: 12, background: "#fff" }}
-              >
-                <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+              <div key={main} className={styles.workPanel}>
+                <label className={styles.workToggle}>
                   <input type="checkbox" checked={open} onChange={() => toggleMain(main)} />
-                  <span style={{ fontWeight: 700 }}>{main}</span>
+                  <span>{main}</span>
                 </label>
-               {open && (
-  <div style={{ marginTop: 10 }}>
-    <div style={sx.tags}>
-      {subs.map((sub) =>
-        sub === "Annet" ? (
-          <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-            <label style={sx.label}>
-              <span>Annet (kort beskrivelse)</span>
-              <input
-                name={`other_${main}`}
-                placeholder="Skriv kort om ønsket arbeid"
-                value={otherText[main] || ""}
-                onChange={(e) => setOtherText((prev) => ({ ...prev, [main]: e.target.value }))}
-                style={sx.input}
-              />
-            </label>
-          </div>
-        ) : (
-          <label key={sub} style={sx.tagItem}>
-            <input
-              type="checkbox"
-              name="work_main"
-              value={`${main}:${sub}`}
-              onChange={() => clearFieldError("work_main")}
-            />
-            <span>{sub}</span>
-          </label>
-        )
-      )}
-    </div>
-    <small style={{ color: "#64748b" }}>
-      Velg undervalg (eller fyll «Annet». Du kan åpne flere hovedkategorier.)
-    </small>
-    {fieldErrors.work_main ? (
-      <div style={sx.errText} role="alert">
-        {fieldErrors.work_main}
-      </div>
-    ) : null}
-  </div>
-)}
+                {open && (
+                  <div className={styles.workDetails}>
+                    <div className={styles.tagGrid}>
+                      {subs.map((sub) =>
+                        sub === "Annet" ? (
+                          <div key={sub} className={styles.otherField}>
+                            <label className={styles.otherLabel}>
+                              <span>Annet (kort beskrivelse)</span>
+                              <input
+                                name={`other_${main}`}
+                                placeholder="Skriv kort om ønsket arbeid"
+                                value={otherText[main] || ""}
+                                onChange={(e) =>
+                                  setOtherText((prev) => ({ ...prev, [main]: e.target.value }))
+                                }
+                                className={styles.otherInput}
+                              />
+                            </label>
+                          </div>
+                        ) : (
+                          <label key={sub} className={styles.tagItem}>
+                            <input
+                              type="checkbox"
+                              name="work_main"
+                              value={`${main}:${sub}`}
+                              onChange={() => clearFieldError("work_main")}
+                            />
+                            <span>{sub}</span>
+                          </label>
+                        ),
+                      )}
+                    </div>
+                    <small className={styles.supportText}>
+                      Velg undervalg (eller fyll «Annet». Du kan åpne flere hovedkategorier.)
+                    </small>
+                    {fieldErrors.work_main ? (
+                      <div className={styles.errorMessage} role="alert">
+                        {fieldErrors.work_main}
+                      </div>
+                    ) : null}
+                  </div>
+                )}
 
               </div>
             );
@@ -286,10 +285,10 @@ export default function CandidateContent() {
         </div>
       </div>
 
-      <div style={{ gridColumn: "1 / -1" }}>
-        <div style={{ fontWeight: 700, marginBottom: 6 }}>Er du åpen for midlertidige oppdrag?</div>
-        <div style={sx.inlineRadios}>
-          <label style={sx.radioLabel}>
+      <div className={styles.sectionGroup}>
+        <div className={styles.fieldTitle}>Er du åpen for midlertidige oppdrag?</div>
+        <div className={styles.radioGroup}>
+          <label className={styles.radioLabel}>
             <input
               type="radio"
               name="wants_temporary"
@@ -299,7 +298,7 @@ export default function CandidateContent() {
             />
             Ja
           </label>
-          <label style={sx.radioLabel}>
+          <label className={styles.radioLabel}>
             <input
               type="radio"
               name="wants_temporary"
@@ -310,17 +309,17 @@ export default function CandidateContent() {
           </label>
         </div>
         {fieldErrors.wants_temporary ? (
-          <div style={sx.errText} role="alert">
+          <div className={styles.errorMessage} role="alert">
             {fieldErrors.wants_temporary}
           </div>
         ) : null}
       </div>
 
-      <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      <div className={`${styles.sectionGroup} ${styles.twoColumn}`}>
         <div>
-          <div style={{ fontWeight: 700, marginBottom: 6 }}>STCW – Grunnleggende sikkerhetskurs</div>
-          <div style={sx.inlineRadios}>
-            <label style={sx.radioLabel}>
+          <div className={styles.fieldTitle}>STCW – Grunnleggende sikkerhetskurs</div>
+          <div className={styles.radioGroup}>
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="stcw_has"
@@ -333,7 +332,7 @@ export default function CandidateContent() {
               />
               Ja
             </label>
-            <label style={sx.radioLabel}>
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="stcw_has"
@@ -347,16 +346,16 @@ export default function CandidateContent() {
             </label>
           </div>
           {fieldErrors.stcw_has ? (
-            <div style={sx.errText} role="alert">
+            <div className={styles.errorMessage} role="alert">
               {fieldErrors.stcw_has}
             </div>
           ) : null}
           {hasSTCW === "ja" && (
-            <div style={{ marginTop: 8 }}>
-              <div style={{ fontSize: 13, color: "#475569", marginBottom: 6 }}>Huk av relevante moduler</div>
-              <div style={sx.checkGrid}>
+            <div className={styles.subSection}>
+              <div className={styles.fieldSubtitle}>Huk av relevante moduler</div>
+              <div className={styles.checkGrid}>
                 {STCW_MODULES.map((m) => (
-                  <label key={m} style={sx.checkItem}>
+                  <label key={m} className={styles.checkItem}>
                     <input
                       type="checkbox"
                       name="stcw_mod"
@@ -368,7 +367,7 @@ export default function CandidateContent() {
                 ))}
               </div>
               {fieldErrors.stcw_mod ? (
-                <div style={sx.errText} role="alert">
+                <div className={styles.errorMessage} role="alert">
                   {fieldErrors.stcw_mod}
                 </div>
               ) : null}
@@ -377,9 +376,9 @@ export default function CandidateContent() {
         </div>
 
         <div>
-          <div style={{ fontWeight: 700, marginBottom: 6 }}>Dekksoffiser-sertifikat</div>
-          <div style={sx.inlineRadios}>
-            <label style={sx.radioLabel}>
+          <div className={styles.fieldTitle}>Dekksoffiser-sertifikat</div>
+          <div className={styles.radioGroup}>
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="deck_has"
@@ -392,7 +391,7 @@ export default function CandidateContent() {
               />
               Ja
             </label>
-            <label style={sx.radioLabel}>
+            <label className={styles.radioLabel}>
               <input
                 type="radio"
                 name="deck_has"
@@ -407,12 +406,12 @@ export default function CandidateContent() {
             </label>
           </div>
           {fieldErrors.deck_has ? (
-            <div style={sx.errText} role="alert">
+            <div className={styles.errorMessage} role="alert">
               {fieldErrors.deck_has}
             </div>
           ) : null}
           {hasDeck === "ja" && (
-            <div style={{ marginTop: 8 }}>
+            <div className={styles.subSection}>
               <Select
                 label="Klasse"
                 name="deck_class"
@@ -426,7 +425,7 @@ export default function CandidateContent() {
                 error={fieldErrors.deck_class}
                 onBlur={() => clearFieldError("deck_class")}
               />
-              <small style={{ color: "#475569" }}>1 = høyeste, 6 = laveste (D6).</small>
+              <small className={styles.supportText}>1 = høyeste, 6 = laveste (D6).</small>
             </div>
           )}
         </div>
@@ -474,7 +473,7 @@ export default function CandidateContent() {
         onChange={() => clearFileError("certs")}
       />
 
-      <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
+      <div className={styles.gdprRow}>
         <input
           id="gdpr"
           type="checkbox"
@@ -485,36 +484,32 @@ export default function CandidateContent() {
           aria-describedby={fieldErrors.gdpr ? "gdpr-err" : undefined}
           onChange={() => clearFieldError("gdpr")}
         />
-        <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
+        <label htmlFor="gdpr" className={styles.gdprLabel}>
           Jeg samtykker til behandling av persondata for bemanning/rekruttering. {" "}
-          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
+          <Link href="/personvern" className={styles.gdprLink}>
             Les personvernerklæringen
           </Link>
           .
         </label>
         {fieldErrors.gdpr ? (
-          <div id="gdpr-err" style={sx.errText} role="alert">
+          <div id="gdpr-err" className={styles.errorMessage} role="alert">
             {fieldErrors.gdpr}
           </div>
         ) : null}
       </div>
 
       {/* Honeypot: NB! navnet må matche values.honey */}
-      <div aria-hidden="true" style={sx.honeypot}>
+      <div aria-hidden="true" className={styles.honeypot}>
         <label>
           <span>Dette feltet skal stå tomt</span>
           <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
 
-      <div style={{ gridColumn: "1 / -1" }}>
+      <div className={styles.submitRow}>
         <button
           type="submit"
-          className="cta-button cta-button--primary"
-          style={{
-            opacity: isSubmitting ? 0.7 : 1,
-            cursor: isSubmitting ? "wait" : undefined,
-          }}
+          className={`cta-button cta-button--primary ${styles.submitButton}`}
           disabled={isSubmitting}
         >
           Send inn jobbsøkerprofil

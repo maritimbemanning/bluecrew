@@ -1,19 +1,19 @@
 import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
-import { sx } from "../../lib/styles";
 import CandidateContent from "../CandidateContent";
+import formStyles from "../candidate-content.module.css";
 
 export default function Page() {
   return (
     <SiteLayout active="jobbsoker">
-      <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <h1 style={sx.h2}>Registrer deg som jobbsøker</h1>
-          <p style={sx.leadSmall}>
+      <section className="section section--alt">
+        <div className="container container--narrow">
+          <h1 className="heading-xl">Registrer deg som jobbsøker</h1>
+          <p className="text-lead text-lead--sm">
             Fyll ut skjemaet og last opp CV og sertifikater. Vi kobler deg på oppdrag når vi finner en match med erfaringen og
             tilgjengeligheten din.
           </p>
-          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
+          <Suspense fallback={<div className={formStyles.loading} role="status">Laster inn skjema …</div>}>
             <CandidateContent />
           </Suspense>
         </div>

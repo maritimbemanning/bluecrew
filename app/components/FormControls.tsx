@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import { sx } from "../lib/styles";
+import styles from "./form-controls.module.css";
+
+const cx = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(" ");
 
 export function Input({
   label,
@@ -25,7 +27,7 @@ export function Input({
   const id = `${name}-id`;
   const errId = `${name}-err`;
   return (
-    <label style={sx.label} htmlFor={id}>
+    <label className={styles.fieldLabel} htmlFor={id}>
       <span>
         {label}
         {required ? " *" : ""}
@@ -38,12 +40,12 @@ export function Input({
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
         defaultValue={defaultValue}
-        style={{ ...sx.input, ...(error ? sx.inputErr : null) }}
+        className={cx(styles.fieldInput, error && styles.fieldInputError)}
         onChange={onChange}
         onBlur={onBlur}
       />
       {error ? (
-        <div id={errId} style={sx.errText} role="alert">
+        <div id={errId} className={styles.errorText} role="alert">
           {error}
         </div>
       ) : null}
@@ -72,10 +74,10 @@ export function Textarea({
 }) {
   const id = `${name}-id`;
   return (
-    <label style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }} htmlFor={id}>
+    <label className={cx(styles.fieldLabel, full && styles.fieldLabelFull)} htmlFor={id}>
       <span>{label}</span>
       {description ? (
-        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
+        <span className={styles.inlineDescription}>{description}</span>
       ) : null}
       <textarea
         id={id}
@@ -83,12 +85,12 @@ export function Textarea({
         rows={rows}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-err` : undefined}
-        style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}
+        className={cx(styles.fieldInput, error && styles.fieldInputError)}
         onChange={onChange}
         onBlur={onBlur}
       />
       {error ? (
-        <div id={`${id}-err`} style={sx.errText} role="alert">
+        <div id={`${id}-err`} className={styles.errorText} role="alert">
           {error}
         </div>
       ) : null}
@@ -122,7 +124,7 @@ export function Select({
   const id = `${name}-id`;
   const errId = `${name}-err`;
   return (
-    <label style={sx.label} htmlFor={id}>
+    <label className={styles.fieldLabel} htmlFor={id}>
       <span>{label}</span>
       <select
         id={id}
@@ -133,12 +135,7 @@ export function Select({
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
         required={required}
-        style={{
-          ...sx.input,
-          opacity: disabled ? 0.6 : 1,
-          cursor: disabled ? "not-allowed" : "pointer",
-          ...(error ? sx.inputErr : null),
-        }}
+        className={cx(styles.fieldInput, error && styles.fieldInputError)}
         onBlur={onBlur}
       >
         {placeholder ? <option value="">{placeholder}</option> : null}
@@ -149,7 +146,7 @@ export function Select({
         ))}
       </select>
       {error ? (
-        <div id={errId} style={sx.errText} role="alert">
+        <div id={errId} className={styles.errorText} role="alert">
           {error}
         </div>
       ) : null}
@@ -175,7 +172,7 @@ export function FileInput({
   const id = `${name}-id`;
   const errId = `${name}-err`;
   return (
-    <label style={{ ...sx.label, cursor: "pointer" }} htmlFor={id}>
+    <label className={styles.fieldLabel} htmlFor={id}>
       <span>
         {label}
         {required ? " *" : ""}
@@ -188,11 +185,11 @@ export function FileInput({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
-        style={{ ...sx.input, cursor: "pointer" }}
+        className={cx(styles.fieldInput, styles.fileInput, error && styles.fieldInputError)}
         onChange={onChange}
       />
       {error ? (
-        <div id={errId} style={sx.errText} role="alert">
+        <div id={errId} className={styles.errorText} role="alert">
           {error}
         </div>
       ) : null}

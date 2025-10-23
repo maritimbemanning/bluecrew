@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
 import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
-import { sx } from "./lib/styles";
+import styles from "./page.module.css";
 
 const crewStories = [
   {
@@ -31,26 +31,26 @@ const crewStories = [
 export default function Page() {
   return (
     <SiteLayout active="home">
-      <section style={sx.hero}>
-        <div style={sx.heroWrap}>
-          <div style={sx.heroGrid}>
-            <div style={sx.heroContent}>
-              <div style={sx.heroPill}>Bemanning til sjøs</div>
-              <h1 style={sx.h1}>Rett mannskap. Riktig tid. Trygg drift til sjøs.</h1>
-              <p style={sx.h1Sub}>
+      <section className={styles.hero}>
+        <div className={styles.heroWrap}>
+          <div className={styles.heroGrid}>
+            <div className={styles.heroContent}>
+              <div className={styles.heroPill}>Bemanning til sjøs</div>
+              <h1 className={styles.heroTitle}>Rett mannskap. Riktig tid. Trygg drift til sjøs.</h1>
+              <p className={styles.heroSubtitle}>
                 Vi er sjøfolk som bemanner havbruk, fiskeri og spesialfartøy med sertifiserte team klare fra første vaktskifte.
               </p>
-              <ul style={sx.heroPoints}>
+              <ul className={styles.heroPoints}>
                 {HERO_POINTS.map((point) => (
-                  <li key={point.text} style={sx.heroPoint}>
-                    <span style={sx.heroPointIcon} aria-hidden="true">
+                  <li key={point.text} className={styles.heroPoint}>
+                    <span className={styles.heroPointIcon} aria-hidden="true">
                       {point.icon}
                     </span>
                     <span>{point.text}</span>
                   </li>
                 ))}
               </ul>
-              <div style={sx.ctaRow}>
+              <div className={styles.ctaRow}>
                 <Link href="/jobbsoker/registrer" className="cta-button cta-button--primary">
                   Registrer jobbsøker
                 </Link>
@@ -62,35 +62,35 @@ export default function Page() {
                 </Link>
               </div>
             </div>
-            <div style={sx.heroMedia}>
-              <div style={sx.heroMediaFrame}>
+            <div className={styles.heroMedia}>
+              <div className={styles.heroMediaFrame}>
                 <Image
                   src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
                   alt="Mannskap på dekk som gjør klar fortøyning"
                   width={520}
                   height={360}
                   priority
-                  style={{ objectFit: "cover", borderRadius: 18 }}
+                  className={styles.heroPrimaryImage}
                 />
               </div>
-              <p style={sx.heroMediaCaption}>
+              <p className={styles.heroMediaCaption}>
                 Bildene er hentet fra virkelige oppdrag og viser folkene som møter kundene våre til sjøs.
               </p>
-              <div style={sx.heroStatRow}>
-                <div style={sx.heroStatChip}>
-                  <span style={sx.heroStatChipValue}>Sertifisert</span>
-                  <span style={sx.heroStatChipLabel}>STCW & helseattest</span>
+              <div className={styles.heroStatRow}>
+                <div className={styles.heroStatChip}>
+                  <span className={styles.heroStatChipValue}>Sertifisert</span>
+                  <span className={styles.heroStatChipLabel}>STCW & helseattest</span>
                 </div>
-                <div style={sx.heroStatChip}>
-                  <span style={sx.heroStatChipValue}>Dialog</span>
-                  <span style={sx.heroStatChipLabel}>Oppfølging hele veien</span>
+                <div className={styles.heroStatChip}>
+                  <span className={styles.heroStatChipValue}>Dialog</span>
+                  <span className={styles.heroStatChipLabel}>Oppfølging hele veien</span>
                 </div>
               </div>
             </div>
-            <aside style={sx.heroMedia}>
-              <div style={sx.heroMediaGlow} aria-hidden="true" />
-              <div style={sx.heroPhotoFrame}>
-                <div style={sx.heroPhotoBadge}>
+            <aside className={styles.heroMedia}>
+              <div className={styles.heroMediaGlow} aria-hidden="true" />
+              <div className={styles.heroPhotoFrame}>
+                <div className={styles.heroPhotoBadge}>
                   <span aria-hidden="true">🧑‍✈️</span>
                   På oppdrag nå
                 </div>
@@ -100,10 +100,10 @@ export default function Page() {
                   width={640}
                   height={520}
                   priority
-                  style={sx.heroPhoto}
+                  className={styles.heroPhoto}
                 />
               </div>
-              <p style={sx.heroPhotoCaption}>
+              <p className={styles.heroPhotoCaption}>
                 «Vi leverer bare folk vi selv ville hatt om bord.» – Tor Martin, bemanningsrådgiver og tidligere overstyrmann.
               </p>
             </aside>
@@ -111,75 +111,77 @@ export default function Page() {
         </div>
       </section>
 
-      <section style={sx.sectionDeep}>
-        <div style={sx.storyGrid}>
-          <div style={sx.storyContent}>
-            <span style={sx.storyBadge}>Menneskene om bord</span>
-            <h2 style={sx.h2Light}>Ekte sjøfolk i hvert prosjekt</h2>
-            <p style={sx.storyLead}>
-              Vi kombinerer nettverket vårt av sertifiserte sjøfolk med operativ oppfølging av både mannskap og kunde.
-            </p>
-            <ul style={sx.storyList}>
-              <li style={sx.storyListItem}>
-                <span aria-hidden="true">👥</span>
-                <span>Personlig kontakt før, under og etter oppdraget.</span>
-              </li>
-              <li style={sx.storyListItem}>
-                <span aria-hidden="true">🧭</span>
-                <span>Rådgivning fra folk som kjenner regelverket og hverdagen til sjøs.</span>
-              </li>
-              <li style={sx.storyListItem}>
-                <span aria-hidden="true">🔐</span>
-                <span>GDPR-tilpasset databehandling og dokumentkontroll for hver kandidat.</span>
-              </li>
-            </ul>
-          </div>
-          <div style={sx.storyMedia}>
-            <div style={sx.heroMediaFrame}>
-              <Image
-                src="/crew-collage.svg"
-                alt="Illustrasjon av Bluecrew-team som bemanner fartøy"
-                width={420}
-                height={320}
-              />
-            </div>
-            <div style={sx.storyPanel}>
-              <div style={sx.storyAccent}>Fra dekk til drift</div>
-              <p style={sx.quote}>
-                «Vi følger opp mannskapet like tett som vi følger opp kunden. Da leverer vi trygge skift – hver gang.»
+      <section className={`section ${styles.sectionDeep}`}>
+        <div className="container container--narrow">
+          <div className={styles.storyGrid}>
+            <div className={styles.storyContent}>
+              <span className={styles.storyBadge}>Menneskene om bord</span>
+              <h2 className="heading-xl">Ekte sjøfolk i hvert prosjekt</h2>
+              <p className={styles.storyLead}>
+                Vi kombinerer nettverket vårt av sertifiserte sjøfolk med operativ oppfølging av både mannskap og kunde.
               </p>
-              <div style={sx.quoteName}>Sander Berg, operativ leder</div>
+              <ul className={styles.storyList}>
+                <li className={styles.storyListItem}>
+                  <span aria-hidden="true">👥</span>
+                  <span>Personlig kontakt før, under og etter oppdraget.</span>
+                </li>
+                <li className={styles.storyListItem}>
+                  <span aria-hidden="true">🧭</span>
+                  <span>Rådgivning fra folk som kjenner regelverket og hverdagen til sjøs.</span>
+                </li>
+                <li className={styles.storyListItem}>
+                  <span aria-hidden="true">🔐</span>
+                  <span>GDPR-tilpasset databehandling og dokumentkontroll for hver kandidat.</span>
+                </li>
+              </ul>
+            </div>
+            <div className={styles.storyMedia}>
+              <div className={styles.heroMediaFrame}>
+                <Image
+                  src="/crew-collage.svg"
+                  alt="Illustrasjon av Bluecrew-team som bemanner fartøy"
+                  width={420}
+                  height={320}
+                />
+              </div>
+              <div className={styles.storyPanel}>
+                <div className={styles.storyAccent}>Fra dekk til drift</div>
+                <p className={styles.quote}>
+                  «Vi følger opp mannskapet like tett som vi følger opp kunden. Da leverer vi trygge skift – hver gang.»
+                </p>
+                <div className={styles.quoteName}>Sander Berg, operativ leder</div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ display: "grid", gap: 28 }}>
-            <div style={{ display: "grid", gap: 16 }}>
-              <h2 style={sx.h2}>Fra behov til bemannet fartøy</h2>
-              <p style={sx.leadSmall}>
-                Vi avklarer kompetansekrav, verifiserer dokumentasjon og holder dialogen med mannskapet slik at oppdraget ditt flyter
-                trygt.
+      <section className="section section--alt">
+        <div className="container container--narrow">
+          <div className={styles.stackLoose}>
+            <div className={styles.stackTight}>
+              <h2 className="heading-xl">Fra behov til bemannet fartøy</h2>
+              <p className="text-lead text-lead--sm">
+                Vi avklarer kompetansekrav, verifiserer dokumentasjon og holder dialogen med mannskapet slik at oppdraget ditt
+                flyter trygt.
               </p>
             </div>
-            <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Operativ innsikt</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+            <div className={styles.featuresGrid}>
+              <div className={styles.featureCard}>
+                <strong className={styles.featureTitle}>Operativ innsikt</strong>
+                <p className={styles.featureText}>
                   Rådgivere med bakgrunn fra bro, dekk og maskin setter sammen team som fungerer om bord.
                 </p>
               </div>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Fleksible leveranser</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+              <div className={styles.featureCard}>
+                <strong className={styles.featureTitle}>Fleksible leveranser</strong>
+                <p className={styles.featureText}>
                   Innleie eller fast rekruttering – du får ett kontaktpunkt som kjenner fartøyet ditt.
                 </p>
               </div>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Kvalitet og trygghet</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
+              <div className={styles.featureCard}>
+                <strong className={styles.featureTitle}>Kvalitet og trygghet</strong>
+                <p className={styles.featureText}>
                   Sertifikater, referanser og HMS kontrolleres før oppstart og rapporteres gjennom hele oppdraget.
                 </p>
               </div>
@@ -188,38 +190,38 @@ export default function Page() {
         </div>
       </section>
 
-      <section style={sx.section}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <h2 style={sx.h2}>Tjenesteområder</h2>
-            <p style={sx.leadSmall}>
+      <section className="section">
+        <div className="container container--narrow">
+          <div className={styles.centerBlock}>
+            <h2 className="heading-xl">Tjenesteområder</h2>
+            <p className="text-lead text-lead--sm">
               Vi bemanner fartøy og operasjoner langs hele norskekysten med sertifisert personell på kort varsel.
             </p>
           </div>
-          <div style={sx.cards3}>
-            <article style={sx.cardService}>
-              <div style={sx.cardIcon}>🐟</div>
-              <div style={sx.cardTitle}>Havbruk</div>
-              <p style={sx.cardListLead}>
+          <div className={styles.cards3}>
+            <article className={styles.cardService}>
+              <div className={styles.cardIcon}>🐟</div>
+              <div className={styles.cardTitle}>Havbruk</div>
+              <p className={styles.cardListLead}>
                 Skippere, båtførere og akvateknikere som kjenner linjene, rutinene og HMS-kravene dine.
               </p>
             </article>
-            <article style={sx.cardService}>
-              <div style={sx.cardIcon}>⚓</div>
-              <div style={sx.cardTitle}>Fiskeri</div>
-              <p style={sx.cardListLead}>
+            <article className={styles.cardService}>
+              <div className={styles.cardIcon}>⚓</div>
+              <div className={styles.cardTitle}>Fiskeri</div>
+              <p className={styles.cardListLead}>
                 Styrmenn, maskinister og matroser med dokumentert fartstid og oppdatert sikkerhetstrening.
               </p>
             </article>
-            <article style={sx.cardService}>
-              <div style={sx.cardIcon}>🛠️</div>
-              <div style={sx.cardTitle}>Service & spesialfartøy</div>
-              <p style={sx.cardListLead}>
+            <article className={styles.cardService}>
+              <div className={styles.cardIcon}>🛠️</div>
+              <div className={styles.cardTitle}>Service & spesialfartøy</div>
+              <p className={styles.cardListLead}>
                 ROV-, kran- og DP-personell samt logistikkteam som holder prosjektet trygt i gang.
               </p>
             </article>
           </div>
-          <div style={{ marginTop: 32, display: "flex", justifyContent: "center" }}>
+          <div className={styles.ctaCenter}>
             <Link href="/kunde/bemanning" className="cta-button cta-button--secondary">
               Se hvordan vi bemanner
             </Link>
@@ -227,31 +229,32 @@ export default function Page() {
         </div>
       </section>
 
-      <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <div style={{ display: "grid", gap: 18, textAlign: "center" }}>
-            <span style={sx.teamAccent}>Menneskene i Bluecrew</span>
-            <h2 style={sx.h2}>Virkelige sjøfolk. Virkelige historier.</h2>
-            <p style={sx.leadSmall}>
-              Vi møter kundene med folk som har vært på dekk selv. Slik bygger vi tillit og leverer mannskap som fungerer fra dag én.
+      <section className="section section--alt">
+        <div className="container container--narrow">
+          <div className={styles.stackCenter}>
+            <span className={styles.teamAccent}>Menneskene i Bluecrew</span>
+            <h2 className="heading-xl">Virkelige sjøfolk. Virkelige historier.</h2>
+            <p className="text-lead text-lead--sm">
+              Vi møter kundene med folk som har vært på dekk selv. Slik bygger vi tillit og leverer mannskap som fungerer fra dag
+              én.
             </p>
           </div>
-          <div style={sx.teamGrid}>
+          <div className={styles.teamGrid}>
             {crewStories.map((story) => (
-              <article key={story.name} style={sx.teamCard}>
-                <div style={sx.teamPortrait}>
+              <article key={story.name} className={styles.teamCard}>
+                <div className={styles.teamPortrait}>
                   <Image
                     src={story.image}
                     alt={`${story.name} – ${story.role}`}
                     fill
                     sizes="(min-width: 1024px) 320px, 90vw"
-                    style={{ objectFit: "cover" }}
+                    className={styles.teamImage}
                   />
                 </div>
-                <p style={sx.teamQuote}>“{story.quote}”</p>
-                <div style={sx.teamMeta}>
-                  <span style={sx.teamName}>{story.name}</span>
-                  <span style={sx.teamRole}>{story.role}</span>
+                <p className={styles.teamQuote}>“{story.quote}”</p>
+                <div className={styles.teamMeta}>
+                  <span className={styles.teamName}>{story.name}</span>
+                  <span className={styles.teamRole}>{story.role}</span>
                 </div>
               </article>
             ))}
@@ -259,35 +262,35 @@ export default function Page() {
         </div>
       </section>
 
-      <section style={sx.section}>
-        <div style={sx.jobsHighlight}>
-          <span style={sx.jobsBadge}>For jobbsøkere</span>
-          <h2 style={sx.jobsTitle}>Finn din neste jobb til sjøs</h2>
-          <p style={sx.jobsText}>
+      <section className="section">
+        <div className={styles.jobsHighlight}>
+          <span className={styles.jobsBadge}>For jobbsøkere</span>
+          <h2 className={styles.jobsTitle}>Finn din neste jobb til sjøs</h2>
+          <p className={styles.jobsText}>
             Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
             turnus, fartøy og mannskap som passer ambisjonene dine.
           </p>
-          <div style={sx.jobsActions}>
+          <div className={styles.jobsActions}>
             <Link href="/jobbsoker/oppdrag" className="cta-button cta-button--primary">
               Se ledige stillinger
             </Link>
-            <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
+            <Link href="/jobbsoker/registrer" className={styles.btnSoft}>
               Registrer CV
             </Link>
           </div>
         </div>
       </section>
 
-      <section style={sx.sectionAlt}>
-        <div style={sx.journeyWrap}>
-          <article style={sx.journeyPrimary}>
-            <h2 style={sx.journeyTitle}>For sjøfolk som vil videre</h2>
-            <p style={sx.journeyText}>
-              Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter. Vi
-              følger deg opp før, under og etter hver seilas.
+      <section className="section section--alt">
+        <div className={styles.journeyWrap}>
+          <article className={styles.journeyPrimary}>
+            <h2 className={styles.journeyTitle}>For sjøfolk som vil videre</h2>
+            <p className={styles.journeyText}>
+              Registrer deg som jobbsøker, så holder vi deg oppdatert på oppdrag der lønn, turnus og team passer det du ser etter.
+              Vi følger deg opp før, under og etter hver seilas.
             </p>
-            <div style={sx.journeyActionRow}>
-              <Link href="/jobbsoker" style={sx.journeyAction}>
+            <div className={styles.journeyActionRow}>
+              <Link href="/jobbsoker" className={styles.journeyAction}>
                 Les mer for jobbsøkere
               </Link>
               <Link href="/jobbsoker/oppdrag" className="cta-button cta-button--outline">
@@ -295,42 +298,32 @@ export default function Page() {
               </Link>
             </div>
           </article>
-          <article style={sx.journeySecondary}>
-            <h3 style={sx.journeySecondaryTitle}>Klar for neste skift</h3>
-            <p style={sx.journeySecondaryText}>
-              Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan fokusere på
-              jobben om bord.
+          <article className={styles.journeySecondary}>
+            <h3 className={styles.journeySecondaryTitle}>Klar for neste skift</h3>
+            <p className={styles.journeySecondaryText}>
+              Vi sørger for at STCW, helseattest og kurs er oppdatert. Du får støtte til papirarbeid og reiser slik at du kan
+              fokusere på jobben om bord.
             </p>
           </article>
         </div>
       </section>
 
-      <section style={sx.sectionContact}>
-        <div style={sx.contactSplit}>
-          <div style={sx.contactIntro}>
-            <h2 style={sx.h2}>Kontakt oss</h2>
-            <p style={sx.leadSmall}>
-              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Vi svarer raskt og tilpasser leveransen til
-              operasjonen din.
+      <section className={`section ${styles.contactSection}`}>
+        <div className={styles.contactSplit}>
+          <div className={styles.contactIntro}>
+            <h2 className="heading-xl">Kontakt oss</h2>
+            <p className="text-lead text-lead--sm">
+              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Vi svarer raskt og tilpasser leveransen
+              til operasjonen din.
             </p>
-            <ul
-              style={{
-                listStyle: "none",
-                margin: 0,
-                padding: 0,
-                display: "grid",
-                gap: 12,
-                fontSize: 16,
-                color: "#1e293b",
-              }}
-            >
-              <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <ul className={styles.contactPoints}>
+              <li className={styles.contactItem}>
                 <span aria-hidden="true">⚙️</span> Skreddersydde team for hele den maritime sektoren
               </li>
-              <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <li className={styles.contactItem}>
                 <span aria-hidden="true">🕑</span> Oppstart på kort varsel når situasjonen krever det
               </li>
-              <li style={{ display: "flex", gap: 10, alignItems: "center" }}>
+              <li className={styles.contactItem}>
                 <span aria-hidden="true">🧭</span> Rådgivning fra folk som kjenner norskekysten og offshorefelt
               </li>
             </ul>
@@ -338,28 +331,28 @@ export default function Page() {
               Planlegg bemanningen sammen med oss
             </Link>
           </div>
-          <div style={sx.contactCard}>
-            <div style={{ display: "grid", gap: 10 }}>
-              <h3 style={{ margin: 0, fontSize: 24, fontWeight: 800, color: "#f8fafc" }}>Bluecrew AS</h3>
-              <p style={{ margin: 0, color: "#cbd5f5", lineHeight: 1.6 }}>
+          <div className={styles.contactCard}>
+            <div className={styles.stackTight}>
+              <h3 className={styles.contactHeading}>Bluecrew AS</h3>
+              <p className={styles.contactDescription}>
                 Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge og resten av norskekysten.
               </p>
             </div>
-            <ul style={sx.contactList}>
+            <ul className={styles.contactList}>
               {CONTACT_POINTS.map((point) => (
-                <li key={point.label} style={sx.contactListItem}>
-                  <span style={sx.contactLabel}>{point.label}</span>
+                <li key={point.label} className={styles.contactListItem}>
+                  <span className={styles.contactLabel}>{point.label}</span>
                   {point.href ? (
-                    <Link href={point.href} style={{ ...sx.contactValue, color: "#38bdf8", textDecoration: "none" }}>
+                    <Link href={point.href} className={styles.contactLink}>
                       {point.value}
                     </Link>
                   ) : (
-                    <span style={sx.contactValue}>{point.value}</span>
+                    <span className={styles.contactValue}>{point.value}</span>
                   )}
                 </li>
               ))}
             </ul>
-            <p style={{ margin: 0, fontSize: 14, color: "#94a3b8" }}>
+            <p className={styles.contactLegal}>
               Org.nr: 936 321 194 • GDPR-tilpasset behandling av persondata
             </p>
           </div>

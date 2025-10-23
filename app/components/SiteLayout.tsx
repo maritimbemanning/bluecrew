@@ -12,7 +12,6 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
-import { sx } from "../lib/styles";
 import "./site-layout.css";
 
 type NavChild = { href: string; label: string; description?: string };
@@ -51,6 +50,9 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt", accent: true },
 ];
+
+const cx = (...classes: (string | false | null | undefined)[]) =>
+  classes.filter(Boolean).join(" ");
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
   const [isMobile, setIsMobile] = useState(false);
@@ -148,24 +150,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   }, []);
 
   return (
-    <div style={sx.page}>
-      <header style={sx.topbar}>
-        <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
-          <Link
-            href="/"
-            style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
-            aria-label="Bluecrew – bemanning til sjøs"
-          >
-            <div style={sx.brandMark}>
-              <span style={sx.brandWordmark}>Bluecrew</span>
-              <span style={sx.brandSlogan}>Bemanning til sjøs</span>
-            </div>
+    <div className="site-layout">
+      <header className="site-topbar">
+        <div className={cx("site-topbar__wrap", isMobile && "site-topbar__wrap--mobile")}>
+          <Link href="/" className="site-brand" aria-label="Bluecrew – bemanning til sjøs">
+            <span className="site-brand__wordmark">Bluecrew</span>
+            <span className="site-brand__slogan">Bemanning til sjøs</span>
           </Link>
-          <nav
-            className="site-nav"
-            style={isMobile ? { display: "none" } : undefined}
-            aria-label="Hovedmeny"
-          >
+          <nav className={cx("site-nav", isMobile && "site-nav--hidden")} aria-label="Hovedmeny">
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
 
@@ -174,12 +166,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   <Link
                     key={item.key}
                     href={item.href}
-                    className={[
+                    className={cx(
                       item.accent ? "cta-button cta-button--secondary site-nav__cta" : "site-nav__link",
-                      !item.accent && isActive ? "site-nav__link--active" : null,
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                      !item.accent && isActive && "site-nav__link--active",
+                    )}
                   >
                     {item.label}
                   </Link>
@@ -197,7 +187,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 onPointerDown={() => {
                   shouldIgnoreOverlay.current = true;
                 }}
-                style={sx.mobileToggle}
+                className="site-mobile-toggle"
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
               >
@@ -206,7 +196,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               {mobileMenuOpen && (() => {
                 const menu = (
                   <div
-                    style={sx.mobileOverlay}
+                    className="site-mobile-overlay"
                     role="presentation"
                     onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
                       if (event.target === event.currentTarget) {
@@ -219,7 +209,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     }}
                   >
                     <div
-                      style={sx.mobileSheet}
+                      className="site-mobile-sheet"
                       role="dialog"
                       aria-modal="true"
                       aria-labelledby="mobile-nav-title"
@@ -228,50 +218,48 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                         event.stopPropagation();
                       }}
                     >
-                      <div style={sx.mobileSheetHeader}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <div style={sx.brandMarkMobile}>
-                            <span style={sx.brandWordmarkMobile} id="mobile-nav-title">
-                              Bluecrew
-                            </span>
-                            <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
-                          </div>
+                      <div className="site-mobile-sheet__header">
+                        <div className="site-brand site-brand--mobile">
+                          <span className="site-brand__wordmark--mobile" id="mobile-nav-title">
+                            Bluecrew
+                          </span>
+                          <span className="site-brand__slogan--mobile">Bemanning til sjøs</span>
                         </div>
                         <button
                           type="button"
                           onClick={closeMobileMenu}
-                          style={sx.mobileClose}
+                          className="site-mobile-close"
                           aria-label="Lukk meny"
                           ref={closeButtonRef}
                         >
                           Lukk
                         </button>
                       </div>
-                      <ul style={sx.mobileNav}>
+                      <ul className="site-mobile-nav">
                         {NAV_ITEMS.map((item) => {
                           const isActive = active === item.key;
                           const hasChildren = !!item.children?.length;
 
                           return (
-                            <li key={item.key} style={sx.mobileNavItem}>
+                            <li key={item.key} className="site-mobile-nav__item">
                               <Link
                                 href={item.href}
-                                style={{
-                                  ...sx.mobileNavLink,
-                                  ...(item.accent ? sx.mobileNavLinkAccent : {}),
-                                  ...(isActive ? sx.mobileNavLinkActive : {}),
-                                }}
+                                className={cx(
+                                  "site-mobile-nav__link",
+                                  item.accent && "site-mobile-nav__link--accent",
+                                  isActive && "site-mobile-nav__link--active",
+                                )}
                                 onClick={closeMobileMenu}
                               >
                                 {item.label}
                               </Link>
                               {hasChildren && (
-                                <ul style={sx.mobileChildList}>
+                                <ul className="site-mobile-child-nav">
                                   {item.children!.map((child) => (
                                     <li key={child.href}>
                                       <Link
                                         href={child.href}
-                                        style={sx.mobileChildLink}
+                                        className="site-mobile-child-nav__link"
                                         onClick={closeMobileMenu}
                                       >
                                         {child.label}
@@ -296,14 +284,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           )}
         </div>
       </header>
-      <main style={sx.main}>{children}</main>
+      <main className="site-main">{children}</main>
 
-      <footer style={sx.footer}>
-        <div style={sx.footerWrap}>
-          <div style={sx.footerGrid}>
-            <div style={sx.footerColumn}>
-              <div style={sx.footerHeading}>Bluecrew</div>
-              <p style={sx.footerText}>
+      <footer className="site-footer">
+        <div className="site-footer__wrap">
+          <div className="site-footer__grid">
+            <div className="site-footer__column">
+              <div className="site-footer__heading">Bluecrew</div>
+              <p className="site-footer__text">
                 Sertifisert maritim bemanning til havbruk, fiskeri og servicefartøy. Vi setter sammen erfarne team som løser
                 kritiske oppgaver på sjøen.
               </p>
@@ -311,12 +299,12 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 Møt teamet vårt
               </Link>
             </div>
-            <div style={sx.footerColumn}>
-              <div style={sx.footerHeading}>Kontakt oss</div>
-              <ul style={sx.footerList}>
+            <div className="site-footer__column">
+              <div className="site-footer__heading">Kontakt oss</div>
+              <ul className="site-footer__list">
                 {CONTACT_POINTS.map((point) => (
-                  <li key={point.label} style={sx.footerListItem}>
-                    <span style={sx.footerListLabel}>{point.label}</span>
+                  <li key={point.label} className="site-footer__list-item">
+                    <span className="site-footer__list-label">{point.label}</span>
                     {point.href ? (
                       <Link href={point.href} className="footer-link">
                         {point.value}
@@ -328,22 +316,22 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 ))}
               </ul>
             </div>
-            <div style={sx.footerColumn}>
-              <div style={sx.footerHeading}>Snarveier</div>
-              <ul style={sx.footerListStack}>
+            <div className="site-footer__column">
+              <div className="site-footer__heading">Snarveier</div>
+              <ul className="site-footer__list-stack">
                 <li>
-                  <ul style={sx.footerList}>
-                    <li style={sx.footerListItem}>
+                  <ul className="site-footer__list">
+                    <li className="site-footer__list-item">
                       <Link href="/jobbsoker" className="footer-link">
                         Jobbsøker
                       </Link>
                     </li>
-                    <li style={sx.footerListItem}>
+                    <li className="site-footer__list-item">
                       <Link href="/kunde" className="footer-link">
                         Kunde
                       </Link>
                     </li>
-                    <li style={sx.footerListItem}>
+                    <li className="site-footer__list-item">
                       <Link href="/faq" className="footer-link">
                         Vanlige spørsmål
                       </Link>
@@ -351,19 +339,19 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   </ul>
                 </li>
                 <li>
-                  <div style={sx.footerSubheading}>Retningslinjer</div>
-                  <ul style={sx.footerList}>
-                    <li style={sx.footerListItem}>
+                  <div className="site-footer__subheading">Retningslinjer</div>
+                  <ul className="site-footer__list">
+                    <li className="site-footer__list-item">
                       <Link href="/personvern" className="footer-link">
                         Personvern og GDPR
                       </Link>
                     </li>
-                    <li style={sx.footerListItem}>
+                    <li className="site-footer__list-item">
                       <Link href="/vilkar" className="footer-link">
                         Vilkår for kandidater
                       </Link>
                     </li>
-                    <li style={sx.footerListItem}>
+                    <li className="site-footer__list-item">
                       <Link href="/cookies" className="footer-link">
                         Informasjonskapsler
                       </Link>
@@ -372,9 +360,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 </li>
               </ul>
             </div>
-            <div style={sx.footerColumn}>
-              <div style={sx.footerHeading}>Følg oss</div>
-              <div style={sx.footerSocials}>
+            <div className="site-footer__column">
+              <div className="site-footer__heading">Følg oss</div>
+              <div className="site-footer__socials">
                 {SOCIAL_LINKS.map((social) => (
                   <Link
                     key={social.href}
@@ -384,26 +372,26 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     rel="noreferrer"
                     aria-label={`${social.label} – ${social.description}`}
                   >
-                    <span aria-hidden="true" style={sx.footerSocialIcon}>
+                    <span aria-hidden="true" className="site-footer__social-icon">
                       in
                     </span>
                     <span>{social.label}</span>
                   </Link>
                 ))}
               </div>
-              <div style={sx.footerMeta}>
+              <div className="site-footer__meta">
                 Østenbekkveien 43
                 <br />9403 Harstad
                 <br />Org.nr: 936 321 194
               </div>
             </div>
           </div>
-          <div style={sx.footerCta}>
+          <div className="site-footer__cta">
             <Link href="/faq" className="cta-button cta-button--ghost">
               Vanlige spørsmål
             </Link>
           </div>
-          <div style={sx.footerLegal}>
+          <div className="site-footer__legal">
             © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov
             og veiledning fra Datatilsynet i all behandling av kandidatdata.
           </div>
