@@ -1,0 +1,101 @@
+.fullRow {
+  grid-column: 1 / -1;
+}
+
+.sectionHeading {
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--color-page-fg);
+}
+
+.workList {
+  display: grid;
+  gap: 12px;
+}
+
+.workCard {
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  background: var(--color-white);
+  display: grid;
+  gap: 12px;
+}
+
+.workToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--color-page-fg);
+}
+
+.workToggleLabel {
+  font-weight: 700;
+}
+
+.workExtras {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.workOther {
+  flex: 1;
+  min-width: 240px;
+}
+
+.workHelp {
+  color: var(--color-slate-500);
+  font-size: 13px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.inlineGrid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.stcwNotice {
+  font-size: 13px;
+  color: var(--color-slate-600);
+  margin-bottom: 6px;
+}
+
+.sectionExtras {
+  margin-top: 8px;
+  display: grid;
+  gap: 10px;
+}
+
+.smallMuted {
+  font-size: 13px;
+  color: var(--color-slate-500);
+}
+
+.consentRow {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.consentText {
+  font-size: 13px;
+  color: var(--color-slate-600);
+  cursor: pointer;
+}
+
+.consentLink {
+  color: var(--color-page-fg);
+  text-decoration: underline;
+}

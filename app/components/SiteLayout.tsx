@@ -4,7 +4,8 @@ import Link from "next/link";
 import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
-import { sx } from "../lib/styles";
+import buttons from "../styles/buttons.module.css";
+import styles from "./SiteLayout.module.css";
 
 type NavChild = { href: string; label: string; description?: string };
 type NavItem = {
@@ -164,20 +165,19 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
   };
 
   return (
-    <div style={sx.page}>
-      <header style={sx.topbar}>
-        <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
-          <Link
-            href="/"
-            style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
-            aria-label="Bluecrew – bemanning til sjøs"
-          >
-            <div style={sx.brandMark}>
-              <span style={sx.brandWordmark}>Bluecrew</span>
-              <span style={sx.brandSlogan}>Bemanning til sjøs</span>
+    <div className={styles.page}>
+      <header className={styles.topbar}>
+        <div className={`${styles.wrap} ${isMobile ? styles.wrapMobile : ""}`}>
+          <Link href="/" className={styles.brandLink} aria-label="Bluecrew – bemanning til sjøs">
+            <div className={styles.brandMark}>
+              <span className={styles.brandWordmark}>Bluecrew</span>
+              <span className={styles.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
-          <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+          <nav
+            className={`${styles.nav} ${isMobile ? styles.navHidden : ""}`}
+            aria-label="Hovedmeny"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
@@ -188,10 +188,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                   <Link
                     key={item.key}
                     href={item.href}
-                    style={{
-                      ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink),
-                      ...(isActive && !item.accent ? sx.navLinkActive : {}),
-                    }}
+                    className={`${item.accent ? `${styles.navLink} ${styles.navLinkAccent}` : styles.navLink} ${
+                      isActive && !item.accent ? styles.navLinkActive : ""
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -201,7 +200,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               return (
                 <div
                   key={item.key}
-                  style={sx.navItem}
+                  className={styles.navItem}
                   onMouseEnter={() => {
                     cancelClose();
                     setOpenKey(item.key);
@@ -215,22 +214,25 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 >
                   <Link
                     href={item.href}
-                    style={{
-                      ...sx.navTrigger,
-                      ...(isActive ? sx.navLinkActive : {}),
-                    }}
+                    className={`${styles.navTrigger} ${isActive ? styles.navLinkActive : ""}`}
                   >
                     {item.label}
-                    <span aria-hidden="true" style={sx.navCaret}>
+                    <span aria-hidden="true" className={styles.navCaret}>
                       ▾
                     </span>
                   </Link>
                   {isOpen && (
-                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
+                    <div
+                      className={styles.navDropdown}
+                      onMouseEnter={cancelClose}
+                      onMouseLeave={scheduleClose}
+                    >
                       {item.children!.map((child) => (
-                        <Link key={child.href} href={child.href} style={sx.navDropdownLink}>
+                        <Link key={child.href} href={child.href} className={styles.navDropdownLink}>
                           {child.label}
-                          {child.description && <span style={sx.navDropdownDescription}>{child.description}</span>}
+                          {child.description && (
+                            <span className={styles.navDropdownDescription}>{child.description}</span>
+                          )}
                         </Link>
                       ))}
                     </div>
@@ -247,7 +249,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                 onPointerDown={() => {
                   shouldIgnoreOverlay.current = true;
                 }}
-                style={sx.mobileToggle}
+                className={styles.mobileToggle}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
               >
@@ -256,7 +258,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               {mobileMenuOpen && (() => {
                 const menu = (
                   <div
-                    style={sx.mobileOverlay}
+                    className={styles.mobileOverlay}
                     role="presentation"
                     onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
                       if (event.target === event.currentTarget) {
@@ -269,7 +271,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     }}
                   >
                     <div
-                      style={sx.mobileSheet}
+                      className={styles.mobileSheet}
                       role="dialog"
                       aria-modal="true"
                       aria-labelledby="mobile-nav-title"
@@ -278,52 +280,46 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                         event.stopPropagation();
                       }}
                     >
-                      <div style={sx.mobileSheetHeader}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                          <div style={sx.brandMarkMobile}>
-                            <span style={sx.brandWordmarkMobile} id="mobile-nav-title">
+                      <div className={styles.mobileSheetHeader}>
+                        <div className={styles.mobileBrandRow}>
+                          <div className={styles.brandMarkMobile}>
+                            <span className={styles.brandWordmarkMobile} id="mobile-nav-title">
                               Bluecrew
                             </span>
-                            <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
+                            <span className={styles.brandSloganMobile}>Bemanning til sjøs</span>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={closeMobileMenu}
-                          style={sx.mobileClose}
+                          className={styles.mobileClose}
                           aria-label="Lukk meny"
                           ref={closeButtonRef}
                         >
                           Lukk
                         </button>
                       </div>
-                      <ul style={sx.mobileNav}>
+                      <ul className={styles.mobileNav}>
                         {NAV_ITEMS.map((item) => {
                           const isActive = active === item.key;
                           const hasChildren = !!item.children?.length;
 
                           return (
-                            <li key={item.key} style={sx.mobileNavItem}>
+                            <li key={item.key} className={styles.mobileNavItem}>
                               <Link
                                 href={item.href}
-                                style={{
-                                  ...sx.mobileNavLink,
-                                  ...(item.accent ? sx.mobileNavLinkAccent : {}),
-                                  ...(isActive ? sx.mobileNavLinkActive : {}),
-                                }}
+                                className={`${styles.mobileNavLink} ${item.accent ? styles.mobileNavLinkAccent : ""} ${
+                                  isActive ? styles.mobileNavLinkActive : ""
+                                }`}
                                 onClick={closeMobileMenu}
                               >
                                 {item.label}
                               </Link>
                               {hasChildren && (
-                                <ul style={sx.mobileChildList}>
+                                <ul className={styles.mobileChildList}>
                                   {item.children!.map((child) => (
                                     <li key={child.href}>
-                                      <Link
-                                        href={child.href}
-                                        style={sx.mobileChildLink}
-                                        onClick={closeMobileMenu}
-                                      >
+                                      <Link href={child.href} className={styles.mobileChildLink} onClick={closeMobileMenu}>
                                         {child.label}
                                       </Link>
                                     </li>
@@ -346,33 +342,31 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
           )}
         </div>
       </header>
-      <main style={sx.main}>{children}</main>
+      <main className={styles.main}>{children}</main>
 
-      <footer style={sx.footer}>
-        <div style={sx.footerWrap}>
-          <div style={sx.footerGrid}>
+      <footer className={styles.footer}>
+        <div className={styles.footerWrap}>
+          <div className={styles.footerGrid}>
             <div>
-              <div style={sx.footerHeading}>Om oss</div>
-              <p style={sx.footerText}>
+              <div className={styles.footerHeading}>Om oss</div>
+              <p className={styles.footerText}>
                 Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
                 sammen med kundene våre.
               </p>
-              <Link href="/om-oss" style={sx.footerLink}>
+              <Link href="/om-oss" className={styles.footerLink}>
                 Bli kjent med teamet vårt
               </Link>
             </div>
             <div>
-              <div style={sx.footerHeading}>Kontakt</div>
-              <ul style={sx.footerList}>
+              <div className={styles.footerHeading}>Kontakt</div>
+              <ul className={styles.footerList}>
                 {CONTACT_POINTS.map((point) => (
-                  <li key={point.label} style={sx.footerListItem}>
-                    <span
-                      style={{ display: "block", fontSize: 12, opacity: 0.7, letterSpacing: ".08em", textTransform: "uppercase" }}
-                    >
+                  <li key={point.label} className={styles.footerListItem}>
+                    <span className={styles.footerLabel}>
                       {point.label}
                     </span>
                     {point.href ? (
-                      <Link href={point.href} style={sx.footerLink}>
+                      <Link href={point.href} className={styles.footerLink}>
                         {point.value}
                       </Link>
                     ) : (
@@ -383,18 +377,18 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               </ul>
             </div>
             <div>
-              <div style={sx.footerHeading}>Følg oss</div>
-              <div style={sx.footerSocials}>
+              <div className={styles.footerHeading}>Følg oss</div>
+              <div className={styles.footerSocials}>
                 {SOCIAL_LINKS.map((social) => (
                   <Link
                     key={social.href}
                     href={social.href}
-                    style={sx.footerSocialLink}
+                    className={styles.footerSocialLink}
                     target="_blank"
                     rel="noreferrer"
                     aria-label={`${social.label} – ${social.description}`}
                   >
-                    <span aria-hidden="true" style={sx.footerSocialIcon}>
+                    <span aria-hidden="true" className={styles.footerSocialIcon}>
                       in
                     </span>
                     <span>{social.label}</span>
@@ -403,40 +397,40 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
               </div>
             </div>
             <div>
-              <div style={sx.footerHeading}>Retningslinjer</div>
-              <ul style={sx.footerList}>
-                <li style={sx.footerListItem}>
-                  <Link href="/personvern" style={sx.footerLink}>
+              <div className={styles.footerHeading}>Retningslinjer</div>
+              <ul className={styles.footerList}>
+                <li className={styles.footerListItem}>
+                  <Link href="/personvern" className={styles.footerLink}>
                     Personvern og GDPR
                   </Link>
                 </li>
-                <li style={sx.footerListItem}>
-                  <Link href="/vilkar" style={sx.footerLink}>
+                <li className={styles.footerListItem}>
+                  <Link href="/vilkar" className={styles.footerLink}>
                     Vilkår for kandidater
                   </Link>
                 </li>
-                <li style={sx.footerListItem}>
-                  <Link href="/cookies" style={sx.footerLink}>
+                <li className={styles.footerListItem}>
+                  <Link href="/cookies" className={styles.footerLink}>
                     Informasjonskapsler
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <div style={sx.footerHeading}>Adresse</div>
-              <p style={sx.footerText}>
+              <div className={styles.footerHeading}>Adresse</div>
+              <p className={styles.footerText}>
                 Østenbekkveien 43
                 <br />9403 Harstad
               </p>
-              <p style={sx.footerText}>Org.nr: 936 321 194</p>
+              <p className={styles.footerText}>Org.nr: 936 321 194</p>
             </div>
           </div>
-          <div style={{ marginTop: 32, textAlign: "center" }}>
-            <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
+          <div className={styles.footerCta}>
+            <Link href="/faq" className={buttons.btnGhost}>
               Vanlige spørsmål
             </Link>
           </div>
-          <div style={sx.footerLegal}>
+          <div className={styles.footerLegal}>
             © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov
             og veiledning fra Datatilsynet i all behandling av kandidatdata.
           </div>

@@ -3,8 +3,9 @@
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Input, Select, Textarea } from "../components/FormControls";
+import buttons from "../styles/buttons.module.css";
+import formStyles from "../styles/forms.module.css";
 import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
-import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
 
 type FieldErrors = Record<string, string>;
@@ -83,16 +84,16 @@ export default function ClientContent() {
 
   if (submitted) {
     return (
-      <div style={sx.ok} role="status">
+      <div className={formStyles.statusOk} role="status">
         Takk for forespørselen! Vi tar kontakt så snart vi har gjennomgått behovet ditt.
       </div>
     );
   }
 
   return (
-    <form action="/api/submit-client" method="POST" style={sx.form} noValidate onSubmit={handleSubmit}>
+    <form action="/api/submit-client" method="POST" className={formStyles.form} noValidate onSubmit={handleSubmit}>
       {formError ? (
-        <div style={sx.formError} role="alert">
+        <div className={formStyles.formError} role="alert">
           {formError}
         </div>
       ) : null}
@@ -195,21 +196,17 @@ export default function ClientContent() {
       />
 
       {/* Honeypot: må matche values.honey */}
-      <div aria-hidden="true" style={sx.honeypot}>
+      <div aria-hidden="true" className={formStyles.honeypot}>
         <label>
           <span>Dette feltet skal stå tomt</span>
           <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
 
-      <div style={{ gridColumn: "1 / -1" }}>
+      <div className={formStyles.submitRow}>
         <button
           type="submit"
-          style={{
-            ...sx.btnMain,
-            opacity: isSubmitting ? 0.7 : 1,
-            cursor: isSubmitting ? "wait" : sx.btnMain.cursor,
-          }}
+          className={`${buttons.btnMain} ${isSubmitting ? formStyles.submitDisabled : ""}`}
           disabled={isSubmitting}
         >
           Send forespørsel

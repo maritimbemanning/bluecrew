@@ -1,28 +1,29 @@
 import SiteLayout from "../../components/SiteLayout";
-import { sx } from "../../lib/styles";
+import base from "../../styles/base.module.css";
+import sections from "../../styles/sections.module.css";
 
 export default function Page() {
   return (
     <SiteLayout active="kunde">
-      <section style={sx.sectionAlt}>
-        <div style={sx.wrapNarrow}>
-          <h1 style={sx.h2}>Hva vi hjelper din bedrift med</h1>
-          <p style={sx.leadSmall}>
+      <section className={base.sectionAlt}>
+        <div className={base.wrapNarrow}>
+          <h1 className={base.h2}>Hva vi hjelper din bedrift med</h1>
+          <p className={base.leadSmall}>
             Bluecrew tilbyr rådgivning og bemanningstjenester som dekker hele oppdraget – fra planlegging til ferdig levert mannskap.
             Vi jobber tett på både operativ drift og HR-funksjon hos kundene våre.
           </p>
-          <div style={{ display: "grid", gap: 24, marginTop: 32 }}>
-            <section style={{ background: "#ffffff", borderRadius: 20, border: "1px solid #e2e8f0", padding: 26, boxShadow: "0 18px 36px rgba(15, 23, 42, 0.07)", display: "grid", gap: 10 }}>
-              <h2 style={{ ...sx.h2, fontSize: 24 }}>Rådgivning</h2>
-              <ul style={{ margin: 0, paddingLeft: 20, color: "#334155", lineHeight: 1.6, display: "grid", gap: 6 }}>
+          <div className={sections.sectionGrid}>
+            <section className={sections.card}>
+              <h2 className={`${base.h2} ${sections.cardSubheading}`}>Rådgivning</h2>
+              <ul className={sections.cardList}>
                 <li>Planlegging av bemanningsstrategi og beredskap.</li>
                 <li>Analyse av kompetansebehov og sertifikatløp.</li>
                 <li>Forbedring av turnus, logistikk og HMS-prosedyrer.</li>
               </ul>
             </section>
-            <section style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 20, padding: 26, display: "grid", gap: 10 }}>
-              <h3 style={{ margin: 0, fontSize: 22, fontWeight: 800 }}>Gjennomføring</h3>
-              <ul style={{ margin: 0, paddingLeft: 20, lineHeight: 1.6, display: "grid", gap: 6 }}>
+            <section className={sections.cardDark}>
+              <h3 className={sections.cardTitle}>Gjennomføring</h3>
+              <ul className={sections.cardListDark}>
                 <li>Bemanning og rekruttering til kort- og langvarige behov.</li>
                 <li>Koordinering av mobilisering, reiser og dokumentkontroll.</li>
                 <li>Oppfølging av mannskap om bord og rapportering til ledelsen.</li>

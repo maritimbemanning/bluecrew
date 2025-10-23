@@ -1,15 +1,15 @@
-// app/kunde/registrer-behov/page.tsx
-import { Suspense } from "react";            // 👈 MÅ være med
+import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
-import ClientContent from "../ClientContent"; // sti kan være annerledes hos deg
-import { sx } from "../../lib/styles";        // eller riktig relativ sti
+import base from "../../styles/base.module.css";
+import formStyles from "../../styles/forms.module.css";
+import ClientContent from "../ClientContent";
 
 export default function Page() {
   return (
-    <SiteLayout title="Registrer bemanningsbehov">
-      <section>
-        <div className="container">
-          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
+    <SiteLayout active="kunde">
+      <section className={base.sectionAlt}>
+        <div className={base.wrapNarrow}>
+          <Suspense fallback={<div className={formStyles.formLoading} role="status">Laster inn skjema …</div>}>
             <ClientContent />
           </Suspense>
         </div>

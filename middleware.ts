@@ -1,6 +1,5 @@
 // middleware.ts
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 /**
  * Streng, men praktisk Content Security Policy (CSP)
@@ -64,7 +63,7 @@ function applySecurityHeaders(res: NextResponse) {
  * Minimal middleware uten admin-gating.
  * Alle requests går videre, men får sikkerhets-headere.
  */
-export function middleware(_req: NextRequest) {
+export function middleware() {
   return applySecurityHeaders(NextResponse.next());
 }
 
