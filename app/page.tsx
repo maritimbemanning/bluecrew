@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import SiteLayout from "./components/SiteLayout";
-import { CONTACT_POINTS, HERO_POINTS } from "./lib/constants";
+import { BENEFITS, CONTACT_POINTS, HERO_POINTS, PROCESS_STEPS } from "./lib/constants";
 import { sx } from "./lib/styles";
 
 const crewStories = [
@@ -26,6 +26,12 @@ const crewStories = [
       "Oppdragene passer kompetansen min, og jeg får raske svar når turnusen endres. Det merkes at Bluecrew selv kommer fra sjøen.",
     image: "https://images.unsplash.com/photo-1500043201424-482c8263b48d?auto=format&fit=crop&w=1200&q=80",
   },
+];
+
+const heroStats = [
+  { value: "120+", label: "aktive sjøfolk" },
+  { value: "48t", label: "typisk mobilisering" },
+  { value: "24/7", label: "operativ beredskap" },
 ];
 
 export default function Page() {
@@ -61,52 +67,58 @@ export default function Page() {
                   Se ledige stillinger
                 </Link>
               </div>
+              <ul style={sx.badges}>
+                <li style={sx.badge}>
+                  <span style={sx.badgeIcon} aria-hidden="true">
+                    🕓
+                  </span>
+                  Oppdrag på kort varsel
+                </li>
+                <li style={sx.badge}>
+                  <span style={sx.badgeIcon} aria-hidden="true">
+                    ✅
+                  </span>
+                  Sertifikatkontroll før ombordstigning
+                </li>
+                <li style={sx.badge}>
+                  <span style={sx.badgeIcon} aria-hidden="true">
+                    🤝
+                  </span>
+                  Dedikert rådgiver hele veien
+                </li>
+              </ul>
+              <div style={sx.heroStats}>
+                {heroStats.map((stat) => (
+                  <div key={stat.label} style={sx.heroStat}>
+                    <span style={sx.heroStatValue}>{stat.value}</span>
+                    <span style={sx.heroStatLabel}>{stat.label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div style={sx.heroMedia}>
-              <div style={sx.heroMediaFrame}>
+            <div style={sx.heroVisual}>
+              <div style={sx.heroPortraitFrame}>
                 <Image
                   src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
                   alt="Mannskap på dekk som gjør klar fortøyning"
-                  width={520}
-                  height={360}
+                  fill
                   priority
-                  style={{ objectFit: "cover", borderRadius: 18 }}
+                  sizes="(min-width: 1024px) 420px, 90vw"
+                  style={sx.heroPortrait}
                 />
+                <div style={sx.heroBadge}>
+                  <span style={sx.heroBadgeLabel}>Team klarering</span>
+                  <span style={sx.heroBadgeName}>MS Andfjord</span>
+                  <span style={sx.heroBadgeRole}>Skipper + 3 matroser</span>
+                </div>
               </div>
-              <p style={sx.heroMediaCaption}>
-                Bildene er hentet fra virkelige oppdrag og viser folkene som møter kundene våre til sjøs.
-              </p>
-              <div style={sx.heroStatRow}>
-                <div style={sx.heroStatChip}>
-                  <span style={sx.heroStatChipValue}>Sertifisert</span>
-                  <span style={sx.heroStatChipLabel}>STCW & helseattest</span>
-                </div>
-                <div style={sx.heroStatChip}>
-                  <span style={sx.heroStatChipValue}>Dialog</span>
-                  <span style={sx.heroStatChipLabel}>Oppfølging hele veien</span>
-                </div>
+              <div style={sx.heroQuote}>
+                <p style={sx.heroQuoteText}>
+                  «Vi følger opp mannskapet like tett som vi følger opp kunden. Da leverer vi trygge skift – hver gang.»
+                </p>
+                <span style={sx.heroQuoteMeta}>Tor Martin, bemanningsrådgiver og tidligere overstyrmann</span>
               </div>
             </div>
-            <aside style={sx.heroMedia}>
-              <div style={sx.heroMediaGlow} aria-hidden="true" />
-              <div style={sx.heroPhotoFrame}>
-                <div style={sx.heroPhotoBadge}>
-                  <span aria-hidden="true">🧑‍✈️</span>
-                  På oppdrag nå
-                </div>
-                <Image
-                  src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=80"
-                  alt="Tre sjøfolk gjør klar utstyr på dekk"
-                  width={640}
-                  height={520}
-                  priority
-                  style={sx.heroPhoto}
-                />
-              </div>
-              <p style={sx.heroPhotoCaption}>
-                «Vi leverer bare folk vi selv ville hatt om bord.» – Tor Martin, bemanningsrådgiver og tidligere overstyrmann.
-              </p>
-            </aside>
           </div>
         </div>
       </section>
@@ -146,7 +158,8 @@ export default function Page() {
             <div style={sx.storyPanel}>
               <div style={sx.storyAccent}>Fra dekk til drift</div>
               <p style={sx.quote}>
-                «Vi følger opp mannskapet like tett som vi følger opp kunden. Da leverer vi trygge skift – hver gang.»
+                «Vi setter sammen team med folk vi kjenner, og sørger for at reise, dokumentasjon og avløsning er avklart før
+                oppstart.»
               </p>
               <div style={sx.quoteName}>Sander Berg, operativ leder</div>
             </div>
@@ -156,44 +169,60 @@ export default function Page() {
 
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          <div style={{ display: "grid", gap: 28 }}>
-            <div style={{ display: "grid", gap: 16 }}>
-              <h2 style={sx.h2}>Fra behov til bemannet fartøy</h2>
-              <p style={sx.leadSmall}>
-                Vi avklarer kompetansekrav, verifiserer dokumentasjon og holder dialogen med mannskapet slik at oppdraget ditt flyter
-                trygt.
-              </p>
-            </div>
-            <div style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Operativ innsikt</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
-                  Rådgivere med bakgrunn fra bro, dekk og maskin setter sammen team som fungerer om bord.
-                </p>
-              </div>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Fleksible leveranser</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
-                  Innleie eller fast rekruttering – du får ett kontaktpunkt som kjenner fartøyet ditt.
-                </p>
-              </div>
-              <div style={{ background: "#f8fafc", borderRadius: 18, padding: 22, border: "1px solid #e2e8f0", display: "grid", gap: 8 }}>
-                <strong style={{ fontSize: 16 }}>Kvalitet og trygghet</strong>
-                <p style={{ margin: 0, color: "#334155", lineHeight: 1.6 }}>
-                  Sertifikater, referanser og HMS kontrolleres før oppstart og rapporteres gjennom hele oppdraget.
-                </p>
-              </div>
-            </div>
+          <div style={sx.sectionIntroCenter}>
+            <span style={sx.sectionEyebrow}>Hvorfor Bluecrew</span>
+            <h2 style={sx.h2}>Operativ partner for hele oppdraget</h2>
+            <p style={sx.sectionDescription}>
+              Teamet vårt kombinerer sjøerfaring, struktur og personlig oppfølging. Resultatet er bemanning som leverer på sikkerhet,
+              kvalitet og kontinuitet – uansett vær.
+            </p>
+          </div>
+          <div style={sx.featureGrid}>
+            {BENEFITS.map((benefit) => (
+              <article key={benefit.title} style={sx.featureCard}>
+                <span style={sx.featureIcon} aria-hidden="true">
+                  {benefit.icon}
+                </span>
+                <h3 style={sx.featureTitle}>{benefit.title}</h3>
+                <p style={sx.featureText}>{benefit.text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
       <section style={sx.section}>
         <div style={sx.wrapNarrow}>
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <h2 style={sx.h2}>Tjenesteområder</h2>
-            <p style={sx.leadSmall}>
-              Vi bemanner fartøy og operasjoner langs hele norskekysten med sertifisert personell på kort varsel.
+          <div style={sx.sectionIntroCenter}>
+            <span style={sx.sectionEyebrow}>Slik jobber vi</span>
+            <h2 style={sx.h2}>Fra behov til bemannet fartøy</h2>
+            <p style={sx.sectionDescription}>
+              Vi avklarer kompetansekrav, verifiserer dokumentasjon og holder dialogen med mannskapet slik at oppdraget ditt flyter trygt
+              fra første vaktskifte til avsluttet seilas.
+            </p>
+          </div>
+          <ol style={sx.processGrid}>
+            {PROCESS_STEPS.map((step, index) => (
+              <li key={step.title} style={sx.processStep}>
+                <div style={sx.stepNumber}>{index + 1}</div>
+                <div style={sx.stepBody}>
+                  <h3 style={sx.stepTitle}>{step.title}</h3>
+                  <p style={sx.stepText}>{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section style={sx.sectionAlt}>
+        <div style={sx.wrapNarrow}>
+          <div style={sx.sectionIntroCenter}>
+            <span style={sx.sectionEyebrow}>Tjenesteområder</span>
+            <h2 style={sx.h2}>Operativ bemanning i hele den maritime verdikjeden</h2>
+            <p style={sx.sectionDescription}>
+              Vi bemanner fartøy og operasjoner langs hele norskekysten med sertifisert personell som kjenner miljø, prosedyrer og
+              sikkerhetskravene dine.
             </p>
           </div>
           <div style={sx.cards3}>
@@ -260,20 +289,24 @@ export default function Page() {
       </section>
 
       <section style={sx.section}>
-        <div style={sx.jobsHighlight}>
-          <span style={sx.jobsBadge}>For jobbsøkere</span>
-          <h2 style={sx.jobsTitle}>Finn din neste jobb til sjøs</h2>
-          <p style={sx.jobsText}>
-            Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
-            turnus, fartøy og mannskap som passer ambisjonene dine.
-          </p>
-          <div style={sx.jobsActions}>
-            <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
-              Se ledige stillinger
-            </Link>
-            <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
-              Registrer CV
-            </Link>
+        <div style={sx.jobStripWrap}>
+          <div style={sx.jobStrip}>
+            <div style={sx.jobStripContent}>
+              <span style={sx.jobsBadge}>For jobbsøkere</span>
+              <h2 style={sx.jobStripTitle}>Finn din neste jobb til sjøs</h2>
+              <p style={sx.jobStripText}>
+                Oppdragene våre spenner fra hurtigbåt og havbruk til offshore service. Registrer deg én gang, så matcher vi deg med
+                turnus, fartøy og mannskap som passer ambisjonene dine.
+              </p>
+            </div>
+            <div style={sx.jobStripActions}>
+              <Link href="/jobbsoker/oppdrag" style={sx.btnMain}>
+                Se ledige stillinger
+              </Link>
+              <Link href="/jobbsoker/registrer" style={sx.btnSoft}>
+                Registrer CV
+              </Link>
+            </div>
           </div>
         </div>
       </section>

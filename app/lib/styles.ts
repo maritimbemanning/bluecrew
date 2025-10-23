@@ -481,6 +481,32 @@ export const sx: Record<string, CSSProperties> = {
   badgeIcon: { fontSize: 16 },
   section: { padding: "clamp(48px, 12vw, 72px) 0" },
   sectionAlt: { padding: "clamp(48px, 12vw, 72px) 0", background: "#ffffff" },
+  sectionIntro: {
+    display: "grid",
+    gap: 14,
+    textAlign: "left",
+    maxWidth: 520,
+  },
+  sectionIntroCenter: {
+    display: "grid",
+    gap: 14,
+    textAlign: "center",
+    maxWidth: 640,
+    margin: "0 auto clamp(36px, 8vw, 48px)",
+  },
+  sectionEyebrow: {
+    fontSize: 13,
+    letterSpacing: ".14em",
+    textTransform: "uppercase",
+    fontWeight: 700,
+    color: "#0ea5e9",
+  },
+  sectionDescription: {
+    margin: 0,
+    fontSize: "clamp(16px, 4.2vw, 18px)",
+    lineHeight: 1.7,
+    color: "#475569",
+  },
   journeyWrap: {
     maxWidth: 980,
     margin: "0 auto",
