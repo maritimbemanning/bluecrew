@@ -31,6 +31,14 @@ export const metadata: Metadata = {
     "fartøy bemanning Norge",
   ],
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"),
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/icons/FullLogo_Transparent.png", type: "image/png", sizes: "any" },
+    ],
+    apple: "/icons/FullLogo_Transparent.png",
+    shortcut: "/icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "nb_NO",
