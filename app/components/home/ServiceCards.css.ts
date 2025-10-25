@@ -67,6 +67,9 @@ export const grid = style({
       gridTemplateColumns: '1fr',
       gap: '24px',
     },
+  },
+});
+
 export const card = style({
   padding: '32px',
   borderRadius: '16px',
@@ -88,9 +91,6 @@ export const card = style({
     '(max-width: 480px)': {
       padding: '24px',
     },
-  },
-}); boxShadow: '0 16px 40px rgba(11, 31, 58, 0.12)',
-    borderColor: '#38bdf8',
   },
 });
 
