@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, KeyboardEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { FocusEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import "./SiteLayout.css";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
@@ -137,7 +137,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
   useEffect(() => {
     if (!mobileMenuOpen || typeof document === "undefined") return;
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
         closeMobileMenu();
       }
@@ -166,7 +166,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Tab") return;
       if (!first || !last) {
         event.preventDefault();
@@ -371,46 +371,101 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
           {mobileMenuOpen && (
             canPortal && typeof document !== "undefined" ? createPortal(
               <div
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="mobile-nav-title"
-                id="mobile-nav"
-                ref={mobileSheetRef}
-                onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                  event.stopPropagation();
-                }}
                 style={sx.mobileSheetOverlay}
+                onClick={closeMobileMenu}
               >
-                <div style={sx.mobileSheetHeader}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div style={sx.brandMarkMobile}>
-                      <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
-                      <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="mobile-nav-title"
+                  id="mobile-nav"
+                  ref={mobileSheetRef}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                  style={sx.mobileSheet}
+                >
+                  <div style={sx.mobileSheetHeader}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={sx.brandMarkMobile}>
+                        <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
+                        <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
+                      </div>
                     </div>
+                    <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
+                      Lukk
+                    </button>
                   </div>
-                  <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
-                    Lukk
-                  </button>
+                  <ul style={sx.mobileNav}>
+                    {NAV_ITEMS.map((item) => {
+                      const isActive = active === item.key;
+                      const hasChildren = !!item.children?.length;
+                      return (
+                        <li key={item.key} style={sx.mobileNavItem}>
+                          <Link
+                            href={item.href}
+                            style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}), ...(isActive ? sx.mobileNavLinkActive : {}) }}
+                            className="mobileLink"
+                            onClick={() => {
+                              closeMobileMenu();
+                            }}
+                          >
+                            {item.label}
+                          </Link>
+                          {hasChildren && (
+                            <ul style={sx.mobileChildList}>
+                              {item.children!.map((child) => (
+                                <li key={child.href}>
+                                  <Link href={child.href} style={sx.mobileChildLink} className="mobileLink" onClick={() => closeMobileMenu()}>
+                                    {child.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-                <ul style={sx.mobileNav}>
-                  {NAV_ITEMS.map((item) => {
-                    const isActive = active === item.key;
-                    const hasChildren = !!item.children?.length;
-                    return (
+              </div>,
+              document.body
+            ) : (
+              <div
+                style={sx.mobileSheetOverlay}
+                onClick={closeMobileMenu}
+              >
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="mobile-nav-title"
+                  id="mobile-nav"
+                  ref={mobileSheetRef}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                  style={sx.mobileSheet}
+                >
+                  <div style={sx.mobileSheetHeader}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={sx.brandMarkMobile}>
+                        <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
+                        <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
+                      </div>
+                    </div>
+                    <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
+                      Lukk
+                    </button>
+                  </div>
+                  <ul style={sx.mobileNav}>
+                    {NAV_ITEMS.map((item) => (
                       <li key={item.key} style={sx.mobileNavItem}>
-                        <Link
-                          href={item.href}
-                          style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}), ...(isActive ? sx.mobileNavLinkActive : {}) }}
-                          className="mobileLink"
-                          onClick={() => {
-                            closeMobileMenu();
-                          }}
-                        >
+                        <Link href={item.href} style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}) }} className="mobileLink" onClick={() => closeMobileMenu()}>
                           {item.label}
                         </Link>
-                        {hasChildren && (
+                        {item.children && (
                           <ul style={sx.mobileChildList}>
-                            {item.children!.map((child) => (
+                            {item.children.map((child) => (
                               <li key={child.href}>
                                 <Link href={child.href} style={sx.mobileChildLink} className="mobileLink" onClick={() => closeMobileMenu()}>
                                   {child.label}
@@ -420,54 +475,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                           </ul>
                         )}
                       </li>
-                    );
-                  })}
-                </ul>
-              </div>,
-              document.body
-            ) : (
-              <div
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="mobile-nav-title"
-                id="mobile-nav"
-                ref={mobileSheetRef}
-                onPointerDown={(event: PointerEvent<HTMLDivElement>) => {
-                  event.stopPropagation();
-                }}
-                style={sx.mobileSheetOverlay}
-              >
-                <div style={sx.mobileSheetHeader}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <div style={sx.brandMarkMobile}>
-                      <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
-                      <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
-                    </div>
-                  </div>
-                  <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
-                    Lukk
-                  </button>
+                    ))}
+                  </ul>
                 </div>
-                <ul style={sx.mobileNav}>
-                  {NAV_ITEMS.map((item) => (
-                    <li key={item.key} style={sx.mobileNavItem}>
-                      <Link href={item.href} style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}) }} className="mobileLink" onClick={() => closeMobileMenu()}>
-                        {item.label}
-                      </Link>
-                      {item.children && (
-                        <ul style={sx.mobileChildList}>
-                          {item.children.map((child) => (
-                            <li key={child.href}>
-                              <Link href={child.href} style={sx.mobileChildLink} className="mobileLink" onClick={() => closeMobileMenu()}>
-                                {child.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
               </div>
             )
           )}
