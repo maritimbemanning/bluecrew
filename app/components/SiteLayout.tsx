@@ -339,7 +339,19 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
 
           {/* Mobile menu trigger */}
           <div style={{ display: isMobile ? "block" : "none" }}>
-            <button type="button" onClick={openMobileMenu} aria-label="Åpne meny" className="navTriggerButton">
+            <button 
+              type="button" 
+              onClick={openMobileMenu} 
+              aria-label="Åpne meny" 
+              className="navTriggerButton"
+              style={{
+                padding: "12px 20px",
+                minHeight: "44px",
+                minWidth: "64px",
+                touchAction: "manipulation",
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
               Meny
             </button>
           </div>
