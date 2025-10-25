@@ -574,4 +574,14 @@ export const SOCIAL_LINKS = [
     href: "https://www.linkedin.com/company/bluecrew-as/",
     description: "Følg oss for innsikt fra prosjektene våre",
   },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/bluecrewAS",
+    description: "Følg oss på Facebook",
+  },
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/bluecrew.no/",
+    description: "Følg oss på Instagram",
+  },
 ];
