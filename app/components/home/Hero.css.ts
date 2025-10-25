@@ -14,8 +14,8 @@ export const hero = style({
   display: 'flex',
   alignItems: 'center',
   overflow: 'hidden',
-  
-  // Add subtle pattern or texture
+
+  // Add subtle pattern overlay to soften photo contrast
   '::before': {
     content: '""',
     position: 'absolute',
@@ -26,14 +26,14 @@ export const hero = style({
     backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%)',
     pointerEvents: 'none',
   },
-  
+
   '@media': {
     'screen and (max-width: 768px)': {
       paddingTop: '80px',
       paddingBottom: '80px',
       minHeight: '550px',
-    }
-  }
+    },
+  },
 });
 
 export const overlay = style({
@@ -42,19 +42,19 @@ export const overlay = style({
   left: 0,
   right: 0,
   bottom: 0,
-  background: 'linear-gradient(to right, rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.6))', // Darkened slightly for better readability over image
+  background: 'linear-gradient(to right, rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.6))',
   zIndex: 1,
 });
 
 export const heroInner = style({
   position: 'relative',
   zIndex: 2,
-  
+
   '@media': {
     'screen and (max-width: 768px)': {
       padding: '0 20px',
-    }
-  }
+    },
+  },
 });
 
 export const heroContent = style({
@@ -84,7 +84,7 @@ export const title = style({
   margin: 0,
   marginBottom: '28px',
   letterSpacing: '-0.02em',
-  
+
   '@media': {
     'screen and (max-width: 768px)': {
       fontSize: '2rem',
@@ -93,8 +93,8 @@ export const title = style({
     'screen and (max-width: 480px)': {
       fontSize: '1.75rem',
       lineHeight: 1.2,
-    }
-  }
+    },
+  },
 });
 
 export const lead = style({
@@ -104,7 +104,7 @@ export const lead = style({
   marginBottom: '44px',
   maxWidth: '650px',
   fontWeight: 400,
-  
+
   '@media': {
     'screen and (max-width: 768px)': {
       fontSize: '1.125rem',
@@ -112,12 +112,17 @@ export const lead = style({
     },
     'screen and (max-width: 480px)': {
       fontSize: '1rem',
+      lineHeight: 1.6,
+    },
+  },
+});
+
 export const ctaGroup = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
   marginBottom: '56px',
-  
+
   '@media': {
     'screen and (min-width: 640px)': {
       flexDirection: 'row',
@@ -127,19 +132,8 @@ export const ctaGroup = style({
     },
     'screen and (max-width: 480px)': {
       marginBottom: '40px',
-    }
-  }
-});ap: '18px',
-  marginBottom: '56px',
-  
-  '@media': {
-    'screen and (min-width: 640px)': {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-      flexWrap: 'wrap',
-      gap: '18px',
-    }
-  }
+    },
+  },
 });
 
 export const primaryCta = style({
@@ -151,6 +145,9 @@ export const primaryCta = style({
 export const phoneCta = style({
   display: 'flex',
   flexDirection: 'column',
+  gap: '6px',
+});
+
 export const btnPrimaryLarge = style({
   fontSize: '1.0625rem',
   padding: '16px 32px',
@@ -167,13 +164,13 @@ export const btnPrimaryLarge = style({
   textDecoration: 'none',
   minHeight: '48px',
   width: '100%',
-  
+
   ':hover': {
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
     background: '#7dd3fc',
   },
-  
+
   '@media': {
     'screen and (min-width: 640px)': {
       width: 'auto',
@@ -181,11 +178,8 @@ export const btnPrimaryLarge = style({
     'screen and (max-width: 480px)': {
       fontSize: '1rem',
       padding: '14px 24px',
-    }
-  }
-}); boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
-    background: '#7dd3fc',
-  }
+    },
+  },
 });
 
 export const btnSecondary = style({
@@ -203,12 +197,12 @@ export const btnSecondary = style({
   alignItems: 'center',
   gap: '8px',
   textDecoration: 'none',
-  
+
   ':hover': {
     background: 'rgba(255, 255, 255, 0.12)',
     borderColor: 'rgba(255, 255, 255, 0.3)',
     transform: 'translateY(-1px)',
-  }
+  },
 });
 
 export const btnLarge = style({
@@ -223,12 +217,12 @@ export const btnLarge = style({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '10px',
-  
+
   ':hover': {
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 12px rgba(56, 189, 248, 0.4)',
     background: '#7dd3fc',
-  }
+  },
 });
 
 export const btnSecondaryLarge = style({
@@ -242,13 +236,13 @@ export const btnSecondaryLarge = style({
   transition: 'all 0.2s ease',
   backdropFilter: 'blur(10px)',
   boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
-  
+
   ':hover': {
     background: 'rgba(255, 255, 255, 0.25)',
     borderColor: 'rgba(255, 255, 255, 0.6)',
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
-  }
+  },
 });
 
 export const phoneIcon = style({
@@ -269,7 +263,7 @@ export const trustBadges = style({
   paddingTop: '32px',
   borderTop: '1px solid rgba(255, 255, 255, 0.15)',
   maxWidth: '600px',
-  
+
   '@media': {
     'screen and (min-width: 640px)': {
       flexDirection: 'row',
@@ -279,8 +273,8 @@ export const trustBadges = style({
     'screen and (max-width: 480px)': {
       paddingTop: '28px',
       gap: '12px',
-    }
-  }
+    },
+  },
 });
 
 export const trustItem = style({
@@ -301,12 +295,18 @@ export const trustLabel = style({
   color: 'rgba(255, 255, 255, 0.87)',
   lineHeight: 1.5,
   fontWeight: 500,
-  
+
   '@media': {
     'screen and (max-width: 480px)': {
       fontSize: '0.875rem',
-    }
-  }
+    },
+  },
+});
+
+export const candidateCta = style({
+  marginTop: '32px',
+  paddingTop: '32px',
+  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
 });
 
 export const candidateButton = style({
@@ -326,17 +326,17 @@ export const candidateButton = style({
   minHeight: '48px',
   width: '100%',
   justifyContent: 'center',
-  
+
   ':hover': {
     background: '#7dd3fc',
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
   },
-  
+
   ':active': {
     transform: 'translateY(0)',
   },
-  
+
   '@media': {
     'screen and (min-width: 640px)': {
       width: 'auto',
@@ -345,13 +345,7 @@ export const candidateButton = style({
     'screen and (max-width: 480px)': {
       padding: '14px 24px',
       fontSize: '0.9375rem',
-    }
-  }
-}); boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
-  },
-  
-  ':active': {
-    transform: 'translateY(0)',
+    },
   },
 });
 
@@ -376,7 +370,7 @@ export const candidateButtonSubtext = style({
 export const candidateIcon = style({
   fontSize: '1.75rem',
   flexShrink: 0,
-  filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))',
 });
 
 export const sideCard = style({
