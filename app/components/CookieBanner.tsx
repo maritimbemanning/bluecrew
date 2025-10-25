@@ -5,10 +5,7 @@ import Link from "next/link";
 import { getConsent, setConsent, type ConsentPrefs } from "../lib/consent";
 
 /**
- * Elegant, responsivt cookie-banner (glassmorphism + shadow)
- * - Flyter nederst, sentrert på desktop, fullbredde på mobil
- * - Tydelig typografi og knapper
- * - "Tilpass" for å velge statistikk
+ * Responsivt cookie-banner med glassmorphism, tydelige knapper og mobiltilpasning.
  */
 
 const ui = {

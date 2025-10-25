@@ -2,11 +2,8 @@ import { Metadata } from "next";
 import SiteLayout from "./components/SiteLayout";
 import { Hero } from "./components/home/Hero";
 import { TrustSection } from "./components/home/TrustSection";
-import { StorySection } from "./components/home/StorySection";
 import { ServiceCards } from "./components/home/ServiceCards";
-import { TeamSection } from "./components/home/TeamSection";
 import { JobsHighlight } from "./components/home/JobsHighlight";
-import { Journey } from "./components/home/Journey";
 import { ContactSection } from "./components/home/ContactSection";
 
 export const metadata: Metadata = {

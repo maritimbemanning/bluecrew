@@ -213,8 +213,8 @@ export default function Page() {
           <div id="radio" style={{ marginTop: 48 }}>
             <h2 style={{ ...sx.h2, fontSize: 28, marginBottom: 8 }}>D. Radio (GMDSS)</h2>
             <p style={{ color: "#475569", lineHeight: 1.7, fontSize: 17, marginBottom: 24 }}>
-              GMDSS-operatører kreves på fartøy i SOLAS-fartsområder. GOC (General Operator's Certificate) dekker alle områder (A1-A4), 
-              ROC (Restricted Operator's Certificate) kun kystnært (A1).
+              GMDSS-operatører kreves på fartøy i SOLAS-fartsområder. GOC (General Operator&rsquo;s Certificate) dekker alle områder (A1-A4), 
+              ROC (Restricted Operator&rsquo;s Certificate) kun kystnært (A1).
             </p>
 
             <div style={{ overflowX: "auto" }}>

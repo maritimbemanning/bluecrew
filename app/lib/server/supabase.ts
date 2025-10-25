@@ -168,10 +168,6 @@ export async function uploadSupabaseObject(options: {
   const target = `${url}/storage/v1/object/${options.bucket}/${encodeStoragePath(options.object)}`;
   const payload = options.body instanceof ArrayBuffer ? new Uint8Array(options.body) : options.body;
 
-  // Normalize to Node Buffer which is accepted by fetch as a body on the server.
-  // Cast to any for the body to avoid library-specific BodyInit typing issues.
-  const bodyPayload: any = payload instanceof Uint8Array ? Buffer.from(payload) : payload;
-
   const response = await fetch(target, {
     method: "PUT",
     headers: {
@@ -180,7 +176,7 @@ export async function uploadSupabaseObject(options: {
       "Content-Type": options.contentType || "application/octet-stream",
       "Cache-Control": "max-age=31536000",
     },
-    body: bodyPayload,
+    body: payload,
   });
 
   if (!response.ok) {

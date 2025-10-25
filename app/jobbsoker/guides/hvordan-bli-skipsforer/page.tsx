@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -34,7 +33,6 @@ export default function Page() {
     <SiteLayout active="jobbsoker">
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          {/* Hero image - TODO: Add image to /public/guides/skipsforer-bridge.jpg */}
           <div style={{ 
             marginBottom: 32, 
             borderRadius: 16, 
@@ -43,29 +41,11 @@ export default function Page() {
             position: "relative",
             height: 400
           }}>
-            {/* Uncomment when image is added:
-            <Image 
-              src="/guides/skipsforer-bridge.jpg" 
-              alt="Skipsfører på broen styrer fartøy på norsk kyst - nautisk navigasjon og lederskap" 
-              fill
-              style={{ objectFit: "cover" }}
-              priority
+            <img 
+              src="/hero/Skipper-styrmann-hero.jpeg" 
+              alt="Skipsfører på broen styrer fartøy på norsk kyst" 
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-            */}
-            {/* Placeholder gradient until image is added */}
-            <div style={{ 
-              width: "100%", 
-              height: "100%", 
-              background: "linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontSize: 18,
-              fontWeight: 600
-            }}>
-              [Hero-bilde: Skipsfører på broen]
-            </div>
           </div>
 
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
@@ -360,7 +340,6 @@ export default function Page() {
 
             <div style={{ display: "grid", gap: 16 }}>
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 20, display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 32 }}>🚢</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Spesialisering til sjøs</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -370,7 +349,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0", display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 32 }}>🏢</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Landbaserte roller</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -380,7 +358,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 20, display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 32 }}>🎓</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Underviser/instruktør</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -390,7 +367,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0", display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 32 }}>⚓</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Los, havnesjef, myndigheter</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -403,7 +379,7 @@ export default function Page() {
 
           {/* Tips */}
           <div style={{ marginTop: 48, background: "#fff3cd", border: "2px solid #ffc107", borderRadius: 16, padding: 32 }}>
-            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>💡 Tips for å lykkes som skipsfører</h2>
+            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>Tips for å lykkes som skipsfører</h2>
             <ul style={{ margin: 0, paddingLeft: 24, color: "#856404", lineHeight: 1.8, display: "grid", gap: 10 }}>
               <li><strong>Start tidlig med fartstid:</strong> Sommerjobber, praksisperioder og deltid under studiet gir verdifull erfaring.</li>
               <li><strong>Velg riktig spesialisering:</strong> Offshore gir høyest lønn, men havbruk/kyst gir mer forutsigbarhet. Vurder hva som passer deg.</li>

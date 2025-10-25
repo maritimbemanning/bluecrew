@@ -1,10 +1,28 @@
+import { Metadata } from "next";
 import SiteLayout from "../components/SiteLayout";
 
+export const metadata: Metadata = {
+  title: "Personvernerklæring",
+  description:
+    "Slik behandler Bluecrew AS personopplysninger i forbindelse med kundehenvendelser, rekruttering og drift av bluecrew.no. GDPR-konform behandling.",
+  keywords: [
+    "personvern",
+    "GDPR",
+    "personopplysninger",
+    "databehandling",
+    "samtykke",
+    "behandlingsansvarlig",
+    "Datatilsynet",
+    "informasjonskapsler",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
 /**
- * Ren, profesjonell personverns­side
- * - Stor hero med diskret gradient
- * - Innhold i "cards" for lesbarhet
- * - Tydelige overskrifter og spacing
+ * Ren og profesjonell personvernside med hero og kort for innhold.
  */
 
 const ui = {

@@ -1,4 +1,24 @@
+import { Metadata } from "next";
 import SiteLayout from "../components/SiteLayout";
+
+export const metadata: Metadata = {
+  title: "Brukervilkår",
+  description:
+    "Vilkår for bruk av bluecrew.no. Regulerer innhold, ansvar, immaterielle rettigheter og personvern i henhold til norsk lov.",
+  keywords: [
+    "brukervilkår",
+    "vilkår",
+    "bruksvilkår",
+    "ansvar",
+    "personvern",
+    "opphavsrett",
+    "immaterielle rettigheter",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
 const ui = {
   hero: {

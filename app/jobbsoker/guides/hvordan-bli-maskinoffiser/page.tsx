@@ -365,7 +365,7 @@ export default function Page() {
 
           {/* Tips */}
           <div style={{ marginTop: 48, background: "#fff3cd", border: "2px solid #ffc107", borderRadius: 16, padding: 32 }}>
-            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>💡 Tips for å lykkes som maskinoffiser</h2>
+            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>Tips for å lykkes som maskinoffiser</h2>
             <ul style={{ margin: 0, paddingLeft: 24, color: "#856404", lineHeight: 1.8, display: "grid", gap: 10 }}>
               <li><strong>Lær både teori og prakti:</strong> Maskinrom krever hands-on erfaring. Ikke vær redd for å bli skitten.</li>
               <li><strong>Hold deg oppdatert:</strong> Skipsteknologi utvikler seg raskt (hybrid, automatisering, LNG). Ta kurs jevnlig.</li>

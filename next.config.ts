@@ -15,19 +15,13 @@ const baseConfig: NextConfig = {
   },
 };
 
-// If the vanilla-extract plugin is not installed, fall back to the base Next config.
-// This allows the dev server to run even before `npm install` has been executed.
-let exportedConfig: NextConfig | any = baseConfig;
-try {
-  // Use require so the module load is attempted at runtime and can be caught.
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { createVanillaExtractPlugin } = require("@vanilla-extract/next-plugin");
-  const withVanillaExtract = createVanillaExtractPlugin();
-  exportedConfig = withVanillaExtract(baseConfig);
-} catch (err) {
-  // Plugin not installed or failed to load — continue with base config.
-  // eslint-disable-next-line no-console
-  console.warn("@vanilla-extract/next-plugin not found — running without vanilla-extract integration.");
+export default async function loadConfig(): Promise<NextConfig> {
+  try {
+    const { createVanillaExtractPlugin } = await import("@vanilla-extract/next-plugin");
+    const withVanillaExtract = createVanillaExtractPlugin();
+    return withVanillaExtract(baseConfig);
+  } catch {
+    console.warn("@vanilla-extract/next-plugin not found — running without vanilla-extract integration.");
+    return baseConfig;
+  }
 }
-
-export default exportedConfig;

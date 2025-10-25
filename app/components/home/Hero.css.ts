@@ -4,7 +4,7 @@ import { vars } from '../../../styles/tokens.css';
 export const hero = style({
   position: 'relative',
   background: 'linear-gradient(135deg, #0B1F3A 0%, #1e3a5f 50%, #0B1F3A 100%)',
-  backgroundImage: 'url(/hero/akvateknikere-hero.png)',
+  backgroundImage: 'url(/hero/Skipper-styrmann-hero.jpeg)',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',

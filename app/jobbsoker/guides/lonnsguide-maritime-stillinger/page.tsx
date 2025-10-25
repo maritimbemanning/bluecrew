@@ -254,7 +254,7 @@ export default function Page() {
 
             <div style={{ display: "grid", gap: 20 }}>
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 24, border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>🛢️ Offshore/Subsea (høyest)</h3>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Offshore/Subsea (høyest)</h3>
                 <p style={{ margin: "0 0 12px 0", color: "#475569", lineHeight: 1.7 }}>
                   Olje- og gassinstallasjoner, ROV, kabel, subsea construction. Krevende operasjoner, lange skift, høy risiko.
                 </p>
@@ -264,7 +264,7 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 24 }}>
-                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>🚢 Cruise/Passasjer</h3>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Cruise/Passasjer</h3>
                 <p style={{ margin: "0 0 12px 0", color: "#475569", lineHeight: 1.7 }}>
                   Hurtigruten, cruiseskip, passasjerferger. Passasjeransvar, sesongvariasjon, servicefokus.
                 </p>
@@ -274,7 +274,7 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 24, border: "1px solid #e2e8f0", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>⚓ Tank (olje/kjemikalie/gass)</h3>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Tank (olje/kjemikalie/gass)</h3>
                 <p style={{ margin: "0 0 12px 0", color: "#475569", lineHeight: 1.7 }}>
                   Tankfartøy, LNG, kjemikalietankere. Krever spesialsertifikater (V/1-1, V/1-2), høyt sikkerhetsfokus.
                 </p>
@@ -284,7 +284,7 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 24 }}>
-                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>🐟 Havbruk/Brønnbåt</h3>
+                <h3 style={{ margin: "0 0 10px 0", fontSize: 20, fontWeight: 700, color: "#0f172a" }}>Havbruk/Brønnbåt</h3>
                 <p style={{ margin: "0 0 12px 0", color: "#475569", lineHeight: 1.7 }}>
                   Brønnbåter, fôrbåter, servicefartøy til havbruk. Forutsigbar drift, kjente områder, 2/2 eller 2/4 turnus.
                 </p>
@@ -357,7 +357,7 @@ export default function Page() {
 
               <div style={{ background: "#e0f2fe", border: "2px solid #0ea5e9", borderRadius: 12, padding: 20, marginTop: 24 }}>
                 <p style={{ margin: 0, color: "#0c4a6e", fontSize: 15, lineHeight: 1.7 }}>
-                  <strong>💡 Viktig:</strong> Lengre turnus (4/4, 6/6) gir vanligvis høyere <strong>dagslønn</strong>, men ikke nødvendigvis 
+                  <strong>Viktig:</strong> Lengre turnus (4/4, 6/6) gir vanligvis høyere <strong>dagslønn</strong>, men ikke nødvendigvis 
                   høyere <strong>årslønn</strong> sammenlignet med 2/2 hvis du regner per arbeidsdag. Vurder hva som passer din livssituasjon.
                 </p>
               </div>
@@ -370,7 +370,6 @@ export default function Page() {
             
             <div style={{ display: "grid", gap: 16 }}>
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 20, display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 28 }}>🎓</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Erfaring og kompetanse</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -380,7 +379,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0", display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 28 }}>🏢</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Rederi og tariffavtale</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -390,7 +388,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#f8fafc", borderRadius: 12, padding: 20, display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 28 }}>⏰</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Overtid og tillegg</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -400,7 +397,6 @@ export default function Page() {
               </div>
 
               <div style={{ background: "#ffffff", borderRadius: 12, padding: 20, border: "1px solid #e2e8f0", display: "flex", gap: 16 }}>
-                <div style={{ fontSize: 28 }}>🌍</div>
                 <div>
                   <h3 style={{ margin: "0 0 6px 0", fontSize: 18, fontWeight: 700 }}>Geografi og fartsområde</h3>
                   <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 15 }}>
@@ -422,7 +418,7 @@ export default function Page() {
 
           {/* TIPS */}
           <div id="tips" style={{ marginTop: 48, background: "#fff3cd", border: "2px solid #ffc107", borderRadius: 16, padding: 32 }}>
-            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>💡 Tips til lønnsforhandling</h2>
+            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>Tips til lønnsforhandling</h2>
             <ul style={{ margin: 0, paddingLeft: 24, color: "#856404", lineHeight: 1.8, display: "grid", gap: 10 }}>
               <li>
                 <strong>Gjør research:</strong> Bruk denne guiden + snakk med kollegaer om markedspris. Kom med konkrete tall.

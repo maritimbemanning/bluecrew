@@ -1,5 +1,4 @@
 import { style } from '@vanilla-extract/css';
-import { vars } from '../../../styles/tokens.css';
 
 export const section = style({
   padding: '100px 20px',

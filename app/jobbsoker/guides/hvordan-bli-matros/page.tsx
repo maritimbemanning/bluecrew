@@ -312,7 +312,7 @@ export default function Page() {
 
           {/* Tips */}
           <div style={{ marginTop: 48, background: "#fff3cd", border: "2px solid #ffc107", borderRadius: 16, padding: 32 }}>
-            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>💡 Tips for å lykkes som matros</h2>
+            <h2 style={{ margin: "0 0 16px 0", fontSize: 24, fontWeight: 800, color: "#856404" }}>Tips for å lykkes som matros</h2>
             <ul style={{ margin: 0, paddingLeft: 24, color: "#856404", lineHeight: 1.8, display: "grid", gap: 10 }}>
               <li><strong>Vær lærevillig:</strong> Matros-rollen er hands-on. Be om å få prøve nye oppgaver og lær av erfarne kollegaer.</li>
               <li><strong>Ta sikkerhet på alvor:</strong> HMS er viktig til sjøs. Følg prosedyrer, bruk verneutstyr og meld fra om farlige situasjoner.</li>

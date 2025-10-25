@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { FocusEvent, KeyboardEvent, PointerEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import "./SiteLayout.css";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
@@ -19,7 +19,18 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Hjem", key: "home" },
-  { href: "/jobbsoker/guides", label: "Karriere", key: "karriere" },
+  {
+    href: "/jobbsoker/guides",
+    label: "Karriere",
+    key: "karriere",
+    children: [
+      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Hvordan bli skipsfører" },
+      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Hvordan bli matros" },
+      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Hvordan bli maskinoffiser" },
+      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide maritime stillinger" },
+      { href: "/jobbsoker/guides", label: "Se alle sertifikatkrav" },
+    ],
+  },
   {
     href: "/jobbsoker",
     label: "Finn jobb",
@@ -46,7 +57,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/kontakt", label: "Kontakt", key: "kontakt", accent: true },
 ];
 
-export function SiteLayout({ children, active, title }: { children: ReactNode; active?: string; title?: string }) {
+export function SiteLayout({ children, active }: { children: ReactNode; active?: string }) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -199,7 +210,7 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
 
   const [focusedKey, setFocusedKey] = useState<string | null>(null);
 
-  const handleBlur = (key: string) => (event: FocusEvent<HTMLElement>) => {
+  const handleBlur = (key: string, event: FocusEvent<Element>) => {
     const next = event.relatedTarget as Node | null;
     if (!event.currentTarget.contains(next)) {
       cancelClose();
@@ -269,7 +280,7 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
                     aria-expanded={isOpen}
                     aria-controls={`${item.key}-submenu`}
                     onClick={() => setOpenKey((prev) => (prev === item.key ? null : item.key))}
-                    onKeyDown={(e: any) => {
+                    onKeyDown={(e: KeyboardEvent<HTMLButtonElement>) => {
                       if (e.key === "ArrowDown") {
                         e.preventDefault();
                         setOpenKey(item.key);
@@ -277,7 +288,7 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
                       }
                     }}
                     onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
-                    onBlur={(e) => { setFocusedKey(null); handleBlur(item.key)(e as any); }}
+                    onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
                     className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
                     style={isActive ? sx.navLinkActive : undefined}
                   >
@@ -292,7 +303,7 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
                           role="menu"
                           style={{ listStyle: "none", margin: 0, padding: 0 }}
                           aria-label={`${item.label} undermeny`}
-                          onKeyDown={(e: any) => {
+                          onKeyDown={(e: KeyboardEvent<HTMLUListElement>) => {
                             const items = getMenuItems(item.key);
                             if (!items.length) return;
                             const idx = items.indexOf(document.activeElement as HTMLElement);
@@ -572,10 +583,6 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
               Vanlige spørsmål
             </Link>
           </div>
-
-          {/* Newsletter signup - REMOVED for GDPR compliance */}
-          {/* TODO: Implement proper newsletter with explicit consent checkbox, 
-              privacy policy link, and backend storage before enabling */}
 
           <div style={sx.footerLegal}>
             © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
