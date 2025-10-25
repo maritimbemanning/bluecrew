@@ -63,7 +63,7 @@ const ui = {
     fontSize: 15.5,
   },
   a: {
-    color: "#0ea5e9",
+    color: "#007eb6",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },
@@ -81,7 +81,7 @@ const ui = {
     color: "#0f172a",
     border: "1px solid rgba(2,6,23,0.08)",
   },
-  footer: { marginTop: 22, fontSize: 13, color: "#64748b" },
+  footer: { marginTop: 22, fontSize: 13, color: "#475569" },
   "@media(min-width: 960px)": { grid: { gridTemplateColumns: "1fr 1fr" } },
 };
 

@@ -1,6 +1,32 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Maritime jobber - Dekksmannskap, offiserer og teknikere",
+  description:
+    "Søk maritime stillinger til havbruk, servicefartøy og offshore. STCW-kurs, konkurransedyktig lønn og tett oppfølging. Registrer CV for ledige oppdrag.",
+  keywords: [
+    "maritime jobber",
+    "sjøfolk jobb",
+    "dekksmannskap jobb",
+    "styrmann ledige stillinger",
+    "kaptein jobb Norge",
+    "maskinoffiser ledige",
+    "havbruk jobb",
+    "servicefartøy jobb",
+    "offshore jobb Nord-Norge",
+    "STCW jobb",
+    "matros ledige stillinger",
+    "maritime stillinger Troms",
+  ],
+  openGraph: {
+    title: "Maritime jobber og oppdrag | Bluecrew AS",
+    description: "Søk maritime stillinger til havbruk, servicefartøy og offshore. Konkurransedyktige vilkår.",
+    type: "website",
+  },
+};
 
 export default function Page() {
   return (

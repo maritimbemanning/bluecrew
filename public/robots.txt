@@ -1,0 +1,19 @@
+# Bluecrew AS - Maritime bemanning og rekruttering
+# https://www.bluecrew.no
+
+User-agent: *
+Allow: /
+
+# Prioritized pages for crawling
+Allow: /jobbsoker/guides/
+Allow: /kunde/
+Allow: /faq
+Allow: /om-oss
+Allow: /kontakt
+
+# Block API routes and admin areas
+Disallow: /api/
+Disallow: /api/admin/
+
+# Sitemap location
+Sitemap: https://www.bluecrew.no/sitemap.xml

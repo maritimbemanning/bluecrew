@@ -1,5 +1,25 @@
+import { Metadata } from "next";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Kontakt oss - Bluecrew AS Harstad",
+  description:
+    "Kontakt Bluecrew AS for bemanning til havbruk, servicefartøy og offshore. Telefon 923 28 850. E-post: isak@bluecrew.no. Besøksadresse: Østenbekkveien 43, Harstad.",
+  keywords: [
+    "kontakt bluecrew",
+    "bemanning forespørsel",
+    "bluecrew telefon",
+    "bluecrew harstad",
+    "maritim bemanning kontakt",
+    "rekruttering henvendelse",
+  ],
+  openGraph: {
+    title: "Kontakt Bluecrew AS",
+    description: "Ta kontakt for bemanning til havbruk, servicefartøy og offshore. Vi svarer raskt.",
+    type: "website",
+  },
+};
 
 export default function Page() {
   return (

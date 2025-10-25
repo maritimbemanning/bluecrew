@@ -73,6 +73,7 @@ export type ClientFormValues = {
   need_type: string;
   need_duration: string;
   desc?: string;
+  gdpr_client: boolean;
   honey: string;
 };
 
@@ -87,6 +88,7 @@ export const clientSchema = z
     need_type: z.string().trim().min(2, "Velg behov"),
     need_duration: z.string().trim().min(2, "Velg oppdragstype"),
     desc: z.string().trim().optional(),
+    gdpr_client: z.literal(true),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
@@ -169,6 +171,7 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     need_type: getString("need_type"),
     need_duration: getString("need_duration"),
     desc: getString("desc") || undefined,
+    gdpr_client: fd.get("gdpr_client") === "on",
     honey: getString("honey"),
   };
 }

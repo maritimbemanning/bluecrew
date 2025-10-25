@@ -70,7 +70,7 @@ const ui = {
     lineHeight: 1.8,
   },
   a: {
-    color: "#0ea5e9",
+    color: "#007eb6",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },
@@ -80,7 +80,7 @@ const ui = {
   footer: {
     marginTop: 22,
     fontSize: 13,
-    color: "#64748b",
+    color: "#475569",
   },
   badgeRow: {
     display: "flex",

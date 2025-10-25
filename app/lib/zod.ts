@@ -73,6 +73,13 @@ abstract class ZodType<T> {
   }
 
   protected abstract _parse(value: unknown, ctx: ParseContext): ParseResult<T>;
+
+  // Public internal parser that delegates to the protected _parse.
+  // This allows other schema classes to invoke parsing without accessing
+  // the protected member directly (avoids TypeScript protected-access errors).
+  parseInternal(value: unknown, ctx: ParseContext): ParseResult<T> {
+    return this._parse(value, ctx);
+  }
 }
 
 class ZodString extends ZodType<string> {
@@ -208,7 +215,7 @@ class ZodArray<T> extends ZodType<T[]> {
 
     value.forEach((item, index) => {
       const childCtx: ParseContext = { path: ctx.path.concat(index), issues: ctx.issues };
-      const result = this.element._parse(item, childCtx);
+      const result = this.element.parseInternal(item, childCtx);
       if (result.ok) {
         results.push(result.data as T);
       }
@@ -233,8 +240,8 @@ class ZodObject<T extends Record<string, unknown>> extends ZodType<T> {
 
     for (const key of Object.keys(this.shape) as (keyof T)[]) {
       const schema = this.shape[key];
-      const childCtx: ParseContext = { path: ctx.path.concat(key), issues: ctx.issues };
-      const parsed = schema._parse((value as Record<string, unknown>)[key as string], childCtx);
+      const childCtx: ParseContext = { path: ctx.path.concat(String(key)), issues: ctx.issues };
+      const parsed = schema.parseInternal((value as Record<string, unknown>)[key as string], childCtx);
       if (parsed.ok) {
         result[key] = parsed.data as T[keyof T];
       }
@@ -258,7 +265,7 @@ class ZodOptional<T> extends ZodType<T | undefined> {
       return this.postProcess(undefined, ctx);
     }
 
-    const parsed = this.inner._parse(value, ctx);
+    const parsed = this.inner.parseInternal(value, ctx);
     if (!parsed.ok) {
       return { ok: false };
     }
@@ -281,8 +288,8 @@ class ZodRecord<T> extends ZodType<Record<string, T>> {
     const result: Record<string, T> = {} as Record<string, T>;
 
     for (const key of Object.keys(value as Record<string, unknown>)) {
-      const childCtx: ParseContext = { path: ctx.path.concat(key), issues: ctx.issues };
-      const parsed = this.valueSchema._parse((value as Record<string, unknown>)[key], childCtx);
+      const childCtx: ParseContext = { path: ctx.path.concat(String(key)), issues: ctx.issues };
+      const parsed = this.valueSchema.parseInternal((value as Record<string, unknown>)[key], childCtx);
       if (parsed.ok) {
         result[key] = parsed.data as T;
       }

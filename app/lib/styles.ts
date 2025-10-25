@@ -81,6 +81,24 @@ export const sx: Record<string, CSSProperties> = {
     gap: 6,
     transition: "color 0.2s ease",
   },
+  navTriggerButton: {
+    color: "rgba(226, 240, 255, 0.96)",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontSize: 15,
+    fontWeight: 600,
+    padding: "8px 0",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    transition: "color 0.15s ease, box-shadow 0.12s ease, transform 0.12s ease",
+  },
+  focusRing: {
+    outline: "none",
+    boxShadow: "0 0 0 4px rgba(56,189,248,0.12)",
+    borderRadius: 12,
+  },
   navCaret: { fontSize: 12, marginTop: 2 },
   navDropdown: {
     position: "absolute",
@@ -104,7 +122,12 @@ export const sx: Record<string, CSSProperties> = {
     lineHeight: 1.4,
     padding: "10px 12px",
     borderRadius: 12,
-    transition: "background 0.2s ease, color 0.2s ease",
+    transition: "background 0.18s ease, color 0.18s ease, transform 0.12s ease",
+  },
+  // Hover/focus styles handled in-place via inline merging; helpers for reuse
+  hoverNavDropdownLink: {
+    background: "rgba(56,189,248,0.06)",
+    color: "#38bdf8",
   },
   navDropdownDescription: { display: "block", marginTop: 4, fontSize: 12, fontWeight: 400, color: "rgba(224, 231, 255, 0.7)" },
   navLink: {
@@ -204,6 +227,7 @@ export const sx: Record<string, CSSProperties> = {
     fontWeight: 700,
     border: "1px solid rgba(148, 197, 255, 0.2)",
     background: "rgba(15, 23, 42, 0.6)",
+    transition: "background 0.15s ease, color 0.12s ease",
   },
   mobileNavLinkActive: {
     borderColor: "rgba(56, 189, 248, 0.65)",
@@ -230,6 +254,7 @@ export const sx: Record<string, CSSProperties> = {
     background: "rgba(15, 23, 42, 0.45)",
     fontWeight: 600,
     fontSize: 14,
+    transition: "background 0.12s ease, color 0.12s ease",
   },
   main: {
     flex: 1,
@@ -391,6 +416,29 @@ export const sx: Record<string, CSSProperties> = {
     textDecoration: "none",
     boxShadow: "0 18px 38px rgba(56, 189, 248, 0.35)",
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    cursor: "pointer",
+  },
+  btnContact: {
+    padding: "10px 18px",
+    borderRadius: 999,
+    border: "1px solid rgba(56, 189, 248, 0.9)",
+    background: "linear-gradient(180deg, #34d399 0%, #10b981 100%)",
+    color: "#05201a",
+    fontWeight: 800,
+    textDecoration: "none",
+    boxShadow: "0 12px 30px rgba(16, 185, 129, 0.18)",
+    transition: "transform 0.15s ease, box-shadow 0.15s ease",
+    cursor: "pointer",
+  },
+  btnSecondaryVariant: {
+    padding: "10px 18px",
+    borderRadius: 999,
+    border: "1px solid rgba(148, 197, 255, 0.22)",
+    background: "transparent",
+    color: "#e2e8f0",
+    fontWeight: 700,
+    textDecoration: "none",
+    transition: "transform 0.15s ease, box-shadow 0.15s ease",
     cursor: "pointer",
   },
   btnGhost: {
@@ -701,7 +749,7 @@ export const sx: Record<string, CSSProperties> = {
     gap: 6,
     fontSize: 13,
     fontWeight: 600,
-    color: "#0ea5e9",
+    color: "#007eb6",
     textTransform: "uppercase",
     letterSpacing: ".12em",
   },
@@ -1034,8 +1082,8 @@ export const sx: Record<string, CSSProperties> = {
   },
   footerGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: 26,
+    gridTemplateColumns: "240px 200px 200px 1fr",
+    gap: 28,
   },
   footerHeading: {
     fontSize: 14,
@@ -1067,6 +1115,7 @@ export const sx: Record<string, CSSProperties> = {
     textDecoration: "none",
     fontWeight: 600,
     background: "rgba(7, 17, 36, 0.6)",
+    transition: "background 0.12s ease, transform 0.12s ease",
   },
   footerSocialIcon: { fontSize: 16 },
   footerLegal: {

@@ -15,37 +15,37 @@ export const STCW_MODULES = [
 
 export const HERO_POINTS = [
   {
-    icon: "🧑‍✈️",
+    icon: "",
     text: "Erfarne skipsførere og mannskap følger opp oppdraget sammen med deg.",
   },
   {
-    icon: "🌊",
+    icon: "",
     text: "Bemanning for havbruk, fiskeri og spesialfartøy levert når operasjonen krever det.",
   },
   {
-    icon: "🛡️",
+    icon: "",
     text: "GDPR-trygg prosess med kontrollert dokumentasjon og dedikert støtte.",
   },
 ];
 
 export const BENEFITS = [
   {
-    icon: "🧭",
+    icon: "",
     title: "Erfaring fra sjøen",
     text: "Vi har selv stått på broa og dekk – og vet hvilket mannskap som leverer innen alle maritime disipliner.",
   },
   {
-    icon: "🪝",
+    icon: "",
     title: "Rask mobilisering",
     text: "Eget nettverk av sertifiserte sjøfolk gjør at vi kan mobilisere på kort varsel over hele kysten og offshore.",
   },
   {
-    icon: "🛡️",
+    icon: "",
     title: "Kvalitet og trygghet",
     text: "Strukturerte prosesser, HMS-fokus og tett oppfølging gir forutsigbare leveranser.",
   },
   {
-    icon: "🤝",
+    icon: "",
     title: "Langsiktige partnerskap",
     text: "Vi lærer kunden å kjenne, bygger team rundt fartøyet og følger opp gjennom hele oppdraget.",
   },
@@ -71,21 +71,110 @@ export const PROCESS_STEPS = [
 ];
 
 export const FAQS = [
+  // For jobbsøkere
   {
     q: "Hvordan registrerer jeg meg som jobbsøker?",
     a: "Bruk skjemaet under «Jobbsøker» og last opp CVen din. Vi kontakter deg når vi har et oppdrag som matcher erfaringen din.",
   },
   {
+    q: "Hvilke sertifikater trenger jeg for å få oppdrag?",
+    a: "Minimum STCW grunnleggende sikkerhetskurs (PST, FPFF, EFA) og gyldig helseattest. Avhengig av stilling kan du trenge fagbrev, dekksoffiser- eller maskinoffisersertifikater. Vi hjelper deg med å kartlegge hva som kreves.",
+  },
+  {
+    q: "Hva er forskjellen mellom STCW-95 og STCW-2010?",
+    a: "STCW-2010 er den oppdaterte versjonen av den internasjonale sikkerhetskonvensjonen for sjøfolk. Alle som jobber på norskregistrerte fartøy må ha STCW-2010 sertifikater. Hvis du har gamle STCW-95 kurs må disse fornyes.",
+  },
+  {
+    q: "Hvor mye kan jeg forvente å tjene?",
+    a: "Lønn varierer etter stilling, erfaring og type fartøy. Vi tilbyr konkurransedyktig lønn over tariff der innsats og kompetanse belønnes. Kontakt oss for konkrete lønnsestimater basert på din bakgrunn.",
+  },
+  {
+    q: "Hvordan fungerer turnus og arbeidstid?",
+    a: "Turnus avtales per oppdrag. Vanlige rotasjoner er 2-4 uker om bord, 2-4 uker hjemme. Noen oppdrag har dagtid, andre døgnkontinuerlig drift. Vi informerer alltid om turnus før du takker ja til oppdraget.",
+  },
+  {
+    q: "Får jeg fast ansettelse eller er det midlertidige oppdrag?",
+    a: "Vi tilbyr både korttidsoppdrag, sesongarbeid og langsiktige engasjement. Mange av våre folk jobber gjennom hele sesongen eller blir værende i flere år. Det avhenger av ditt ønske og kundens behov.",
+  },
+  {
+    q: "Hva hvis jeg mangler et sertifikat?",
+    a: "Vi hjelper deg med å kartlegge hvilke kurs du trenger og kan gi veiledning om hvor du tar dem. I noen tilfeller kan kunden dekke kurskostnader hvis du forplikter deg til et lengre oppdrag.",
+  },
+  {
+    q: "Dekker dere reise og losji?",
+    a: "Reisekostnader til og fra arbeidssted dekkes normalt av oppdragsgiver eller inngår i avtalen. Losji om bord er inkludert på alle fartøy. Detaljer avtales per oppdrag.",
+  },
+  {
+    q: "Kan jeg velge geografisk område?",
+    a: "Ja, du oppgir ønsket arbeidsområde når du registrerer deg. Vi matcher deg med oppdrag basert på dine preferanser, men fleksibilitet gir flere muligheter.",
+  },
+  
+  // For kunder/bedrifter
+  {
     q: "Hvor raskt kan dere levere personell?",
-    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved akutte tilfeller følger vi opp etter avtale og prioriterer oppstart så raskt som mulig.",
+    a: "Behov som meldes inn på dagtid får normalt svar innen 24 timer. Ved akutte tilfeller følger vi opp etter avtale og prioriterer oppstart så raskt som mulig. Vårt nettverk gjør at vi ofte kan mobilisere på 48-72 timer.",
   },
   {
     q: "Hvilke typer kontrakter tilbyr dere?",
-    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement. Vi tilpasser oss kundens struktur.",
+    a: "Vi håndterer korttidsoppdrag, sesongbemanning og langsiktige engasjement. Vi tilpasser oss kundens struktur og kan levere både enkeltressurser og komplette bemanningsteam.",
   },
   {
+    q: "Hva koster bemanningsløsningene deres?",
+    a: "Pris avhenger av type stilling, kompetansekrav, varighet og oppdragets art. Vi tilbyr transparente avtaler uten skjulte kostnader. Kontakt oss for et skreddersydd pristilbud basert på ditt behov.",
+  },
+  {
+    q: "Hvordan sikrer dere kvaliteten på mannskapet?",
+    a: "Alle kandidater gjennomgår intervju, referansesjekk og dokumentkontroll før godkjenning. Vi verifiserer sertifikater, helseattest og arbeidserfaring. Teamet vårt har selv erfaring fra sjøen og vet hva som kreves.",
+  },
+  {
+    q: "Hva skjer hvis en ansatt ikke fungerer?",
+    a: "Vi har tett dialog med både mannskap og kunde gjennom hele oppdraget. Ved utfordringer griper vi raskt inn og finner løsninger, enten gjennom oppfølging eller utskifting hvis nødvendig.",
+  },
+  {
+    q: "Kan vi få samme mannskap over lengre tid?",
+    a: "Ja, vi legger til rette for kontinuitet og bygger team som fungerer godt sammen. Mange av våre kunder ønsker de samme folkene tilbake sesong etter sesong, og vi prioriterer dette der det er mulig.",
+  },
+  {
+    q: "Dekker dere HMS og forsikring?",
+    a: "Alt mannskap er forsikret og følger gjeldende HMS-regelverk. Vi sikrer at nødvendig HMS-dokumentasjon er på plass før oppstart og følger opp underveis i oppdraget.",
+  },
+  {
+    q: "Jobber dere med både norske og utenlandske mannskaper?",
+    a: "Vi fokuserer primært på norske sjøfolk med god kjennskap til norsk kyst og regelverk. Dette sikrer språk, kultur og kompetanse som passer norske forhold.",
+  },
+  {
+    q: "Hva er forskjellen på bemanning og rekruttering?",
+    a: "Bemanning er når vi leverer personell som er ansatt hos oss, mens rekruttering er når vi finner kandidater til fast ansettelse hos deg. Bemanning gir fleksibilitet, rekruttering gir langsiktig kontinuitet.",
+  },
+  
+  // Generelt
+  {
     q: "Hvordan ivaretas personvern?",
-    a: "Alle søknader lagres sikkert og deles ikke med tredjepart uten samtykke. Vi følger GDPR og interne retningslinjer for datasikkerhet.",
+    a: "Alle søknader lagres sikkert og deles ikke med tredjepart uten samtykke. Vi følger GDPR og interne retningslinjer for datasikkerhet. CV og sertifikater behandles konfidensielt.",
+  },
+  {
+    q: "Hvilke områder dekker dere?",
+    a: "Vi har base i Nord-Norge men opererer over hele kysten. Vårt nettverk strekker seg fra Sørlandet til Finnmark, med særlig god dekning i Nord-Norge.",
+  },
+  {
+    q: "Jobber dere med alle typer fartøy?",
+    a: "Ja, vi leverer til havbruk (brønnbåt, servicefartøy), fiskeri (kyst og hav), offshore, supplyskip, slepebåter og spesialfartøy. Vårt mannskap har erfaring fra ulike maritime segmenter.",
+  },
+  {
+    q: "Må vi inngå langsiktig avtale?",
+    a: "Nei, vi tilbyr både enkeltoppdrag og rammeavtaler. Du bestemmer selv om du vil teste oss på ett oppdrag eller inngå et lengre samarbeid.",
+  },
+  {
+    q: "Hva skjer hvis fartøyet må stoppe midt i en turnus?",
+    a: "Vi håndterer endringer i oppdraget sammen med kunde og mannskap. Ved uforutsette hendelser finner vi løsninger som ivaretar alle parter.",
+  },
+  {
+    q: "Kan vi få hjelp til å planlegge bemanningsbehov?",
+    a: "Ja, vi hjelper gjerne med å kartlegge bemanningsbehov, turnusplanlegging og kompetansekrav. Teamet vårt har erfaring fra operativ drift og vet hva som skal til.",
+  },
+  {
+    q: "Hvordan kommer jeg i kontakt med dere?",
+    a: "Ring oss på 923 28 850 eller send e-post til isak@bluecrew.no. Vi svarer raskt og følger opp alle henvendelser personlig.",
   },
 ];
 

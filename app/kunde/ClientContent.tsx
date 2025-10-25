@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Input, Select, Textarea } from "../components/FormControls";
 import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
 import { sx } from "../lib/styles";
@@ -200,6 +201,31 @@ export default function ClientContent() {
           <span>Dette feltet skal stå tomt</span>
           <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </label>
+      </div>
+
+      {/* GDPR samtykke */}
+      <div style={{ gridColumn: "1 / -1", marginTop: 8 }}>
+        <input
+          type="checkbox"
+          id="gdpr_client"
+          required
+          name="gdpr_client"
+          style={{ marginRight: 8 }}
+          aria-invalid={!!fieldErrors.gdpr_client}
+          aria-describedby={fieldErrors.gdpr_client ? "gdpr-client-err" : undefined}
+          onChange={() => clearFieldError("gdpr_client")}
+        />
+        <label htmlFor="gdpr_client" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
+          Jeg samtykker til behandling av persondata for bemanning/rekruttering.{" "}
+          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
+            Les personvernerklæringen
+          </Link>
+        </label>
+        {fieldErrors.gdpr_client ? (
+          <div id="gdpr-client-err" style={sx.errText} role="alert">
+            {fieldErrors.gdpr_client}
+          </div>
+        ) : null}
       </div>
 
       <div style={{ gridColumn: "1 / -1" }}>

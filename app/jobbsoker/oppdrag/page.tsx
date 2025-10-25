@@ -1,5 +1,29 @@
+import { Metadata } from "next";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Ledige maritime oppdrag - Havbruk, fiskeri og servicefartøy",
+  description:
+    "Oppdrag for dekksmannskap, offiserer og teknikere til havbruk, fiskeri og servicefartøy. STCW-sertifisert, lønn over tariff. Registrer CV for å få tilgang.",
+  keywords: [
+    "ledige maritime oppdrag",
+    "havbruk oppdrag",
+    "brønnbåt jobb",
+    "servicefartøy ledige",
+    "fiskeri jobb Nord-Norge",
+    "dekksmannskap oppdrag",
+    "ROV operatør jobb",
+    "offshore oppdrag Norge",
+    "maritime vikariater",
+    "STCW oppdrag",
+  ],
+  openGraph: {
+    title: "Ledige maritime oppdrag | Bluecrew AS",
+    description: "Se ledige oppdrag til havbruk, fiskeri og servicefartøy. Konkurransedyktige vilkår.",
+    type: "website",
+  },
+};
 
 export default function Page() {
   return (

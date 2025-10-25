@@ -73,7 +73,7 @@ const ui = {
     color: "#334155",
   },
   link: {
-    color: "#0ea5e9",
+    color: "#007eb6",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },
@@ -128,7 +128,7 @@ const ui = {
     appearance: "none" as const,
     border: "0",
     background: "transparent",
-    color: "#0ea5e9",
+    color: "#007eb6",
     padding: "10px 8px",
     fontSize: 14,
     fontWeight: 600,

@@ -62,6 +62,7 @@ export async function POST(req: Request) {
     const storageBase = createCandidateStorageBase(data.email, submittedAt);
     const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
     const cvPath = buildCvPath(storageBase);
+    let certificatePath: string | null = null;
 
     try {
       await uploadSupabaseObject({
@@ -96,7 +97,7 @@ export async function POST(req: Request) {
       }
       const ext = extractExtension(certsFile.name || "") || ".pdf";
       const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
-      const certificatePath = buildCertificatePath(storageBase, ext);
+      certificatePath = buildCertificatePath(storageBase, ext);
       try {
         await uploadSupabaseObject({
           bucket: "candidates-private",
@@ -177,6 +178,8 @@ export async function POST(req: Request) {
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
+          cv_key: cvPath,
+          certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
         },

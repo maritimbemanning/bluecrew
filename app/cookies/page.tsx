@@ -130,11 +130,11 @@ const ui = {
     cursor: "pointer",
   },
   a: {
-    color: "#0ea5e9",
+    color: "#007eb6",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },
-  footer: { marginTop: 22, fontSize: 13, color: "#64748b" },
+  footer: { marginTop: 22, fontSize: 13, color: "#475569" },
   "@media(min-width: 960px)": { grid: { gridTemplateColumns: "1fr 1fr" } },
 };
 

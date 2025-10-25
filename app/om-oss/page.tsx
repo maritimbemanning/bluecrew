@@ -1,5 +1,26 @@
+import { Metadata } from "next";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Om oss - Maritim bemanningsleverandør i Nord-Norge",
+  description:
+    "Bluecrew AS er et norsk bemanningsselskap drevet av sjøfolk. Vi leverer kvalifisert personell til havbruk, servicefartøy og fiskeri. Base i Harstad med nasjonal dekning.",
+  keywords: [
+    "om bluecrew",
+    "maritim bemanning Harstad",
+    "bemanningsselskap Nord-Norge",
+    "sjøfolk erfaring",
+    "maritime tjenester Troms",
+    "bemanning havbruk",
+    "rekruttering offshore",
+  ],
+  openGraph: {
+    title: "Om Bluecrew AS - Maritim bemanning med sjøerfaring",
+    description: "Bemanningsselskap drevet av sjøfolk. Leverer til havbruk, servicefartøy og fiskeri.",
+    type: "website",
+  },
+};
 
 export default function Page() {
   return (

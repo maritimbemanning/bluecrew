@@ -1,0 +1,40 @@
+BLUECREW - BILDEINSTRUKSJONER
+==============================
+
+Du har 11 bilder i "Bilder AI"-mappen. Slik bruker du dem:
+
+STEG 1: Åpne mappene
+---------------------
+Gå til: c:\dev\bluecrew\public\
+Du vil se 4 mapper:
+- hero/       (Forside-bakgrunn)
+- guides/     (Karriereguider)
+- operations/ (Kunde-sider)
+- team/       (Om oss-side)
+
+STEG 2: Velg og flytt bilder
+-----------------------------
+1. Åpne "Bilder AI"-mappen
+2. Se på bildene
+3. Dra-og-slipp dem til riktige mapper
+4. Gi dem beskrivende navn (se README.txt i hver mappe)
+
+STEG 3: Kommenter inn koden
+----------------------------
+Når bildene er på plass:
+- Åpne de filene som har "TODO: Add image"
+- Fjern kommentarene rundt <Image>-komponenten
+- Serveren vil automatisk plukke opp bildene
+
+PRIORITET:
+----------
+1. VIKTIGST: hero/maritime-hero.jpg (forside)
+2. BEHOLDER: guides/skipsforer-hero.jpg (allerede satt opp)
+3. VALGFRITT: Resten
+
+TRENGER HJELP?
+--------------
+Si bare: "Sett opp hero-bildet" eller "Legg til guide-bilder"
+Så fikser jeg koden automatisk!
+
+// GitHub Copilot

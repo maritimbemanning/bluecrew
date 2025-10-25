@@ -1,0 +1,55 @@
+:root{
+  --accent:#38bdf8;
+}
+.navTriggerButton{
+  color:rgba(226,240,255,0.96);
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:600;
+  padding:8px 0;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  transition: color .15s ease, box-shadow .12s ease, transform .12s ease;
+}
+.focusRing{
+  outline:none;
+  box-shadow:0 0 0 4px rgba(56,189,248,0.12);
+  border-radius:12px;
+}
+.hoverNavDropdownLink{
+  background: rgba(56,189,248,0.06);
+  color: var(--accent);
+}
+.mobileLinkHover{
+  background: rgba(56,189,248,0.06);
+  color: var(--accent);
+}
+/* focus-visible helper for keyboard users */
+.focusVisible{
+  outline: 3px solid rgba(56,189,248,0.14);
+  outline-offset: 2px;
+}
+/* dropdown link base class — hover and focus styles applied here */
+.dropdownLink{
+  transition: background .18s ease, color .18s ease, transform .12s ease;
+  border-radius: 12px;
+}
+.dropdownLink:hover,
+.dropdownLink:focus-visible{
+  background: rgba(56,189,248,0.06);
+  color: var(--accent);
+}
+
+/* mobile link base class */
+.mobileLink{
+  transition: background .12s ease, color .12s ease;
+  border-radius: 10px;
+}
+.mobileLink:hover,
+.mobileLink:focus-visible{
+  background: rgba(56,189,248,0.06);
+  color: var(--accent);
+}
