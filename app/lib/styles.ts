@@ -1082,8 +1082,13 @@ export const sx: Record<string, CSSProperties> = {
   },
   footerGrid: {
     display: "grid",
-    gridTemplateColumns: "240px 200px 200px 1fr",
+    gridTemplateColumns: "repeat(4, 1fr)",
     gap: 28,
+  },
+  footerGridMobile: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: 32,
   },
   footerHeading: {
     fontSize: 14,

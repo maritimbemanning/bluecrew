@@ -459,7 +459,7 @@ export function SiteLayout({ children, active, title }: { children: ReactNode; a
 
       <footer style={sx.footer} aria-hidden={mobileMenuOpen}>
         <div style={sx.footerWrap}>
-          <div style={sx.footerGrid}>
+          <div style={isMobile ? sx.footerGridMobile : sx.footerGrid}>
             <div>
               <h2 style={sx.footerHeading}>Om oss</h2>
               <p style={sx.footerText}>

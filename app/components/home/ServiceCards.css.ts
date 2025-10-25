@@ -37,7 +37,10 @@ export const heading = style({
   
   '@media': {
     '(max-width: 768px)': {
-      fontSize: '2.25rem',
+      fontSize: '2rem',
+    },
+    '(max-width: 480px)': {
+      fontSize: '1.75rem',
     },
   },
 });
@@ -52,19 +55,20 @@ export const lead = style({
 
 export const grid = style({
   display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-  gap: '40px',
+  gridTemplateColumns: 'repeat(3, 1fr)',
+  gap: '32px',
   
   '@media': {
+    '(max-width: 1024px)': {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '28px',
+    },
     '(max-width: 768px)': {
       gridTemplateColumns: '1fr',
-      gap: '32px',
+      gap: '24px',
     },
-  },
-});
-
 export const card = style({
-  padding: '40px',
+  padding: '32px',
   borderRadius: '16px',
   background: '#ffffff',
   border: '2px solid #e2e8f0',
@@ -77,6 +81,15 @@ export const card = style({
   ':hover': {
     transform: 'translateY(-4px)',
     boxShadow: '0 16px 40px rgba(11, 31, 58, 0.12)',
+    borderColor: '#38bdf8',
+  },
+  
+  '@media': {
+    '(max-width: 480px)': {
+      padding: '24px',
+    },
+  },
+}); boxShadow: '0 16px 40px rgba(11, 31, 58, 0.12)',
     borderColor: '#38bdf8',
   },
 });

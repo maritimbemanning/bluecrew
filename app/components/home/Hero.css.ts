@@ -87,7 +87,12 @@ export const title = style({
   
   '@media': {
     'screen and (max-width: 768px)': {
-      fontSize: '2.5rem',
+      fontSize: '2rem',
+      marginBottom: '20px',
+    },
+    'screen and (max-width: 480px)': {
+      fontSize: '1.75rem',
+      lineHeight: 1.2,
     }
   }
 });
@@ -103,14 +108,28 @@ export const lead = style({
   '@media': {
     'screen and (max-width: 768px)': {
       fontSize: '1.125rem',
-    }
-  }
-});
-
+      marginBottom: '32px',
+    },
+    'screen and (max-width: 480px)': {
+      fontSize: '1rem',
 export const ctaGroup = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '18px',
+  gap: '12px',
+  marginBottom: '56px',
+  
+  '@media': {
+    'screen and (min-width: 640px)': {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      flexWrap: 'wrap',
+      gap: '16px',
+    },
+    'screen and (max-width: 480px)': {
+      marginBottom: '40px',
+    }
+  }
+});ap: '18px',
   marginBottom: '56px',
   
   '@media': {
@@ -132,9 +151,6 @@ export const primaryCta = style({
 export const phoneCta = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '6px',
-});
-
 export const btnPrimaryLarge = style({
   fontSize: '1.0625rem',
   padding: '16px 32px',
@@ -149,10 +165,25 @@ export const btnPrimaryLarge = style({
   justifyContent: 'center',
   gap: '8px',
   textDecoration: 'none',
+  minHeight: '48px',
+  width: '100%',
   
   ':hover': {
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
+    background: '#7dd3fc',
+  },
+  
+  '@media': {
+    'screen and (min-width: 640px)': {
+      width: 'auto',
+    },
+    'screen and (max-width: 480px)': {
+      fontSize: '1rem',
+      padding: '14px 24px',
+    }
+  }
+}); boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
     background: '#7dd3fc',
   }
 });
@@ -234,15 +265,20 @@ export const ctaSubtext = style({
 export const trustBadges = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '18px',
-  paddingTop: '40px',
+  gap: '14px',
+  paddingTop: '32px',
   borderTop: '1px solid rgba(255, 255, 255, 0.15)',
   maxWidth: '600px',
   
   '@media': {
     'screen and (min-width: 640px)': {
       flexDirection: 'row',
-      gap: '36px',
+      gap: '28px',
+      paddingTop: '40px',
+    },
+    'screen and (max-width: 480px)': {
+      paddingTop: '28px',
+      gap: '12px',
     }
   }
 });
@@ -265,12 +301,12 @@ export const trustLabel = style({
   color: 'rgba(255, 255, 255, 0.87)',
   lineHeight: 1.5,
   fontWeight: 500,
-});
-
-export const candidateCta = style({
-  marginTop: '32px',
-  paddingTop: '32px',
-  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+  
+  '@media': {
+    'screen and (max-width: 480px)': {
+      fontSize: '0.875rem',
+    }
+  }
 });
 
 export const candidateButton = style({
@@ -287,11 +323,31 @@ export const candidateButton = style({
   boxShadow: '0 4px 16px rgba(56, 189, 248, 0.4)',
   transition: 'all 0.2s ease',
   border: 'none',
+  minHeight: '48px',
+  width: '100%',
+  justifyContent: 'center',
   
   ':hover': {
     background: '#7dd3fc',
     transform: 'translateY(-2px)',
     boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
+  },
+  
+  ':active': {
+    transform: 'translateY(0)',
+  },
+  
+  '@media': {
+    'screen and (min-width: 640px)': {
+      width: 'auto',
+      justifyContent: 'flex-start',
+    },
+    'screen and (max-width: 480px)': {
+      padding: '14px 24px',
+      fontSize: '0.9375rem',
+    }
+  }
+}); boxShadow: '0 6px 20px rgba(56, 189, 248, 0.5)',
   },
   
   ':active': {
