@@ -147,8 +147,22 @@ export default function CandidateContent() {
 
   if (submitted) {
     return (
-      <div style={sx.ok} role="status">
-        Takk! Søknaden er mottatt. Vi tar kontakt når vi har et oppdrag som matcher profilen din.
+      <div style={{ ...sx.ok, maxWidth: 620, margin: "0 auto" }} role="status">
+        <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#0f172a" }}>✓ Søknaden er mottatt!</div>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, color: "#334155" }}>
+          Takk for at du registrerte deg. Vi går gjennom profilen din og tar kontakt når vi har et oppdrag som matcher din kompetanse og tilgjengelighet.
+        </p>
+        <div style={{ background: "rgba(148, 197, 255, 0.1)", borderRadius: 10, padding: 14, border: "1px solid rgba(148, 197, 255, 0.3)" }}>
+          <strong style={{ display: "block", marginBottom: 6, color: "#0f172a" }}>Hva skjer nå?</strong>
+          <ul style={{ margin: 0, paddingLeft: 20, color: "#475569", fontSize: 14, lineHeight: 1.8 }}>
+            <li>Vi verifiserer dokumentasjonen din (normalt innen 24–48 timer)</li>
+            <li>Du får beskjed når vi har et oppdrag som passer</li>
+            <li>Vi tar kontakt på e-post eller telefon når en mulighet dukker opp</li>
+          </ul>
+        </div>
+        <p style={{ marginTop: 16, fontSize: 14, color: "#64748b" }}>
+          Spørsmål? Ring oss på <strong>923 28 850</strong> eller send e-post til <strong>isak@bluecrew.no</strong>.
+        </p>
       </div>
     );
   }
@@ -449,11 +463,11 @@ export default function CandidateContent() {
         onBlur={() => clearFieldError("skills")}
       />
       <Textarea
-        label="Andre kommentarer (valgfritt)"
+        label="Er det noe annet vi bør vite? (valgfritt)"
         name="other_comp"
-        rows={4}
+        rows={3}
         full
-        description="Legg til annen informasjon vi bør vite om tilgjengelighet, språk eller preferanser."
+        description="F.eks. språk, preferanser, begrensninger i tilgjengelighet."
         error={fieldErrors.other_comp}
         onBlur={() => clearFieldError("other_comp")}
       />
@@ -474,29 +488,57 @@ export default function CandidateContent() {
         onChange={() => clearFileError("certs")}
       />
 
-      <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 8 }}>
-        <input
-          id="gdpr"
-          type="checkbox"
-          name="gdpr"
-          value="yes"
-          required
-          aria-invalid={!!fieldErrors.gdpr}
-          aria-describedby={fieldErrors.gdpr ? "gdpr-err" : undefined}
-          onChange={() => clearFieldError("gdpr")}
-        />
-        <label htmlFor="gdpr" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
-          Jeg samtykker til behandling av persondata for bemanning/rekruttering. {" "}
-          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
-            Les personvernerklæringen
-          </Link>
-          .
-        </label>
-        {fieldErrors.gdpr ? (
-          <div id="gdpr-err" style={sx.errText} role="alert">
-            {fieldErrors.gdpr}
-          </div>
-        ) : null}
+      <div style={{ gridColumn: "1 / -1", background: "rgba(148, 197, 255, 0.08)", borderRadius: 12, padding: 16, border: "1px solid rgba(148, 197, 255, 0.2)" }}>
+        <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 10, color: "#0f172a" }}>
+          Bekreftelse og samtykke
+        </div>
+        
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 14, color: "#334155", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              id="stcw_confirm"
+              name="stcw_confirm"
+              required
+              aria-invalid={!!fieldErrors.stcw_confirm}
+              onChange={() => clearFieldError("stcw_confirm")}
+              style={{ marginTop: 2, flexShrink: 0 }}
+            />
+            <span>
+              Jeg bekrefter at jeg har eller vil skaffe <strong>STCW grunnleggende sikkerhetskurs</strong> og <strong>gyldig helseattest</strong> før oppdragsstart (påkrevd for alle maritime stillinger).
+            </span>
+          </label>
+          {fieldErrors.stcw_confirm ? (
+            <div style={sx.errText} role="alert">
+              {fieldErrors.stcw_confirm}
+            </div>
+          ) : null}
+
+          <label style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 14, color: "#334155", cursor: "pointer" }}>
+            <input
+              id="gdpr"
+              type="checkbox"
+              name="gdpr"
+              value="yes"
+              required
+              aria-invalid={!!fieldErrors.gdpr}
+              onChange={() => clearFieldError("gdpr")}
+              style={{ marginTop: 2, flexShrink: 0 }}
+            />
+            <span>
+              Jeg samtykker til at Bluecrew AS lagrer og behandler mine personopplysninger, CV og sertifikater for å matche meg mot bemanningsoppdrag. Data lagres i <strong>12–24 måneder</strong>. {" "}
+              <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline", fontWeight: 600 }}>
+                Les personvernerklæringen
+              </Link>
+              .
+            </span>
+          </label>
+          {fieldErrors.gdpr ? (
+            <div style={sx.errText} role="alert">
+              {fieldErrors.gdpr}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       {/* Honeypot: NB! navnet må matche values.honey */}

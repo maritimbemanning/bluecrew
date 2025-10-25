@@ -84,8 +84,22 @@ export default function ClientContent() {
 
   if (submitted) {
     return (
-      <div style={sx.ok} role="status">
-        Takk for forespørselen! Vi tar kontakt så snart vi har gjennomgått behovet ditt.
+      <div style={{ ...sx.ok, maxWidth: 620, margin: "0 auto" }} role="status">
+        <div style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#0f172a" }}>✓ Forespørselen er mottatt!</div>
+        <p style={{ marginBottom: 16, lineHeight: 1.7, color: "#334155" }}>
+          Takk for at du kontaktet oss. Vi går gjennom behovet ditt og kommer tilbake med forslag til kvalifiserte kandidater.
+        </p>
+        <div style={{ background: "rgba(148, 197, 255, 0.1)", borderRadius: 10, padding: 14, border: "1px solid rgba(148, 197, 255, 0.3)" }}>
+          <strong style={{ display: "block", marginBottom: 6, color: "#0f172a" }}>Hva skjer nå?</strong>
+          <ul style={{ margin: 0, paddingLeft: 20, color: "#475569", fontSize: 14, lineHeight: 1.8 }}>
+            <li>Vi svarer normalt <strong>innen 24 timer på dagtid</strong></li>
+            <li>Du får et uforpliktende forslag med aktuelle kandidater</li>
+            <li>Ved akutte behov prioriterer vi henvendelsen din</li>
+          </ul>
+        </div>
+        <p style={{ marginTop: 16, fontSize: 14, color: "#64748b" }}>
+          Spørsmål underveis? Ring oss på <strong>923 28 850</strong> eller send e-post til <strong>isak@bluecrew.no</strong>.
+        </p>
       </div>
     );
   }
@@ -186,11 +200,76 @@ export default function ClientContent() {
         onChange={() => clearFieldError("need_duration")}
       />
 
+      <Input
+        label="Antall personer"
+        name="num_people"
+        type="number"
+        placeholder="F.eks. 2"
+        error={fieldErrors.num_people}
+        onChange={() => clearFieldError("num_people")}
+      />
+
+      <Input
+        label="Ønsket oppstartsdato"
+        name="start_date"
+        type="date"
+        error={fieldErrors.start_date}
+        onChange={() => clearFieldError("start_date")}
+      />
+
+      <div style={{ gridColumn: "1 / -1" }}>
+        <div style={{ fontWeight: 700, marginBottom: 8 }}>Hvor raskt trenger du mannskap?</div>
+        <div style={sx.inlineRadios}>
+          <label style={sx.radioLabel}>
+            <input
+              type="radio"
+              name="urgency"
+              value="akutt"
+              onChange={() => clearFieldError("urgency")}
+            />
+            Akutt (&lt;48 timer)
+          </label>
+          <label style={sx.radioLabel}>
+            <input
+              type="radio"
+              name="urgency"
+              value="1uke"
+              onChange={() => clearFieldError("urgency")}
+            />
+            Innen 1 uke
+          </label>
+          <label style={sx.radioLabel}>
+            <input
+              type="radio"
+              name="urgency"
+              value="1mnd"
+              onChange={() => clearFieldError("urgency")}
+            />
+            Innen 1 måned
+          </label>
+          <label style={sx.radioLabel}>
+            <input
+              type="radio"
+              name="urgency"
+              value="fleksibel"
+              onChange={() => clearFieldError("urgency")}
+            />
+            Fleksibel
+          </label>
+        </div>
+        {fieldErrors.urgency ? (
+          <div style={sx.errText} role="alert">
+            {fieldErrors.urgency}
+          </div>
+        ) : null}
+      </div>
+
       <Textarea
-        label="Kort beskrivelse av oppdraget"
+        label="Beskriv bemanningsbehovet"
         name="desc"
         rows={4}
         full
+        description="Hvilke stillinger, kompetansekrav, turnus, osv.?"
         error={fieldErrors.desc}
         onBlur={() => clearFieldError("desc")}
       />
@@ -204,25 +283,27 @@ export default function ClientContent() {
       </div>
 
       {/* GDPR samtykke */}
-      <div style={{ gridColumn: "1 / -1", marginTop: 8 }}>
-        <input
-          type="checkbox"
-          id="gdpr_client"
-          required
-          name="gdpr_client"
-          style={{ marginRight: 8 }}
-          aria-invalid={!!fieldErrors.gdpr_client}
-          aria-describedby={fieldErrors.gdpr_client ? "gdpr-client-err" : undefined}
-          onChange={() => clearFieldError("gdpr_client")}
-        />
-        <label htmlFor="gdpr_client" style={{ fontSize: 13, color: "#475569", cursor: "pointer" }}>
-          Jeg samtykker til behandling av persondata for bemanning/rekruttering.{" "}
-          <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline" }}>
-            Les personvernerklæringen
-          </Link>
+      <div style={{ gridColumn: "1 / -1", background: "rgba(148, 197, 255, 0.08)", borderRadius: 12, padding: 16, border: "1px solid rgba(148, 197, 255, 0.2)" }}>
+        <label style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 14, color: "#334155", cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            id="gdpr_client"
+            required
+            name="gdpr_client"
+            aria-invalid={!!fieldErrors.gdpr_client}
+            onChange={() => clearFieldError("gdpr_client")}
+            style={{ marginTop: 2, flexShrink: 0 }}
+          />
+          <span>
+            Jeg samtykker til at Bluecrew AS lagrer og behandler forespørselen min for å finne kvalifisert mannskap. Data lagres i <strong>6–12 måneder</strong>. {" "}
+            <Link href="/personvern" style={{ color: "#0f172a", textDecoration: "underline", fontWeight: 600 }}>
+              Les personvernerklæringen
+            </Link>
+            .
+          </span>
         </label>
         {fieldErrors.gdpr_client ? (
-          <div id="gdpr-client-err" style={sx.errText} role="alert">
+          <div style={sx.errText} role="alert">
             {fieldErrors.gdpr_client}
           </div>
         ) : null}

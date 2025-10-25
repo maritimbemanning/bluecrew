@@ -16,6 +16,7 @@ export type CandidateFormValues = {
   stcw_mod?: string[];
   deck_has: string;
   deck_class?: string;
+  stcw_confirm: boolean;
   gdpr: boolean;
   honey: string;
 };
@@ -42,6 +43,7 @@ export const candidateSchema = z
     stcw_mod: z.array(z.string()).optional(),
     deck_has: z.enum(["ja", "nei"], "Angi om du har dekksoffiser-sertifikat"),
     deck_class: z.string().trim().optional(),
+    stcw_confirm: z.literal(true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
     gdpr: z.literal(true),
     honey: z.literal(""),
   })
@@ -72,6 +74,9 @@ export type ClientFormValues = {
   c_municipality?: string;
   need_type: string;
   need_duration: string;
+  num_people?: string;
+  start_date?: string;
+  urgency?: string;
   desc?: string;
   gdpr_client: boolean;
   honey: string;
@@ -87,6 +92,9 @@ export const clientSchema = z
     c_municipality: z.string().trim().optional(),
     need_type: z.string().trim().min(2, "Velg behov"),
     need_duration: z.string().trim().min(2, "Velg oppdragstype"),
+    num_people: z.string().trim().optional(),
+    start_date: z.string().trim().optional(),
+    urgency: z.string().trim().optional(),
     desc: z.string().trim().optional(),
     gdpr_client: z.literal(true),
     honey: z.literal(""),
@@ -143,6 +151,7 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     stcw_mod: stcwMods.length ? stcwMods : undefined,
     deck_has: getString("deck_has"),
     deck_class: getString("deck_class") || undefined,
+    stcw_confirm: fd.get("stcw_confirm") === "on",
     gdpr: getString("gdpr") === "yes",
     honey: getString("honey"),
   };
@@ -170,6 +179,9 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     c_municipality: getString("c_municipality") || undefined,
     need_type: getString("need_type"),
     need_duration: getString("need_duration"),
+    num_people: getString("num_people") || undefined,
+    start_date: getString("start_date") || undefined,
+    urgency: getString("urgency") || undefined,
     desc: getString("desc") || undefined,
     gdpr_client: fd.get("gdpr_client") === "on",
     honey: getString("honey"),
