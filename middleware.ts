@@ -15,8 +15,8 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o*.ingest.sentry.io",
+  "script-src 'self' 'unsafe-inline' https://plausible.io", // Removed 'unsafe-eval' for security
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o*.ingest.sentry.io https://api.vipps.no",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   "upgrade-insecure-requests",
 ].join("; ");

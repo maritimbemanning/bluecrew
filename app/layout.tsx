@@ -46,11 +46,20 @@ export const metadata: Metadata = {
     siteName: "Bluecrew AS",
     title,
     description,
+    images: [
+      {
+        url: "/icons/FullLogo_Transparent.png",
+        width: 1200,
+        height: 630,
+        alt: "Bluecrew AS - Maritim bemanning i Nord-Norge",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: ["/icons/FullLogo_Transparent.png"],
   },
   robots: {
     index: true,
