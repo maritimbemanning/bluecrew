@@ -52,9 +52,11 @@ function applySecurityHeaders(res: NextResponse) {
     "browsing-topics=()",
   ].join(", "));
 
-  // CORP/COOP for ekstra isolasjon (valgfritt; slå på hvis testet)
-  res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
-  res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
+  // CORP/COOP disabled for public marketing site
+  // (Blocks Googlebot, social media crawlers, and external API requests)
+  // Only enable for admin portals or apps with sensitive cross-origin data
+  // res.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  // res.headers.set("Cross-Origin-Resource-Policy", "same-origin");
 
   return res;
 }
