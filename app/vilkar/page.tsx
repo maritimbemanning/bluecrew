@@ -168,6 +168,15 @@ export default function TermsPage() {
             </section>
 
             <section style={ui.card}>
+              <h2 style={ui.h2}>Arbeidsvilkår for bemanning og innleie</h2>
+              <p style={ui.p}>
+                Bluecrew er et bemanningsforetak som følger Arbeidsmiljøloven Kap 14 og Bemanningsforskriften.
+                Les mer om arbeidsgivers ansvar, likebehandling, forsikring og HMS på{" "}
+                <a href="/vilkar/bemanning" style={ui.a}>arbeidsvilkår for bemanning</a>.
+              </p>
+            </section>
+
+            <section style={ui.card}>
               <h2 style={ui.h2}>Personvern</h2>
               <p style={ui.p}>
                 Behandling av personopplysninger er beskrevet i vår{" "}

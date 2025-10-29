@@ -202,6 +202,12 @@ export default function PersonvernPage() {
                 </li>
                 <li>Tekniske logger/rate-limit-data: normalt <strong>inntil 90 dager</strong>.</li>
               </ul>
+              <p style={ui.p}>
+                <strong>Automatisk sletting:</strong> For å sikre GDPR art. 5(1)(e) (lagringsminimering) har vi
+                implementert automatisk sletting av utdaterte data. Kandidater som er eldre enn 24 måneder og
+                kundehenvendelser eldre enn 12 måneder slettes automatisk hver natt, inkludert tilhørende filer i
+                Storage. Dette dokumenteres og logges for revisjon.
+              </p>
             </section>
 
             <section style={ui.card}>

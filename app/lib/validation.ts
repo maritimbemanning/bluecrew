@@ -43,8 +43,10 @@ export const candidateSchema = z
     stcw_mod: z.array(z.string()).optional(),
     deck_has: z.enum(["ja", "nei"], "Angi om du har dekksoffiser-sertifikat"),
     deck_class: z.string().trim().optional(),
-    stcw_confirm: z.literal(true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
-    gdpr: z.literal(true),
+    stcw_confirm: z
+      .boolean()
+      .refine((v) => v === true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
+    gdpr: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
@@ -96,7 +98,7 @@ export const clientSchema = z
     start_date: z.string().trim().optional(),
     urgency: z.string().trim().optional(),
     desc: z.string().trim().optional(),
-    gdpr_client: z.literal(true),
+  gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {

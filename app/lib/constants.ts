@@ -139,6 +139,10 @@ export const FAQS = [
     a: "Alt mannskap er forsikret og følger gjeldende HMS-regelverk. Vi sikrer at nødvendig HMS-dokumentasjon er på plass før oppstart og følger opp underveis i oppdraget.",
   },
   {
+    q: "Følger dere ILO Maritime Labour Convention (MLC 2006)?",
+    a: "Ja, Bluecrew AS følger ILO Maritime Labour Convention (MLC 2006) for alle maritime og offshore oppdrag. Dette sikrer skriftlig arbeidskontrakt (MLC Standard A2.1), minstelønn etter tariff/flaggstat (A2.2), regulert hviletid og arbeidstid (A2.3 – max 14 timer/dag, 72 timer/uke), og sosial sikkerhet for sjøfolk (A4.5). Vi sikrer også at alle kandidater har gyldig medisinsk sertifikat (A1.2 – helseattest) før ombordstigning. MLC 2006 ble ratifisert av Norge i 2013 og gjelder for alle fartøy i NOR/NIS-registeret.",
+  },
+  {
     q: "Jobber dere med både norske og utenlandske mannskaper?",
     a: "Vi fokuserer primært på norske sjøfolk med god kjennskap til norsk kyst og regelverk. Dette sikrer språk, kultur og kompetanse som passer norske forhold.",
   },

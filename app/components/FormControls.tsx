@@ -7,6 +7,7 @@ export function Input({
   label,
   name,
   type = "text",
+  placeholder,
   required,
   error,
   onChange,
@@ -16,6 +17,7 @@ export function Input({
   label: string;
   name: string;
   type?: string;
+  placeholder?: string;
   required?: boolean;
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +36,7 @@ export function Input({
         id={id}
         name={name}
         type={type}
+        placeholder={placeholder}
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
