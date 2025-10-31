@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -29,25 +30,46 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Hjem",
+        item: "https://bluecrew.no",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Jobbsøker",
+        item: "https://bluecrew.no/jobbsoker",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Karriereguider",
+        item: "https://bluecrew.no/jobbsoker/guides",
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: "Hvordan bli skipsfører",
+        item: "https://bluecrew.no/jobbsoker/guides/hvordan-bli-skipsforer",
+      },
+    ],
+  };
+
   return (
     <SiteLayout active="jobbsoker">
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          <div style={{ 
-            marginBottom: 32, 
-            borderRadius: 16, 
-            overflow: "hidden", 
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            position: "relative",
-            height: 400
-          }}>
-            <img 
-              src="/hero/Skipper-styrmann-hero.jpeg" 
-              alt="Skipsfører på broen styrer fartøy på norsk kyst" 
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          </div>
-
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
             Sist oppdatert: 24. oktober 2025
           </div>

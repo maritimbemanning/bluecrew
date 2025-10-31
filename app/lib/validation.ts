@@ -4,18 +4,15 @@ export type CandidateFormValues = {
   name: string;
   email: string;
   phone: string;
-  county: string;
-  municipality: string;
+  street_address: string;
+  postal_code: string;
+  postal_city: string;
   available_from?: string;
   skills?: string;
   other_comp?: string;
-  work_main: string[];
+  work_main: string;
   other_notes?: Record<string, string>;
   wants_temporary: string;
-  stcw_has: string;
-  stcw_mod?: string[];
-  deck_has: string;
-  deck_class?: string;
   stcw_confirm: boolean;
   gdpr: boolean;
   honey: string;
@@ -31,18 +28,15 @@ export const candidateSchema = z
     name: z.string().trim().min(2, "Oppgi fullt navn"),
     email: z.string().trim().email("Oppgi gyldig e-post"),
     phone: z.string().trim().min(6, "Oppgi telefon"),
-    county: z.string().trim().min(2, "Velg fylke"),
-    municipality: z.string().trim().min(2, "Velg kommune"),
+    street_address: z.string().trim().min(3, "Oppgi gateadresse"),
+    postal_code: z.string().trim().regex(/^\d{4}$/, "Oppgi gyldig postnummer (4 siffer)"),
+    postal_city: z.string().trim().min(2, "Oppgi poststed"),
     available_from: z.string().trim().optional(),
     skills: z.string().trim().optional(),
     other_comp: z.string().trim().optional(),
-    work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
+    work_main: z.string().min(1, "Velg arbeidskategori"),
     other_notes: z.record(z.string().trim()).optional(),
     wants_temporary: z.enum(["ja", "nei"], "Velg om du er åpen for midlertidige oppdrag"),
-    stcw_has: z.enum(["ja", "nei"], "Angi om du har STCW"),
-    stcw_mod: z.array(z.string()).optional(),
-    deck_has: z.enum(["ja", "nei"], "Angi om du har dekksoffiser-sertifikat"),
-    deck_class: z.string().trim().optional(),
     stcw_confirm: z
       .boolean()
       .refine((v) => v === true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
@@ -50,14 +44,6 @@ export const candidateSchema = z
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
-    if (values.deck_has === "ja" && !values.deck_class) {
-      ctx.addIssue("Velg klasse", ["deck_class"]);
-    }
-
-    if (values.stcw_has === "ja" && !(values.stcw_mod && values.stcw_mod.length)) {
-      ctx.addIssue("Velg minst én STCW-modul", ["stcw_mod"]);
-    }
-
     if (values.other_notes) {
       for (const [key, value] of Object.entries(values.other_notes)) {
         if (value.length > 200) {
@@ -72,7 +58,11 @@ export type ClientFormValues = {
   contact: string;
   c_email: string;
   c_phone: string;
-  c_county: string;
+  c_work_location_name: string;
+  c_street_address: string;
+  c_postal_code: string;
+  c_postal_city: string;
+  c_county?: string;
   c_municipality?: string;
   need_type: string;
   need_duration: string;
@@ -90,7 +80,11 @@ export const clientSchema = z
     contact: z.string().trim().min(2, "Oppgi kontaktperson"),
     c_email: z.string().trim().email("Oppgi gyldig e-post"),
     c_phone: z.string().trim().min(6, "Oppgi telefon"),
-    c_county: z.string().trim().min(2, "Velg fylke"),
+    c_work_location_name: z.string().trim().min(2, "Oppgi arbeidssted"),
+    c_street_address: z.string().trim().min(3, "Oppgi gateadresse"),
+    c_postal_code: z.string().trim().regex(/^\d{4}$/, "Oppgi gyldig postnummer (4 siffer)"),
+    c_postal_city: z.string().trim().min(2, "Oppgi poststed"),
+    c_county: z.string().trim().optional(),
     c_municipality: z.string().trim().optional(),
     need_type: z.string().trim().min(2, "Velg behov"),
     need_duration: z.string().trim().min(2, "Velg oppdragstype"),
@@ -98,14 +92,10 @@ export const clientSchema = z
     start_date: z.string().trim().optional(),
     urgency: z.string().trim().optional(),
     desc: z.string().trim().optional(),
-  gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
+    gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
-    if (values.c_county && !values.c_municipality) {
-      ctx.addIssue("Velg kommune", ["c_municipality"]);
-    }
-
     if (!values.desc || values.desc.length < 10) {
       ctx.addIssue("Beskriv kort behovet (minst 10 tegn)", ["desc"]);
     }
@@ -117,15 +107,8 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     return value === null ? "" : String(value).trim();
   };
 
-  const workChoices = fd
-    .getAll("work_main")
-    .map((value) => String(value).trim())
-    .filter(Boolean);
-
-  const stcwMods = fd
-    .getAll("stcw_mod")
-    .map((value) => String(value).trim())
-    .filter(Boolean);
+  // work_main is now a single dropdown value, not an array
+  const workMain = getString("work_main");
 
   const otherNotes: Record<string, string> = {};
   for (const [key, value] of fd.entries()) {
@@ -141,18 +124,15 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     name: getString("name"),
     email: getString("email"),
     phone: getString("phone"),
-    county: getString("county"),
-    municipality: getString("municipality"),
+    street_address: getString("street_address"),
+    postal_code: getString("postal_code"),
+    postal_city: getString("postal_city"),
     available_from: getString("available_from") || undefined,
     skills: getString("skills") || undefined,
     other_comp: getString("other_comp") || undefined,
-    work_main: workChoices,
+    work_main: workMain,
     other_notes: Object.keys(otherNotes).length ? otherNotes : undefined,
     wants_temporary: getString("wants_temporary"),
-    stcw_has: getString("stcw_has"),
-    stcw_mod: stcwMods.length ? stcwMods : undefined,
-    deck_has: getString("deck_has"),
-    deck_class: getString("deck_class") || undefined,
     stcw_confirm: fd.get("stcw_confirm") === "on",
     gdpr: getString("gdpr") === "yes",
     honey: getString("honey"),
@@ -177,8 +157,12 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     contact: getString("contact"),
     c_email: getString("c_email"),
     c_phone: getString("c_phone"),
-    c_county: getString("c_county"),
-    c_municipality: getString("c_municipality") || undefined,
+    c_work_location_name: getString("c_work_location_name"),
+    c_street_address: getString("c_street_address"),
+    c_postal_code: getString("c_postal_code"),
+    c_postal_city: getString("c_postal_city"),
+  c_county: getString("c_county") || undefined,
+  c_municipality: getString("c_municipality") || undefined,
     need_type: getString("need_type"),
     need_duration: getString("need_duration"),
     num_people: getString("num_people") || undefined,

@@ -43,5 +43,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/personvern`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/cookies`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/vilkar`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/vilkar/bemanning`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
   ];
 }

@@ -36,7 +36,9 @@ export async function POST(req: Request) {
     }
 
     const data = parsed.data;
-    const location = data.c_municipality ? `${data.c_municipality} (${data.c_county})` : data.c_county;
+    const location = data.c_municipality
+      ? `${data.c_municipality} (${data.c_county || "ukjent fylke"})`
+      : data.c_county || data.c_postal_city;
 
     const lines: string[] = [
       "NY KUNDEFORESPØRSEL",
@@ -62,8 +64,8 @@ export async function POST(req: Request) {
           contact: data.contact,
           email: data.c_email,
           phone: data.c_phone,
-          county: data.c_county,
-          municipality: data.c_municipality,
+          county: data.c_county || null,
+          municipality: data.c_municipality || null,
           need_type: data.need_type,
           need_duration: data.need_duration,
           num_people: data.num_people || null,
@@ -72,6 +74,7 @@ export async function POST(req: Request) {
           description: data.desc || null,
           submitted_at: new Date().toISOString(),
           source_ip: getClientIp(req),
+          gdpr_client_consent: data.gdpr_client,
         },
       }).catch((error) => {
         captureServerException(error, { scope: "client-insert", table: "leads" });

@@ -43,6 +43,45 @@
   color: var(--accent);
 }
 
+/* DROPDOWN VISIBILITY CONTROL */
+/* Default: ALL dropdowns hidden */
+.navItem > .navDropdown {
+  display: none;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+/* Add invisible bridge between nav item and dropdown to maintain hover */
+.navItem > .navDropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px; /* Cover the gap (matches top: calc(100% + 8px)) */
+  left: 0;
+  right: 0;
+  height: 8px; /* Height of the gap */
+  background: transparent;
+}
+
+/* Show on parent hover (entire navItem wrapper) */
+.navItem:hover > .navDropdown {
+  display: grid;
+}
+
+/* Keep visible when hovering over dropdown itself */
+.navDropdown:hover {
+  display: grid;
+}
+
+/* Show when focused (keyboard navigation) */
+.navItem:focus-within > .navDropdown {
+  display: grid;
+}
+
+/* Show when React state sets data-open="true" (JS control) */
+.navItem > .navDropdown[data-open="true"] {
+  display: grid;
+}
+
 /* mobile link base class */
 .mobileLink{
   transition: background .12s ease, color .12s ease;

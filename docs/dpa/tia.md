@@ -1,8 +1,11 @@
-# Transfer Impact Assessment (TIA) for Bluecrew AS
+# TRANSFER IMPACT ASSESSMENT (TIA) - BLUECREW AS
 
-**Dato:** 29. oktober 2025  
-**Ansvarlig:** Bluecrew AS, Org.nr 936 321 194  
-**Formål:** Dokumentere vurdering av dataoverføringer til tredjeland i henhold til GDPR art. 46 og Datatilsynets veiledning om Schrems II (C-311/18)
+**Behandlingsansvarlig:** Bluecrew AS (Org.nr 936 321 194)  
+**Kontaktperson:** Isak (CEO) - isak@bluecrew.no / 923 28 850  
+**Dato opprettet:** 29. oktober 2025  
+**Sist oppdatert:** 30. oktober 2025  
+**Hjemmel:** GDPR Art. 46 + Schrems II-dommen (C-311/18)  
+**Formål:** Dokumentere vurdering av dataoverføringer til tredjeland (USA) i henhold til GDPR art. 46 og Datatilsynets veiledning om Schrems II
 
 ---
 
@@ -78,11 +81,12 @@ Følgende tekniske sikkerhetstiltak er implementert:
 **Reduserende faktorer:**
 1. **Supabase og Upstash bruker EU-servere:** Data lagres i Frankfurt/Stockholm, ikke fysisk i USA
 2. **Kryptering beskytter mot bulk-innhenting:** AES-256 kryptering gjør det vanskelig for overvåkningsmyndigheter å få tilgang til data uten spesifikk nøkkel
-3. **Begrenset persondata:** Bluecrew samler ikke sensitive personopplysninger (etnisitet, politisk tilhørighet, helseopplysninger utover helseattest-bekreftelse)
-4. **Dataminimering:** Kun nødvendig informasjon lagres (navn, e-post, CV, sertifikater, STCW-bekreftelse)
-5. **Lav risiko for amerikansk interesse:** Bluecrew er en liten norsk bemanningsbedrift med maritime kandidater, ikke et høyrisiko-mål for overvåkning
+3. **Begrenset persondata:** Bluecrew samler ikke sensitive personopplysninger (GDPR Art. 9: etnisitet, politisk tilhørighet, helsedata)
+4. **Fødselsnummer er hashet:** SHA-256 irreversibel hash, aldri klartekst (implementert oktober 2025)
+5. **Dataminimering:** Kun nødvendig informasjon lagres (navn, e-post, CV, sertifikater, STCW-bekreftelse)
+6. **Lav risiko for amerikansk interesse:** Bluecrew er en liten norsk bemanningsbedrift med maritime kandidater, ikke et høyrisiko-mål for overvåkning
 
-**Konklusjon:** Vi vurderer risikoen som **lav** for at amerikanske myndigheter vil be om innsyn i kandidatdata fra Bluecrew. Kombinasjonen av SCC, kryptering, EU-baserte servere (Supabase/Upstash) og dataminimering gir tilstrekkelig beskyttelse i henhold til GDPR art 46 og Datatilsynets veiledning.
+**Konklusjon:** Vi vurderer risikoen som **lav** for at amerikanske myndigheter vil be om innsyn i kandidatdata fra Bluecrew. Kombinasjonen av SCC, kryptering, EU-baserte servere (Supabase/Upstash), SHA-256 hashing og dataminimering gir tilstrekkelig beskyttelse i henhold til GDPR art 46 og Datatilsynets veiledning.
 
 ---
 
@@ -107,7 +111,19 @@ Følgende tekniske sikkerhetstiltak er implementert:
 
 ---
 
-## 5. Referanser
+## 6. OPPDATERINGSHISTORIKK
+
+| Dato | Endring | Utført av |
+|------|---------|-----------|
+| 29. oktober 2025 | Opprettet TIA-dokument (Schrems II compliance) | Isak (CEO) |
+| 30. oktober 2025 | Oppdatert med SHA-256 hashing av fødselsnummer | Isak (CEO) |
+| - | - | - |
+
+**Neste review:** Q2 2026 (eller ved vesentlige endringer i databehandlingen)
+
+---
+
+## 7. REFERANSER
 
 - **GDPR art. 46:** Overføring på grunnlag av hensiktsmessige beskyttelsestiltak
 - **GDPR art. 5(1)(e):** Lagringsminimering
@@ -118,7 +134,6 @@ Følgende tekniske sikkerhetstiltak er implementert:
 
 ---
 
-**Signatur:**  
-*Dokumentert av: Isak Simonsen*  
-*Dato: 29. oktober 2025*  
-*Godkjent av: Bluecrew AS styret*
+**🔒 INTERNT DOKUMENT - IKKE PUBLISER PÅ NETTSTEDET**
+
+_Dette dokumentet er til intern bruk for Bluecrew AS og skal oppbevares i henhold til GDPR Art. 46._

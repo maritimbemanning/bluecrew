@@ -6,7 +6,7 @@ export function ServiceCards(){
   const services = [
     {
       title: 'Servicefartøy',
-      description: 'Dykking, spyling, service og offshore support. Kompetent mannskap til dynamiske operasjoner.',
+      description: 'Dykking, spyling, service og teknisk support. Kompetent mannskap til dynamiske operasjoner.',
       link: '/kunde/bemanning',
     },
     {
@@ -15,8 +15,8 @@ export function ServiceCards(){
       link: '/kunde/bemanning',
     },
     {
-      title: 'Kystfart',
-      description: 'Mannskap til ferger, supplyskip og kystoperasjoner. Sertifisert og havtrent.',
+      title: 'Teknologi & Innovasjon',
+      description: 'Vi digitaliserer bemanningsprosessen med AI-drevet matching og automatiserte kontrakter.',
       link: '/kunde/bemanning',
     },
   ];

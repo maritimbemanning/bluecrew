@@ -6,7 +6,13 @@ import { NextResponse } from "next/server";
  * - Tillater Google Fonts og Plausible
  * - Tillater nødvendige utgående forbindelser (Resend, Supabase, Upstash, Sentry, Plausible)
  * - NB: 'unsafe-inline' er midlertidig for stil/skript. Fjern/stram inn når mulig.
+ * - 'unsafe-eval' kun i development for Next.js hot reload
  */
+const isDevelopment = process.env.NODE_ENV === 'development';
+const scriptSrc = isDevelopment 
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://plausible.io"
+  : "script-src 'self' 'unsafe-inline' https://plausible.io";
+
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
@@ -15,8 +21,8 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "script-src 'self' 'unsafe-inline' https://plausible.io", // Removed 'unsafe-eval' for security
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o*.ingest.sentry.io https://api.vipps.no",
+  scriptSrc,
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://*.ingest.sentry.io https://api.vipps.no https://*.criipto.id",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   "upgrade-insecure-requests",
 ].join("; ");

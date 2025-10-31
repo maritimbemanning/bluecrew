@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -30,8 +31,44 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Hjem",
+        item: "https://bluecrew.no",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Jobbsøker",
+        item: "https://bluecrew.no/jobbsoker",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Karriereguider",
+        item: "https://bluecrew.no/jobbsoker/guides",
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: "Lønnsguide maritime stillinger",
+        item: "https://bluecrew.no/jobbsoker/guides/lonnsguide-maritime-stillinger",
+      },
+    ],
+  };
+
   return (
     <SiteLayout active="jobbsoker">
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>

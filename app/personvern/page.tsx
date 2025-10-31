@@ -130,7 +130,7 @@ export default function PersonvernPage() {
             nettstedet bluecrew.no.
           </p>
           <div style={ui.badgeRow}>
-            <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
+            <span style={ui.badge}>Oppdatert: 29. oktober 2025</span>
             <span style={ui.badge}>Org.nr: 936 321 194</span>
             <span style={ui.badge}>Kontakt: isak@bluecrew.no</span>
           </div>

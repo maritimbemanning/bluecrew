@@ -18,6 +18,7 @@ export const sx: Record<string, CSSProperties> = {
     backdropFilter: "blur(10px)",
     borderBottom: "1px solid rgba(148, 197, 255, 0.18)",
     boxShadow: "0 18px 40px rgba(15, 23, 42, 0.28)",
+    overflow: "visible",
   },
   wrap: {
     maxWidth: 1200,
@@ -27,6 +28,7 @@ export const sx: Record<string, CSSProperties> = {
     alignItems: "center",
     gap: 24,
     width: "100%",
+    overflow: "visible",
   },
   wrapMobile: {
     padding: "12px clamp(18px, 6vw, 24px)",
@@ -102,25 +104,25 @@ export const sx: Record<string, CSSProperties> = {
   navCaret: { fontSize: 12, marginTop: 2 },
   navDropdown: {
     position: "absolute",
-    top: "calc(100% + 16px)",
+    top: "calc(100% + 8px)", // Reduced from 16px to 8px for better hover transition
     left: 0,
-    minWidth: 220,
+    minWidth: 240, // Increased from 220 for more breathing room
     background: "rgba(7, 22, 43, 0.95)",
     borderRadius: 18,
     border: "1px solid rgba(148, 197, 255, 0.25)",
     boxShadow: "0 24px 60px rgba(8, 18, 36, 0.45)",
-    padding: "18px 20px",
-    display: "grid",
-    gap: 8,
-    zIndex: 50,
+    padding: "20px 22px", // Increased from 18px 20px for more space
+    // display: "grid", // REMOVED - CSS controls visibility via .navDropdown class
+    gap: 10, // Increased from 8 for more spacing between items
+    zIndex: 200,
   },
   navDropdownLink: {
     color: "rgba(241, 245, 249, 0.95)",
     textDecoration: "none",
-    fontSize: 14,
-    fontWeight: 600,
-    lineHeight: 1.4,
-    padding: "10px 12px",
+    fontSize: 15, // Increased from 14 for better readability
+    fontWeight: 500, // Reduced from 600 for lighter feel
+    lineHeight: 1.5, // Increased from 1.4 for more breathing room
+    padding: "12px 14px", // Increased from 10px 12px for more spacing
     borderRadius: 12,
     transition: "background 0.18s ease, color 0.18s ease, transform 0.12s ease",
   },
@@ -129,7 +131,14 @@ export const sx: Record<string, CSSProperties> = {
     background: "rgba(56,189,248,0.06)",
     color: "#38bdf8",
   },
-  navDropdownDescription: { display: "block", marginTop: 4, fontSize: 12, fontWeight: 400, color: "rgba(224, 231, 255, 0.7)" },
+  navDropdownDescription: { 
+    display: "block", 
+    marginTop: 2, // Reduced from 4 to bring closer to title
+    fontSize: 13, // Increased from 12 for better readability
+    fontWeight: 400, 
+    lineHeight: 1.4, // Added for better text spacing
+    color: "rgba(224, 231, 255, 0.65)" // Slightly reduced opacity for hierarchy
+  },
   navLink: {
     color: "#ffffff",
     textDecoration: "none",
@@ -974,7 +983,9 @@ export const sx: Record<string, CSSProperties> = {
   input: {
     padding: "12px 14px",
     borderRadius: 12,
-    border: "1px solid #cbd5e1",
+    borderWidth: "1px",
+    borderStyle: "solid",
+    borderColor: "#cbd5e1",
     background: "#ffffff",
     outline: "none",
     fontSize: 15,

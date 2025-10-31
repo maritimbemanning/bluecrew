@@ -176,7 +176,7 @@ export async function uploadSupabaseObject(options: {
       "Content-Type": options.contentType || "application/octet-stream",
       "Cache-Control": "max-age=31536000",
     },
-    body: payload,
+    body: payload as BodyInit,
   });
 
   if (!response.ok) {

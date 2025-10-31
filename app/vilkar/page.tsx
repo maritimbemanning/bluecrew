@@ -115,7 +115,7 @@ export default function TermsPage() {
             Disse vilkårene regulerer din bruk av bluecrew.no. Ved å bruke nettstedet aksepterer du vilkårene.
           </p>
           <div style={ui.badgeRow}>
-            <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
+            <span style={ui.badge}>Oppdatert: 29. oktober 2025</span>
             <span style={ui.badge}>Bluecrew AS · Org.nr: 936 321 194</span>
           </div>
         </div>

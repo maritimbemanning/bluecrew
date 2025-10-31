@@ -167,7 +167,7 @@ export default function CookiesPage() {
             Her finner du hvilke informasjonskapsler vi bruker, hva de gjør og hvordan du kan endre samtykket ditt.
           </p>
           <div style={ui.badgeRow}>
-            <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
+            <span style={ui.badge}>Oppdatert: 29. oktober 2025</span>
             <span style={ui.badge}>Samtykke: {current ? (current.analytics ? "Statistikk PÅ" : "Kun nødvendige") : "Ikke valgt"}</span>
           </div>
         </div>

@@ -48,7 +48,7 @@ export function Hero(){
             </div>
             <div className={styles.trustItem}>
               <span className={styles.trustIcon}>✓</span>
-              <span className={styles.trustLabel}>Kjenner havbruk og offshore</span>
+              <span className={styles.trustLabel}>Digital matching med AI-teknologi</span>
             </div>
           </div>
         </div>

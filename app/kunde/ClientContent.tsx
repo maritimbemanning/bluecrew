@@ -1,11 +1,11 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input, Select, Textarea } from "../components/FormControls";
-import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
+import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
 
@@ -13,94 +13,18 @@ type FieldErrors = Record<string, string>;
 
 const ui = {
   wrap: {
-    display: "grid",
-    gap: 28,
-    maxWidth: 1120,
+    maxWidth: 920,
     margin: "0 auto",
-    padding: "0 clamp(18px, 6vw, 26px) 64px",
-  },
-  hero: {
-    background:
-      "radial-gradient(circle at 12% -10%, rgba(56,189,248,0.45), transparent 55%), radial-gradient(circle at 82% -12%, rgba(14,165,233,0.38), transparent 60%), linear-gradient(155deg, #051427 0%, #0a1d39 55%, #0f2648 100%)",
-    borderRadius: 30,
-    padding: "36px clamp(22px, 6vw, 44px)",
-    color: "#e2e8f0",
-    boxShadow: "0 32px 80px rgba(5, 17, 34, 0.55)",
-  position: "relative",
-  overflow: "hidden",
-  },
-  heroTitle: {
-    fontSize: "clamp(30px, 5.6vw, 40px)",
-    fontWeight: 900,
-    letterSpacing: "-0.02em",
-    margin: 0,
-  },
-  heroLead: {
-    marginTop: 14,
-    maxWidth: 620,
-    fontSize: 18,
-    lineHeight: 1.7,
-    color: "rgba(226, 232, 240, 0.86)",
-  },
-  heroBadges: {
-    display: "flex",
-  flexWrap: "wrap",
-    gap: 10,
-    marginTop: 18,
-  },
-  heroBadge: {
-    padding: "9px 16px",
-    borderRadius: 999,
-    border: "1px solid rgba(148,197,255,0.35)",
-    background: "rgba(15, 23, 42, 0.55)",
-    fontSize: 13,
-    fontWeight: 700,
-    letterSpacing: ".08em",
-  textTransform: "uppercase",
-    color: "#bae6fd",
-  },
-  heroGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: 18,
-    marginTop: 26,
-  },
-  heroCard: {
-    background: "rgba(7, 18, 34, 0.7)",
-    border: "1px solid rgba(148, 197, 255, 0.32)",
-    borderRadius: 20,
-    padding: 18,
-    display: "grid",
-    gap: 6,
-  },
-  heroCardLabel: {
-    fontSize: 12,
-    letterSpacing: ".1em",
-  textTransform: "uppercase",
-    color: "rgba(226, 232, 240, 0.65)",
-  },
-  heroCardValue: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: "#f8fafc",
-  },
-  layout: {
-    display: "grid",
-    gap: 28,
-    gridTemplateColumns: "1fr",
-  },
-  layoutWide: {
-    gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1fr)",
-    alignItems: "start",
+    padding: "40px clamp(20px, 5vw, 32px) 80px",
   },
   formShell: {
     background: "#ffffff",
-    borderRadius: 28,
-    padding: "32px clamp(20px, 6vw, 38px)",
-    border: "1px solid #dbe4f3",
-    boxShadow: "0 30px 80px rgba(15, 23, 42, 0.12)",
+    borderRadius: 20,
+    padding: "40px clamp(24px, 6vw, 48px)",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 10px 40px rgba(15, 23, 42, 0.08)",
     display: "grid",
-    gap: 28,
+    gap: 32,
   },
   section: {
     display: "grid",
@@ -139,41 +63,11 @@ const ui = {
     display: "grid",
     gap: 10,
   },
-  sidebar: {
-    background: "#0f172a",
-    borderRadius: 26,
-    padding: 28,
-    border: "1px solid rgba(148, 197, 255, 0.28)",
-    color: "#e2e8f0",
-    display: "grid",
-    gap: 18,
-    boxShadow: "0 24px 60px rgba(8, 16, 32, 0.45)",
-  },
-  sidebarTitle: {
-    margin: 0,
-    fontSize: 18,
-    fontWeight: 800,
-  },
-  sidebarList: {
-    margin: 0,
-    paddingLeft: 18,
-    display: "grid",
-    gap: 10,
-    color: "rgba(226, 232, 240, 0.9)",
-    fontSize: 14.5,
-    lineHeight: 1.7,
-  },
-  sidebarFooter: {
-    marginTop: 8,
-    fontSize: 13,
-    color: "rgba(226, 232, 240, 0.7)",
-    lineHeight: 1.7,
-  },
   submitRow: {
     display: "flex",
     justifyContent: "space-between",
     gap: 16,
-  flexWrap: "wrap",
+    flexWrap: "wrap" as const,
     alignItems: "center",
   },
   submitNote: {
@@ -217,9 +111,6 @@ const ui = {
 export default function ClientContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "client";
-  const [isWide, setIsWide] = useState<boolean>(() => {
-    return typeof window !== "undefined" ? window.innerWidth >= 960 : false;
-  });
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -231,28 +122,52 @@ export default function ClientContent() {
     }
   }, [submitted]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onResize = () => {
-      setIsWide(window.innerWidth >= 960);
-    };
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("resize", onResize);
-    };
-  }, []);
-
-  const [county, setCounty] = useState("");
-  const [municipality, setMunicipality] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orgLookupLoading, setOrgLookupLoading] = useState(false);
 
-  const municipalityOptions = useMemo(
-    () => (county ? MUNICIPALITIES_BY_COUNTY[county] ?? [] : []),
-    [county],
-  );
+  // Brønnøysund API lookup via Next.js API route
+  const lookupOrganization = async (orgnr: string, isWorkLocation: boolean = false) => {
+    const cleanOrgnr = orgnr.replace(/\s/g, "");
+    if (!/^\d{9}$/.test(cleanOrgnr)) return;
+
+    setOrgLookupLoading(true);
+    try {
+      const response = await fetch(`/api/brreg/${cleanOrgnr}`);
+      if (!response.ok) {
+        const error = await response.json();
+        console.error("Org lookup failed:", error.error);
+        return;
+      }
+      
+      const data = await response.json();
+      
+      if (isWorkLocation) {
+        // Populate work location fields
+        const nameField = document.querySelector<HTMLInputElement>('input[name="c_work_location_name"]');
+        const streetField = document.querySelector<HTMLInputElement>('input[name="c_street_address"]');
+        const postalCodeField = document.querySelector<HTMLInputElement>('input[name="c_postal_code"]');
+        const postalCityField = document.querySelector<HTMLInputElement>('input[name="c_postal_city"]');
+        
+        if (nameField) nameField.value = data.navn || "";
+        if (data.forretningsadresse) {
+          const addr = data.forretningsadresse;
+          if (streetField) streetField.value = addr.adresse || "";
+          if (postalCodeField) postalCodeField.value = addr.postnummer || "";
+          if (postalCityField) postalCityField.value = addr.poststed || "";
+        }
+      } else {
+        // Populate company name
+        const companyField = document.querySelector<HTMLInputElement>('input[name="company"]');
+        if (companyField) companyField.value = data.navn || "";
+      }
+    } catch (error) {
+      console.error("Org lookup failed:", error);
+    } finally {
+      setOrgLookupLoading(false);
+    }
+  };
 
   const clearFieldError = useCallback((name: string) => {
     setFieldErrors((prev) => {
@@ -325,39 +240,9 @@ export default function ClientContent() {
     );
   }
 
-  const layoutStyle = isWide ? { ...ui.layout, ...ui.layoutWide } : ui.layout;
-
   return (
     <div style={ui.wrap}>
-      <section style={ui.hero}>
-        <h1 style={ui.heroTitle}>Bemanning som matcher operasjonen din</h1>
-        <p style={ui.heroLead}>
-          Beskriv behovet ditt, så håndterer vi screening, referanser og koordinering. Vi er tilgjengelige syv dager i
-          uken når det haster.
-        </p>
-        <div style={ui.heroBadges}>
-          <span style={ui.heroBadge}>Garantert svar innen 24 t</span>
-          <span style={ui.heroBadge}>STCW-sertifiserte mannskap</span>
-          <span style={ui.heroBadge}>Base i Nord-Norge · dekning nasjonalt</span>
-        </div>
-        <div style={ui.heroGrid}>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Oppstart</span>
-            <span style={ui.heroCardValue}>Raskere enn 48 timer ved akutt</span>
-          </div>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Tilgjengelighet</span>
-            <span style={ui.heroCardValue}>Rådgivere på vakt 07–22 alle dager</span>
-          </div>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Kvalitet</span>
-            <span style={ui.heroCardValue}>Dokumentert kompetanse og referanser</span>
-          </div>
-        </div>
-      </section>
-
-      <div style={layoutStyle}>
-        <form action="/api/submit-client" method="POST" noValidate onSubmit={handleSubmit} style={ui.formShell}>
+      <form action="/api/submit-client" method="POST" noValidate onSubmit={handleSubmit} style={ui.formShell}>
           {formError ? (
             <div style={sx.formError} role="alert">
               {formError}
@@ -371,11 +256,25 @@ export default function ClientContent() {
             </div>
             <div style={ui.fieldGrid}>
               <Input
+                label="Organisasjonsnummer (9 siffer)"
+                name="org_number"
+                placeholder="123 456 789"
+                error={fieldErrors.org_number}
+                onChange={(e) => {
+                  clearFieldError("org_number");
+                  const value = e.target.value;
+                  if (/^\d{9}$/.test(value.replace(/\s/g, ""))) {
+                    lookupOrganization(value, false);
+                  }
+                }}
+              />
+              <Input
                 label="Selskap"
                 name="company"
                 required
                 error={fieldErrors.company}
                 onChange={() => clearFieldError("company")}
+                placeholder={orgLookupLoading ? "Henter..." : ""}
               />
               <Input
                 label="Kontaktperson"
@@ -406,45 +305,60 @@ export default function ClientContent() {
 
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
-              <h2 style={ui.sectionTitle}>Hvor skal mannskapet?</h2>
-              <p style={ui.sectionLead}>Gi oss primær lokasjon. Vi kan ordne reise og bolig ved behov.</p>
+              <h2 style={ui.sectionTitle}>Arbeidssted</h2>
+              <p style={ui.sectionLead}>Oppgi fullstendig adresse hvor mannskapet skal jobbe.</p>
             </div>
             <div style={ui.fieldGrid}>
-              <Select
-                label="Fylke"
-                name="c_county"
-                options={COUNTIES}
-                value={county}
-                onChange={(value) => {
-                  setCounty(value);
-                  clearFieldError("c_county");
-                  if (!value) {
-                    setMunicipality("");
-                  } else if (!(MUNICIPALITIES_BY_COUNTY[value] || []).includes(municipality)) {
-                    setMunicipality("");
+              <Input
+                label="Org.nr arbeidssted (valgfritt - fyller ut adresse automatisk)"
+                name="work_org_number"
+                placeholder="123 456 789"
+                error={fieldErrors.work_org_number}
+                onChange={(e) => {
+                  clearFieldError("work_org_number");
+                  const value = e.target.value;
+                  if (/^\d{9}$/.test(value.replace(/\s/g, ""))) {
+                    lookupOrganization(value, true);
                   }
                 }}
-                placeholder="Velg fylke"
+              />
+              <Input
+                label="Arbeidssted (bedriftsnavn eller skipsnavn)"
+                name="c_work_location_name"
+                placeholder="Eksempel: Brønnbåt MS ARCTIC eller Havbruk AS"
                 required
-                error={fieldErrors.c_county}
-                onBlur={() => clearFieldError("c_county")}
+                error={fieldErrors.c_work_location_name}
+                onChange={() => clearFieldError("c_work_location_name")}
+              />
+            </div>
+            <div style={ui.fieldGrid}>
+              <Input
+                label="Gateadresse"
+                name="c_street_address"
+                placeholder="Eksempel: Havnegata 12"
+                required
+                error={fieldErrors.c_street_address}
+                onBlur={() => clearFieldError("c_street_address")}
               />
 
-              <Select
-                label="Kommune/by"
-                name="c_municipality"
-                options={municipalityOptions}
-                value={municipality}
-                onChange={(value) => {
-                  setMunicipality(value);
-                  clearFieldError("c_municipality");
-                }}
-                placeholder={county ? "Velg kommune" : "Velg fylke først"}
-                disabled={!county}
-                required={!!county}
-                error={fieldErrors.c_municipality}
-                onBlur={() => clearFieldError("c_municipality")}
-              />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12 }}>
+                <Input
+                  label="Postnummer"
+                  name="c_postal_code"
+                  placeholder="0150"
+                  required
+                  error={fieldErrors.c_postal_code}
+                  onBlur={() => clearFieldError("c_postal_code")}
+                />
+                <Input
+                  label="Poststed"
+                  name="c_postal_city"
+                  placeholder="OSLO"
+                  required
+                  error={fieldErrors.c_postal_city}
+                  onBlur={() => clearFieldError("c_postal_city")}
+                />
+              </div>
             </div>
           </div>
 
@@ -611,20 +525,6 @@ export default function ClientContent() {
             </div>
           </div>
         </form>
-
-        <aside style={ui.sidebar}>
-          <h3 style={ui.sidebarTitle}>Hva du kan forvente</h3>
-          <ul style={ui.sidebarList}>
-            <li>En dedikert rådgiver følger saken din fra start til slutt.</li>
-            <li>Vi kvalitetssikrer CV, sertifikater og referanser før kandidaten presenteres.</li>
-            <li>Du får en shortlist med tilgjengelighet og prisbilde til godkjenning.</li>
-          </ul>
-          <div style={ui.sidebarFooter}>
-            Operativ når det haster: ring <strong>923 28 850</strong> eller send e-post til
-            <strong> isak@bluecrew.no</strong>. Vi kan koordinere reise og innkvartering på forespørsel.
-          </div>
-        </aside>
-      </div>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
@@ -33,11 +34,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"),
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/icons/FullLogo_Transparent.png", type: "image/png", sizes: "any" },
+      { url: "/icons/FAVICON_bluecrew.png", type: "image/png" },
+      { url: "/icons/fulllogo.jpg", type: "image/jpeg", sizes: "any" },
     ],
-    apple: "/icons/FullLogo_Transparent.png",
-    shortcut: "/icon.png",
+    apple: "/icons/fulllogo.jpg",
+    shortcut: "/icons/FAVICON_bluecrew.png",
   },
   openGraph: {
     type: "website",
@@ -48,7 +49,7 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/icons/FullLogo_Transparent.png",
+        url: "/icons/fulllogo.jpg",
         width: 1200,
         height: 630,
         alt: "Bluecrew AS - Maritim bemanning i Nord-Norge",
@@ -59,7 +60,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/icons/FullLogo_Transparent.png"],
+    images: ["/icons/fulllogo.jpg"],
   },
   robots: {
     index: true,
@@ -155,6 +156,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <CookieBanner />
         <PlausibleLoader />
+        <Analytics />
       </body>
     </html>
   );

@@ -4,10 +4,13 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { FileInput, Input, Select, Textarea } from "../components/FormControls";
-import { WORK, STCW_MODULES, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
+import { FileInput, Input, Textarea } from "../components/FormControls";
+import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
-import { candidateSchema, extractCandidateForm } from "../lib/validation";
+import { candidateSchema, extractCandidateForm, type CandidateFormValues } from "../lib/validation";
+import { VippsVerifiedBadge } from "./VippsLogin";
+
+const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
 type FieldErrors = Record<string, string>;
 
@@ -18,94 +21,18 @@ type FileErrors = {
 
 const ui = {
   wrap: {
-    display: "grid",
-    gap: 28,
-    maxWidth: 1120,
+    maxWidth: 920,
     margin: "0 auto",
-    padding: "0 clamp(18px, 6vw, 26px) 64px",
-  },
-  hero: {
-    background:
-      "radial-gradient(circle at 12% -10%, rgba(56,189,248,0.45), transparent 55%), radial-gradient(circle at 82% -12%, rgba(14,165,233,0.38), transparent 60%), linear-gradient(155deg, #051427 0%, #0a1d39 55%, #0f2648 100%)",
-    borderRadius: 30,
-    padding: "36px clamp(22px, 6vw, 44px)",
-    color: "#e2e8f0",
-    boxShadow: "0 32px 80px rgba(5, 17, 34, 0.55)",
-    position: "relative",
-    overflow: "hidden",
-  },
-  heroTitle: {
-    fontSize: "clamp(30px, 5.6vw, 40px)",
-    fontWeight: 900,
-    letterSpacing: "-0.02em",
-    margin: 0,
-  },
-  heroLead: {
-    marginTop: 14,
-    maxWidth: 700,
-    fontSize: 18,
-    lineHeight: 1.7,
-    color: "rgba(226, 232, 240, 0.86)",
-  },
-  heroBadges: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 18,
-  },
-  heroBadge: {
-    padding: "9px 16px",
-    borderRadius: 999,
-    border: "1px solid rgba(148,197,255,0.35)",
-    background: "rgba(15, 23, 42, 0.55)",
-    fontSize: 13,
-    fontWeight: 700,
-    letterSpacing: ".08em",
-    textTransform: "uppercase",
-    color: "#bae6fd",
-  },
-  heroGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: 18,
-    marginTop: 26,
-  },
-  heroCard: {
-    background: "rgba(7, 18, 34, 0.7)",
-    border: "1px solid rgba(148, 197, 255, 0.32)",
-    borderRadius: 20,
-    padding: 18,
-    display: "grid",
-    gap: 6,
-  },
-  heroCardLabel: {
-    fontSize: 12,
-    letterSpacing: ".1em",
-    textTransform: "uppercase",
-    color: "rgba(226, 232, 240, 0.65)",
-  },
-  heroCardValue: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: "#f8fafc",
-  },
-  layout: {
-    display: "grid",
-    gap: 28,
-    gridTemplateColumns: "1fr",
-  },
-  layoutWide: {
-    gridTemplateColumns: "minmax(0, 2fr) minmax(0, 1fr)",
-    alignItems: "start",
+    padding: "40px clamp(20px, 5vw, 32px) 80px",
   },
   formShell: {
     background: "#ffffff",
-    borderRadius: 28,
-    padding: "32px clamp(20px, 6vw, 38px)",
-    border: "1px solid #dbe4f3",
-    boxShadow: "0 30px 80px rgba(15, 23, 42, 0.12)",
+    borderRadius: 20,
+    padding: "40px clamp(24px, 6vw, 48px)",
+    border: "1px solid #e2e8f0",
+    boxShadow: "0 10px 40px rgba(15, 23, 42, 0.08)",
     display: "grid",
-    gap: 28,
+    gap: 32,
   },
   section: {
     display: "grid",
@@ -230,23 +157,53 @@ const ui = {
     display: "grid",
     gap: 4,
   },
+  modalBackdrop: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(15, 23, 42, 0.65)",
+    display: "grid",
+    placeItems: "center",
+    padding: "24px clamp(16px, 5vw, 36px)",
+    zIndex: 100,
+  },
+  modalPanel: {
+    background: "#fff",
+    borderRadius: 24,
+    padding: "32px clamp(18px, 5vw, 38px)",
+    boxShadow: "0 32px 80px rgba(15, 23, 42, 0.35)",
+    display: "grid",
+    gap: 18,
+    maxWidth: 420,
+    width: "100%",
+  },
+  infoBox: {
+    gridColumn: "1 / -1",
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    color: "#1d4ed8",
+    padding: 12,
+    borderRadius: 14,
+    fontWeight: 600,
+  },
 } satisfies Record<string, CSSProperties>;
+
+type VippsSession = {
+  verified: boolean;
+  name: string;
+  givenName: string;
+  familyName: string;
+  phone: string;
+  birthDate: string;
+  verifiedAt: string;
+};
+
+type StoredCandidateDraft = Partial<CandidateFormValues> & {
+  [key: string]: unknown;
+};
 
 export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
-
-  const [isWide, setIsWide] = useState<boolean>(() => {
-    return typeof window !== "undefined" ? window.innerWidth >= 960 : false;
-  });
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const onResize = () => setIsWide(window.innerWidth >= 960);
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -258,12 +215,81 @@ export default function CandidateContent() {
     }
   }, [submitted]);
 
-  const [county, setCounty] = useState("");
-  const [municipality, setMunicipality] = useState("");
-  const municipalityOptions = useMemo(
-    () => (county ? MUNICIPALITIES_BY_COUNTY[county] ?? [] : []),
-    [county]
-  );
+  const [vippsSession, setVippsSession] = useState<VippsSession | null>(null);
+  const [showVippsModal, setShowVippsModal] = useState(false);
+  const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const checkVippsSession = useCallback(async (fromCallback = false) => {
+    try {
+      const response = await fetch("/api/vipps/session");
+      const data = await response.json();
+
+      if (data.verified && data.session) {
+        setVippsSession(data.session as VippsSession);
+        setShowVippsModal(false);
+        setStatusMessage(
+          fromCallback
+            ? "Vipps-verifisering fullført. Kontroller opplysningene før innsending."
+            : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
+        );
+      } else if (fromCallback) {
+        setStatusMessage("Fant ingen aktiv Vipps-sesjon. Prøv å logge inn igjen.");
+      }
+    } catch (error) {
+      console.error("Failed to check Vipps session", error);
+      if (fromCallback) {
+        setStatusMessage("Kunne ikke bekrefte Vipps-sesjonen. Prøv igjen.");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    checkVippsSession();
+  }, [checkVippsSession]);
+
+  useEffect(() => {
+    const verified = searchParams.get("verified");
+    if (verified === "true") {
+      checkVippsSession(true);
+    }
+  }, [searchParams, checkVippsSession]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = window.sessionStorage.getItem(FORM_STORAGE_KEY);
+      if (saved) {
+        const parsed: StoredCandidateDraft = JSON.parse(saved);
+        setDraftValues(parsed);
+        setStatusMessage("Skjemautkast funnet. Fullfør Vipps-verifisering og send inn.");
+      }
+    } catch (error) {
+      console.error("Failed to restore candidate draft", error);
+    }
+  }, []);
+
+  const handleVippsLogin = useCallback(async () => {
+    try {
+      const response = await fetch("/api/vipps/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          redirectUrl: `${window.location.origin}/jobbsoker/registrer?verified=true`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Kunne ikke starte Vipps-pålogging");
+      }
+
+      const { authUrl } = await response.json();
+      window.location.href = authUrl;
+    } catch (error) {
+      console.error("Vipps init failed", error);
+      setStatusMessage("Kunne ikke starte Vipps-verifisering. Prøv igjen.");
+    }
+  }, []);
 
   const workEntries = useMemo(() => Object.entries(WORK), []);
   const [openMain, setOpenMain] = useState<Record<string, boolean>>(() => {
@@ -272,10 +298,6 @@ export default function CandidateContent() {
     return init;
   });
   const [otherText, setOtherText] = useState<Record<string, string>>({});
-
-  const [hasSTCW, setHasSTCW] = useState<"ja" | "nei" | "">("");
-  const [hasDeck, setHasDeck] = useState<"ja" | "nei" | "">("");
-  const [deckClass, setDeckClass] = useState("");
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [fileErrors, setFileErrors] = useState<FileErrors>({});
@@ -305,42 +327,89 @@ export default function CandidateContent() {
     setOpenMain((prev) => ({ ...prev, [main]: !prev[main] }));
   }, []);
 
-  const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
-    const formData = new FormData(event.currentTarget);
-    const { values } = extractCandidateForm(formData);
-    const parsed = candidateSchema.safeParse(values);
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    const nextErrors: FieldErrors = {};
-    if (!parsed.success) {
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0];
-        if (typeof key === "string" && !nextErrors[key]) {
-          nextErrors[key] = issue.message;
+      const formData = new FormData(event.currentTarget);
+      const { values } = extractCandidateForm(formData);
+      const parsed = candidateSchema.safeParse(values);
+
+      const nextErrors: FieldErrors = {};
+      if (!parsed.success) {
+        for (const issue of parsed.error.issues) {
+          const key = issue.path[0];
+          if (typeof key === "string" && !nextErrors[key]) {
+            nextErrors[key] = issue.message;
+          }
         }
       }
-    }
 
-    // Honeypot
-    if (values.honey) {
-      event.preventDefault();
+      // Honeypot
+      if (values.honey) {
+        setFieldErrors({});
+        setFormError(null);
+        return;
+      }
+
+      if (Object.keys(nextErrors).length > 0) {
+        setFieldErrors(nextErrors);
+        setFormError("Kontroller feltene markert i rødt.");
+        return;
+      }
+
+      // CRITICAL: Check Vipps verification BEFORE submitting to API
+      if (!vippsSession) {
+        // Save draft to sessionStorage (client-only, no DB write)
+        const { honey, ...restValues } = values;
+        try {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
+          }
+        } catch (error) {
+          console.warn("Kunne ikke lagre skjemautkast", error);
+        }
+
+        setDraftValues(restValues);
+        setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
+        setShowVippsModal(true);
+        setFormError(null);
+        return;
+      }
+
+      // Vipps verified—submit to API
       setFieldErrors({});
       setFormError(null);
-      return;
-    }
+      setIsSubmitting(true);
 
-    if (Object.keys(nextErrors).length > 0) {
-      event.preventDefault();
-      setFieldErrors(nextErrors);
-      setFormError("Kontroller feltene markert i rødt.");
-      setIsSubmitting(false);
-      return;
-    }
+      try {
+        const response = await fetch("/api/submit-candidate", {
+          method: "POST",
+          body: formData,
+        });
 
-    setFieldErrors({});
-    setFormError(null);
-    setIsSubmitting(true);
-    // Let the browser submit to /api/submit-candidate
-  }, []);
+        if (!response.ok) {
+          const message = await response.text();
+          throw new Error(message || "Innsending feilet");
+        }
+
+        // Clear draft after successful submit
+        try {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.removeItem(FORM_STORAGE_KEY);
+          }
+        } catch (error) {
+          console.warn("Kunne ikke fjerne skjemautkast", error);
+        }
+
+        window.location.href = "/jobbsoker/registrer?sent=worker";
+      } catch (error) {
+        setFormError(error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen.");
+        setIsSubmitting(false);
+      }
+    },
+    [vippsSession]
+  );
 
   if (submitted) {
     return (
@@ -364,62 +433,123 @@ export default function CandidateContent() {
     );
   }
 
-  const layoutStyle = isWide ? { ...ui.layout, ...ui.layoutWide } : ui.layout;
-
   return (
     <div style={ui.wrap}>
-      <section style={ui.hero}>
-        <h1 style={ui.heroTitle}>Registrer deg for maritime oppdrag</h1>
-        <p style={ui.heroLead}>
-          Vi samarbeider med rederier innen havbruk, service og offshore. Legg inn detaljene dine, så matcher vi deg med
-          oppdrag som passer kompetansen din.
-        </p>
-        <div style={ui.heroBadges}>
-          <span style={ui.heroBadge}>Personlig oppfølging</span>
-          <span style={ui.heroBadge}>Oppdrag i hele Norge</span>
-          <span style={ui.heroBadge}>Krav til STCW og helseattest</span>
-        </div>
-        <div style={ui.heroGrid}>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Aktive oppdrag</span>
-            <span style={ui.heroCardValue}>Havbruk, servicebåt, fiskeri og offshore</span>
-          </div>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Tilgjengelighet</span>
-            <span style={ui.heroCardValue}>Team på vakt 07–22 · respons innen 24–48 timer</span>
-          </div>
-          <div style={ui.heroCard}>
-            <span style={ui.heroCardLabel}>Dekning</span>
-            <span style={ui.heroCardValue}>Base i Nord-Norge – dekker hele landet</span>
-          </div>
-        </div>
-      </section>
+      {showVippsModal ? (
+        <div style={ui.modalBackdrop} role="dialog" aria-modal="true">
+          <div style={ui.modalPanel}>
+            <div style={{ display: "grid", gap: 10, textAlign: "center" }}>
+              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#0f172a" }}>
+                Bekreft identitet med Vipps
+              </h2>
+              <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "#475569" }}>
+                Vi bruker Vipps for sikker identitetsverifisering. Du returnerer til skjemaet automatisk etter innlogging.
+              </p>
+            </div>
 
-      <div style={layoutStyle}>
-        <form
-          action="/api/submit-candidate"
-          method="POST"
-          encType="multipart/form-data"
-          noValidate
-          onSubmit={handleSubmit}
-          style={ui.formShell}
-        >
+            <button
+              onClick={handleVippsLogin}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+                padding: "16px 24px",
+                fontSize: 16,
+                fontWeight: 600,
+                background: "#ff5100",
+                color: "#fff",
+                border: "none",
+                borderRadius: 10,
+                cursor: "pointer",
+              }}
+            >
+              <span>Logg inn med Vipps</span>
+            </button>
+
+            <button
+              onClick={() => setShowVippsModal(false)}
+              style={{
+                width: "100%",
+                padding: 12,
+                fontSize: 15,
+                fontWeight: 500,
+                background: "transparent",
+                color: "#64748b",
+                border: "1px solid #cbd5e1",
+                borderRadius: 10,
+                cursor: "pointer",
+              }}
+            >
+              Avbryt
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <form
+        action="/api/submit-candidate"
+        method="POST"
+        encType="multipart/form-data"
+        noValidate
+        onSubmit={handleSubmit}
+        style={ui.formShell}
+      >
           {formError ? (
             <div style={sx.formError} role="alert">
               {formError}
             </div>
           ) : null}
 
+          {vippsSession ? <VippsVerifiedBadge session={vippsSession} /> : null}
+
+          {statusMessage ? (
+            <div style={ui.infoBox} role="status">
+              {statusMessage}
+            </div>
+          ) : null}
+
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Kontaktinformasjon</h2>
-              <p style={ui.sectionLead}>Vi bruker denne informasjonen til å kontakte deg om relevante oppdrag.</p>
+              <p style={ui.sectionLead}>Oppgi navn, kontaktinformasjon og bostedsadresse.</p>
             </div>
             <div style={ui.fieldGrid}>
-              <Input label="Fullt navn" name="name" required error={fieldErrors.name} onChange={() => clearFieldError("name")} />
-              <Input label="E-post" name="email" type="email" required error={fieldErrors.email} onChange={() => clearFieldError("email")} />
-              <Input label="Telefon" name="phone" required error={fieldErrors.phone} onChange={() => clearFieldError("phone")} />
-              <Input label="Tilgjengelig fra" name="available_from" type="date" error={fieldErrors.available_from} onBlur={() => clearFieldError("available_from")} />
+              <Input label="Fullt navn" name="name" required defaultValue={draftValues?.name ?? ""} error={fieldErrors.name} onChange={() => clearFieldError("name")} />
+              <Input label="E-post" name="email" type="email" required defaultValue={draftValues?.email ?? ""} error={fieldErrors.email} onChange={() => clearFieldError("email")} />
+              <Input label="Telefon" name="phone" required defaultValue={draftValues?.phone ?? ""} error={fieldErrors.phone} onChange={() => clearFieldError("phone")} />
+            </div>
+            <div style={ui.fieldGrid}>
+              <Input 
+                label="Gateadresse" 
+                name="street_address" 
+                placeholder="Eksempel: Storgata 15"
+                required 
+                defaultValue={draftValues?.street_address ?? ""} 
+                error={fieldErrors.street_address} 
+                onChange={() => clearFieldError("street_address")} 
+              />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 12 }}>
+                <Input 
+                  label="Postnummer" 
+                  name="postal_code" 
+                  placeholder="0150"
+                  required 
+                  defaultValue={draftValues?.postal_code ?? ""} 
+                  error={fieldErrors.postal_code} 
+                  onChange={() => clearFieldError("postal_code")} 
+                />
+                <Input 
+                  label="Poststed" 
+                  name="postal_city" 
+                  placeholder="OSLO"
+                  required 
+                  defaultValue={draftValues?.postal_city ?? ""} 
+                  error={fieldErrors.postal_city} 
+                  onChange={() => clearFieldError("postal_city")} 
+                />
+              </div>
             </div>
           </div>
 
@@ -427,44 +557,17 @@ export default function CandidateContent() {
 
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
-              <h2 style={ui.sectionTitle}>Bosted og arbeidsønsker</h2>
-              <p style={ui.sectionLead}>Oppgi primær lokasjon. Vi vurderer reise og turnus etter behov.</p>
+              <h2 style={ui.sectionTitle}>Arbeidsønsker</h2>
+              <p style={ui.sectionLead}>Oppgi når du er tilgjengelig og om du er åpen for midlertidige oppdrag.</p>
             </div>
             <div style={ui.fieldGrid}>
-              <Select
-                label="Fylke"
-                name="county"
-                options={COUNTIES}
-                value={county}
-                onChange={(value) => {
-                  setCounty(value);
-                  clearFieldError("county");
-                  if (!value) {
-                    setMunicipality("");
-                  } else if (!(MUNICIPALITIES_BY_COUNTY[value] || []).includes(municipality)) {
-                    setMunicipality("");
-                  }
-                }}
-                placeholder="Velg fylke"
-                required
-                error={fieldErrors.county}
-                onBlur={() => clearFieldError("county")}
-              />
-
-              <Select
-                label="Kommune/by"
-                name="municipality"
-                options={municipalityOptions}
-                value={municipality}
-                onChange={(value) => {
-                  setMunicipality(value);
-                  clearFieldError("municipality");
-                }}
-                placeholder={county ? "Velg kommune" : "Velg fylke først"}
-                disabled={!county}
-                required={!!county}
-                error={fieldErrors.municipality}
-                onBlur={() => clearFieldError("municipality")}
+              <Input 
+                label="Tilgjengelig fra" 
+                name="available_from" 
+                type="date" 
+                defaultValue={draftValues?.available_from ?? ""} 
+                error={fieldErrors.available_from} 
+                onChange={() => clearFieldError("available_from")} 
               />
             </div>
 
@@ -541,134 +644,24 @@ export default function CandidateContent() {
 
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
-              <h2 style={ui.sectionTitle}>Kompetanse og sertifikater</h2>
-              <p style={ui.sectionLead}>Oppgi status på STCW og eventuelt dekksoffiser-sertifikat.</p>
-            </div>
-
-            <div style={ui.fieldGrid}>
-              <div>
-                <div style={{ fontWeight: 700, marginBottom: 6, color: "#0b1f3a" }}>STCW – Grunnleggende sikkerhetskurs</div>
-                <div style={sx.inlineRadios}>
-                  <label style={sx.radioLabel}>
-                    <input
-                      type="radio"
-                      name="stcw_has"
-                      value="ja"
-                      required
-                      onChange={() => {
-                        setHasSTCW("ja");
-                        clearFieldError("stcw_has");
-                      }}
-                    />
-                    Ja
-                  </label>
-                  <label style={sx.radioLabel}>
-                    <input
-                      type="radio"
-                      name="stcw_has"
-                      value="nei"
-                      onChange={() => {
-                        setHasSTCW("nei");
-                        clearFieldError("stcw_has");
-                      }}
-                    />
-                    Nei
-                  </label>
-                </div>
-                {fieldErrors.stcw_has ? <div style={sx.errText} role="alert">{fieldErrors.stcw_has}</div> : null}
-
-                {hasSTCW === "ja" ? (
-                  <div style={{ marginTop: 10 }}>
-                    <div style={{ fontSize: 13, color: "#475569", marginBottom: 6 }}>Huk av relevante moduler</div>
-                    <div style={sx.checkGrid}>
-                      {STCW_MODULES.map((m) => (
-                        <label key={m} style={sx.checkItem}>
-                          <input type="checkbox" name="stcw_mod" value={m} onChange={() => clearFieldError("stcw_mod")} />
-                          <span>{m}</span>
-                        </label>
-                      ))}
-                    </div>
-                    {fieldErrors.stcw_mod ? <div style={sx.errText} role="alert">{fieldErrors.stcw_mod}</div> : null}
-                  </div>
-                ) : null}
-              </div>
-
-              <div>
-                <div style={{ fontWeight: 700, marginBottom: 6, color: "#0b1f3a" }}>Dekksoffiser-sertifikat</div>
-                <div style={sx.inlineRadios}>
-                  <label style={sx.radioLabel}>
-                    <input
-                      type="radio"
-                      name="deck_has"
-                      value="ja"
-                      required
-                      onChange={() => {
-                        setHasDeck("ja");
-                        clearFieldError("deck_has");
-                      }}
-                    />
-                    Ja
-                  </label>
-                  <label style={sx.radioLabel}>
-                    <input
-                      type="radio"
-                      name="deck_has"
-                      value="nei"
-                      onChange={() => {
-                        setHasDeck("nei");
-                        setDeckClass("");
-                        clearFieldError("deck_has");
-                      }}
-                    />
-                    Nei
-                  </label>
-                </div>
-                {fieldErrors.deck_has ? <div style={sx.errText} role="alert">{fieldErrors.deck_has}</div> : null}
-
-                {hasDeck === "ja" ? (
-                  <div style={{ marginTop: 10 }}>
-                    <Select
-                      label="Klasse"
-                      name="deck_class"
-                      options={["1", "2", "3", "4", "5", "6"]}
-                      value={deckClass}
-                      onChange={(value) => {
-                        setDeckClass(value);
-                        clearFieldError("deck_class");
-                      }}
-                      placeholder="Velg klasse (1–6)"
-                      error={fieldErrors.deck_class}
-                      onBlur={() => clearFieldError("deck_class")}
-                    />
-                    <small style={{ color: "#475569" }}>1 = høyeste, 6 = laveste (D6).</small>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-
-          <div style={ui.divider} />
-
-          <div style={ui.section}>
-            <div style={ui.sectionHeader}>
-              <h2 style={ui.sectionTitle}>Kompetansebeskrivelse</h2>
-              <p style={ui.sectionLead}>Fortell kort om erfaringene dine, samt relevante sertifikater og språk.</p>
+              <h2 style={ui.sectionTitle}>Kompetanse og erfaring</h2>
+              <p style={ui.sectionLead}>Beskriv relevant erfaring, sertifikater og spesialkompetanse.</p>
             </div>
             <Textarea
-              label="Kompetanse og erfaring (kort)"
+              label="Kompetanse og erfaring"
               name="skills"
-              rows={5}
+              rows={6}
               full
-              description="F.eks. fartøytyper, sertifikater, kurs, språk, turnuser."
+              description="Eksempel: 5 års erfaring som matros på brønnbåt, STCW grunnkurs, ROV-sertifikat... Oppgi maritime sertifikater, utdanning og relevant arbeidserfaring."
               error={fieldErrors.skills}
               onBlur={() => clearFieldError("skills")}
             />
             <Textarea
-              label="Er det noe annet vi bør vite? (valgfritt)"
+              label="Andre kommentarer eller preferanser (valgfritt)"
               name="other_comp"
-              rows={3}
+              rows={4}
               full
-              description="Skriv gjerne om preferanser, tilgjengelighet eller andre notater."
+              description="Eksempel: Foretrekker oppdrag i Nord-Norge, kan starte med kort varsel... Skriv gjerne om preferanser, tilgjengelighet eller andre notater."
               error={fieldErrors.other_comp}
               onBlur={() => clearFieldError("other_comp")}
             />
@@ -683,8 +676,28 @@ export default function CandidateContent() {
             </div>
 
             <div style={ui.filesGrid}>
-              <FileInput label="CV (PDF, maks 10 MB)" name="cv" accept=".pdf" required error={fileErrors.cv} onChange={() => clearFileError("cv")} />
-              <FileInput label="Sertifikater (PDF/ZIP/DOC/DOCX)" name="certs" accept=".pdf,.zip,.doc,.docx" error={fileErrors.certs} onChange={() => clearFileError("certs")} />
+              <FileInput 
+                label="CV (PDF, maks 10 MB)" 
+                name="cv" 
+                accept=".pdf" 
+                required 
+                error={fileErrors.cv} 
+                onChange={() => clearFileError("cv")} 
+              />
+              <FileInput 
+                label="Søknadsbrev (PDF, valgfritt)" 
+                name="cover_letter" 
+                accept=".pdf" 
+                error={fileErrors.certs} 
+                onChange={() => clearFileError("certs")} 
+              />
+              <FileInput 
+                label="Sertifikater (PDF/ZIP, valgfritt)" 
+                name="certs" 
+                accept=".pdf,.zip" 
+                error={fileErrors.certs} 
+                onChange={() => clearFileError("certs")} 
+              />
             </div>
 
             <div style={ui.consentBox}>
@@ -754,20 +767,6 @@ export default function CandidateContent() {
             </div>
           </div>
         </form>
-
-        <aside style={ui.sidebar}>
-          <h3 style={ui.sidebarTitle}>Slik fungerer prosessen</h3>
-          <ul style={ui.sidebarList}>
-            <li>Vi verifiserer CV, sertifikater og referanser før du settes aktiv.</li>
-            <li>Du får oppdragstilbud som matcher kompetanse, turnus og tilgjengelighet.</li>
-            <li>Ved akutte behov koordinerer vi reise og innkvartering for deg.</li>
-          </ul>
-          <div style={ui.sidebarFooter}>
-            Hold CV og medisinske attester oppdatert. Spørsmål? Kontakt <strong>isak@bluecrew.no</strong> eller ring
-            <strong> 923 28 850</strong>.
-          </div>
-        </aside>
-      </div>
     </div>
   );
 }

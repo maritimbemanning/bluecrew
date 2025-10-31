@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { candidateSchema, extractCandidateForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import {
@@ -13,6 +13,10 @@ import {
   extractExtension,
 } from "../../lib/server/candidate-files";
 import { captureServerException } from "../../lib/server/observability";
+import { decryptSession } from "../../lib/vipps";
+import { createClient } from "@supabase/supabase-js";
+
+type VerificationDetails = Record<string, string | number | boolean | null | undefined>;
 
 export const runtime = "nodejs";
 
@@ -20,8 +24,43 @@ export async function GET() {
   return new Response("submit-candidate API er oppe. Bruk POST fra skjemaet.", { status: 200 });
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
+    // ============================================================================
+    // 1. CHECK VIPPS SESSION (OPTIONAL - ACTIVATE WHEN KEYS READY)
+    // ============================================================================
+    const encryptedSession = req.cookies.get('vipps_session')?.value;
+    let vippsSession = null;
+    
+    // TODO: Enable this when Vipps keys are ready
+    /*
+    if (!encryptedSession) {
+      return new Response("FEIL: BankID/Vipps-verifisering kreves. Vennligst logg inn med Vipps først.", { 
+        status: 401 
+      });
+    }
+
+    vippsSession = decryptSession(encryptedSession);
+    
+    if (!vippsSession) {
+      return new Response("FEIL: Ugyldig eller utgått Vipps-sesjon. Vennligst logg inn på nytt.", { 
+        status: 401 
+      });
+    }
+
+    console.log(`✅ Vipps-verifisert bruker: ${vippsSession.name} (${vippsSession.phone})`);
+    */
+    
+    if (encryptedSession) {
+      vippsSession = decryptSession(encryptedSession);
+      if (vippsSession) {
+        console.log("Vipps-verifisert sesjon oppdaget for innsending.");
+      }
+    }
+
+    // ============================================================================
+    // 2. RATE LIMITING
+    // ============================================================================
     const rateKey = getClientKey(req, "candidate");
     const rate = await enforceRateLimit(rateKey);
     if (!rate.allowed) {
@@ -77,14 +116,6 @@ export async function POST(req: Request) {
       return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
     }
 
-    const attachments: { filename: string; content: string; contentType?: string }[] = [
-      {
-        filename: cvFile.name || "CV.pdf",
-        content: cvBuffer.toString("base64"),
-        contentType: cvFile.type || "application/pdf",
-      },
-    ];
-
     const certsFile = files.certs;
     if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
       if (certsFile.size > 10 * 1024 * 1024) {
@@ -110,25 +141,13 @@ export async function POST(req: Request) {
         console.error("❌ Klarte ikke å lagre sertifikater i Supabase", error);
         return new Response("FEIL: Kunne ikke lagre sertifikater", { status: 500 });
       }
-      attachments.push({
-        filename: certsFile.name || `sertifikater${ext}`,
-        content: certificateBuffer.toString("base64"),
-        contentType: certsFile.type || "application/octet-stream",
-      });
     }
 
-    const stcwSummary =
-      data.stcw_has === "ja"
-        ? `Ja${data.stcw_mod?.length ? ` (${data.stcw_mod.join(", ")})` : ""}`
-        : "Nei";
-    const deckSummary =
-      data.deck_has === "ja" ? `Ja${data.deck_class ? ` (klasse ${data.deck_class})` : ""}` : "Nei";
+    const location = data.street_address
+      ? `${data.street_address}, ${data.postal_code} ${data.postal_city}`
+      : "-";
 
-    const location = data.municipality
-      ? data.county
-        ? `${data.municipality} (${data.county})`
-        : data.municipality
-      : data.county || "-";
+    const stcwConfirmation = data.stcw_confirm ? "Ja" : "Nei";
 
     const lines: string[] = [
       "NY JOBBSØKER",
@@ -139,12 +158,10 @@ export async function POST(req: Request) {
       `Tilgjengelig fra: ${data.available_from || "-"}`,
       "",
       "Ønsket arbeid:",
-      ...(data.work_main?.length ? data.work_main.map((w) => `- ${w}`) : ["- (ikke valgt)"]),
+  ...(data.work_main ? [`- ${data.work_main}`] : ["- (ikke valgt)"]),
       "",
       `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
-      "",
-      `STCW: ${stcwSummary}`,
-      `Dekksoffiser: ${deckSummary}`,
+      `STCW/helseattest bekreftet: ${stcwConfirmation}`,
       "",
       "Kompetanse og erfaring:",
       data.skills || "-",
@@ -153,35 +170,65 @@ export async function POST(req: Request) {
       data.other_comp || "-",
     ];
 
+    lines.push(
+      "",
+      "Dokumentlagring:",
+      `- CV: ${cvPath}`,
+      `- Sertifikater: ${certificatePath ?? "-"}`,
+    );
+
     const html = buildHtmlSummary({
       ...data,
-      stcwSummary,
-      deckSummary,
       location,
+      stcwConfirmation,
+      cvStorageKey: cvPath,
+      certificateStorageKey: certificatePath,
     });
+
+    const verificationStatus = "pending_review";
+    const flaggedReason: string | null = null;
+
+    // ============================================================================
+    // 5. INSERT CANDIDATE WITH VERIFICATION DATA
+    // ============================================================================
+    const candidateId = crypto.randomUUID();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
 
     await Promise.all([
       insertSupabaseRow({
         table: "candidates",
         payload: {
+          id: candidateId,
           name: data.name,
           email: data.email,
           phone: data.phone,
-          county: data.county,
-          municipality: data.municipality,
+          street_address: data.street_address,
+          postal_code: data.postal_code,
+          postal_city: data.postal_city,
           available_from: data.available_from || null,
           wants_temporary: data.wants_temporary,
-          stcw_has: data.stcw_has,
-          stcw_mod: data.stcw_mod ?? [],
-          deck_has: data.deck_has,
-          deck_class: data.deck_class || null,
-          work_main: data.work_main ?? [],
+          stcw_has: null,
+          stcw_mod: [],
+          deck_has: null,
+          deck_class: null,
+          work_main: data.work_main ? [data.work_main] : [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
           cv_key: cvPath,
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
+          gdpr_consent: data.gdpr,
+          stcw_confirmed: data.stcw_confirm,
+          // NEW: Verification fields (optional when Vipps disabled)
+          verification_status: verificationStatus,
+          bankid_verified_at: vippsSession?.verifiedAt || null,
+          national_id_hash: vippsSession?.nationalIdHash || null,
+          ocr_confidence_score: 0,
+          flagged_reason: flaggedReason,
         },
       }).catch((error) => {
         captureServerException(error, { scope: "candidate-insert", table: "candidates" });
@@ -192,7 +239,6 @@ export async function POST(req: Request) {
         text: lines.join("\n"),
         html,
         replyTo: data.email,
-        attachments,
       }).catch((error) => {
         captureServerException(error, { scope: "candidate-email" });
         console.error("❌ Sendefeil (candidate):", error);
@@ -205,6 +251,46 @@ export async function POST(req: Request) {
         console.error("⚠️ Sendte ikke kvittering (candidate):", error);
       }),
     ]);
+
+    // ============================================================================
+    // 6. LOG VERIFICATION ACTIONS
+    // ============================================================================
+    const verificationLogs: Array<{
+      candidate_id: string;
+      action: string;
+      performed_by: string;
+      result: string;
+      confidence_score?: number;
+  details?: VerificationDetails;
+    }> = [];
+
+    // Only log BankID verification if Vipps session exists
+    if (vippsSession) {
+      verificationLogs.push({
+        candidate_id: candidateId,
+        action: "bankid_verified",
+        performed_by: "system",
+        result: "pass",
+        confidence_score: 100,
+        details: {
+          vipps_user_id: vippsSession.vippsUserId,
+          phone: vippsSession.phone,
+          verified_at: vippsSession.verifiedAt,
+        },
+      });
+    }
+
+    // Insert logs (don't block response if this fails)
+    if (verificationLogs.length > 0) {
+      supabase.from("verification_logs").insert(verificationLogs).then(({ error }) => {
+        if (error) {
+          console.error("⚠️ Failed to log verification:", error);
+        }
+      });
+    }
+
+    console.log(`✅ Candidate registered (${candidateId})`);
+    console.log(`   Verification status: ${verificationStatus}`);
 
     const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
     if (acceptsJson) {
@@ -229,18 +315,21 @@ function buildHtmlSummary(data: {
   municipality?: string | null;
   available_from?: string | null;
   wants_temporary?: string | null;
-  stcw_has?: string | null;
-  stcw_mod?: string[] | null;
-  deck_has?: string | null;
-  deck_class?: string | null;
-  work_main?: string[] | null;
+  work_main?: string | string[] | null;
   skills?: string | null;
   other_comp?: string | null;
-  stcwSummary: string;
-  deckSummary: string;
   location: string;
+  stcwConfirmation: string;
+  cvStorageKey: string;
+  certificateStorageKey: string | null;
 }) {
-  const workList = (data.work_main ?? [])
+  const workEntries = Array.isArray(data.work_main)
+    ? data.work_main
+    : data.work_main
+    ? [data.work_main]
+    : [];
+
+  const workList = workEntries
     .map((entry) => {
       const [main, sub] = entry.split(":");
       const subLabel = sub ? ` – ${esc(sub)}` : "";
@@ -258,12 +347,11 @@ function buildHtmlSummary(data: {
         <tr><td style=\"padding:4px 8px\"><b>Bosted</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>STCW</b></td><td style=\"padding:4px 8px\">${esc(data.stcwSummary)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Dekksoffiser</b></td><td style=\"padding:4px 8px\">${esc(data.deckSummary)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>STCW/helseattest</b></td><td style=\"padding:4px 8px\">${esc(data.stcwConfirmation)}</td></tr>
       </table>
       <div style="margin-top:16px">
         <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>
-        ${workList ? `<ul style=\"margin:0 0 12px;padding-left:18px\">${workList}</ul>` : "<p>Ingen valg</p>"}
+  ${workList ? `<ul style=\"margin:0 0 12px;padding-left:18px\">${workList}</ul>` : "<p>Ingen valg</p>"}
       </div>
       ${
         data.skills
@@ -279,6 +367,13 @@ function buildHtmlSummary(data: {
             )}</p></div>`
           : ""
       }
+        <div style="margin-top:12px">
+          <h3 style="margin:0 0 6px;font-size:16px">Dokumentlagring</h3>
+          <ul style="margin:0;padding-left:18px">
+            <li>CV: ${esc(data.cvStorageKey)}</li>
+            <li>Sertifikater: ${esc(data.certificateStorageKey || "-")}</li>
+          </ul>
+        </div>
     </div>
   `;
 }

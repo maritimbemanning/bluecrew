@@ -63,6 +63,7 @@ export function Textarea({
   error,
   onChange,
   onBlur,
+  defaultValue,
 }: {
   label: string;
   name: string;
@@ -72,6 +73,7 @@ export function Textarea({
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+  defaultValue?: string;
 }) {
   const id = `${name}-id`;
   return (
@@ -89,6 +91,7 @@ export function Textarea({
         style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}
         onChange={onChange}
         onBlur={onBlur}
+        defaultValue={defaultValue}
       />
       {error ? (
         <div id={`${id}-err`} style={sx.errText} role="alert">

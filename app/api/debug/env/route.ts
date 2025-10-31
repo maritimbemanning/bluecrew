@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 
@@ -12,7 +12,15 @@ type EnvCheck = {
   SENTRY_DSN: boolean;
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (process.env.NODE_ENV === "production") {
+    const expectedToken = process.env.DEBUG_ENV_TOKEN;
+    const providedToken = req.headers.get("x-debug-token");
+    if (!expectedToken || providedToken !== expectedToken) {
+      return NextResponse.json({ ok: false }, { status: 404 });
+    }
+  }
+
   const checks: EnvCheck = {
     NEXT_PUBLIC_SUPABASE_URL: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
