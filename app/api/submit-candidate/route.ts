@@ -117,25 +117,16 @@ export async function POST(req: Request) {
       });
     }
 
-    const stcwSummary =
-      data.stcw_has === "ja"
-        ? `Ja${data.stcw_mod?.length ? ` (${data.stcw_mod.join(", ")})` : ""}`
-        : "Nei";
-    const deckSummary =
-      data.deck_has === "ja" ? `Ja${data.deck_class ? ` (klasse ${data.deck_class})` : ""}` : "Nei";
-
-    const location = data.municipality
-      ? data.county
-        ? `${data.municipality} (${data.county})`
-        : data.municipality
-      : data.county || "-";
+    const location = data.postal_city
+      ? `${data.postal_city}${data.postal_code ? ` (${data.postal_code})` : ""}`
+      : data.street_address || "-";
 
     const lines: string[] = [
       "NY JOBBSØKER",
       `Navn: ${data.name}`,
       `E-post: ${data.email}`,
       `Telefon: ${data.phone}`,
-      `Bosted: ${location}`,
+      `Adresse: ${location}`,
       `Tilgjengelig fra: ${data.available_from || "-"}`,
       "",
       "Ønsket arbeid:",
@@ -143,8 +134,7 @@ export async function POST(req: Request) {
       "",
       `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
       "",
-      `STCW: ${stcwSummary}`,
-      `Dekksoffiser: ${deckSummary}`,
+      `STCW bekreftet: ${data.stcw_confirm ? "Ja" : "Nei"}`,
       "",
       "Kompetanse og erfaring:",
       data.skills || "-",
@@ -155,8 +145,6 @@ export async function POST(req: Request) {
 
     const html = buildHtmlSummary({
       ...data,
-      stcwSummary,
-      deckSummary,
       location,
     });
 
@@ -167,14 +155,12 @@ export async function POST(req: Request) {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          county: data.county,
-          municipality: data.municipality,
+          street_address: data.street_address || null,
+          postal_code: data.postal_code || null,
+          postal_city: data.postal_city || null,
           available_from: data.available_from || null,
           wants_temporary: data.wants_temporary,
-          stcw_has: data.stcw_has,
-          stcw_mod: data.stcw_mod ?? [],
-          deck_has: data.deck_has,
-          deck_class: data.deck_class || null,
+          stcw_confirm: data.stcw_confirm,
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
@@ -225,19 +211,15 @@ function buildHtmlSummary(data: {
   name?: string;
   email?: string;
   phone?: string;
-  county?: string | null;
-  municipality?: string | null;
+  street_address?: string | null;
+  postal_code?: string | null;
+  postal_city?: string | null;
   available_from?: string | null;
   wants_temporary?: string | null;
-  stcw_has?: string | null;
-  stcw_mod?: string[] | null;
-  deck_has?: string | null;
-  deck_class?: string | null;
+  stcw_confirm?: boolean;
   work_main?: string[] | null;
   skills?: string | null;
   other_comp?: string | null;
-  stcwSummary: string;
-  deckSummary: string;
   location: string;
 }) {
   const workList = (data.work_main ?? [])
@@ -255,11 +237,10 @@ function buildHtmlSummary(data: {
         <tr><td style=\"padding:4px 8px\"><b>Navn</b></td><td style=\"padding:4px 8px\">${esc(data.name || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.email || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.phone || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Bosted</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Adresse</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>STCW</b></td><td style=\"padding:4px 8px\">${esc(data.stcwSummary)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Dekksoffiser</b></td><td style=\"padding:4px 8px\">${esc(data.deckSummary)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>STCW bekreftet</b></td><td style=\"padding:4px 8px\">${data.stcw_confirm ? "Ja" : "Nei"}</td></tr>
       </table>
       <div style="margin-top:16px">
         <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>
