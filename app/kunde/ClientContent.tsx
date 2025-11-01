@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input, Select, Textarea } from "../components/FormControls";
-import { WORK } from "../lib/constants";
+import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
 
@@ -126,6 +126,7 @@ export default function ClientContent() {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orgLookupLoading, setOrgLookupLoading] = useState(false);
+  const [selectedCounty, setSelectedCounty] = useState<string>("");
 
   // Brønnøysund API lookup - call directly from client
   const lookupOrganization = async (orgnr: string, isWorkLocation: boolean = false) => {
@@ -361,6 +362,32 @@ export default function ClientContent() {
                   onBlur={() => clearFieldError("c_postal_city")}
                 />
               </div>
+            </div>
+            
+            <div style={ui.fieldGrid}>
+              <Select
+                label="Fylke"
+                name="c_county"
+                options={COUNTIES}
+                placeholder="Velg fylke"
+                required
+                error={fieldErrors.c_county}
+                onChange={(value) => {
+                  clearFieldError("c_county");
+                  setSelectedCounty(value);
+                }}
+                onBlur={() => clearFieldError("c_county")}
+              />
+              <Select
+                label="Kommune"
+                name="c_municipality"
+                options={selectedCounty ? MUNICIPALITIES_BY_COUNTY[selectedCounty] || [] : []}
+                placeholder={selectedCounty ? "Velg kommune" : "Velg fylke først"}
+                disabled={!selectedCounty}
+                error={fieldErrors.c_municipality}
+                onChange={() => clearFieldError("c_municipality")}
+                onBlur={() => clearFieldError("c_municipality")}
+              />
             </div>
           </div>
 
