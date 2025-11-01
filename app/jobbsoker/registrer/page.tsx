@@ -3,6 +3,8 @@ import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 import { VippsLoginPage } from "../VippsLogin";
 
+export const dynamic = "force-dynamic"; // Disable all caching
+
 export default function Page() {
   return (
     <SiteLayout active="jobbsoker">
