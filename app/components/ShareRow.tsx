@@ -42,7 +42,7 @@ export default function ShareRow({ url, text }: Props) {
           target="_blank"
           rel="noreferrer"
           onClick={() => onClick("Facebook")}
-          style={sx.btnSecondaryVariant}
+          style={sx.btnOutline}
           aria-label="Del på Facebook"
         >
           Del på Facebook

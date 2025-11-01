@@ -81,7 +81,7 @@ export function InterestSection() {
               <option>Maskinist</option>
               <option>Matros</option>
               <option>Dekksarbeider</option>
-              <option>Lærling</option>
+              <option>Akvatekniker m/fagbrev</option>
               <option>Annet maritimt</option>
             </select>
           </label>
