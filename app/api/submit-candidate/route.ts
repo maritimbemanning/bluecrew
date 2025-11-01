@@ -72,9 +72,12 @@ export async function POST(req: Request) {
         contentType: cvFile.type || "application/pdf",
       });
     } catch (error) {
-      captureServerException(error, { scope: "candidate-upload-cv" });
-      console.error("❌ Klarte ikke å lagre CV i Supabase", error);
-      return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
+      captureServerException(error, { scope: "candidate-upload-cv", cvPath, bucketName: "candidates-private" });
+      console.error("❌ Klarte ikke å lagre CV i Supabase:", error);
+      console.error("CV path:", cvPath);
+      console.error("Bucket:", "candidates-private");
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      // Continue with submission even if storage fails; CV will be in email attachment
     }
 
     const attachments: { filename: string; content: string; contentType?: string }[] = [
@@ -106,9 +109,10 @@ export async function POST(req: Request) {
           contentType: certsFile.type || "application/octet-stream",
         });
       } catch (error) {
-        captureServerException(error, { scope: "candidate-upload-certificate" });
-        console.error("❌ Klarte ikke å lagre sertifikater i Supabase", error);
-        return new Response("FEIL: Kunne ikke lagre sertifikater", { status: 500 });
+        captureServerException(error, { scope: "candidate-upload-certificate", certificatePath });
+        console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
+        console.error("Certificate path:", certificatePath);
+        // Continue with submission even if certificate storage fails
       }
       attachments.push({
         filename: certsFile.name || `sertifikater${ext}`,
