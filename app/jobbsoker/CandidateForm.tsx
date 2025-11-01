@@ -366,25 +366,26 @@ export default function CandidateContent() {
         return;
       }
 
-      // TEMPORARY: Vipps disabled until API is configured
-      // TODO: Re-enable Vipps verification when /api/vipps/session is implemented
-      // if (!vippsSession) {
-      //   const { honey, ...restValues } = values;
-      //   try {
-      //     if (typeof window !== "undefined") {
-      //       window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
-      //     }
-      //   } catch (error) {
-      //     console.warn("Kunne ikke lagre skjemautkast", error);
-      //   }
-      //   setDraftValues(restValues);
-      //   setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
-      //   setShowVippsModal(true);
-      //   setFormError(null);
-      //   return;
-      // }
+      // CRITICAL: Check Vipps verification BEFORE submitting to API
+      if (!vippsSession) {
+        // Save draft to sessionStorage (client-only, no DB write)
+        const { honey, ...restValues } = values;
+        try {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
+          }
+        } catch (error) {
+          console.warn("Kunne ikke lagre skjemautkast", error);
+        }
 
-      // Submit to API
+        setDraftValues(restValues);
+        setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
+        setShowVippsModal(true);
+        setFormError(null);
+        return;
+      }
+
+      // Vipps verified—submit to API
       setFieldErrors({});
       setFormError(null);
       setIsSubmitting(true);
