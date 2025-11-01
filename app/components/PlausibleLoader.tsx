@@ -1,26 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Script from "next/script";
-import { getConsent } from "../lib/consent";
 
 export default function PlausibleLoader() {
-  const [enabled, setEnabled] = useState(false);
   const domain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
-  useEffect(() => {
-    const c = getConsent();
-    setEnabled(!!c?.analytics);
-
-    const onChange = () => {
-      const cc = getConsent();
-      setEnabled(!!cc?.analytics);
-    };
-    window.addEventListener("bc:consent", onChange);
-    return () => window.removeEventListener("bc:consent", onChange);
-  }, []);
-
-  if (!domain || !enabled) return null;
+  // Plausible is privacy-friendly and doesn't require consent in EU
+  // It doesn't use cookies or track personal data
+  if (!domain) return null;
 
   return (
     <Script

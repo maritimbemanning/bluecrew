@@ -31,3 +31,4 @@ logs
 # Optional caches
 .cache/
 coverage/
+.vercel
