@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import InterestSection from "@/app/components/home/InterestSection";
 import ShareRow from "@/app/components/ShareRow";
+import SiteLayout from "@/app/components/SiteLayout";
 
 export const metadata: Metadata = {
   title: "Meld interesse – Bluecrew",
@@ -21,9 +22,9 @@ export const metadata: Metadata = {
 export default function MeldInteressePage() {
   // Bevisst minimalistisk landingsside som gjenbruker InterestSection (samme skjema som på forsiden)
   return (
-    <main>
+    <SiteLayout>
       <InterestSection />
       <ShareRow />
-    </main>
+    </SiteLayout>
   );
 }
