@@ -463,8 +463,7 @@ export default function ClientContent() {
               name="desc"
               rows={5}
               full
-              required
-              description="Hvilke stillinger, kompetansekrav, turnus, sertifikater, arbeidstid, osv.? (minst 20 tegn)"
+              description="Valgfritt: Hvilke stillinger, kompetansekrav, turnus, sertifikater, arbeidstid, osv.?"
               error={fieldErrors.desc}
               onBlur={() => clearFieldError("desc")}
             />
