@@ -99,7 +99,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       availableLanguage: ["Norwegian", "English"],
     },
     sameAs: [
-      // Legg til LinkedIn, Facebook etc når dere får dem
+      "https://www.linkedin.com/company/bluecrewas",
+      "https://www.facebook.com/profile.php?id=61582845493676",
+      "https://www.instagram.com/bluecrew.no/",
     ],
   };
 

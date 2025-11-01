@@ -575,12 +575,12 @@ export const CONTACT_POINTS = [
 export const SOCIAL_LINKS = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/company/bluecrew-as/",
+    href: "https://www.linkedin.com/company/bluecrewas",
     description: "Følg oss for innsikt fra prosjektene våre",
   },
   {
     label: "Facebook",
-    href: "https://www.facebook.com/bluecrewAS",
+    href: "https://www.facebook.com/profile.php?id=61582845493676",
     description: "Følg oss på Facebook",
   },
   {

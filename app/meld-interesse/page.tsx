@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import InterestSection from "@/app/components/home/InterestSection";
+import ShareRow from "@/app/components/ShareRow";
 
 export const metadata: Metadata = {
   title: "Meld interesse – Bluecrew",
@@ -22,6 +23,7 @@ export default function MeldInteressePage() {
   return (
     <main>
       <InterestSection />
+      <ShareRow />
     </main>
   );
 }
