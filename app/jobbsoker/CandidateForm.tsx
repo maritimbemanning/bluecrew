@@ -223,6 +223,11 @@ export default function CandidateContent() {
   const checkVippsSession = useCallback(async (fromCallback = false) => {
     try {
       const response = await fetch("/api/vipps/session");
+      if (!response.ok) {
+        // Vipps not configured yet - skip for now
+        console.log("Vipps API not configured, skipping verification");
+        return;
+      }
       const data = await response.json();
 
       if (data.verified && data.session) {
@@ -361,26 +366,25 @@ export default function CandidateContent() {
         return;
       }
 
-      // CRITICAL: Check Vipps verification BEFORE submitting to API
-      if (!vippsSession) {
-        // Save draft to sessionStorage (client-only, no DB write)
-        const { honey, ...restValues } = values;
-        try {
-          if (typeof window !== "undefined") {
-            window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
-          }
-        } catch (error) {
-          console.warn("Kunne ikke lagre skjemautkast", error);
-        }
+      // TEMPORARY: Vipps disabled until API is configured
+      // TODO: Re-enable Vipps verification when /api/vipps/session is implemented
+      // if (!vippsSession) {
+      //   const { honey, ...restValues } = values;
+      //   try {
+      //     if (typeof window !== "undefined") {
+      //       window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
+      //     }
+      //   } catch (error) {
+      //     console.warn("Kunne ikke lagre skjemautkast", error);
+      //   }
+      //   setDraftValues(restValues);
+      //   setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
+      //   setShowVippsModal(true);
+      //   setFormError(null);
+      //   return;
+      // }
 
-        setDraftValues(restValues);
-        setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
-        setShowVippsModal(true);
-        setFormError(null);
-        return;
-      }
-
-      // Vipps verified—submit to API
+      // Submit to API
       setFieldErrors({});
       setFormError(null);
       setIsSubmitting(true);
