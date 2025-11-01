@@ -337,6 +337,7 @@ export default function CandidateContent() {
 
       const nextErrors: FieldErrors = {};
       if (!parsed.success) {
+        console.log("Validation errors:", parsed.error.issues);
         for (const issue of parsed.error.issues) {
           const key = issue.path[0];
           if (typeof key === "string" && !nextErrors[key]) {
@@ -353,8 +354,10 @@ export default function CandidateContent() {
       }
 
       if (Object.keys(nextErrors).length > 0) {
+        console.log("Form errors:", nextErrors);
         setFieldErrors(nextErrors);
         setFormError("Kontroller feltene markert i rødt.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
 

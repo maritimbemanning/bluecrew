@@ -185,6 +185,7 @@ export default function ClientContent() {
 
     const nextErrors: FieldErrors = {};
     if (!parsed.success) {
+      console.log("Validation errors:", parsed.error.issues);
       for (const issue of parsed.error.issues) {
         const key = issue.path[0];
         if (typeof key === "string" && !nextErrors[key]) {
@@ -203,9 +204,11 @@ export default function ClientContent() {
 
     if (Object.keys(nextErrors).length > 0) {
       event.preventDefault();
+      console.log("Form errors:", nextErrors);
       setFieldErrors(nextErrors);
       setFormError("Kontroller feltene markert i rødt.");
       setIsSubmitting(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -460,7 +463,8 @@ export default function ClientContent() {
               name="desc"
               rows={5}
               full
-              description="Hvilke stillinger, kompetansekrav, turnus, sertifikater, arbeidstid, osv.?"
+              required
+              description="Hvilke stillinger, kompetansekrav, turnus, sertifikater, arbeidstid, osv.? (minst 20 tegn)"
               error={fieldErrors.desc}
               onBlur={() => clearFieldError("desc")}
             />

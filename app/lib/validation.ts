@@ -79,7 +79,7 @@ export type ClientFormValues = {
   num_people?: string;
   start_date?: string;
   urgency?: string;
-  desc?: string;
+  desc: string;
   gdpr_client: boolean;
   honey: string;
 };
@@ -97,17 +97,13 @@ export const clientSchema = z
     num_people: z.string().trim().optional(),
     start_date: z.string().trim().optional(),
     urgency: z.string().trim().optional(),
-    desc: z.string().trim().optional(),
+    desc: z.string().trim().min(20, "Beskriv kort behovet (minst 20 tegn)"),
   gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
     if (values.c_county && !values.c_municipality) {
       ctx.addIssue("Velg kommune", ["c_municipality"]);
-    }
-
-    if (!values.desc || values.desc.length < 10) {
-      ctx.addIssue("Beskriv kort behovet (minst 10 tegn)", ["desc"]);
     }
   });
 
@@ -184,7 +180,7 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     num_people: getString("num_people") || undefined,
     start_date: getString("start_date") || undefined,
     urgency: getString("urgency") || undefined,
-    desc: getString("desc") || undefined,
+    desc: getString("desc"),
     gdpr_client: fd.get("gdpr_client") === "on",
     honey: getString("honey"),
   };
