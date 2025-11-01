@@ -530,10 +530,9 @@ export default function CandidateContent() {
             </div>
             <div style={ui.fieldGrid}>
               <Input 
-                label="Gateadresse" 
+                label="Gateadresse (valgfritt)" 
                 name="street_address" 
                 placeholder="Eksempel: Storgata 15"
-                required 
                 defaultValue={(draftValues?.street_address as string) ?? ""} 
                 error={fieldErrors.street_address} 
                 onChange={() => clearFieldError("street_address")} 
@@ -543,7 +542,6 @@ export default function CandidateContent() {
                   label="Postnummer" 
                   name="postal_code" 
                   placeholder="0150"
-                  required 
                   defaultValue={(draftValues?.postal_code as string) ?? ""} 
                   error={fieldErrors.postal_code} 
                   onChange={() => clearFieldError("postal_code")} 
@@ -552,7 +550,6 @@ export default function CandidateContent() {
                   label="Poststed" 
                   name="postal_city" 
                   placeholder="OSLO"
-                  required 
                   defaultValue={(draftValues?.postal_city as string) ?? ""} 
                   error={fieldErrors.postal_city} 
                   onChange={() => clearFieldError("postal_city")} 
@@ -669,6 +666,32 @@ export default function CandidateContent() {
               error={fieldErrors.other_comp}
               onBlur={() => clearFieldError("other_comp")}
             />
+          </div>
+
+          <div style={ui.divider} />
+
+          <div style={ui.section}>
+            <div style={ui.sectionHeader}>
+              <h2 style={ui.sectionTitle}>STCW og sikkerhetsopplæring</h2>
+              <p style={ui.sectionLead}>STCW grunnkurs er påkrevd for arbeid til sjøs.</p>
+            </div>
+            
+            <div>
+              <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>Har du STCW grunnleggende sikkerhetskurs?</div>
+              <div style={sx.inlineRadios}>
+                <label style={sx.radioLabel}>
+                  <input type="radio" name="stcw_has" value="ja" onChange={() => clearFieldError("stcw_has")} required />
+                  Ja
+                </label>
+                <label style={sx.radioLabel}>
+                  <input type="radio" name="stcw_has" value="nei" onChange={() => clearFieldError("stcw_has")} />
+                  Nei
+                </label>
+              </div>
+              {fieldErrors.stcw_has ? (
+                <div style={sx.errText} role="alert">{fieldErrors.stcw_has}</div>
+              ) : null}
+            </div>
           </div>
 
           <div style={ui.divider} />

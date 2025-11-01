@@ -4,8 +4,9 @@ export type CandidateFormValues = {
   name: string;
   email: string;
   phone: string;
-  county: string;
-  municipality: string;
+  street_address?: string;
+  postal_code?: string;
+  postal_city?: string;
   available_from?: string;
   skills?: string;
   other_comp?: string;
@@ -14,8 +15,6 @@ export type CandidateFormValues = {
   wants_temporary: string;
   stcw_has: string;
   stcw_mod?: string[];
-  deck_has: string;
-  deck_class?: string;
   stcw_confirm: boolean;
   gdpr: boolean;
   honey: string;
@@ -31,8 +30,9 @@ export const candidateSchema = z
     name: z.string().trim().min(2, "Oppgi fullt navn"),
     email: z.string().trim().email("Oppgi gyldig e-post"),
     phone: z.string().trim().min(6, "Oppgi telefon"),
-    county: z.string().trim().min(2, "Velg fylke"),
-    municipality: z.string().trim().min(2, "Velg kommune"),
+    street_address: z.string().trim().optional(),
+    postal_code: z.string().trim().optional(),
+    postal_city: z.string().trim().optional(),
     available_from: z.string().trim().optional(),
     skills: z.string().trim().optional(),
     other_comp: z.string().trim().optional(),
@@ -41,8 +41,6 @@ export const candidateSchema = z
     wants_temporary: z.enum(["ja", "nei"], "Velg om du er åpen for midlertidige oppdrag"),
     stcw_has: z.enum(["ja", "nei"], "Angi om du har STCW"),
     stcw_mod: z.array(z.string()).optional(),
-    deck_has: z.enum(["ja", "nei"], "Angi om du har dekksoffiser-sertifikat"),
-    deck_class: z.string().trim().optional(),
     stcw_confirm: z
       .boolean()
       .refine((v) => v === true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
@@ -50,10 +48,6 @@ export const candidateSchema = z
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
-    if (values.deck_has === "ja" && !values.deck_class) {
-      ctx.addIssue("Velg klasse", ["deck_class"]);
-    }
-
     if (values.stcw_has === "ja" && !(values.stcw_mod && values.stcw_mod.length)) {
       ctx.addIssue("Velg minst én STCW-modul", ["stcw_mod"]);
     }
@@ -137,8 +131,9 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     name: getString("name"),
     email: getString("email"),
     phone: getString("phone"),
-    county: getString("county"),
-    municipality: getString("municipality"),
+    street_address: getString("street_address") || undefined,
+    postal_code: getString("postal_code") || undefined,
+    postal_city: getString("postal_city") || undefined,
     available_from: getString("available_from") || undefined,
     skills: getString("skills") || undefined,
     other_comp: getString("other_comp") || undefined,
@@ -147,8 +142,6 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     wants_temporary: getString("wants_temporary"),
     stcw_has: getString("stcw_has"),
     stcw_mod: stcwMods.length ? stcwMods : undefined,
-    deck_has: getString("deck_has"),
-    deck_class: getString("deck_class") || undefined,
     stcw_confirm: fd.get("stcw_confirm") === "on",
     gdpr: getString("gdpr") === "yes",
     honey: getString("honey"),
