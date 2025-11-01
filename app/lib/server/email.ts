@@ -38,7 +38,7 @@ const resend = resendKey ? new Resend(resendKey) : null;
 const complianceLines = [
   "",
   "--",
-  "Bluecrew AS · Org.nr 936 321 194",
+  "Bluecrew AS (Org.nr: 936321194)",
   "Østenbekkveien 43, 9403 Harstad",
   "E-post: post@bluecrew.no · https://bluecrew.no",
   "Personvern: https://bluecrew.no/personvern",
@@ -46,7 +46,7 @@ const complianceLines = [
 
 const complianceHtml = `
   <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0" />
-  <p style="color:#64748b;font-size:12px;margin:0">Bluecrew AS · Org.nr 936 321 194</p>
+  <p style="color:#64748b;font-size:12px;margin:0">Bluecrew AS (Org.nr: 936321194)</p>
   <p style="color:#64748b;font-size:12px;margin:4px 0 0">Østenbekkveien 43, 9403 Harstad</p>
   <p style="color:#64748b;font-size:12px;margin:4px 0 0">
     E-post: <a href="mailto:post@bluecrew.no" style="color:inherit">post@bluecrew.no</a> ·
