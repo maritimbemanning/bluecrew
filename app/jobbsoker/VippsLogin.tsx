@@ -159,23 +159,8 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
     setError(null);
 
     try {
-      // Request Vipps auth URL
-      const response = await fetch("/api/vipps/init", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          redirectUrl: `${window.location.origin}/api/vipps/callback`,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Kunne ikke starte Vipps-pålogging");
-      }
-
-      const { authUrl } = await response.json();
-
-      // Redirect to Vipps
-      window.location.href = authUrl;
+      // Redirect directly to Vipps start endpoint (GET request)
+      window.location.href = "/api/vipps/start";
     } catch (err) {
       console.error("Vipps login error:", err);
       setError(
