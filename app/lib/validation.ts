@@ -13,8 +13,6 @@ export type CandidateFormValues = {
   work_main: string[];
   other_notes?: Record<string, string>;
   wants_temporary: string;
-  stcw_has: string;
-  stcw_mod?: string[];
   stcw_confirm: boolean;
   gdpr: boolean;
   honey: string;
@@ -39,8 +37,6 @@ export const candidateSchema = z
     work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
     other_notes: z.record(z.string().trim()).optional(),
     wants_temporary: z.enum(["ja", "nei"], "Velg om du er åpen for midlertidige oppdrag"),
-    stcw_has: z.enum(["ja", "nei"], "Angi om du har STCW"),
-    stcw_mod: z.array(z.string()).optional(),
     stcw_confirm: z
       .boolean()
       .refine((v) => v === true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
@@ -48,10 +44,6 @@ export const candidateSchema = z
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
-    if (values.stcw_has === "ja" && !(values.stcw_mod && values.stcw_mod.length)) {
-      ctx.addIssue("Velg minst én STCW-modul", ["stcw_mod"]);
-    }
-
     if (values.other_notes) {
       for (const [key, value] of Object.entries(values.other_notes)) {
         if (value.length > 200) {
@@ -140,8 +132,6 @@ export function extractCandidateForm(fd: FormData): { values: CandidateFormValue
     work_main: workChoices,
     other_notes: Object.keys(otherNotes).length ? otherNotes : undefined,
     wants_temporary: getString("wants_temporary"),
-    stcw_has: getString("stcw_has"),
-    stcw_mod: stcwMods.length ? stcwMods : undefined,
     stcw_confirm: fd.get("stcw_confirm") === "on",
     gdpr: getString("gdpr") === "yes",
     honey: getString("honey"),

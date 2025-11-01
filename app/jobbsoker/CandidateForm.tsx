@@ -672,32 +672,6 @@ export default function CandidateContent() {
 
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
-              <h2 style={ui.sectionTitle}>STCW og sikkerhetsopplæring</h2>
-              <p style={ui.sectionLead}>STCW grunnkurs er påkrevd for arbeid til sjøs.</p>
-            </div>
-            
-            <div>
-              <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>Har du STCW grunnleggende sikkerhetskurs?</div>
-              <div style={sx.inlineRadios}>
-                <label style={sx.radioLabel}>
-                  <input type="radio" name="stcw_has" value="ja" onChange={() => clearFieldError("stcw_has")} required />
-                  Ja
-                </label>
-                <label style={sx.radioLabel}>
-                  <input type="radio" name="stcw_has" value="nei" onChange={() => clearFieldError("stcw_has")} />
-                  Nei
-                </label>
-              </div>
-              {fieldErrors.stcw_has ? (
-                <div style={sx.errText} role="alert">{fieldErrors.stcw_has}</div>
-              ) : null}
-            </div>
-          </div>
-
-          <div style={ui.divider} />
-
-          <div style={ui.section}>
-            <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Dokumenter og samtykke</h2>
               <p style={ui.sectionLead}>Last opp CV og eventuelle sertifikater. Vi sender deg bekreftelse på e-post.</p>
             </div>
