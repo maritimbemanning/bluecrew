@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
-import CandidateContent from "../CandidateForm";
+import { VippsLoginPage } from "../VippsLogin";
 
 export default function Page() {
   return (
@@ -10,11 +10,10 @@ export default function Page() {
         <div style={sx.wrapNarrow}>
           <h1 style={sx.h2}>Registrer deg som jobbsøker</h1>
           <p style={sx.leadSmall}>
-            Fyll ut skjemaet og last opp CV og sertifikater. Vi kobler deg på oppdrag når vi finner en match med erfaringen og
-            tilgjengeligheten din.
+            Bekreft identiteten din med Vipps før du fyller ut jobbsøkerprofilen.
           </p>
-          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
-            <CandidateContent />
+          <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn …</div>}>
+            <VippsLoginPage />
           </Suspense>
         </div>
       </section>

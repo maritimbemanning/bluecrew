@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
     cookieStore.delete("vipps_nonce");
 
     return NextResponse.redirect(
-      new URL("/jobbsoker/registrer?vipps=verified", request.url)
+      new URL("/jobbsoker/registrer/skjema?verified=true", request.url)
     );
   } catch (error) {
     console.error("Vipps callback error:", error);

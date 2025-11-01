@@ -1,15 +1,25 @@
 "use client";
-// Cache-bust: 2025-11-01-16:58
+// Cache-bust: 2025-11-01-17:05
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FileInput, Input, Textarea } from "../components/FormControls";
 import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { candidateSchema, extractCandidateForm, type CandidateFormValues } from "../lib/validation";
 import { VippsVerifiedBadge } from "./VippsLogin";
+
+interface VippsSession {
+  verified: boolean;
+  name: string;
+  givenName: string;
+  familyName: string;
+  phone: string;
+  birthDate: string;
+  verifiedAt: string;
+}
 
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
@@ -203,8 +213,10 @@ type StoredCandidateDraft = Partial<CandidateFormValues> & {
 };
 
 export default function CandidateContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
+  const isVerified = searchParams.get("verified") === "true";
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -217,49 +229,44 @@ export default function CandidateContent() {
   }, [submitted]);
 
   const [vippsSession, setVippsSession] = useState<VippsSession | null>(null);
-  const [showVippsModal, setShowVippsModal] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const checkVippsSession = useCallback(async (fromCallback = false) => {
+  const checkVippsSession = useCallback(async () => {
     try {
       const response = await fetch("/api/vipps/session");
       if (!response.ok) {
-        // Vipps not configured yet - skip for now
         console.log("Vipps API not configured, skipping verification");
+        setCheckingSession(false);
         return;
       }
       const data = await response.json();
 
       if (data.verified && data.session) {
         setVippsSession(data.session as VippsSession);
-        setShowVippsModal(false);
         setStatusMessage(
-          fromCallback
+          isVerified
             ? "Vipps-verifisering fullført. Kontroller opplysningene før innsending."
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
-      } else if (fromCallback) {
-        setStatusMessage("Fant ingen aktiv Vipps-sesjon. Prøv å logge inn igjen.");
+      } else {
+        // No valid session - redirect back to Vipps login
+        router.push("/jobbsoker/registrer");
+        return;
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      if (fromCallback) {
-        setStatusMessage("Kunne ikke bekrefte Vipps-sesjonen. Prøv igjen.");
-      }
+      router.push("/jobbsoker/registrer");
+      return;
+    } finally {
+      setCheckingSession(false);
     }
-  }, []);
+  }, [router, isVerified]);
 
   useEffect(() => {
     checkVippsSession();
   }, [checkVippsSession]);
-
-  useEffect(() => {
-    const verified = searchParams.get("verified");
-    if (verified === "true") {
-      checkVippsSession(true);
-    }
-  }, [searchParams, checkVippsSession]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -268,32 +275,10 @@ export default function CandidateContent() {
       if (saved) {
         const parsed: StoredCandidateDraft = JSON.parse(saved);
         setDraftValues(parsed);
-        setStatusMessage("Skjemautkast funnet. Fullfør Vipps-verifisering og send inn.");
+        setStatusMessage("Skjemautkast funnet. Fullfør skjemaet og send inn.");
       }
     } catch (error) {
       console.error("Failed to restore candidate draft", error);
-    }
-  }, []);
-
-  const handleVippsLogin = useCallback(async () => {
-    try {
-      const response = await fetch("/api/vipps/init", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          redirectUrl: `${window.location.origin}/jobbsoker/registrer?verified=true`,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Kunne ikke starte Vipps-pålogging");
-      }
-
-      const { authUrl } = await response.json();
-      window.location.href = authUrl;
-    } catch (error) {
-      console.error("Vipps init failed", error);
-      setStatusMessage("Kunne ikke starte Vipps-verifisering. Prøv igjen.");
     }
   }, []);
 
@@ -369,20 +354,9 @@ export default function CandidateContent() {
 
       // CRITICAL: Check Vipps verification BEFORE submitting to API
       if (!vippsSession) {
-        // Save draft to sessionStorage (client-only, no DB write)
-        const { honey, ...restValues } = values;
-        try {
-          if (typeof window !== "undefined") {
-            window.sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(restValues));
-          }
-        } catch (error) {
-          console.warn("Kunne ikke lagre skjemautkast", error);
-        }
-
-        setDraftValues(restValues);
-        setStatusMessage("Logg inn med Vipps for å bekrefte identiteten din.");
-        setShowVippsModal(true);
-        setFormError(null);
+        // User should have been redirected already, but just in case
+        setFormError("Du må verifisere identiteten din med Vipps først.");
+        router.push("/jobbsoker/registrer");
         return;
       }
 
@@ -411,7 +385,7 @@ export default function CandidateContent() {
           console.warn("Kunne ikke fjerne skjemautkast", error);
         }
 
-        window.location.href = "/jobbsoker/registrer?sent=worker";
+        window.location.href = "/jobbsoker/registrer/skjema?sent=worker";
       } catch (error) {
         setFormError(error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen.");
         setIsSubmitting(false);
@@ -442,60 +416,21 @@ export default function CandidateContent() {
     );
   }
 
+  if (checkingSession) {
+    return (
+      <div style={ui.wrap}>
+        <div style={{ textAlign: "center", padding: 40 }}>
+          <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>
+            Verifiserer Vipps-sesjon...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={ui.wrap}>
-      {showVippsModal ? (
-        <div style={ui.modalBackdrop} role="dialog" aria-modal="true">
-          <div style={ui.modalPanel}>
-            <div style={{ display: "grid", gap: 10, textAlign: "center" }}>
-              <h2 style={{ margin: 0, fontSize: 24, fontWeight: 700, color: "#0f172a" }}>
-                Bekreft identitet med Vipps
-              </h2>
-              <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, color: "#475569" }}>
-                Vi bruker Vipps for sikker identitetsverifisering. Du returnerer til skjemaet automatisk etter innlogging.
-              </p>
-            </div>
-
-            <button
-              onClick={handleVippsLogin}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 10,
-                padding: "16px 24px",
-                fontSize: 16,
-                fontWeight: 600,
-                background: "#ff5100",
-                color: "#fff",
-                border: "none",
-                borderRadius: 10,
-                cursor: "pointer",
-              }}
-            >
-              <span>Logg inn med Vipps</span>
-            </button>
-
-            <button
-              onClick={() => setShowVippsModal(false)}
-              style={{
-                width: "100%",
-                padding: 12,
-                fontSize: 15,
-                fontWeight: 500,
-                background: "transparent",
-                color: "#64748b",
-                border: "1px solid #cbd5e1",
-                borderRadius: 10,
-                cursor: "pointer",
-              }}
-            >
-              Avbryt
-            </button>
-          </div>
-        </div>
-      ) : null}
 
       <form
         action="/api/submit-candidate"
@@ -772,3 +707,6 @@ export default function CandidateContent() {
     </div>
   );
 }
+
+// Export as named export for use in /jobbsoker/registrer/skjema
+export { CandidateContent as CandidateForm };

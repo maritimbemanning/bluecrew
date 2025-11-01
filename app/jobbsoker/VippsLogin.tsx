@@ -8,6 +8,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { CSSProperties } from "react";
 
 interface VippsSession {
@@ -268,6 +269,145 @@ export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
           Verifisert {new Date(session.verifiedAt).toLocaleString("nb-NO")}
         </span>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Standalone Vipps Login Page
+ * Checks for existing session and redirects to form if verified
+ */
+export function VippsLoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  // Check if user came back from Vipps
+  const isReturningFromVipps = searchParams.get("verified") === "true";
+
+  // Check if user already has a valid Vipps session
+  const checkExistingSession = useCallback(async () => {
+    try {
+      const response = await fetch("/api/vipps/session");
+      const data = await response.json();
+
+      if (data.verified && data.session) {
+        // User is already verified, redirect to form
+        router.push("/jobbsoker/registrer/skjema");
+        return;
+      }
+
+      if (isReturningFromVipps && !data.verified) {
+        setError("Vipps-verifisering feilet. Prøv igjen.");
+      }
+    } catch (err) {
+      console.error("Failed to check Vipps session:", err);
+      if (isReturningFromVipps) {
+        setError("Kunne ikke bekrefte Vipps-sesjonen. Prøv igjen.");
+      }
+    } finally {
+      setCheckingSession(false);
+    }
+  }, [router, isReturningFromVipps]);
+
+  useEffect(() => {
+    checkExistingSession();
+  }, [checkExistingSession]);
+
+  async function handleVippsLogin() {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Redirect directly to Vipps start endpoint (GET request)
+      window.location.href = "/api/vipps/start";
+    } catch (err) {
+      console.error("Vipps login error:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Noe gikk galt. Prøv igjen om litt."
+      );
+      setLoading(false);
+    }
+  }
+
+  if (checkingSession) {
+    return (
+      <div style={ui.container}>
+        <div style={ui.icon}>⏳</div>
+        <h2 style={ui.title}>Sjekker sesjon...</h2>
+      </div>
+    );
+  }
+
+  return (
+    <div style={ui.container}>
+      <div style={ui.icon}>🔐</div>
+      
+      <h2 style={ui.title}>Verifiser identitet med Vipps</h2>
+      
+      <p style={ui.description}>
+        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav,
+        må du verifisere identiteten din med Vipps før du registrerer deg.
+      </p>
+
+      <div style={ui.whyBox}>
+        <div style={ui.whyTitle}>Hvorfor trenger vi dette?</div>
+        <ul style={ui.whyList}>
+          <li>✅ Lovpålagt identitetsverifisering (bemanningsbransjen)</li>
+          <li>✅ Stopper fake profiler og svindel</li>
+          <li>✅ Raskere saksbehandling</li>
+          <li>✅ Sikker digital signering av kontrakter senere</li>
+        </ul>
+      </div>
+
+      <button
+        onClick={handleVippsLogin}
+        disabled={loading}
+        style={{
+          ...ui.button,
+          ...(loading ? ui.buttonDisabled : {}),
+        }}
+        onMouseEnter={(e) => {
+          if (!loading) {
+            e.currentTarget.style.background = "#e64900";
+            e.currentTarget.style.transform = "translateY(-2px)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#ff5100";
+          e.currentTarget.style.transform = "translateY(0)";
+        }}
+      >
+        {loading ? (
+          <>
+            <span>Starter Vipps...</span>
+          </>
+        ) : (
+          <>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            </svg>
+            <span>Logg inn med Vipps</span>
+          </>
+        )}
+      </button>
+
+      {error && <div style={ui.error}>⚠️ {error}</div>}
+
+      <p
+        style={{
+          marginTop: 24,
+          fontSize: 13,
+          textAlign: "center",
+          color: "rgba(226, 232, 240, 0.6)",
+        }}
+      >
+        Tar kun 30 sekunder • Du blir sendt til Vipps og tilbake
+      </p>
     </div>
   );
 }
