@@ -7,7 +7,7 @@ import Script from "next/script";
 
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
-  "Erfarne mannskaper til havbruk, servicefartøy og offshore. Base i Nord-Norge, nasjonal dekning. STCW-sertifisert bemanning med rask oppstart.";
+  "Profesjonell maritim bemanningsløsning. Erfarne STCW-sertifiserte mannskaper til havbruk, servicefartøy og offshore. Base i Nord-Norge med nasjonal dekning.";
 
 export const metadata: Metadata = {
   title: {
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png" },
-      { url: "/icons/FullLogo_Transparent.png", type: "image/png", sizes: "any" },
+      { url: "/icons/icononly_transparent_nobuffer.png", type: "image/png", sizes: "any" },
     ],
-    apple: "/icons/FullLogo_Transparent.png",
+    apple: "/icons/icononly_transparent_nobuffer.png",
     shortcut: "/icon.png",
   },
   openGraph: {
@@ -48,10 +48,10 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/icons/FullLogo_Transparent.png",
+        url: "/hero/kaptein_skipper_lonn_bluecrew.jpg",
         width: 1200,
         height: 630,
-        alt: "Bluecrew AS - Maritim bemanning i Nord-Norge",
+        alt: "Bluecrew AS - Profesjonell maritim bemanning",
       },
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/icons/FullLogo_Transparent.png"],
+    images: ["/hero/kaptein_skipper_lonn_bluecrew.jpg"],
   },
   robots: {
     index: true,

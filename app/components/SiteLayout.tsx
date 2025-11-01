@@ -20,18 +20,6 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Hjem", key: "home" },
   {
-    href: "/jobbsoker/guides",
-    label: "Karriere",
-    key: "karriere",
-    children: [
-      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Hvordan bli skipsfører" },
-      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Hvordan bli matros" },
-      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Hvordan bli maskinoffiser" },
-      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide maritime stillinger" },
-      { href: "/jobbsoker/guides", label: "Se alle sertifikatkrav" },
-    ],
-  },
-  {
     href: "/jobbsoker",
     label: "Finn jobb",
     key: "jobbsoker",
@@ -51,6 +39,18 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/kunde/rekruttering", label: "Rekruttering" },
       { href: "/kunde/hva-vi-hjelper-med", label: "Hva vi hjelper din bedrift med" },
       { href: "/kontakt", label: "Kontakt oss" },
+    ],
+  },
+  {
+    href: "/jobbsoker/guides",
+    label: "Karriere",
+    key: "karriere",
+    children: [
+      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide maritime stillinger" },
+      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Hvordan bli skipsfører" },
+      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Hvordan bli matros" },
+      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Hvordan bli maskinoffiser" },
+      { href: "/jobbsoker/guides", label: "Se alle sertifikatkrav" },
     ],
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
@@ -265,6 +265,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <Link
                     key={item.key}
                     href={item.href}
+                    className="navLink"
                     style={{ ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink), ...(isActive && !item.accent ? sx.navLinkActive : {}) }}
                   >
                     {item.label}
@@ -576,11 +577,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link href="/vilkar/bemanning" style={sx.footerLink}>
-                    Arbeidsvilkår bemanning
-                  </Link>
-                </li>
-                <li style={sx.footerListItem}>
                   <Link href="/cookies" style={sx.footerLink}>
                     Informasjonskapsler
                   </Link>
@@ -601,36 +597,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
 
           <div style={sx.footerLegal}>
             © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
-          </div>
-
-          <div
-            style={{
-              marginTop: 16,
-              paddingTop: 12,
-              borderTop: "1px solid rgba(226,232,240,0.25)",
-              textAlign: "center",
-              color: "rgba(226,232,240,0.65)",
-              fontSize: 14,
-            }}
-          >
-            Nettsiden og IT-tjenesten er levert av{" "}
-            <Link
-              href="https://didriksson.no"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Didriksson Digital (åpnes i ny fane)"
-              className="watermarkLink"
-              style={{ color: "inherit", fontWeight: 600, textDecoration: "none" }}
-            >
-              Didriksson Digital
-              <span aria-hidden="true" style={{ verticalAlign: "super", fontSize: 10, marginLeft: 2, opacity: 0.85 }}>
-                ®
-              </span>
-              <span aria-hidden="true" className="watermarkLinkIcon">
-                ↗
-              </span>
-              <span className="sr-only"> (åpnes i ny fane)</span>
-            </Link>
           </div>
         </div>
       </footer>

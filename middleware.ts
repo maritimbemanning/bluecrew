@@ -1,6 +1,8 @@
 // middleware.ts
 import { NextResponse } from "next/server";
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 /**
  * Streng, men praktisk Content Security Policy (CSP)
  * - Tillater Google Fonts og Plausible
@@ -15,10 +17,10 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "script-src 'self' 'unsafe-inline' https://plausible.io", // Removed 'unsafe-eval' for security
+  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ''} https://plausible.io`, // unsafe-eval needed for Next.js dev mode
   "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o*.ingest.sentry.io https://api.vipps.no",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
-  "upgrade-insecure-requests",
+  ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
 /**

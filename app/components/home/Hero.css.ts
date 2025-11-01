@@ -8,7 +8,8 @@ export const hero = style({
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
-  paddingTop: '100px',
+  marginTop: '0',
+  paddingTop: '120px',
   paddingBottom: '100px',
   minHeight: '650px',
   display: 'flex',
@@ -25,6 +26,7 @@ export const hero = style({
     bottom: 0,
     backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%)',
     pointerEvents: 'none',
+    zIndex: 0,
   },
 
   '@media': {
@@ -44,6 +46,7 @@ export const overlay = style({
   bottom: 0,
   background: 'linear-gradient(to right, rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.6))',
   zIndex: 1,
+  pointerEvents: 'none',
 });
 
 export const heroInner = style({
