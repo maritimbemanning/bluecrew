@@ -5,6 +5,7 @@ import { TrustSection } from "./components/home/TrustSection";
 import { ServiceCards } from "./components/home/ServiceCards";
 import { JobsHighlight } from "./components/home/JobsHighlight";
 import { ContactSection } from "./components/home/ContactSection";
+import { InterestSection } from "./components/home/InterestSection";
 
 export const metadata: Metadata = {
   title: "Maritim bemanning til havbruk, servicefartøy og offshore",
@@ -39,6 +40,7 @@ export default function Page() {
       <TrustSection />
       <ServiceCards />
       <JobsHighlight />
+  <InterestSection />
       <ContactSection />
     </SiteLayout>
   );

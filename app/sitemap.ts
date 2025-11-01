@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Konverteringssider
     { url: `${base}/jobbsoker/registrer`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/kunde/registrer-behov`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+  { url: `${base}/meld-interesse`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     
     // Informasjonssider
     { url: `${base}/kunde/hva-vi-hjelper-med`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

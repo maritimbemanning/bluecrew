@@ -228,6 +228,27 @@ export async function sendClientConfirmation(payload: { name?: string; email?: s
   });
 }
 
+export async function sendInterestReceipt(payload: { name?: string; email?: string }) {
+  if (!payload.email) return null;
+
+  const text = `Hei ${payload.name || ""},\n\nTakk for at du meldte interesse hos Bluecrew. Vi går gjennom informasjonen din og tar kontakt når vi har oppdrag som passer din erfaring.\n\nHilsen Bluecrew-teamet`;
+
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
+    <p>Hei ${esc(payload.name || "")},</p>
+    <p>Takk for at du meldte interesse hos Bluecrew.</p>
+    <p>Vi går gjennom informasjonen din og tar kontakt når vi har oppdrag som passer din erfaring.</p>
+    <p style="margin-top:20px">Hilsen Bluecrew-teamet</p>
+  </div>`;
+
+  return sendEmail({
+    subject: "Takk for interessen – Bluecrew",
+    html,
+    text,
+    to: payload.email,
+  });
+}
+
 /**
  * GENERISK helper brukt av andre API-ruter.
  */
