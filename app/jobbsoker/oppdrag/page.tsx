@@ -39,7 +39,7 @@ export default function Page() {
             <section style={{ background: "#ffffff", borderRadius: 20, border: "1px solid #e2e8f0", padding: 26, boxShadow: "0 18px 40px rgba(15, 23, 42, 0.08)", display: "grid", gap: 12 }}>
               <h2 style={{ ...sx.h2, fontSize: 24 }}>Typiske oppdrag</h2>
               <ul style={{ margin: 0, paddingLeft: 20, color: "#334155", lineHeight: 1.6, display: "grid", gap: 6 }}>
-                <li>Havbruk: driftslag, fôringsoperatører og servicefartøy.</li>
+                <li>Havbruk: driftslag og servicefartøy.</li>
                 <li>Fiskeri: skipper, styrmann og erfarne matroser til kyst- og havfiske.</li>
                 <li>Service- og spesialfartøy: ROV, dekksbesetning, mekanikere og prosjektskip.</li>
                 <li>Logistikk og beredskap: havn, slepebåt, SAR og støttefartøy.</li>

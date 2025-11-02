@@ -1,6 +1,6 @@
 export const WORK: Record<string, string[]> = {
   "Servicefartøy mannskap": ["Skipper/Styrmann", "Matros", "Kokekyndig", "Annet"],
-  Havbruk: ["Operativt", "Akvatekniker m/fagbrev", "Laseroperatør", "Fôringsoperatør", "Annet"],
+  Havbruk: ["Operativ drift", "Akvatekniker m/fagbrev", "Vedlikehold", "Annet"],
   Fiskeri: ["Skipper/Styrmann", "Matros", "Annet"],
   "Logistikk og støtte": ["Supply", "Offshore service", "Annet"],
   Annet: ["Annet"],
