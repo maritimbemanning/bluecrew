@@ -61,6 +61,15 @@ export default function Page() {
         {/* Summary */}
         <section style={{ padding: "40px 0" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px" }}>
+            {/* Disclaimer */}
+            <div style={{ background: "#fef3c7", padding: "16px 20px", borderRadius: 8, marginBottom: 24, border: "1px solid #fbbf24" }}>
+              <p style={{ fontSize: 14, color: "#92400e", margin: 0, lineHeight: 1.6 }}>
+                <strong>📊 Merk:</strong> Lønnsdata er estimater basert på tariffavtaler (NSF, Industri Energi), 
+                offentlig statistikk (SSB, NAV) og bransjeundersøkelser per november 2025. 
+                Faktisk lønn varierer basert på erfaring, rederiet, sektor og individuell forhandling.
+              </p>
+            </div>
+
             <div style={{ background: "white", padding: 32, borderRadius: 16, boxShadow: "0 4px 20px rgba(2,6,23,0.06)" }}>
               <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a", marginBottom: 16 }}>
                 Hva tjener en matros i Norge?
