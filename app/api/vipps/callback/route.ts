@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { jwtVerify, createRemoteJWKSet } from "jose";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+
+// Vipps JWKS endpoint for signature verification
+const VIPPS_JWKS_URL = `${process.env.VIPPS_API_BASE_URL}/.well-known/jwks.json`;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -61,29 +71,50 @@ export async function GET(request: NextRequest) {
 
     const tokens = await tokenResponse.json();
 
-    // Decode ID token to get user info (basic JWT decode - in production use a library)
-    const idTokenParts = tokens.id_token.split(".");
-    const payload = JSON.parse(
-      Buffer.from(idTokenParts[1], "base64").toString("utf8")
-    );
+    // ✅ SECURE: Verify ID token signature with Vipps JWKS
+    const JWKS = createRemoteJWKSet(new URL(VIPPS_JWKS_URL));
+    
+    let verifiedPayload;
+    try {
+      const { payload } = await jwtVerify(tokens.id_token, JWKS, {
+        issuer: process.env.VIPPS_ISSUER || "https://api.vipps.no/access-management-1.0/access",
+        audience: process.env.VIPPS_CLIENT_ID,
+      });
+      verifiedPayload = payload;
+    } catch (jwtError) {
+      console.error("❌ JWT verification failed:", jwtError);
+      return NextResponse.redirect(
+        new URL("/jobbsoker/registrer?vipps_error=invalid_token", request.url)
+      );
+    }
 
     // Verify nonce
-    if (payload.nonce !== storedNonce) {
+    if (verifiedPayload.nonce !== storedNonce) {
       return NextResponse.redirect(
         new URL("/jobbsoker/registrer?vipps_error=invalid_nonce", request.url)
       );
     }
 
-    // Store verified session
-    const vippsSession = {
-      sub: payload.sub,
-      name: payload.name,
-      phone_number: payload.phone_number,
-      birthdate: payload.birthdate,
+    // Generate secure session ID and store PII server-side
+    const sessionId = crypto.randomUUID();
+    const vippsData = {
+      sub: verifiedPayload.sub,
+      name: verifiedPayload.name,
+      phone_number: verifiedPayload.phone_number,
+      birthdate: verifiedPayload.birthdate,
       verified_at: new Date().toISOString(),
     };
 
-    cookieStore.set("vipps_session", JSON.stringify(vippsSession), {
+    // Store in Redis with 1 hour expiry
+    try {
+      await redis.setex(`vipps:${sessionId}`, 3600, JSON.stringify(vippsData));
+    } catch (redisError) {
+      console.error("⚠️ Redis storage failed:", redisError);
+      // Fallback: continue without session (user will need to re-verify)
+    }
+
+    // Only store session ID in cookie (not PII)
+    cookieStore.set("vipps_session_id", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
