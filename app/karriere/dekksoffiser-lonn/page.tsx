@@ -64,8 +64,10 @@ export default function Page() {
             {/* Disclaimer */}
             <div style={{ background: "#fef3c7", padding: "16px 20px", borderRadius: 8, marginBottom: 24, border: "1px solid #fbbf24" }}>
               <p style={{ fontSize: 14, color: "#92400e", margin: 0, lineHeight: 1.6 }}>
-                <strong>📊 Merk:</strong> Lønnsdata er estimater basert på tariffavtaler (NSF, Industri Energi), 
-                offentlig statistikk (SSB, NAV) og bransjeundersøkelser per november 2025. 
+                <strong>📊 Merk:</strong> Lønnsdata er estimater basert på{" "}
+                <a href="https://www.nsf.no/tariff" target="_blank" rel="noopener" style={{ color: "#92400e", textDecoration: "underline" }}>NSF tariffavtaler</a>,{" "}
+                <a href="https://www.ssb.no/arbeid-og-lonn/lonn-og-arbeidskraftkostnader/statistikk/lonn" target="_blank" rel="noopener" style={{ color: "#92400e", textDecoration: "underline" }}>SSB lønnsstatistikk</a>,{" "}
+                <a href="https://www.nav.no/no/person/arbeid/arbeidsmarkedet-og-yrker" target="_blank" rel="noopener" style={{ color: "#92400e", textDecoration: "underline" }}>NAV yrkesinformasjon</a> og bransjeundersøkelser per november 2025. 
                 Faktisk lønn varierer basert på erfaring, rederiet, sektor og individuell forhandling.
               </p>
             </div>
