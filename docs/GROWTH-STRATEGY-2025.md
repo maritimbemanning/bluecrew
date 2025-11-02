@@ -3,6 +3,12 @@
 
 ---
 
+## NESTE STEG: FASE 3 - Growth Hacking 🚀
+
+**FASE 2 - 100% COMPLETE!** ✅
+
+---
+
 ## FASE 1: Live i dag - Quick Wins (1 time) ✅ **FERDIG!**
 
 ### A) SEO Foundation ⭐ VIKTIGST
@@ -40,11 +46,12 @@
 
 **Status: ✅ KOMPLETT | Neste: FASE 2 Content Creation**
 
+
 ---
 
 ## FASE 2: Neste uke - Content is King
 
-### 1. Lønnsguider (Google Traffic Magnet) 🎯 **88% FERDIG!** ✅
+### 1. Lønnsguider (Google Traffic Magnet) 🎯 **100% FERDIG!** ✅
 
 **HVORFOR:** Folk søker aktivt etter lønnsinformasjon. Dette gir organisk trafikk fra Google.
 
@@ -94,8 +101,35 @@
    - FAQ (5 spørsmål), internal linking til kaptein-lønn
    - Bilde: skipsforer-navigasjon.jpeg (reused)
 
-#### TODO (for å komplettere):
-- ⏳ `/karriere/dekksoffiser-lonn` - D1-D6 breakdown (SISTE GUIDE!)
+8. `/karriere/matros-lonn` (✅ LIVE 2. nov 2025)
+   - 2500+ ord, targeting "matros lønn" (~400 searches/måned)
+   - 4 nivåer: Lettmatros (380k-450k), Matros (450k-560k), Matros erfaren (540k-650k), Båtsmann (600k-720k)
+   - STCW II/5 krav: PST, FPFF, EFA, PSSR + helseattest + fagbrev matros
+   - Sektor-sammenligning (havbruk, offshore PSV/AHTS, servicefartøy, kystfart, cruise) - 5×3 tabell
+   - Turnus: 2/2, 4/4, 6/6, dagturnus, ukesturnus forklart
+   - Karrierevei: Lettmatros → Kaptein (8 steg, 8-15 år)
+   - FAQ (5 spørsmål), internal linking til styrmann-lønn, kaptein-lønn, hvordan-bli-matros
+   - Bilde: Matros-dekksarbeid.jpeg (reused from guides)
+
+9. `/karriere/maskinoffiser-lonn` (✅ LIVE 2. nov 2025)
+   - 2600+ ord, targeting "maskinoffiser lønn" (~200 searches/måned)
+   - 5 nivåer: Motormann (480k-560k), M4 (540k-660k), M3 (620k-780k), M2 (720k-900k), M1 (840k-1.0M+)
+   - STCW III/1-III/3 krav: M1-M4 klasser, maskineffekt (0-750kW → Ubegrenset)
+   - Sektor-sammenligning (offshore PSV/AHTS, havbruk, servicefartøy, kystfart) - 4×5 tabell
+   - Ekstra sertifikater: Advanced Fire Fighting, Medical Care, elkraftbevis høyspent, ISM-kurs, DP-kurs
+   - Karrierevei: Motormann → Sjefsingeniør (5 steg, 8-15 år)
+   - FAQ (5 spørsmål), internal linking til kaptein-lønn, matros-lønn, hvordan-bli-maskinoffiser
+   - Bilde: Maskinoffiser-maskinrom.jpeg (reused from guides)
+
+10. `/karriere/dekksoffiser-lonn` (✅ LIVE 2. nov 2025)
+    - 2700+ ord, targeting "dekksoffiser lønn" (~150 searches/måned)
+    - 7 nivåer: Lettmatros (380k-450k), Matros/D6 (450k-560k), D5 (500k-620k), D4 (540k-660k), D3 (620k-780k), D2 (720k-900k), D1 (840k-1.2M+)
+    - STCW II/1-II/3 krav: D1-D6 klasser, bruttotonnasje (0-500 GT → Ubegrenset)
+    - Sektor-sammenligning (offshore PSV/AHTS, havbruk, servicefartøy, kystfart) - 4×4 tabell
+    - Ekstra sertifikater: ECDIS, ROC/GOC, BRM, Advanced Fire Fighting, Medical Care, DP-kurs, ISM-kurs
+    - Karrierevei: Lettmatros → Kaptein (7 steg, 10-15 år)
+    - FAQ (5 spørsmål), internal linking til kaptein-lønn, styrmann-lønn, hvordan-bli-styrmann
+    - Bilde: Dekksoffiser-navigasjon.jpeg (reused from guides)
 
 #### Hver guide må inneholde:
 - **Lønnsdata**: Gjennomsnitt, min/max, erfaringsnivåer
@@ -136,6 +170,13 @@
 - **Tone**: Profesjonell men tilgjengelig
 - **CTA**: Registrering eller kontakt i hver artikkel
 
+#### Total SEO Content (FASE 2):
+- **10 lønnsguider** (7 career guides + 3 lønnssider) = ~19,800 ord
+- **SEO targets**: 8 keyword targets med +2500 searches/måned total
+- **Internal linking**: Komplett web mellom guides
+- **Schema.org**: Article markup på alle guides
+- **Mobile-first**: 87% mobile traffic optimalisert
+
 ---
 
 ## FASE 3: Måned 1-2 - Growth Hacking
@@ -149,9 +190,9 @@
   - Landing: /jobbsoker eller /karriere
   
 - **Kampanje 2: Lønnsguider**
-  - Keywords: "kaptein lønn", "skipper lønn", "matros lønn"
+  - Keywords: "kaptein lønn", "skipper lønn", "matros lønn", "maskinoffiser lønn", "dekksoffiser lønn"
   - Budsjett: 3.000 kr/mnd
-  - Landing: Spesifikke lønnsguider
+  - Landing: Spesifikke lønnsguider (/karriere/kaptein-lonn, /karriere/matros-lonn, etc)
 
 - **Kampanje 3: Bedrifter**
   - Keywords: "maritim bemanning", "bemanningsbyrå offshore", "havbruk mannskap"
