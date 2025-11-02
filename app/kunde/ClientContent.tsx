@@ -363,32 +363,6 @@ export default function ClientContent() {
                 />
               </div>
             </div>
-            
-            <div style={ui.fieldGrid}>
-              <Select
-                label="Fylke"
-                name="c_county"
-                options={COUNTIES}
-                placeholder="Velg fylke"
-                required
-                error={fieldErrors.c_county}
-                onChange={(value) => {
-                  clearFieldError("c_county");
-                  setSelectedCounty(value);
-                }}
-                onBlur={() => clearFieldError("c_county")}
-              />
-              <Select
-                label="Kommune"
-                name="c_municipality"
-                options={selectedCounty ? MUNICIPALITIES_BY_COUNTY[selectedCounty] || [] : []}
-                placeholder={selectedCounty ? "Velg kommune" : "Velg fylke først"}
-                disabled={!selectedCounty}
-                error={fieldErrors.c_municipality}
-                onChange={() => clearFieldError("c_municipality")}
-                onBlur={() => clearFieldError("c_municipality")}
-              />
-            </div>
           </div>
 
           <div style={ui.divider} />

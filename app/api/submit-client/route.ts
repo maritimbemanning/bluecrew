@@ -36,7 +36,6 @@ export async function POST(req: Request) {
     }
 
     const data = parsed.data;
-    const location = data.c_municipality ? `${data.c_municipality} (${data.c_county})` : data.c_county;
 
     const lines: string[] = [
       "NY KUNDEFORESPØRSEL",
@@ -44,7 +43,6 @@ export async function POST(req: Request) {
       `Kontaktperson: ${data.contact}`,
       `E-post: ${data.c_email}`,
       `Telefon: ${data.c_phone}`,
-      `Lokasjon: ${location}`,
       `Type behov: ${data.need_type}`,
       `Oppdragstype: ${data.need_duration}`,
       "",
@@ -52,7 +50,7 @@ export async function POST(req: Request) {
       data.desc || "-",
     ];
 
-    const html = buildClientHtml({ ...data, location });
+    const html = buildClientHtml(data);
 
     await Promise.all([
       insertSupabaseRow({
@@ -62,8 +60,6 @@ export async function POST(req: Request) {
           contact: data.contact,
           email: data.c_email,
           phone: data.c_phone,
-          county: data.c_county,
-          municipality: data.c_municipality,
           need_type: data.need_type,
           need_duration: data.need_duration,
           num_people: data.num_people || null,
@@ -116,7 +112,6 @@ function buildClientHtml(data: {
   contact: string;
   c_email: string;
   c_phone: string;
-  location?: string | null;
   need_type: string;
   need_duration: string;
   desc?: string | null;
@@ -129,7 +124,6 @@ function buildClientHtml(data: {
         <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.c_email)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.c_phone)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Selskap</b></td><td style=\"padding:4px 8px\">${esc(data.company)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Lokasjon</b></td><td style=\"padding:4px 8px\">${esc(data.location || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Type behov</b></td><td style=\"padding:4px 8px\">${esc(data.need_type)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Oppdragstype</b></td><td style=\"padding:4px 8px\">${esc(data.need_duration)}</td></tr>
         <tr><td style=\"padding:4px 8px;vertical-align:top\"><b>Beskrivelse</b></td><td style=\"padding:4px 8px;white-space:pre-wrap\">${esc(

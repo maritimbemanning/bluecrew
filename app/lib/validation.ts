@@ -58,8 +58,6 @@ export type ClientFormValues = {
   contact: string;
   c_email: string;
   c_phone: string;
-  c_county: string;
-  c_municipality?: string;
   need_type: string;
   need_duration: string;
   num_people?: string;
@@ -76,21 +74,14 @@ export const clientSchema = z
     contact: z.string().trim().min(2, "Oppgi kontaktperson"),
     c_email: z.string().trim().email("Oppgi gyldig e-post"),
     c_phone: z.string().trim().min(6, "Oppgi telefon"),
-    c_county: z.string().trim().min(2, "Velg fylke"),
-    c_municipality: z.string().trim().optional(),
     need_type: z.string().trim().min(2, "Velg behov"),
     need_duration: z.string().trim().min(2, "Velg oppdragstype"),
     num_people: z.string().trim().optional(),
     start_date: z.string().trim().optional(),
     urgency: z.string().trim().optional(),
     desc: z.string().trim().optional(),
-  gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
+    gdpr_client: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
-  })
-  .superRefine((values, ctx) => {
-    if (values.c_county && !values.c_municipality) {
-      ctx.addIssue("Velg kommune", ["c_municipality"]);
-    }
   });
 
 export function extractCandidateForm(fd: FormData): { values: CandidateFormValues; files: CandidateFiles } {
@@ -156,8 +147,6 @@ export function extractClientForm(fd: FormData): ClientFormValues {
     contact: getString("contact"),
     c_email: getString("c_email"),
     c_phone: getString("c_phone"),
-    c_county: getString("c_county"),
-    c_municipality: getString("c_municipality") || undefined,
     need_type: getString("need_type"),
     need_duration: getString("need_duration"),
     num_people: getString("num_people") || undefined,
