@@ -40,6 +40,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/jobbsoker/guides/hvordan-bli-maskinoffiser`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/jobbsoker/guides/lonnsguide-maritime-stillinger`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
 
+    // Lønnssider - VIKTIGE SEO-sider (høyt søkevolum)
+    { url: `${base}/karriere/kaptein-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/styrmann-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/matros-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/maskinoffiser-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/dekksoffiser-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+
     // Juridiske sider (GDPR / Informasjonsplikt)
     { url: `${base}/personvern`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/cookies`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
