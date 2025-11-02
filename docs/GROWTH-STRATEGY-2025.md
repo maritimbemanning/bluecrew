@@ -16,6 +16,13 @@
 - ✅ Edge runtime på Vipps OAuth
 - ✅ Basic image optimization (WebP, lazy loading)
 - ✅ Orange CTA "Meld interesse" med pulse animation (2. nov 2025)
+- ✅ **Hero image optimization** (2. nov 2025):
+  - maritime-hero.jpeg (257KB) på forside
+  - 4 guide-bilder med Next.js <Image> component
+  - Automatic WebP/AVIF conversion (70-80% file size reduction)
+  - Responsive sizing: (max-width: 768px) 100vw, 800px
+  - Priority loading for above-the-fold, lazy loading below
+  - SEO-optimized alt-tags på alle bilder
 
 ### C) **NYE FEATURES LIVE:**
 - ✅ /meld-interesse page med InterestSection form
@@ -25,13 +32,19 @@
 - ✅ Sentry error tracking
 - ✅ Plausible Analytics (GDPR-compliant)
 
+### D) **UX IMPROVEMENTS (2. nov 2025):**
+- ✅ **Removed Kommune/Fylke fields** from client form:
+  - Not relevant for maritime industry (offshore/at sea operations)
+  - Reduced form friction
+  - Cleaner, faster registration for ship management companies
+
 **Status: ✅ KOMPLETT | Neste: FASE 2 Content Creation**
 
 ---
 
 ## FASE 2: Neste uke - Content is King
 
-### 1. Lønnsguider (Google Traffic Magnet) 🎯 **50% FERDIG!**
+### 1. Lønnsguider (Google Traffic Magnet) 🎯 **88% FERDIG!** ✅
 
 **HVORFOR:** Folk søker aktivt etter lønnsinformasjon. Dette gir organisk trafikk fra Google.
 
@@ -63,10 +76,26 @@
    - Radiosertifikat, HMS, brannsertifikat
    - 3000+ ord - MONSTER SEO PAGE!
 
+6. ✅ `/karriere/kaptein-lonn` - **NY! LIVE 2. nov 2025** 🔥
+   - 3500+ ord, SEO-optimalisert
+   - Target: "kaptein lønn", "skipsfører lønn", "master lønn norge"
+   - Lønnstabell per sektor: Havbruk (840k-1.2M), Offshore (900k-1.14M), Servicefartøy (720k-900k)
+   - STCW II/2 krav, karriereveier, turnus-forklaringer (2/2, 4/4, 6/6, dagturnus)
+   - FAQ (5 spørsmål), Schema.org Article markup
+   - Bilde: skipsforer-navigasjon.jpeg
+
+7. ✅ `/karriere/styrmann-lonn` - **NY! LIVE 2. nov 2025** 🔥
+   - 3200+ ord, SEO-optimalisert
+   - Target: "styrmann lønn", "chief mate norge", "overstyrsmann lønn"
+   - 3 nivåer: 3. styrmann (500k-620k), 2. styrmann (600k-780k), Overstyrsmann (720k-900k)
+   - STCW II/1 krav, D2-D6 dekksoffiser-klasser
+   - Sektor-sammenligning (offshore vs havbruk vs servicefartøy vs kystfart)
+   - Karrierevei: Matros → 3. styrmann → 2. styrmann → Overstyrsmann → Kaptein (6 steg)
+   - FAQ (5 spørsmål), internal linking til kaptein-lønn
+   - Bilde: skipsforer-navigasjon.jpeg (reused)
+
 #### TODO (for å komplettere):
-- ⏳ `/karriere/skipper-lonn` - Dedikert skipper-side (skille fra skipsfører)
-- ⏳ `/karriere/styrmann-lonn` - Styrmann-spesifikk guide
-- ⏳ `/karriere/dekksoffiser-lonn` - D1-D6 breakdown
+- ⏳ `/karriere/dekksoffiser-lonn` - D1-D6 breakdown (SISTE GUIDE!)
 
 #### Hver guide må inneholde:
 - **Lønnsdata**: Gjennomsnitt, min/max, erfaringsnivåer
