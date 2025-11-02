@@ -4,6 +4,7 @@ import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
@@ -157,6 +158,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <CookieBanner />
         <PlausibleLoader />
+        <SpeedInsights />
       </body>
     </html>
   );
