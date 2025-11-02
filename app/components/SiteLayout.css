@@ -22,6 +22,11 @@
   color:#38bdf8 !important;
   transform: translateY(-1px);
 }
+/* Special hover for accent CTA button */
+.navLink.accentButton:hover{
+  transform: scale(1.05) !important;
+  box-shadow: 0 16px 40px rgba(249, 115, 22, 0.6), 0 0 0 3px rgba(251, 146, 60, 0.4) !important;
+}
 .focusRing{
   outline:none;
   box-shadow:0 0 0 4px rgba(56,189,248,0.12);

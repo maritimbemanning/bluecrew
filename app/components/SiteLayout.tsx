@@ -54,7 +54,8 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
-  { href: "/kontakt", label: "Kontakt", key: "kontakt", accent: true },
+  { href: "/meld-interesse", label: "Meld interesse", key: "meld-interesse", accent: true },
+  { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
 export function SiteLayout({ children, active }: { children: ReactNode; active?: string }) {
@@ -265,7 +266,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <Link
                     key={item.key}
                     href={item.href}
-                    className="navLink"
+                    className={item.accent ? "navLink accentButton" : "navLink"}
                     style={{ ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink), ...(isActive && !item.accent ? sx.navLinkActive : {}) }}
                   >
                     {item.label}
