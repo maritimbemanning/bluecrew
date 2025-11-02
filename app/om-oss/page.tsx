@@ -40,7 +40,7 @@ export default function Page() {
             </p>
             <div style={{ marginTop: 8, padding: 18, borderLeft: "4px solid #0B1F3A", background: "#fff", borderRadius: 8 }}>
               <p style={{ margin: 0, fontSize: 15, color: "#0B1F3A" }}>
-                <strong>Vår filosofi:</strong> Rett kompetanse, på rett sted, til rett tid.
+                <strong>Effektiv bemanning til sjøs</strong>
               </p>
             </div>
           </div>

@@ -36,7 +36,7 @@ export default function Page() {
           <h1 style={sx.h2}>Jobb til sjøs med Bluecrew</h1>
           <p style={sx.leadSmall}>
             Vi tilbyr oppdrag for sjøfolk som ønsker forutsigbarhet, ordnede forhold og utvikling. Som en del av Bluecrew får du
-            tett dialog med ledere som selv har stått i skiftet og vet hvordan hverdagen om bord er.
+            tett dialog med folk som selv har erfaring fra havet og vet hvordan hverdagen om bord ser ut.
           </p>
           <div style={{ display: "grid", gap: 26, marginTop: 36 }}>
             <div style={{ background: "#ffffff", borderRadius: 20, border: "1px solid #e2e8f0", padding: 28, boxShadow: "0 14px 30px rgba(15, 23, 42, 0.06)", display: "grid", gap: 12 }}>
