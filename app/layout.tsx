@@ -48,10 +48,10 @@ export const metadata: Metadata = {
     description,
     images: [
       {
-        url: "/hero/kaptein_skipper_lonn_bluecrew.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Bluecrew AS - Profesjonell maritim bemanning",
+        url: "/hero/maritime-hero.jpeg",
+        width: 1920,
+        height: 1080,
+        alt: "Bluecrew AS - Profesjonell maritim bemanning i Nord-Norge",
       },
     ],
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title,
     description,
-    images: ["/hero/kaptein_skipper_lonn_bluecrew.jpg"],
+    images: ["/hero/maritime-hero.jpeg"],
   },
   robots: {
     index: true,

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -41,10 +42,14 @@ export default function Page() {
             position: "relative",
             height: 400
           }}>
-            <img 
-              src="/hero/Skipper-styrmann-hero.jpeg" 
-              alt="Skipsfører på broen styrer fartøy på norsk kyst" 
+            <Image 
+              src="/guides/skipsforer-navigasjon.jpeg" 
+              alt="Erfaren skipsfører navigerer fra broen på servicefartøy i norske farvann - maritim bemanning" 
+              width={1200}
+              height={675}
+              priority
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, 800px"
             />
           </div>
 

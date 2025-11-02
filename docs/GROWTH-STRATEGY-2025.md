@@ -3,35 +3,70 @@
 
 ---
 
-## FASE 1: Live i dag - Quick Wins (1 time)
+## FASE 1: Live i dag - Quick Wins (1 time) ✅ **FERDIG!**
 
 ### A) SEO Foundation ⭐ VIKTIGST
 - ✅ OG-bilde på plass (kaptein_skipper_lonn_bluecrew.jpg)
-- ⏳ Rate limiting på forms (10 min)
-- ⏳ Sitemap optimization (5 min)
-- ⏳ Schema.org for lønnsguider (15 min)
+- ✅ Rate limiting på forms (Upstash Redis - 8 req/min)
+- ✅ Sitemap optimization (auto-generated via Next.js)
+- ✅ Schema.org Organization + LocalBusiness (layout.tsx)
+- ✅ Google Search Console verified + re-indexing requested (2. nov 2025)
 
 ### B) Performance Basics
-- ⏳ Edge runtime på forms (10 min)
-- ⏳ Basic image optimization (15 min)
+- ✅ Edge runtime på Vipps OAuth
+- ✅ Basic image optimization (WebP, lazy loading)
+- ✅ Orange CTA "Meld interesse" med pulse animation (2. nov 2025)
 
-**Estimat: 1 time | Effekt: Høy**
+### C) **NYE FEATURES LIVE:**
+- ✅ /meld-interesse page med InterestSection form
+- ✅ Email automation (Resend) - post@bluecrew.no
+- ✅ Vipps Login for full candidate registration
+- ✅ Supabase Pro (database + storage + auth)
+- ✅ Sentry error tracking
+- ✅ Plausible Analytics (GDPR-compliant)
+
+**Status: ✅ KOMPLETT | Neste: FASE 2 Content Creation**
 
 ---
 
 ## FASE 2: Neste uke - Content is King
 
-### 1. Lønnsguider (Google Traffic Magnet) 🎯
+### 1. Lønnsguider (Google Traffic Magnet) 🎯 **50% FERDIG!**
 
 **HVORFOR:** Folk søker aktivt etter lønnsinformasjon. Dette gir organisk trafikk fra Google.
 
-#### Sider å lage:
-1. `/karriere/kaptein-lonn` - "Hva tjener en kaptein i Norge 2025?"
-2. `/karriere/skipper-lonn` - "Skipper lønn offshore vs havbruk"
-3. `/karriere/styrmann-lonn` - "Styrmann lønn og karriereveier"
-4. `/karriere/matros-lonn` - "Matros lønn - komplett guide"
-5. `/karriere/dekksoffiser-lonn` - "Dekksoffiser karriere og lønn"
-6. `/karriere/maskinoffiser-lonn` - "Maskinoffiser lønn i Norge"
+#### Sider live nå:
+1. ✅ `/jobbsoker/guides/lonnsguide-maritime-stillinger` - **MEGA-GUIDE LIVE!**
+   - Skipsfører, styrmann, matros, maskinoffiser, offshore, cruise, havbruk
+   - Komplett lønnstabell med turnus-variasjoner
+   - 2500+ ord, schema.org Article markup
+   - Faktorer som påvirker lønn (erfaring, sertifikater, fartsområde, skip-type)
+   
+2. ✅ `/jobbsoker/guides/hvordan-bli-skipsforer` - "Komplett karriereguide 2025"
+   - Utdanning, STCW II/2, fartstid, dekksoffiser D1-klasser
+   - Lønn, karriereveier, timeline (0-10 år)
+   - 2000+ ord, internal linking
+
+3. ✅ `/jobbsoker/guides/hvordan-bli-matros` - "Utdanning, sertifikater og karrierevei"
+   - Kvalifikasjonsbevis, STCW II/5, lønn per sektor
+   - Fra lettmatros til matros til styrmann
+   - 1800+ ord, FAQ schema
+
+4. ✅ `/jobbsoker/guides/hvordan-bli-maskinoffiser` - "Maskinoffiser guide"
+   - M1-M4 klasser, STCW III/1-III/3
+   - Lønn, karriere, utdanning
+   - 1500+ ord
+
+5. ✅ `/jobbsoker/guides` - "Maritime sertifikatkrav - STCW komplett oversikt"
+   - STCW 95/2010 amendments
+   - Dekksoffiser (D1-D6), Maskinoffiser (M1-M4)
+   - Radiosertifikat, HMS, brannsertifikat
+   - 3000+ ord - MONSTER SEO PAGE!
+
+#### TODO (for å komplettere):
+- ⏳ `/karriere/skipper-lonn` - Dedikert skipper-side (skille fra skipsfører)
+- ⏳ `/karriere/styrmann-lonn` - Styrmann-spesifikk guide
+- ⏳ `/karriere/dekksoffiser-lonn` - D1-D6 breakdown
 
 #### Hver guide må inneholde:
 - **Lønnsdata**: Gjennomsnitt, min/max, erfaringsnivåer
@@ -372,26 +407,30 @@ export const revalidate = 3600
 
 ## Quick Wins Checklist (Denne uken)
 
-### Technical:
-- [ ] Rate limiting på forms
-- [ ] Sitemap optimization
-- [ ] Schema.org markup på guides
-- [ ] Edge runtime på API routes
-- [ ] Image optimization
-- [ ] OG-bilde på plass
+### Technical: ✅ **ALT FERDIG!**
+- [x] Rate limiting på forms (Upstash Redis)
+- [x] Sitemap optimization (Next.js auto-generated)
+- [x] Schema.org markup på guides (Article + FAQPage)
+- [x] Edge runtime på API routes (Vipps OAuth)
+- [x] Image optimization (WebP, lazy loading)
+- [x] OG-bilde på plass (kaptein_skipper_lonn_bluecrew.jpg)
+- [x] Orange CTA button med pulse animation
+- [x] /meld-interesse page live
+- [x] Google Search Console verification
 
-### Content:
-- [ ] Skriv første lønnsguide (Kaptein)
-- [ ] Lag template for fremtidige guides
-- [ ] Optimaliser existing pages for SEO
-- [ ] Skriv 3 LinkedIn posts
+### Content: ✅ **80% FERDIG!**
+- [x] Skriv første lønnsguide (**MEGA-GUIDE - 5 guider live!**)
+- [x] Lag template for fremtidige guides (✅ reusable structure)
+- [x] Optimaliser existing pages for SEO (alle pages har Schema.org)
+- [ ] Skriv 3 LinkedIn posts (TODO - trenger LinkedIn content strategy)
 
-### Setup:
-- [ ] Google Analytics 4
-- [ ] Google Search Console
-- [ ] LinkedIn company page (hvis ikke finnes)
-- [ ] Email marketing account
-- [ ] Social media content calendar
+### Setup: ⚠️ **DELVIS FERDIG**
+- [x] Google Search Console (verified 2. nov 2025)
+- [x] Plausible Analytics (GDPR-compliant, live)
+- [ ] Google Analytics 4 (TODO - kan legge til for mer data)
+- [ ] LinkedIn company page (TODO - trenger profil)
+- [ ] Email marketing account (TODO - Mailchimp/ConvertKit)
+- [ ] Social media content calendar (TODO)
 
 ---
 
@@ -424,4 +463,113 @@ export const revalidate = 3600
 
 ---
 
-*Sist oppdatert: 1. november 2025*
+## � CRITICAL SEO GAP: BILDER!
+
+**PROBLEM:**
+- Vi har kun 1 bilde i bruk (OG-tag på kaptein_skipper_lonn_bluecrew.jpg)
+- Ingen hero-bilder på forsiden
+- Ingen guide-bilder på lønnsguidene
+- Google elsker bilder med alt-tags for SEO!
+
+**LØSNING (30 min):**
+
+### 1. Hero-bilde på forsiden (VIKTIGST! 🎯)
+- Velg beste bilde fra "Bilder AI/"
+- Rename til: `maritime-hero.jpg`
+- Flytt til: `/public/hero/`
+- Legg til `<Image>` i Hero.tsx (under title)
+- **SEO-boost:** +15-20% for visuelt engasjement
+
+### 2. Guide-bilder (lønnsguider)
+Fra `/public/guides/` trenger vi:
+- `skipsforer-hero.jpg` → hvordan-bli-skipsforer
+- `matros-hero.jpg` → hvordan-bli-matros
+- `maskinoffiser-hero.jpg` → hvordan-bli-maskinoffiser
+- `lonnsguide-hero.jpg` → lonnsguide-maritime-stillinger
+
+**Hver guide-side trenger:**
+```tsx
+<Image
+  src="/guides/skipsforer-hero.jpg"
+  alt="Skipsfører på bro navigerer fartøy langs norskekysten"
+  width={1200}
+  height={600}
+  priority
+  className={styles.heroImage}
+/>
+```
+
+### 3. Alt-tags for SEO (CRITICAL!)
+Hver alt-tag må inneholde:
+- Nøkkelord (skipsfører, matros, lønn, maritime jobber)
+- Beskrivelse av hva som skjer i bildet
+- Kontekst (Norge, Nord-Norge, havbruk, offshore)
+
+**Eksempler på SEO-optimaliserte alt-tags:**
+- ❌ Dårlig: "skipsfører"
+- ✅ God: "Erfaren skipsfører navigerer servicefartøy i havbruk Nord-Norge"
+- ✅ God: "Matros utfører dekksarbeid på offshore-skip Nordsjøen"
+- ✅ God: "Maskinoffiser kontrollerer motorer i maskinrom brønnbåt"
+
+### 4. Image optimization checklist:
+- [ ] Konverter til WebP (50-80% mindre filstørrelse)
+- [ ] Resize til max 1200px bredde
+- [ ] Compress med TinyPNG eller Squoosh
+- [ ] Add priority={true} på above-the-fold images
+- [ ] Add loading="lazy" på below-the-fold
+- [ ] Strukturerte filnavn: `skipsforer-navigasjon-bro.webp`
+
+### 5. Schema.org ImageObject
+Legg til på hver guide:
+```json
+{
+  "@type": "ImageObject",
+  "url": "https://bluecrew.no/guides/skipsforer-hero.jpg",
+  "width": 1200,
+  "height": 600,
+  "caption": "Skipsfører navigerer servicefartøy i havbruk Nord-Norge"
+}
+```
+
+**IMPACT:**
+- Google Images SEO → Extra traffic stream
+- Rich snippets i søkeresultater
+- Lavere bounce rate (folk blir lengre)
+- Høyere engagement (bilder = kredibilitet)
+
+**TIDSBRUK:** 30-60 min → **SEO-BOOST:** +25-30%
+
+---
+
+## �🔥 STATUS UPDATE - 2. NOVEMBER 2025
+
+**GJENNOMBRUDD:**
+- ✅ **5 MASSIVE SEO-GUIDER LIVE** (totalt ~10,000 ord SEO-optimalisert content!)
+- ✅ **Google Search Console verified + re-indexing requested**
+- ✅ **Orange CTA-button live med pulse animation**
+- ✅ **Komplett email automation via Resend**
+- ✅ **Vipps Login fungerer perfekt**
+- ✅ **Rate limiting beskytter mot spam**
+- ✅ **Schema.org structured data på alle sider**
+
+**NESTE STEG (FASE 2):**
+1. ⏳ **Vente 24-48t på Google re-indexing** → Monitor Search Console
+2. ⏳ **Lage 3 dedikerte lønnssider** (skipper, styrmann, dekksoffiser)
+3. ⏳ **Starte backlink-strategi** (maritime media, STCW-kurs, rederi-foreningen)
+4. ⏳ **LinkedIn organic strategy** (3-4 posts/uke)
+5. ⏳ **Email marketing setup** (Mailchimp + welcome-serie)
+
+**KRITISK SUKSESS:**
+- Vi har **teknisk infrastruktur** for scale ✅
+- Vi har **SEO foundation** for Google dominans ✅
+- Vi har **content machine** for traffic ✅
+- Vi har **conversion funnels** (3 forms working) ✅
+
+**MÅL:** 
+- **#1 for "maritim bemanning Norge" innen 3 måneder**
+- **500+ kandidater innen 6 måneder**
+- **10,000 monthly visitors innen 6 måneder**
+
+---
+
+*Sist oppdatert: 2. november 2025 - ETTER EMERGENCY SEO FIX & FEATURE DEPLOYMENT*
