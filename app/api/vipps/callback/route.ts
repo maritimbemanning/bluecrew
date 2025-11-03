@@ -2,14 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { jwtVerify, createRemoteJWKSet } from "jose";
 import { Redis } from "@upstash/redis";
+import crypto from "crypto";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-// Vipps JWKS endpoint for signature verification
-const VIPPS_JWKS_URL = `${process.env.VIPPS_API_BASE_URL}/.well-known/jwks.json`;
+// Vipps OpenID base and JWKS endpoint for signature verification
+const VIPPS_OPENID_BASE = `${process.env.VIPPS_API_BASE_URL}/access-management-1.0/access`;
+const VIPPS_JWKS_URL = `${VIPPS_OPENID_BASE}/.well-known/jwks.json`;
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -72,12 +74,12 @@ export async function GET(request: NextRequest) {
     const tokens = await tokenResponse.json();
 
     // ✅ SECURE: Verify ID token signature with Vipps JWKS
-    const JWKS = createRemoteJWKSet(new URL(VIPPS_JWKS_URL));
+  const JWKS = createRemoteJWKSet(new URL(VIPPS_JWKS_URL));
     
     let verifiedPayload;
     try {
       const { payload } = await jwtVerify(tokens.id_token, JWKS, {
-        issuer: process.env.VIPPS_ISSUER || "https://api.vipps.no/access-management-1.0/access",
+        issuer: process.env.VIPPS_ISSUER || VIPPS_OPENID_BASE,
         audience: process.env.VIPPS_CLIENT_ID,
       });
       verifiedPayload = payload;
