@@ -5,7 +5,7 @@ import { sx } from "../lib/styles";
 export const metadata: Metadata = {
   title: "Kontakt oss - Bluecrew AS Harstad",
   description:
-    "Kontakt Bluecrew AS for bemanning til havbruk, servicefartøy og offshore. Telefon 923 28 850. E-post: isak@bluecrew.no. Besøksadresse: Østenbekkveien 43, Harstad.",
+    "Kontakt Bluecrew AS for bemanning til havbruk, servicefartøy og offshore. Telefon 923 28 850. E-post: isak@bluecrew.no. Besøksadresse: Ervikveien 110, Harstad.",
   keywords: [
     "kontakt bluecrew",
     "bemanning forespørsel",
@@ -40,7 +40,7 @@ export default function Page() {
                 <strong>Telefon:</strong> <a href="tel:92328850" style={sx.contactLink}>923 28 850</a>
               </p>
               <p style={sx.contactLine}>
-                <strong>Adresse:</strong> Østenbekkveien 43, 9403 Harstad
+                <strong>Adresse:</strong> Ervikveien 110, 9402 Harstad
               </p>
             </div>
             <div>

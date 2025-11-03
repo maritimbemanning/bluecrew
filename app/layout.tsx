@@ -86,9 +86,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     description: "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Østenbekkveien 43",
+      streetAddress: "Ervikveien 110",
       addressLocality: "Harstad",
-      postalCode: "9403",
+      postalCode: "9402",
       addressRegion: "Troms",
       addressCountry: "NO",
     },
@@ -116,9 +116,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     email: "post@bluecrew.no",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Østenbekkveien 43",
+      streetAddress: "Ervikveien 110",
       addressLocality: "Harstad",
-      postalCode: "9403",
+      postalCode: "9402",
       addressRegion: "Troms",
       addressCountry: "NO",
     },

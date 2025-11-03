@@ -597,7 +597,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               </ul>
               <div style={{ marginTop: 12 }}>
                 <div style={{ fontSize: 14, color: "rgba(226,232,240,0.7)", fontWeight: 700 }}>Adresse</div>
-                <div style={{ fontSize: 15, color: "#e2e8f0", marginTop: 6 }}>Østenbekkveien 43, 9403 Harstad</div>
+                <div style={{ fontSize: 15, color: "#e2e8f0", marginTop: 6 }}>Ervikveien 110, 9402 Harstad</div>
                 <div style={{ fontSize: 13, color: "rgba(226,232,240,0.6)", marginTop: 6 }}>Org.nr: 936 321 194</div>
               </div>
             </div>
