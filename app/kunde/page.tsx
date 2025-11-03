@@ -1,6 +1,38 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Maritim bemanning og rekruttering for rederier",
+  description:
+    "Få sertifisert mannskap til havbruk, service- og spesialfartøy. Screening, referansesjekk og dokumentkontroll – rask mobilisering og forutsigbare avtaler.",
+  keywords: [
+    "maritim bemanning",
+    "bemanning rederi",
+    "havbruk bemanning",
+    "servicefartøy mannskap",
+    "offshore støttefartøy bemanning",
+    "maritim rekruttering",
+  ],
+  openGraph: {
+    title: "Maritim bemanning og rekruttering | Bluecrew AS",
+    description:
+      "Sertifisert mannskap til havbruk, service- og spesialfartøy. Screening, referansesjekk og dokumentkontroll.",
+    type: "website",
+    images: [
+      { url: "/hero/maritime-hero.jpeg", width: 1920, height: 1080, alt: "Maritim bemanning – Bluecrew" },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Maritim bemanning og rekruttering | Bluecrew AS",
+    description:
+      "Sertifisert mannskap til havbruk, service- og spesialfartøy. Screening, referansesjekk og dokumentkontroll.",
+    images: ["/hero/maritime-hero.jpeg"],
+  },
+  alternates: { canonical: "/kunde" },
+};
 
 export default function Page() {
   return (

@@ -13,6 +13,12 @@ const baseConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      { source: "/sentry-example-page", destination: "/", permanent: true },
+      { source: "/api/sentry-example-api", destination: "/", permanent: true },
+    ];
+  },
 };
 
 export default async function loadConfig(): Promise<NextConfig> {
