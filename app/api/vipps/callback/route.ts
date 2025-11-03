@@ -123,20 +123,23 @@ export async function GET(request: NextRequest) {
 
     // Generate secure session ID and store PII server-side
     const sessionId = crypto.randomUUID();
+    
+    // CRITICAL: Explicitly convert JWT payload properties to strings
+    // to prevent [object Object] serialization bug in Redis
     const vippsData = {
-      sub: String(verifiedPayload.sub),
-      name: String(verifiedPayload.name || ''),
-      phone_number: String(verifiedPayload.phone_number || ''),
-      birthdate: String(verifiedPayload.birthdate || ''),
+      sub: verifiedPayload.sub ? String(verifiedPayload.sub) : '',
+      name: verifiedPayload.name ? String(verifiedPayload.name) : '',
+      phone_number: verifiedPayload.phone_number ? String(verifiedPayload.phone_number) : '',
+      birthdate: verifiedPayload.birthdate ? String(verifiedPayload.birthdate) : '',
       verified_at: new Date().toISOString(),
     };
 
     console.log("💾 Storing Vipps session in Redis:", {
       sessionId,
       key: `vipps:${sessionId}`,
+      dataToStore: JSON.stringify(vippsData), // Log the actual JSON string
       hasName: !!vippsData.name,
       hasPhone: !!vippsData.phone_number,
-      dataToStore: vippsData,
     });
 
     // Store in Redis with 1 hour expiry
