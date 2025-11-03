@@ -308,7 +308,7 @@ export default function BemanningTermsPage() {
                   <strong>Telefon:</strong> 923 28 850
                 </li>
                 <li>
-                  <strong>Adresse:</strong> Østenbekkveien 43, 9403 Harstad
+                  <strong>Adresse:</strong> Ervikveien 110, 9402 Harstad
                 </li>
               </ul>
               <p style={ui.p}>

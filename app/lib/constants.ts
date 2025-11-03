@@ -569,7 +569,7 @@ export const MUNICIPALITIES_BY_COUNTY: Record<string, string[]> = {
 export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
-  { label: "Besøk oss", value: "Østenbekkveien 43, 9403 Harstad" },
+  { label: "Besøk oss", value: "Ervikveien 110, 9402 Harstad" },
 ];
 
 export const SOCIAL_LINKS = [

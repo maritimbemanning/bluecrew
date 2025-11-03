@@ -154,7 +154,7 @@ export default function PersonvernPage() {
             <section style={ui.card}>
               <h2 style={ui.h2}>Behandlingsansvarlig</h2>
               <p style={ui.p}>
-                Bluecrew AS (Org.nr: 936 321 194), Østenbekkveien 43, 9403 Harstad. E-post:{" "}
+                Bluecrew AS (Org.nr: 936 321 194), Ervikveien 110, 9402 Harstad. E-post:{" "}
                 <a href="mailto:isak@bluecrew.no" style={ui.a}>isak@bluecrew.no</a>.
               </p>
             </section>
