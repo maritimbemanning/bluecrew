@@ -124,10 +124,10 @@ export async function GET(request: NextRequest) {
     // Generate secure session ID and store PII server-side
     const sessionId = crypto.randomUUID();
     const vippsData = {
-      sub: verifiedPayload.sub,
-      name: verifiedPayload.name,
-      phone_number: verifiedPayload.phone_number,
-      birthdate: verifiedPayload.birthdate,
+      sub: String(verifiedPayload.sub),
+      name: String(verifiedPayload.name || ''),
+      phone_number: String(verifiedPayload.phone_number || ''),
+      birthdate: String(verifiedPayload.birthdate || ''),
       verified_at: new Date().toISOString(),
     };
 
@@ -136,6 +136,7 @@ export async function GET(request: NextRequest) {
       key: `vipps:${sessionId}`,
       hasName: !!vippsData.name,
       hasPhone: !!vippsData.phone_number,
+      dataToStore: vippsData,
     });
 
     // Store in Redis with 1 hour expiry
