@@ -251,22 +251,29 @@ export default function CandidateContent() {
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
       } else {
-        // TEMPORARY: Skip Vipps verification requirement
-        console.log("⚠️ No Vipps session found, but allowing form access temporarily");
-        setCheckingSession(false);
+        // No valid session but user came from verified=true redirect
+        // This means Vipps succeeded but Redis failed - allow form access
+        if (isVerified) {
+          console.log("⚠️ Vipps verified but session not found - allowing form access (Redis issue)");
+          setStatusMessage("⚠️ Identitetsverifisering fullført, men teknisk feil med sesjon. Du kan fortsatt fylle ut skjemaet.");
+          setCheckingSession(false);
+          return;
+        }
+        // No verification at all - redirect back
+        router.push("/jobbsoker/registrer");
         return;
-        // No valid session - redirect back to Vipps login
-        // router.push("/jobbsoker/registrer");
-        // return;
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      // TEMPORARY: Allow form access even on error
-      console.log("⚠️ Vipps session check failed, but allowing form access temporarily");
-      setCheckingSession(false);
+      // If user came with verified=true, allow despite error
+      if (isVerified) {
+        console.log("⚠️ Session check failed but user verified - allowing form access");
+        setStatusMessage("⚠️ Teknisk feil ved sesjonsjekk. Du kan fortsatt fylle ut skjemaet.");
+        setCheckingSession(false);
+        return;
+      }
+      router.push("/jobbsoker/registrer");
       return;
-      // router.push("/jobbsoker/registrer");
-      // return;
     } finally {
       setCheckingSession(false);
     }

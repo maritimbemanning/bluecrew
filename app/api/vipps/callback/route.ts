@@ -124,31 +124,30 @@ export async function GET(request: NextRequest) {
     // Generate secure session ID and store PII server-side
     const sessionId = crypto.randomUUID();
     
-    // CRITICAL: Explicitly convert JWT payload properties to strings
-    // to prevent [object Object] serialization bug in Redis
-    const vippsData = {
-      sub: verifiedPayload.sub ? String(verifiedPayload.sub) : '',
-      name: verifiedPayload.name ? String(verifiedPayload.name) : '',
-      phone_number: verifiedPayload.phone_number ? String(verifiedPayload.phone_number) : '',
-      birthdate: verifiedPayload.birthdate ? String(verifiedPayload.birthdate) : '',
+    // Build session object with explicit string values
+    const sessionData = {
+      sub: String(verifiedPayload.sub || ''),
+      name: String(verifiedPayload.name || ''),
+      phone_number: String(verifiedPayload.phone_number || ''),
+      birthdate: String(verifiedPayload.birthdate || ''),
       verified_at: new Date().toISOString(),
     };
 
     console.log("💾 Storing Vipps session in Redis:", {
       sessionId,
       key: `vipps:${sessionId}`,
-      dataToStore: JSON.stringify(vippsData), // Log the actual JSON string
-      hasName: !!vippsData.name,
-      hasPhone: !!vippsData.phone_number,
+      sessionData,
     });
 
-    // Store in Redis with 1 hour expiry
+    // Store in Redis with 1 hour expiry using set() with EX option
     try {
-      await redis.setex(`vipps:${sessionId}`, 3600, JSON.stringify(vippsData));
+      await redis.set(`vipps:${sessionId}`, sessionData, { ex: 3600 });
       console.log("✅ Redis storage successful");
     } catch (redisError) {
       console.error("⚠️ Redis storage failed:", redisError);
-      // Fallback: continue without session (user will need to re-verify)
+      return NextResponse.redirect(
+        new URL("/jobbsoker/registrer?vipps_error=session_storage_failed", request.url)
+      );
     }
 
     // Ensure cookies work across apex and www in production

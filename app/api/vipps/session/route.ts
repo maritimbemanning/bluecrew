@@ -23,11 +23,12 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch session data from Redis using session ID
-    const sessionData = await redis.get<string>(`vipps:${sessionIdCookie.value}`);
+    const sessionData = await redis.get(`vipps:${sessionIdCookie.value}`);
     
     console.log("📦 Redis lookup result:", {
       found: !!sessionData,
       key: `vipps:${sessionIdCookie.value}`,
+      dataType: typeof sessionData,
     });
 
     if (!sessionData) {
@@ -36,11 +37,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ verified: false });
     }
 
-    const session = JSON.parse(sessionData);
+    // Redis SDK returns object directly, no need to parse
     console.log("✅ Session found and verified");
     return NextResponse.json({
       verified: true,
-      session,
+      session: sessionData,
     });
   } catch (error) {
     console.error("⚠️ Vipps session fetch error:", error);

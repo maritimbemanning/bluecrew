@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
-import CandidateContent from "../CandidateForm";
+import { VippsLoginPage } from "../VippsLogin";
 
 export const dynamic = "force-dynamic"; // Disable all caching
 
@@ -12,10 +12,10 @@ export default function Page() {
         <div style={sx.wrapNarrow}>
           <h1 style={sx.h2}>Registrer deg som jobbsøker</h1>
           <p style={sx.leadSmall}>
-            Fyll ut skjemaet under for å registrere deg som jobbsøker.
+            Bekreft identiteten din med Vipps før du fyller ut jobbsøkerprofilen.
           </p>
           <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn …</div>}>
-            <CandidateContent />
+            <VippsLoginPage />
           </Suspense>
         </div>
       </section>
