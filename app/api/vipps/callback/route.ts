@@ -107,9 +107,17 @@ export async function GET(request: NextRequest) {
       verified_at: new Date().toISOString(),
     };
 
+    console.log("💾 Storing Vipps session in Redis:", {
+      sessionId,
+      key: `vipps:${sessionId}`,
+      hasName: !!vippsData.name,
+      hasPhone: !!vippsData.phone_number,
+    });
+
     // Store in Redis with 1 hour expiry
     try {
       await redis.setex(`vipps:${sessionId}`, 3600, JSON.stringify(vippsData));
+      console.log("✅ Redis storage successful");
     } catch (redisError) {
       console.error("⚠️ Redis storage failed:", redisError);
       // Fallback: continue without session (user will need to re-verify)
@@ -121,6 +129,12 @@ export async function GET(request: NextRequest) {
       process.env.NODE_ENV === "production" && hostname.endsWith("bluecrew.no")
         ? ".bluecrew.no"
         : undefined;
+
+    console.log("🍪 Setting session cookie:", {
+      sessionId,
+      domain: cookieDomain || "default",
+      hostname,
+    });
 
     // Only store session ID in cookie (not PII)
     cookieStore.set("vipps_session_id", sessionId, {
@@ -134,6 +148,8 @@ export async function GET(request: NextRequest) {
     // Clean up state/nonce cookies
     cookieStore.delete("vipps_state");
     cookieStore.delete("vipps_nonce");
+
+    console.log("🔄 Redirecting to form with verified=true");
 
     return NextResponse.redirect(
       new URL("/jobbsoker/registrer/skjema?verified=true", request.url)
