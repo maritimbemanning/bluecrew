@@ -3,7 +3,6 @@ import { clientSchema, extractClientForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendClientConfirmation, sendNotificationEmail } from "../../lib/server/email";
 import { insertSupabaseRow } from "../../lib/server/supabase";
-import { captureServerException } from "../../lib/server/observability";
 
 export const runtime = "nodejs";
 
@@ -70,7 +69,6 @@ export async function POST(req: Request) {
           source_ip: getClientIp(req),
         },
       }).catch((error) => {
-        captureServerException(error, { scope: "client-insert", table: "leads" });
         console.error("⚠️ Supabase-feil (client):", error);
       }),
       sendNotificationEmail({
@@ -79,7 +77,6 @@ export async function POST(req: Request) {
         html,
         replyTo: data.c_email,
       }).catch((error) => {
-        captureServerException(error, { scope: "client-email" });
         console.error("❌ Sendefeil (client):", error);
       }),
       sendClientConfirmation({
@@ -87,7 +84,6 @@ export async function POST(req: Request) {
         email: data.c_email,
         company: data.company,
       }).catch((error) => {
-        captureServerException(error, { scope: "client-receipt" });
         console.error("⚠️ Sendte ikke kvittering (client):", error);
       }),
     ]);
@@ -101,7 +97,6 @@ export async function POST(req: Request) {
     return NextResponse.redirect(back, { status: 303 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    captureServerException(err, { scope: "client-handler" });
     console.error("❌ Uventet feil (client):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }

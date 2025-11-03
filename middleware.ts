@@ -6,7 +6,7 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 /**
  * Streng, men praktisk Content Security Policy (CSP)
  * - Tillater Google Fonts og Plausible
- * - Tillater nødvendige utgående forbindelser (Resend, Supabase, Upstash, Sentry, Plausible)
+ * - Tillater nødvendige utgående forbindelser (Resend, Supabase, Upstash, Plausible, Vipps, Brreg)
  * - NB: 'unsafe-inline' er midlertidig for stil/skript. Fjern/stram inn når mulig.
  */
 const csp = [
@@ -17,9 +17,9 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net blob:`, // blob: for Sentry workers
+  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net blob:`,
   "worker-src 'self' blob:",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://o4510290040848384.ingest.de.sentry.io https://api.vipps.no https://data.brreg.no",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");

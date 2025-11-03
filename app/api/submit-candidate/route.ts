@@ -12,7 +12,6 @@ import {
   createCandidateStorageBase,
   extractExtension,
 } from "../../lib/server/candidate-files";
-import { captureServerException } from "../../lib/server/observability";
 
 export const runtime = "nodejs";
 
@@ -72,7 +71,6 @@ export async function POST(req: Request) {
         contentType: cvFile.type || "application/pdf",
       });
     } catch (error) {
-      captureServerException(error, { scope: "candidate-upload-cv", cvPath, bucketName: "candidates-private" });
       console.error("❌ Klarte ikke å lagre CV i Supabase:", error);
       console.error("CV path:", cvPath);
       console.error("Bucket:", "candidates-private");
@@ -109,7 +107,6 @@ export async function POST(req: Request) {
           contentType: certsFile.type || "application/octet-stream",
         });
       } catch (error) {
-        captureServerException(error, { scope: "candidate-upload-certificate", certificatePath });
         console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
         console.error("Certificate path:", certificatePath);
         // Continue with submission even if certificate storage fails
@@ -174,7 +171,6 @@ export async function POST(req: Request) {
           source_ip: getClientIp(req),
         },
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-insert", table: "candidates" });
         console.error("⚠️ Supabase-feil (candidate):", error);
       }),
       sendNotificationEmail({
@@ -184,14 +180,12 @@ export async function POST(req: Request) {
         replyTo: data.email,
         attachments,
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-email" });
         console.error("❌ Sendefeil (candidate):", error);
       }),
       sendCandidateReceipt({
         name: data.name,
         email: data.email,
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-receipt" });
         console.error("⚠️ Sendte ikke kvittering (candidate):", error);
       }),
     ]);
@@ -205,7 +199,6 @@ export async function POST(req: Request) {
     return NextResponse.redirect(back, { status: 303 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    captureServerException(err, { scope: "candidate-handler" });
     console.error("❌ Uventet feil (candidate):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }

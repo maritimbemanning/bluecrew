@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withSentryConfig } from "@sentry/nextjs";
 
 const baseConfig: NextConfig = {
   // Ikke stopp bygg på ESLint-feil (så Vercel får deployet)
@@ -21,29 +20,13 @@ export default async function loadConfig(): Promise<NextConfig> {
     const { createVanillaExtractPlugin } = await import("@vanilla-extract/next-plugin");
     const withVanillaExtract = createVanillaExtractPlugin();
     const configWithVanilla = withVanillaExtract(baseConfig);
-    
-    // Wrap with Sentry config
-    return withSentryConfig(configWithVanilla, {
-      org: "bluecrew-as",
-      project: "javascript-nextjs",
-      silent: !process.env.CI,
-      widenClientFileUpload: true,
-      tunnelRoute: "/monitoring",
-      disableLogger: true,
-      automaticVercelMonitors: true,
-    });
+
+    // Return config without Sentry wrapper
+    return configWithVanilla;
   } catch {
     console.warn("@vanilla-extract/next-plugin not found — running without vanilla-extract integration.");
-    
-    // Wrap base config with Sentry
-    return withSentryConfig(baseConfig, {
-      org: "bluecrew-as",
-      project: "javascript-nextjs",
-      silent: !process.env.CI,
-      widenClientFileUpload: true,
-      tunnelRoute: "/monitoring",
-      disableLogger: true,
-      automaticVercelMonitors: true,
-    });
+
+    // Return base config
+    return baseConfig;
   }
 }

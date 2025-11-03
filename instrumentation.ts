@@ -1,13 +1,9 @@
-import * as Sentry from '@sentry/nextjs';
-
+// No-op instrumentation (Sentry removed)
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
-    await import('./sentry.server.config');
-  }
-
-  if (process.env.NEXT_RUNTIME === 'edge') {
-    await import('./sentry.edge.config');
-  }
+  // Intentionally empty
 }
 
-export const onRequestError = Sentry.captureRequestError;
+// If desired, you can implement custom logging here.
+// export const onRequestError = (err: unknown) => {
+//   console.error('Request error:', err);
+// };
