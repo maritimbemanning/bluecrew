@@ -53,7 +53,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    href: "/karriere",
+    href: "/jobbsoker/guides/lonnsguide-maritime-stillinger",
     label: "Lønn til sjøs",
     key: "lonn",
     children: [
