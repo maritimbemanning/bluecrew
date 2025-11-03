@@ -251,14 +251,22 @@ export default function CandidateContent() {
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
       } else {
-        // No valid session - redirect back to Vipps login
-        router.push("/jobbsoker/registrer");
+        // TEMPORARY: Skip Vipps verification requirement
+        console.log("⚠️ No Vipps session found, but allowing form access temporarily");
+        setCheckingSession(false);
         return;
+        // No valid session - redirect back to Vipps login
+        // router.push("/jobbsoker/registrer");
+        // return;
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      router.push("/jobbsoker/registrer");
+      // TEMPORARY: Allow form access even on error
+      console.log("⚠️ Vipps session check failed, but allowing form access temporarily");
+      setCheckingSession(false);
       return;
+      // router.push("/jobbsoker/registrer");
+      // return;
     } finally {
       setCheckingSession(false);
     }
