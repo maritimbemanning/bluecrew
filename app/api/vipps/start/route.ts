@@ -18,6 +18,13 @@ export async function GET(request: NextRequest) {
 
   console.log("✅ Generated state and nonce", { state, nonce });
 
+  // Ensure cookies work across apex and www in production
+  const hostname = new URL(request.url).hostname;
+  const cookieDomain =
+    process.env.NODE_ENV === "production" && hostname.endsWith("bluecrew.no")
+      ? ".bluecrew.no"
+      : undefined;
+
   // Store state and nonce in httpOnly cookies for security
   const cookieStore = await cookies();
   cookieStore.set("vipps_state", state, {
@@ -25,12 +32,14 @@ export async function GET(request: NextRequest) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 600, // 10 minutes
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
   });
   cookieStore.set("vipps_nonce", nonce, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 600,
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
   });
 
   const params = new URLSearchParams({

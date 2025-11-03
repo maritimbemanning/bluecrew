@@ -113,12 +113,20 @@ export async function GET(request: NextRequest) {
       // Fallback: continue without session (user will need to re-verify)
     }
 
+    // Ensure cookies work across apex and www in production
+    const hostname = new URL(request.url).hostname;
+    const cookieDomain =
+      process.env.NODE_ENV === "production" && hostname.endsWith("bluecrew.no")
+        ? ".bluecrew.no"
+        : undefined;
+
     // Only store session ID in cookie (not PII)
     cookieStore.set("vipps_session_id", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 3600, // 1 hour
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
     });
 
     // Clean up state/nonce cookies
