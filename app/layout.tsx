@@ -5,6 +5,7 @@ import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
 
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
@@ -153,6 +154,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
+        <BreadcrumbsSchema />
       </head>
       <body>
         {children}

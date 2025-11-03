@@ -1,6 +1,8 @@
 # 📚 **BLUECREW ADMIN - KOMPLETT KUNNSKAPSBASE**
 
-*Sist oppdatert: 2. november 2025*
+> Viktig: Denne filen beskriver Admin‑portalen (egen app/repo: `maritimbemanning/bluecrew-admin`), ikke dette nettstedet (`bluecrew`). Beholdes her for referanse, men endringer bør skje i admin‑repoet.
+
+*Sist oppdatert: 4. november 2025*
 
 ---
 

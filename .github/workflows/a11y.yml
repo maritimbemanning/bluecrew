@@ -1,0 +1,46 @@
+name: a11y-pa11y
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  pa11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start server
+        run: |
+          nohup npm start >/dev/null 2>&1 &
+          for i in {1..60}; do
+            if curl -sSf http://localhost:3000/ >/dev/null; then
+              echo "Server is up"; break;
+            fi
+            sleep 1
+          done
+
+      - name: Run pa11y checks
+        run: |
+          npx pa11y http://localhost:3000/
+          npx pa11y http://localhost:3000/jobbsoker
+          npx pa11y http://localhost:3000/kunde
+          npx pa11y http://localhost:3000/kontakt
+          npx pa11y http://localhost:3000/om-oss
+          npx pa11y http://localhost:3000/cookies
