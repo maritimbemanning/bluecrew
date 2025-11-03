@@ -611,7 +611,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
           <div style={sx.footerLegal}>
           © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
           <br />
-          <span style={{ fontSize: '0.85em', opacity: 0.7, marginTop: '4px', display: 'inline-block' }}>Nettside av Didriksson Digital</span>
+          <span style={{ fontSize: '0.9em', opacity: 0.85, marginTop: '8px', display: 'inline-block', fontWeight: 500 }}>Nettside © Didriksson Digital ENK</span>
           </div>
         </div>
       </footer>
