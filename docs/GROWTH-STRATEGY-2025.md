@@ -277,11 +277,15 @@
 
 ### 1. Backlinks Strategy
 
-#### A) PR & Media:
+#### A) PR & Media: 🔄 **IN PROGRESS!**
 - **Target**: Maritime media (Kyst og Fjord, Fiskeribladet, Skipsrevyen)
 - **Pitch**: "Vi har lønnsdata for maritime stillinger 2025"
 - **Innhold**: Eksklusive lønnsrapporter, bransjeinnsikt
 - **Resultat**: Artikler med link tilbake til bluecrew.no
+- ✅ **PR Package klar**: Press release + 2 artikler ready to send (docs/pr-package.md)
+- 🔄 **Outreach sent**: 2 aviser (Kyst og Fjord, Fiskeribladet) forespurt 3. nov 2025
+- 📊 **Tracking**: backlinks-tracker.md opprettet for full oversikt
+- ⏳ **Next**: Follow-up 8. nov + pitch til Skipsrevyen (5. nov)
 
 #### B) Partnerships:
 - **STCW-kursleverandører**: 
