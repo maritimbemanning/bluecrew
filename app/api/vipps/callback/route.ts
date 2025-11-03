@@ -73,6 +73,27 @@ export async function GET(request: NextRequest) {
 
     const tokens = await tokenResponse.json();
 
+    console.log("🔍 Token response received, id_token present:", !!tokens.id_token);
+
+    // Decode JWT without verification to see what issuer Vipps actually uses
+    if (tokens.id_token) {
+      const parts = tokens.id_token.split('.');
+      if (parts.length === 3) {
+        try {
+          const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+          console.log("🔍 JWT payload (before verification):", {
+            iss: payload.iss,
+            aud: payload.aud,
+            nonce: payload.nonce,
+            hasName: !!payload.name,
+            hasPhone: !!payload.phone_number,
+          });
+        } catch (decodeError) {
+          console.error("Failed to decode JWT for inspection:", decodeError);
+        }
+      }
+    }
+
     // ✅ SECURE: Verify ID token signature with Vipps JWKS
   const JWKS = createRemoteJWKSet(new URL(VIPPS_JWKS_URL));
     
