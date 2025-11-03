@@ -72,41 +72,19 @@ export async function GET(request: NextRequest) {
     }
 
     const tokens = await tokenResponse.json();
-
-    console.log("🔍 Token response received, id_token present:", !!tokens.id_token);
-
-    // Decode JWT without verification to see what issuer Vipps actually uses
-    if (tokens.id_token) {
-      const parts = tokens.id_token.split('.');
-      if (parts.length === 3) {
-        try {
-          const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
-          console.log("🔍 JWT payload (before verification):", {
-            iss: payload.iss,
-            aud: payload.aud,
-            nonce: payload.nonce,
-            hasName: !!payload.name,
-            hasPhone: !!payload.phone_number,
-          });
-        } catch (decodeError) {
-          console.error("Failed to decode JWT for inspection:", decodeError);
-        }
-      }
-    }
+    console.log("🔍 Token response received, id_token present:", Boolean(tokens.id_token));
 
     // ✅ SECURE: Verify ID token signature with Vipps JWKS
   const JWKS = createRemoteJWKSet(new URL(VIPPS_JWKS_URL));
     
     let verifiedPayload;
     try {
-      // Temporarily skip issuer validation to get Vipps working
-      // We'll log the actual issuer and fix it properly after
       const { payload } = await jwtVerify(tokens.id_token, JWKS, {
-        // issuer: process.env.VIPPS_ISSUER || VIPPS_OPENID_BASE, // TEMPORARILY DISABLED
+        issuer: process.env.VIPPS_ISSUER || VIPPS_OPENID_BASE,
         audience: process.env.VIPPS_CLIENT_ID,
       });
       verifiedPayload = payload;
-      console.log("✅ JWT verified! Actual issuer from Vipps:", payload.iss);
+      console.log("✅ JWT verified");
     } catch (jwtError) {
       console.error("❌ JWT verification failed:", jwtError);
       return NextResponse.redirect(
@@ -133,16 +111,13 @@ export async function GET(request: NextRequest) {
       verified_at: new Date().toISOString(),
     };
 
-    console.log("💾 Storing Vipps session in Redis:", {
-      sessionId,
-      key: `vipps:${sessionId}`,
-      sessionData,
-    });
+    // Store minimal operational log only (no PII)
+    console.log("💾 Storing Vipps session in Redis", { key: `vipps:${sessionId}` });
 
     // Store in Redis with 1 hour expiry using set() with EX option
     try {
       await redis.set(`vipps:${sessionId}`, sessionData, { ex: 3600 });
-      console.log("✅ Redis storage successful");
+  console.log("✅ Redis storage successful");
     } catch (redisError) {
       console.error("⚠️ Redis storage failed:", redisError);
       return NextResponse.redirect(
@@ -157,11 +132,7 @@ export async function GET(request: NextRequest) {
         ? ".bluecrew.no"
         : undefined;
 
-    console.log("🍪 Setting session cookie:", {
-      sessionId,
-      domain: cookieDomain || "default",
-      hostname,
-    });
+    console.log("🍪 Setting session cookie", { domain: cookieDomain || "default", hostname });
 
     // Only store session ID in cookie (not PII)
     cookieStore.set("vipps_session_id", sessionId, {
@@ -176,7 +147,7 @@ export async function GET(request: NextRequest) {
     cookieStore.delete("vipps_state");
     cookieStore.delete("vipps_nonce");
 
-    console.log("🔄 Redirecting to form with verified=true");
+  console.log("🔄 Redirecting to form with verified=true");
 
     return NextResponse.redirect(
       new URL("/jobbsoker/registrer/skjema?verified=true", request.url)

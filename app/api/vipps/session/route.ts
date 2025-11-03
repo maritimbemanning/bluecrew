@@ -11,10 +11,7 @@ export async function GET(request: NextRequest) {
   const cookieStore = await cookies();
   const sessionIdCookie = cookieStore.get("vipps_session_id");
 
-  console.log("🔍 Vipps session check:", {
-    hasSessionCookie: !!sessionIdCookie,
-    sessionId: sessionIdCookie?.value,
-  });
+  console.log("🔍 Vipps session check", { hasSessionCookie: Boolean(sessionIdCookie) });
 
   if (!sessionIdCookie) {
     console.log("❌ No session cookie found");
@@ -25,9 +22,8 @@ export async function GET(request: NextRequest) {
     // Fetch session data from Redis using session ID
     const sessionData = await redis.get(`vipps:${sessionIdCookie.value}`);
     
-    console.log("📦 Redis lookup result:", {
-      found: !!sessionData,
-      key: `vipps:${sessionIdCookie.value}`,
+    console.log("📦 Redis lookup result", {
+      found: Boolean(sessionData),
       dataType: typeof sessionData,
     });
 

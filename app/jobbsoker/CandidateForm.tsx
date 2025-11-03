@@ -11,16 +11,6 @@ import { sx } from "../lib/styles";
 import { candidateSchema, extractCandidateForm, type CandidateFormValues } from "../lib/validation";
 import { VippsVerifiedBadge } from "./VippsLogin";
 
-interface VippsSession {
-  verified: boolean;
-  name: string;
-  givenName: string;
-  familyName: string;
-  phone: string;
-  birthDate: string;
-  verifiedAt: string;
-}
-
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
 type FieldErrors = Record<string, string>;
@@ -251,27 +241,13 @@ export default function CandidateContent() {
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
       } else {
-        // No valid session but user came from verified=true redirect
-        // This means Vipps succeeded but Redis failed - allow form access
-        if (isVerified) {
-          console.log("⚠️ Vipps verified but session not found - allowing form access (Redis issue)");
-          setStatusMessage("⚠️ Identitetsverifisering fullført, men teknisk feil med sesjon. Du kan fortsatt fylle ut skjemaet.");
-          setCheckingSession(false);
-          return;
-        }
-        // No verification at all - redirect back
+        // Require a valid session for compliance – redirect back to Vipps step
         router.push("/jobbsoker/registrer");
         return;
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      // If user came with verified=true, allow despite error
-      if (isVerified) {
-        console.log("⚠️ Session check failed but user verified - allowing form access");
-        setStatusMessage("⚠️ Teknisk feil ved sesjonsjekk. Du kan fortsatt fylle ut skjemaet.");
-        setCheckingSession(false);
-        return;
-      }
+      // On error, enforce Vipps step again
       router.push("/jobbsoker/registrer");
       return;
     } finally {

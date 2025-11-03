@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { FloatingPhone } from "./FloatingPhone";
+import { clearConsent } from "../lib/consent";
 
 type NavChild = { href: string; label: string; description?: string };
 type NavItem = {
@@ -230,6 +231,18 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
       setOpenKey((prev) => (prev === key ? null : prev));
     }
   };
+
+  const handleOpenCookieSettings = useCallback(() => {
+    try {
+      // Clear consent and reload to show the banner again
+      clearConsent();
+      if (typeof window !== "undefined") {
+        window.location.reload();
+      }
+    } catch {
+      // no-op
+    }
+  }, []);
 
   // Helpers for keyboard navigation inside dropdowns
   const getMenuItems = (key: string) => {
@@ -593,6 +606,16 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <Link href="/cookies" style={sx.footerLink}>
                     Informasjonskapsler
                   </Link>
+                </li>
+                <li style={sx.footerListItem}>
+                  <button
+                    type="button"
+                    onClick={handleOpenCookieSettings}
+                    style={{ ...sx.footerLink, background: "transparent", border: 0, padding: 0, cursor: "pointer" }}
+                    aria-label="Åpne cookie-innstillinger"
+                  >
+                    Cookie-innstillinger
+                  </button>
                 </li>
               </ul>
               <div style={{ marginTop: 12 }}>
