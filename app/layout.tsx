@@ -8,7 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
-  "Profesjonell maritim bemanningsløsning. Erfarne STCW-sertifiserte mannskaper til havbruk, servicefartøy og offshore. Base i Nord-Norge med nasjonal dekning.";
+  "Profesjonell bemanning av kvalifisert mannskap til den maritime næringen. STCW-sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rekruttering og vikarer til fartøy i hele Norge. Kontakt oss på 923 28 850.";
 
 export const metadata: Metadata = {
   title: {
