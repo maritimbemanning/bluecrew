@@ -79,10 +79,10 @@ function createTableClient(baseUrl: string, serviceRoleKey: string, table: strin
       url.searchParams.set("select", "id");
       url.searchParams.set("limit", "1");
 
-      const requestHeaders: HeadersInit = { ...headers };
+      const requestHeaders: Record<string, string> = { ...(headers as Record<string, string>) };
       if (options?.count || options?.head) {
         const countPreference = options?.count ?? "exact";
-        requestHeaders.Prefer = `count=${countPreference}`;
+        requestHeaders["Prefer"] = `count=${countPreference}`;
       }
       const response = await fetch(url, {
         method: "GET",
@@ -174,7 +174,7 @@ export async function uploadSupabaseObject(options: {
       "Content-Type": options.contentType || "application/octet-stream",
       "Cache-Control": "max-age=31536000",
     },
-    body: payload,
+    body: payload as unknown as BodyInit,
   });
 
   if (!response.ok) {

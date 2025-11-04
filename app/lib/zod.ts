@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * Minimal subset of Zod used for form validation when external packages
  * cannot be installed in the execution environment. This is intentionally

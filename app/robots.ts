@@ -4,10 +4,13 @@ const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no").repl
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-    },
+    rules: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/api", "/admin/login"],
+      },
+    ],
     sitemap: [`${siteUrl}/sitemap.xml`],
     host: siteUrl,
   };

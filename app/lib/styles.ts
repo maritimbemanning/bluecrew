@@ -101,6 +101,14 @@ export const sx: Record<string, CSSProperties> = {
     fontWeight: 700,
     boxShadow: "0 10px 24px rgba(56, 189, 248, 0.35)",
   },
+  navLinkLogin: {
+    color: "#052e1d",
+    background: "#86efac", // light green
+    padding: "10px 16px",
+    borderRadius: 999,
+    fontWeight: 800,
+    boxShadow: "0 10px 24px rgba(16, 185, 129, 0.35)",
+  },
   mobileToggle: {
     marginLeft: "auto",
     display: "inline-flex",

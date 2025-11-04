@@ -13,8 +13,11 @@ type NavItem = {
   label: string;
   key: string;
   accent?: boolean;
+  login?: boolean;
   children?: NavChild[];
 };
+
+const LOGIN_URL = process.env.NEXT_PUBLIC_LOGIN_URL;
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Hjem", key: "home" },
@@ -42,6 +45,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt", accent: true },
+  // Optional external login link to a separate portal
+  ...(LOGIN_URL ? [{ href: LOGIN_URL, label: "Logg inn", key: "login", login: true } as NavItem] : []),
 ];
 
 export function SiteLayout({ children, active }: { children: ReactNode; active: string }) {
@@ -191,7 +196,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active: 
                     key={item.key}
                     href={item.href}
                     style={{
-                      ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink),
+                      ...(item.login
+                        ? { ...sx.navLink, ...sx.navLinkLogin }
+                        : item.accent
+                        ? { ...sx.navLink, ...sx.navLinkAccent }
+                        : sx.navLink),
                       ...(isActive && !item.accent ? sx.navLinkActive : {}),
                     }}
                   >

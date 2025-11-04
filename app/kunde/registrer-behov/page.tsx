@@ -6,7 +6,7 @@ import { sx } from "../../lib/styles";        // eller riktig relativ sti
 
 export default function Page() {
   return (
-    <SiteLayout title="Registrer bemanningsbehov">
+    <SiteLayout active="kunde">
       <section>
         <div className="container">
           <Suspense fallback={<div style={sx.formLoading} role="status">Laster inn skjema …</div>}>
