@@ -23,14 +23,20 @@ const toList = (process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,SanderBerg@blu
   .map((s) => s.trim())
   .filter(Boolean);
 
-if (!resendKey) {
-  console.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
-}
-if (!fromEmail) {
-  console.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
-}
-if (toList.length === 0) {
-  console.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+// Reduce log noise during build by warning only once, on first send attempt
+let hasWarnedEmailConfig = false;
+function warnMissingEmailConfig() {
+  if (hasWarnedEmailConfig) return;
+  hasWarnedEmailConfig = true;
+  if (!resendKey) {
+    console.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
+  }
+  if (!fromEmail) {
+    console.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
+  }
+  if (toList.length === 0) {
+    console.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+  }
 }
 
 const resend = resendKey ? new Resend(resendKey) : null;
@@ -90,6 +96,8 @@ function withComplianceHtml(subject: string, html?: string, text?: string) {
 }
 
 async function sendEmail({ subject, html, text, to, replyTo, attachments }: SendEmailArgs) {
+  // Warn lazily on first use rather than on import
+  warnMissingEmailConfig();
   if (!resend || !fromEmail) return null;
   const recipients = Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
   if (recipients.length === 0) return null;
