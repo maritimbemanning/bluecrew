@@ -319,7 +319,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
                     onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
                     className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
-                    style={isActive ? sx.navLinkActive : undefined}
+                    style={{ ...(isActive ? sx.navLinkActive : undefined), backgroundColor: '#071124', color: '#e2f0ff' }}
                   >
                     <span>{item.label}</span>
                     <span aria-hidden="true" style={sx.navCaret}>▾</span>

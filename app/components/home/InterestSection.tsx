@@ -57,8 +57,16 @@ export function InterestSection() {
         </p>
 
         <form onSubmit={onSubmit} style={sx.form}>
-          {/* Honeypot */}
-          <input name="company" type="text" autoComplete="off" tabIndex={-1} style={sx.honeypot} />
+          {/* Honeypot: off-screen text input for bots; hidden from assistive tech */}
+          <input
+            name="company"
+            type="text"
+            autoComplete="off"
+            tabIndex={-1}
+            aria-hidden="true"
+            title=""
+            style={sx.honeypot}
+          />
 
           <label style={sx.label}>
             <span>Fullt navn *</span>

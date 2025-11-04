@@ -111,11 +111,12 @@ export const cardDescription = style({
 export const cardLink = style({
   fontSize: '0.95rem',
   fontWeight: 600,
-  color: '#0ea5e9',
+  // Darker blue for sufficient contrast on white background
+  color: '#007eb6',
   marginTop: '8px',
   transition: 'all 0.2s ease',
   
   ':hover': {
-    color: '#38bdf8',
+    color: '#0369a1',
   },
 });

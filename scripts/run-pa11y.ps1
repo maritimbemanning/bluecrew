@@ -13,12 +13,20 @@ for ($i=0; $i -lt 60 -and -not $ready; $i++) {
   }
 }
 if (-not $ready) { Write-Error 'server not responding'; exit 1 }
+try {
+  # Warm up pages to avoid first-load streaming timing during audits
+  Invoke-WebRequest -Uri 'http://localhost:3000/jobbsoker' -UseBasicParsing -TimeoutSec 5 | Out-Null
+  Invoke-WebRequest -Uri 'http://localhost:3000/kunde' -UseBasicParsing -TimeoutSec 5 | Out-Null
+} catch {
+  Write-Output 'warmup: some pages failed to prefetch, continuing'
+}
 Write-Output 'running pa11y home'
-npx pa11y http://localhost:3000/ --reporter json > docs/pa11y-home.json
+# Wait a moment to allow Next.js dev stream to stabilize before auditing
+npx pa11y http://localhost:3000/ --wait 1500 --timeout 60000 --reporter json > docs/pa11y-home.json
 Write-Output 'home done'
-npx pa11y http://localhost:3000/jobbsoker --reporter json > docs/pa11y-jobbsoker.json
+npx pa11y http://localhost:3000/jobbsoker --wait 1500 --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
 Write-Output 'jobbsoker done'
-npx pa11y http://localhost:3000/kunde --reporter json > docs/pa11y-kunde.json
+npx pa11y http://localhost:3000/kunde --wait 1500 --timeout 60000 --reporter json > docs/pa11y-kunde.json
 Write-Output 'kunde done'
 if ($proc -and -not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
 Write-Output 'finished'

@@ -144,6 +144,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="no">
       <head>
+        {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
+        <title>Bluecrew AS – Maritim bemanning i Nord‑Norge</title>
         <Script
           id="organization-schema"
           type="application/ld+json"

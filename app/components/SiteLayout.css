@@ -2,8 +2,10 @@
   --accent:#38bdf8;
 }
 .navTriggerButton{
-  color:rgba(226,240,255,0.96);
-  background:transparent;
+  /* Solid color to ensure contrast tools compute correctly */
+  color:#e2f0ff;
+  /* Ensure contrast tools can compute foreground vs background reliably */
+  background-color:#071124; /* matches header tone */
   border:none;
   cursor:pointer;
   font-size:15px;
