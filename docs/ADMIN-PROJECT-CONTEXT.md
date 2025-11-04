@@ -807,3 +807,26 @@ Resend Support: support@resend.com
 ---
 
 **Dette er alt jeg vet om Bluecrew Admin. Bruk denne filen sammen med COPILOT-FULL-PROJECT-CONTEXT.md for å få full oversikt over begge prosjektene!** ✅
+
+---
+
+## 🔒 Storage tilgang (viktig oppdatering)
+
+Dette prosjektet skal ikke scanne "candidate-cvs"/"candidate-certificates" buckets direkte. Public-siden lagrer nå filer i privat bucket `candidates-private` med disse nøkkelkonvensjonene:
+
+- CV: `cv/<hash>.pdf`
+- Sertifikater: `cert/<hash>/certificate.<pdf|zip|doc|docx>`
+
+Databasen `candidates` har kolonner `cv_key` og `certs_key` som peker på disse objektene. Admin skal hente signerte URL-er on-demand fra server:
+
+1) Kall hovednettstedet:
+   - `GET/POST https://bluecrew.no/api/admin/storage/sign`
+   - Header: `x-admin-token: <ADMIN_SIGN_TOKEN>`
+   - Body/query: `{ key: "cv/<hash>.pdf" }` eller `{ key: "cert/<hash>/certificate.pdf" }`
+   - Response: `{ ok: true, url: "https://...signed..." }` (gyldig i 15 min)
+
+2) For enkel feilsøking finnes det helsesjekker:
+   - `GET https://bluecrew.no/api/health/supabase/storage` → generelt Storage OK
+   - `GET https://bluecrew.no/api/health/supabase/storage/cv` → viser et lite utvalg av `cv/` nøkler
+
+Sett `ADMIN_SIGN_TOKEN` i både hovedside og admin‑app miljøvariabler.
