@@ -48,11 +48,18 @@ jobs:
             curl -sS "http://localhost:3000$p" >/dev/null || true
           done
 
-      - name: Run pa11y checks
+      - name: Run pa11y checks (JSON with waits)
         run: |
-          npx pa11y http://localhost:3000/ --wait 1500 --timeout 60000
-          npx pa11y http://localhost:3000/jobbsoker --wait 1500 --timeout 60000
-          npx pa11y http://localhost:3000/kunde --wait 1500 --timeout 60000
-          npx pa11y http://localhost:3000/kontakt --wait 1500 --timeout 60000
-          npx pa11y http://localhost:3000/om-oss --wait 1500 --timeout 60000
-          npx pa11y http://localhost:3000/cookies --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/ --wait 3000 --timeout 60000 --reporter json > docs/pa11y-home.json
+          npx pa11y http://localhost:3000/jobbsoker --wait 3000 --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
+          npx pa11y http://localhost:3000/kunde --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kunde.json
+          npx pa11y http://localhost:3000/kontakt --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kontakt.json
+          npx pa11y http://localhost:3000/om-oss --wait 3000 --timeout 60000 --reporter json > docs/pa11y-om-oss.json
+          npx pa11y http://localhost:3000/cookies --wait 3000 --timeout 60000 --reporter json > docs/pa11y-cookies.json
+
+      - name: Upload pa11y reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pa11y-reports
+          path: docs/pa11y-*.json
