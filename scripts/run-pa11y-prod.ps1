@@ -1,9 +1,13 @@
 $env:NEXT_DISABLE_TURBOPACK='1'
+Write-Output 'Building prod bundle'
+$build = Start-Process -FilePath 'npm.cmd' -ArgumentList 'run','build' -WorkingDirectory 'C:\dev\bluecrew' -Wait -PassThru
+if ($build.ExitCode -ne 0) { Write-Error 'build failed'; exit 1 }
+
 Write-Output 'Starting prod server'
 $proc = Start-Process -FilePath 'npm.cmd' -ArgumentList 'start' -WorkingDirectory 'C:\dev\bluecrew' -PassThru
 Write-Output "started $($proc.Id)"
 $ready=$false
-for ($i=0; $i -lt 60 -and -not $ready; $i++) {
+for ($i=0; $i -lt 120 -and -not $ready; $i++) {
   try {
     Invoke-WebRequest -Uri 'http://localhost:3000' -UseBasicParsing -TimeoutSec 2 -ErrorAction Stop | Out-Null
     Write-Output 'ready'

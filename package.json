@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "a11y:prod": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/run-pa11y-prod.ps1",
+    "a11y:dev": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/run-pa11y.ps1"
   },
   "dependencies": {
     "@react-email/render": "^1.4.0",
