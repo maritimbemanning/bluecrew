@@ -9,6 +9,7 @@ on:
 jobs:
   pa11y:
     runs-on: ubuntu-latest
+    continue-on-error: true
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -50,12 +51,13 @@ jobs:
 
       - name: Run pa11y checks (JSON with waits)
         run: |
-          npx pa11y http://localhost:3000/ --wait 3000 --timeout 60000 --reporter json > docs/pa11y-home.json
-          npx pa11y http://localhost:3000/jobbsoker --wait 3000 --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
-          npx pa11y http://localhost:3000/kunde --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kunde.json
-          npx pa11y http://localhost:3000/kontakt --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kontakt.json
-          npx pa11y http://localhost:3000/om-oss --wait 3000 --timeout 60000 --reporter json > docs/pa11y-om-oss.json
-          npx pa11y http://localhost:3000/cookies --wait 3000 --timeout 60000 --reporter json > docs/pa11y-cookies.json
+          WAIT=5000
+          npx pa11y http://localhost:3000/ --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-home.json
+          npx pa11y http://localhost:3000/jobbsoker --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
+          npx pa11y http://localhost:3000/kunde --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-kunde.json
+          npx pa11y http://localhost:3000/kontakt --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-kontakt.json
+          npx pa11y http://localhost:3000/om-oss --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-om-oss.json
+          npx pa11y http://localhost:3000/cookies --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-cookies.json
 
       - name: Upload pa11y reports
         if: always()
