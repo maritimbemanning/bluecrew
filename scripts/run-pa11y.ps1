@@ -21,21 +21,21 @@ try {
   Write-Output 'warmup: some pages failed to prefetch, continuing'
 }
 Write-Output 'running pa11y home'
-# Wait a moment to allow Next.js dev stream to stabilize before auditing
-npx pa11y http://localhost:3000/ --wait 3000 --timeout 60000 --reporter json > docs/pa11y-home.json
+# Use programmatic runner to avoid networkidle waits in dev streaming
+node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
 Write-Output 'home done'
-npx pa11y http://localhost:3000/jobbsoker --wait 3000 --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
+node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
 Write-Output 'jobbsoker done'
-npx pa11y http://localhost:3000/kunde --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kunde.json
+node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
 Write-Output 'kunde done'
 Write-Output 'running pa11y kontakt'
-npx pa11y http://localhost:3000/kontakt --wait 3000 --timeout 60000 --reporter json > docs/pa11y-kontakt.json
+node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
 Write-Output 'kontakt done'
 Write-Output 'running pa11y om-oss'
-npx pa11y http://localhost:3000/om-oss --wait 3000 --timeout 60000 --reporter json > docs/pa11y-om-oss.json
+node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
 Write-Output 'om-oss done'
 Write-Output 'running pa11y cookies'
-npx pa11y http://localhost:3000/cookies --wait 3000 --timeout 60000 --reporter json > docs/pa11y-cookies.json
+node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
 Write-Output 'cookies done'
 if ($proc -and -not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
 Write-Output 'finished'

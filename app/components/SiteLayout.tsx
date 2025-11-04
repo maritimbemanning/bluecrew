@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { FloatingPhone } from "./FloatingPhone";
+import VerifyIdentity from "./VerifyIdentity";
 import { clearConsent } from "../lib/consent";
 
 type NavChild = { href: string; label: string; description?: string };
@@ -69,7 +70,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
-  { href: "/meld-interesse", label: "Meld interesse", key: "meld-interesse", accent: true },
+  { href: "/meld-interesse", label: "Meld interesse", key: "meld-interesse" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
@@ -274,21 +275,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             </div>
           </Link>
           {/* Desktop navigation (excludes login which is rendered as a distinct green button on the far right) */}
-          <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
-            {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => {
+          <nav style={{ ...sx.nav, gap: 16, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+            {NAV_ITEMS.filter((n) => n.key !== "konto" && n.key !== "meld-interesse").map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
               const isOpen = openKey === item.key;
 
               if (!hasChildren) {
-                if (item.accent) {
-                  return (
-                    <Link key={item.key} href={item.href} style={sx.btnContact}>
-                      {item.label}
-                    </Link>
-                  );
-                }
-
                 return (
                   <Link
                     key={item.key}
@@ -377,11 +370,23 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             })}
           </nav>
 
-          {/* Desktop-only verify button (outline green, right-aligned). Logo untouched. */}
+          {/* Desktop-only right cluster: Meld interesse + Vipps verify */}
           {!isMobile && (
-            <Link href="/api/vipps/start" style={{ ...sx.btnSecondaryVariant, borderColor: 'rgba(34,197,94,0.6)', color: '#22C55E' }} aria-label="Verifiser med Vipps (ingen konto opprettes)">
-              Verifiser med Vipps
-            </Link>
+            <div style={{ display: 'flex', gap: 10, marginLeft: 8, alignItems: 'center' }}>
+              <Link
+                href="/meld-interesse"
+                className="microBtn"
+                onClick={() => {
+                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                  if (typeof plausible === "function") {
+                    plausible("CTA Click", { props: { location: "header", cta: "Meld interesse" } });
+                  }
+                }}
+              >
+                Meld interesse
+              </Link>
+              <VerifyIdentity />
+            </div>
           )}
 
           {/* Mobile menu trigger */}

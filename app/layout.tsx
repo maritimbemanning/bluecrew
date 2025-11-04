@@ -10,6 +10,9 @@ import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
 const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
 const description =
   "Profesjonell bemanning av kvalifisert mannskap til den maritime næringen. STCW-sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rekruttering og vikarer til fartøy i hele Norge. Kontakt oss på 923 28 850.";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
+const logoPath = "/logo.png"; // exists in /public
+const logoUrl = `${siteUrl}${logoPath}`;
 
 export const metadata: Metadata = {
   title: {
@@ -82,8 +85,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "@type": "Organization",
     name: "Bluecrew AS",
     alternateName: "Bluecrew",
-    url: "https://bluecrew.no",
-    logo: "https://bluecrew.no/logo.png",
+    url: siteUrl,
+    logo: logoUrl,
     description: "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
     address: {
       "@type": "PostalAddress",
@@ -112,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     "@type": "LocalBusiness",
     "@id": "https://bluecrew.no/#organization",
     name: "Bluecrew AS",
-    image: "https://bluecrew.no/logo.png",
+    image: logoUrl,
     telephone: "+47-923-28-850",
     email: "post@bluecrew.no",
     address: {
@@ -141,11 +144,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     },
   };
 
+  const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: siteUrl,
+    name: "Bluecrew AS",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?s={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang="no">
       <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
         <title>Bluecrew AS – Maritim bemanning i Nord‑Norge</title>
+        {/* Explicit favicon link to help Google pick up site icon in SERP */}
+        <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
+        <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
         <Script
           id="organization-schema"
           type="application/ld+json"
@@ -155,6 +173,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           id="local-business-schema"
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
         />
         <BreadcrumbsSchema />
       </head>

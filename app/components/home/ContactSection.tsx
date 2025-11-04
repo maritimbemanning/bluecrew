@@ -22,14 +22,16 @@ export function ContactSection(){
               Planlegg bemanningen sammen med oss →
             </Link>
           </div>
-          <aside className={styles.card}>
+          {/* Prevent Google from lifting phone/email into the SERP snippet */}
+          <aside className={styles.card} data-nosnippet>
             <div className={styles.cardHeader}>
               <h3 className={styles.cardTitle}>Bluecrew AS</h3>
               <p className={styles.cardDescription}>
                 Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge og resten av kysten.
               </p>
             </div>
-            <ul className={styles.contactList}>
+            {/* Redundant safeguard at list-level as well */}
+            <ul className={styles.contactList} data-nosnippet>
               {CONTACT_POINTS.map((point) => (
                 <li key={point.label} className={styles.contactItem}>
                   <span className={styles.contactLabel}>{point.label}</span>

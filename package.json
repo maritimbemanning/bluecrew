@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-favicon.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -33,6 +34,7 @@
     "@vanilla-extract/next-plugin": "^2.4.14",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
+    "png-to-ico": "^2.1.8",
     "pa11y": "^9.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"

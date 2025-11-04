@@ -106,3 +106,62 @@
 .watermarkLink:focus-visible .watermarkLinkIcon{
   opacity: 1;
 }
+
+/* Compact identity verify button (Vipps orange by default) */
+.verifyBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid rgba(255,90,36,0.6);
+  color:#ff5a24;
+  background:transparent;
+  font-weight:800;
+  font-size:14px;
+  line-height:1.2;
+  letter-spacing:.01em;
+  text-decoration:none;
+  transition: background .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
+}
+.verifyBtn:hover,
+.verifyBtn:focus-visible{
+  background: rgba(255,90,36,0.08);
+  border-color: rgba(255,90,36,0.8);
+  box-shadow: 0 0 0 3px rgba(255,90,36,0.18);
+}
+
+/* Future: BankID theme (kept for later use) */
+.verifyBtn--bankid{
+  border-color: rgba(0,98,163,0.55);
+  color: #0062A3;
+}
+.verifyBtn--bankid:hover,
+.verifyBtn--bankid:focus-visible{
+  background: rgba(0,98,163,0.08);
+  border-color: rgba(0,98,163,0.8);
+  box-shadow: 0 0 0 3px rgba(0,98,163,0.18);
+}
+
+/* Neutral compact button used for 'Meld interesse' on the right cluster */
+.microBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid rgba(148,197,255,0.35);
+  color:#e2e8f0;
+  background:transparent;
+  font-weight:800;
+  font-size:14px;
+  line-height:1.2;
+  text-decoration:none;
+  transition: background .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
+}
+.microBtn:hover,
+.microBtn:focus-visible{
+  background: rgba(148,197,255,0.10);
+  border-color: rgba(148,197,255,0.55);
+  box-shadow: 0 0 0 3px rgba(148,197,255,0.18);
+}

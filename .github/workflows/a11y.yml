@@ -9,7 +9,8 @@ on:
 jobs:
   pa11y:
     runs-on: ubuntu-latest
-    continue-on-error: true
+    # Block merges when accessibility fails
+    continue-on-error: false
     timeout-minutes: 15
     steps:
       - name: Checkout
@@ -49,15 +50,16 @@ jobs:
             curl -sS "http://localhost:3000$p" >/dev/null || true
           done
 
-      - name: Run pa11y checks (JSON with waits)
+      - name: Run pa11y checks (programmatic runner)
         run: |
-          WAIT=5000
-          npx pa11y http://localhost:3000/ --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-home.json
-          npx pa11y http://localhost:3000/jobbsoker --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-jobbsoker.json
-          npx pa11y http://localhost:3000/kunde --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-kunde.json
-          npx pa11y http://localhost:3000/kontakt --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-kontakt.json
-          npx pa11y http://localhost:3000/om-oss --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-om-oss.json
-          npx pa11y http://localhost:3000/cookies --wait $WAIT --timeout 60000 --reporter json > docs/pa11y-cookies.json
+          export PA11Y_WAIT=5000
+          export PA11Y_TIMEOUT=60000
+          node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
+          node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
+          node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
+          node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
+          node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
+          node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
 
       - name: Upload pa11y reports
         if: always()
@@ -80,3 +82,18 @@ jobs:
               jq -r '.[] | "- [\(.type)] \(.code): \(.message) (selector: \(.selector))"' "$f" || cat "$f"
             fi
           done
+
+      - name: Fail if any issues were found
+        run: |
+          sudo apt-get update >/dev/null 2>&1 || true
+          sudo apt-get install -y jq >/dev/null 2>&1 || true
+          fail=0
+          for f in docs/pa11y-*.json; do
+            if [ -s "$f" ] && ! jq -e '. | length == 0' "$f" >/dev/null 2>&1; then
+              echo "Accessibility issues present in $f";
+              fail=1
+            fi
+          done
+          if [ "$fail" -eq 1 ]; then
+            echo "Accessibility checks failed"; exit 1;
+          fi

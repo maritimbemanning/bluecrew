@@ -13,6 +13,12 @@ const baseConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      // Ensure /favicon.ico always resolves (some crawlers expect this exact path)
+      { source: "/favicon.ico", destination: "/icon.png" },
+    ];
+  },
   async redirects() {
     return [
       { source: "/sentry-example-page", destination: "/", permanent: true },
