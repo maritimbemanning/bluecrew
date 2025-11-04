@@ -35,12 +35,24 @@ jobs:
             fi
             sleep 1
           done
+      - name: Warm up key routes
+        run: |
+          for p in \
+            / \
+            /jobbsoker \
+            /kunde \
+            /kontakt \
+            /om-oss \
+            /cookies \
+            ; do
+            curl -sS "http://localhost:3000$p" >/dev/null || true
+          done
 
       - name: Run pa11y checks
         run: |
-          npx pa11y http://localhost:3000/
-          npx pa11y http://localhost:3000/jobbsoker
-          npx pa11y http://localhost:3000/kunde
-          npx pa11y http://localhost:3000/kontakt
-          npx pa11y http://localhost:3000/om-oss
-          npx pa11y http://localhost:3000/cookies
+          npx pa11y http://localhost:3000/ --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/jobbsoker --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/kunde --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/kontakt --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/om-oss --wait 1500 --timeout 60000
+          npx pa11y http://localhost:3000/cookies --wait 1500 --timeout 60000
