@@ -3,9 +3,8 @@
 }
 .navTriggerButton{
   /* Solid color to ensure contrast tools compute correctly */
-  color:#e2f0ff;
-  /* Ensure contrast tools can compute foreground vs background reliably */
-  background-color:#071124; /* matches header tone */
+  color:#dce6f5;
+  background-color:transparent;
   border:none;
   cursor:pointer;
   font-size:15px;
@@ -14,15 +13,19 @@
   display:inline-flex;
   align-items:center;
   gap:6px;
-  transition: color .15s ease, box-shadow .12s ease, transform .12s ease;
+  transition: color .15s ease, text-decoration-color .12s ease;
 }
 .navTriggerButton:hover{
-  color:#38bdf8;
-  transform: translateY(-1px);
+  color:#ffffff;
+  text-decoration: underline;
+  text-underline-offset:4px;
+  text-decoration-thickness:2px;
 }
 .navLink:hover{
-  color:#38bdf8 !important;
-  transform: translateY(-1px);
+  color:#ffffff !important;
+  text-decoration: underline;
+  text-underline-offset:4px;
+  text-decoration-thickness:2px;
 }
 /* Special hover for accent CTA button */
 .navLink.accentButton:hover{

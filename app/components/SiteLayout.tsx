@@ -319,7 +319,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
                     onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
                     className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
-                    style={{ ...(isActive ? sx.navLinkActive : undefined), backgroundColor: '#071124', color: '#e2f0ff' }}
+                    style={{ ...(isActive ? sx.navLinkActive : undefined) }}
                   >
                     <span>{item.label}</span>
                     <span aria-hidden="true" style={sx.navCaret}>▾</span>
@@ -377,10 +377,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             })}
           </nav>
 
-          {/* Desktop-only login button (light green, right-aligned) */}
+          {/* Desktop-only verify button (outline green, right-aligned). Logo untouched. */}
           {!isMobile && (
-            <Link href="/konto/logg-inn" style={sx.btnLogin} aria-label="Logg inn eller registrer deg">
-              Logg inn
+            <Link href="/api/vipps/start" style={{ ...sx.btnSecondaryVariant, borderColor: 'rgba(34,197,94,0.6)', color: '#22C55E' }} aria-label="Verifiser med Vipps (ingen konto opprettes)">
+              Verifiser med Vipps
             </Link>
           )}
 
@@ -602,8 +602,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <h2 style={sx.footerHeading}>Retningslinjer & adresse</h2>
               <ul style={sx.footerList}>
                 <li style={sx.footerListItem}>
-                  <Link href="/konto/logg-inn" style={sx.footerLink}>
-                    Logg inn
+                  <Link href="/api/vipps/start" style={sx.footerLink}>
+                    Verifiser med Vipps
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
