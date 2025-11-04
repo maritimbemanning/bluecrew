@@ -7,6 +7,12 @@ export function FloatingPhone() {
       href="tel:+4792328850" 
       className={styles.floatingPhone}
       aria-label="Ring Bluecrew: 923 28 850"
+      onClick={() => {
+        const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+        if (typeof plausible === 'function') {
+          plausible('Phone Click', { props: { location: 'floating' } });
+        }
+      }}
     >
       <svg 
         className={styles.icon}

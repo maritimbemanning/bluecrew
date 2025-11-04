@@ -21,11 +21,23 @@
   text-underline-offset:4px;
   text-decoration-thickness:2px;
 }
+/* Clear keyboard-visible focus ring for the mobile menu trigger */
+.navTriggerButton:focus-visible{
+  outline: 3px solid rgba(56,189,248,0.28);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
 .navLink:hover{
   color:#ffffff !important;
   text-decoration: underline;
   text-underline-offset:4px;
   text-decoration-thickness:2px;
+}
+/* Also show a visible ring when tabbing the top-level links */
+.navLink:focus-visible{
+  outline: 3px solid rgba(56,189,248,0.18);
+  outline-offset: 2px;
+  border-radius: 10px;
 }
 /* Special hover for accent CTA button */
 .navLink.accentButton:hover{

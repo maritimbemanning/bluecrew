@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import * as styles from './Hero.css';
@@ -30,7 +32,16 @@ export function Hero(){
               </div>
             </Link>
             <div className={styles.phoneCta}>
-              <a href="tel:+4792328850" className={util.btn + ' ' + styles.btnSecondary}>
+              <a
+                href="tel:+4792328850"
+                className={util.btn + ' ' + styles.btnSecondary}
+                onClick={() => {
+                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                  if (typeof plausible === 'function') {
+                    plausible('Phone Click', { props: { location: 'hero' } });
+                  }
+                }}
+              >
                 923 28 850
               </a>
               <p className={styles.ctaSubtext}>Akutt behov?</p>

@@ -394,7 +394,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             <button 
               type="button" 
               onClick={openMobileMenu} 
-              aria-label="Åpne meny" 
+              aria-label="Åpne meny"
+              aria-controls="mobile-nav"
+              aria-expanded={mobileMenuOpen}
               className="navTriggerButton"
               style={{
                 padding: "12px 20px",
