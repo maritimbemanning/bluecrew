@@ -30,7 +30,7 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
-  // Fast access to login page for candidates
+  // Login item stays in NAV for mobile; on desktop we render a dedicated green button on the far right
   { href: "/konto/logg-inn", label: "Logg inn", key: "konto" },
   {
     href: "/kunde",
@@ -273,9 +273,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <span style={sx.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
-
+          {/* Desktop navigation (excludes login which is rendered as a distinct green button on the far right) */}
           <nav style={{ ...sx.nav, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
-            {NAV_ITEMS.map((item) => {
+            {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
               const isOpen = openKey === item.key;
@@ -376,6 +376,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               );
             })}
           </nav>
+
+          {/* Desktop-only login button (light green, right-aligned) */}
+          {!isMobile && (
+            <Link href="/konto/logg-inn" style={sx.btnLogin} aria-label="Logg inn eller registrer deg">
+              Logg inn
+            </Link>
+          )}
 
           {/* Mobile menu trigger */}
           <div style={{ display: isMobile ? "block" : "none" }}>

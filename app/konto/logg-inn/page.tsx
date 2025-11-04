@@ -14,7 +14,9 @@ export default function LoginPage() {
     setStatus("sending");
     try {
       const supabase = getBrowserSupabase();
-      const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: `${window.location.origin}/konto/velkommen` } });
+      // After magic link login, send the user to /konto/velkommen which will then route to Vipps step
+      const redirectTo = `${window.location.origin}/konto/velkommen?next=${encodeURIComponent("/jobbsoker/registrer")}`;
+      const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
       if (error) throw error;
       setStatus("sent");
     } catch (err: any) {

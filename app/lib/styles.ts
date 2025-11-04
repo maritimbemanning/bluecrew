@@ -448,6 +448,19 @@ export const sx: Record<string, CSSProperties> = {
     transition: "background 0.15s ease, border-color 0.15s ease",
     cursor: "pointer",
   },
+  // Light green login button for header (desktop only)
+  btnLogin: {
+    padding: "10px 18px",
+    borderRadius: 999,
+    border: "1px solid rgba(16, 185, 129, 0.5)",
+    background: "linear-gradient(135deg, #86efac 0%, #34d399 100%)",
+    color: "#064e3b",
+    fontWeight: 800,
+    textDecoration: "none",
+    boxShadow: "0 10px 26px rgba(52, 211, 153, 0.35)",
+    transition: "transform 0.15s ease, box-shadow 0.15s ease",
+    cursor: "pointer",
+  },
   btnSecondaryVariant: {
     padding: "10px 18px",
     borderRadius: 999,
