@@ -1,5 +1,5 @@
 // middleware.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
@@ -69,8 +69,57 @@ function applySecurityHeaders(res: NextResponse) {
  * Minimal middleware uten admin-gating.
  * Alle requests går videre, men får sikkerhets-headere.
  */
-export function middleware() {
-  return applySecurityHeaders(NextResponse.next());
+export function middleware(req: NextRequest) {
+  const url = req.nextUrl.clone();
+  const { pathname } = url;
+
+  // Read maintenance flag from env (supports true/1/on). Evaluated at runtime in Edge.
+  const maintenanceFlag = String(
+    process.env.MAINTENANCE_MODE ?? process.env.NEXT_PUBLIC_MAINTENANCE_MODE ?? ""
+  ).toLowerCase();
+  const MAINTENANCE_MODE = ["true", "1", "on", "yes"].includes(maintenanceFlag);
+
+  // Allowlist: paths that should continue to work during maintenance
+  const allow: RegExp[] = [
+    /^\/maintenance(\/|$)/,
+    /^\/_next\//,
+    /^\/favicon\.ico$/,
+    /^\/robots\.txt$/,
+    /^\/sitemap\.xml$/,
+    /^\/api\/health(\/|$)/,
+    /^\/api\/debug(\/|$)/,
+    /^\/api\/sentry-example-api(\/|$)/,
+    // Public assets (served from /public)
+    /^\/icons\//,
+    /^\/hero\//,
+    /^\/guides\//,
+  ];
+
+  const isAllowed = allow.some((r) => r.test(pathname));
+
+  if (MAINTENANCE_MODE && !isAllowed) {
+    // For non-GET methods, respond with 503 to signal temporary unavailability to clients/robots
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      const res = new NextResponse("Service Unavailable (maintenance)", {
+        status: 503,
+        headers: {
+          "Retry-After": "120",
+          "Cache-Control": "no-store",
+        },
+      });
+      return applySecurityHeaders(res);
+    }
+
+    // For normal page requests, rewrite to the maintenance page
+    url.pathname = "/maintenance";
+    const res = NextResponse.rewrite(url);
+    res.headers.set("Cache-Control", "no-store");
+    res.headers.set("X-Maintenance-Mode", "true");
+    return applySecurityHeaders(res);
+  }
+
+  const res = NextResponse.next();
+  return applySecurityHeaders(res);
 }
 
 /** Kjør på hele nettstedet */

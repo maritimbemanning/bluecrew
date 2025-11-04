@@ -30,6 +30,8 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
+  // Fast access to login page for candidates
+  { href: "/konto/logg-inn", label: "Logg inn", key: "konto" },
   {
     href: "/kunde",
     label: "Kunde",
@@ -592,6 +594,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             <div>
               <h2 style={sx.footerHeading}>Retningslinjer & adresse</h2>
               <ul style={sx.footerList}>
+                <li style={sx.footerListItem}>
+                  <Link href="/konto/logg-inn" style={sx.footerLink}>
+                    Logg inn
+                  </Link>
+                </li>
                 <li style={sx.footerListItem}>
                   <Link href="/personvern" style={sx.footerLink}>
                     Personvern
