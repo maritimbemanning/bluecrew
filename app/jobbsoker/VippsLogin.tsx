@@ -78,19 +78,19 @@ const ui = {
   } as CSSProperties,
   button: {
     width: "100%",
-    padding: "18px 32px",
-    fontSize: 18,
+    padding: "16px 28px",
+    fontSize: 17,
     fontWeight: 700,
-    background: "#ff5100", // Vipps orange
-    color: "#fff",
-    border: "none",
+    background: "transparent",
+    color: "#ff5100", // Vipps orange
+    border: "1.5px solid #ff5100",
     borderRadius: 12,
     cursor: "pointer",
-    transition: "all 0.2s",
+    transition: "background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
+    gap: 10,
   } as CSSProperties,
   buttonDisabled: {
     opacity: 0.5,
@@ -212,25 +212,24 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
         }}
         onMouseEnter={(e) => {
           if (!loading) {
-            e.currentTarget.style.background = "#e64900";
-            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.background = "rgba(255,81,0,0.12)";
           }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#ff5100";
-          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.background = "transparent";
         }}
       >
         {loading ? (
           <>
-            <span>Starter Vipps...</span>
+            <span>Starter Vipps…</span>
           </>
         ) : (
           <>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="10" fill="#ff5100" />
+              <rect x="7" y="11" width="10" height="2" rx="1" fill="#ffffff" />
             </svg>
-            <span>Logg inn med Vipps</span>
+            <span>Verifiser med Vipps</span>
           </>
         )}
       </button>
@@ -376,25 +375,24 @@ export function VippsLoginPage() {
         }}
         onMouseEnter={(e) => {
           if (!loading) {
-            e.currentTarget.style.background = "#e64900";
-            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.background = "rgba(255,81,0,0.12)";
           }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#ff5100";
-          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.background = "transparent";
         }}
       >
         {loading ? (
           <>
-            <span>Starter Vipps...</span>
+            <span>Starter Vipps…</span>
           </>
         ) : (
           <>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="10" fill="#ff5100" />
+              <rect x="7" y="11" width="10" height="2" rx="1" fill="#ffffff" />
             </svg>
-            <span>Logg inn med Vipps</span>
+            <span>Verifiser med Vipps</span>
           </>
         )}
       </button>
