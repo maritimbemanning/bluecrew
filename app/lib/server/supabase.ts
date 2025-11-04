@@ -51,6 +51,46 @@ async function handleResponse(response: Response): Promise<SupabaseResult> {
   return { error: { message } };
 }
 
+function isRetriableStatus(status: number) {
+  // Retry on transient server errors and rate limits
+  return status === 429 || (status >= 500 && status < 600);
+}
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit & { timeoutMs?: number; retries?: number } = {},
+) {
+  const { timeoutMs = 10000, retries = 1, ...rest } = init;
+
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(input, { ...rest, signal: controller.signal });
+      clearTimeout(timer);
+      if (!res.ok && isRetriableStatus(res.status) && attempt < retries) {
+        // small backoff: 200ms, 500ms
+        const delay = attempt === 0 ? 200 : 500;
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      clearTimeout(timer);
+      lastError = err;
+      const isAbort = (err as any)?.name === "AbortError";
+      if (attempt < retries && isAbort) {
+        // retry once on timeout
+        continue;
+      }
+      throw err;
+    }
+  }
+  // Should not reach here; throw last error defensively
+  throw lastError ?? new Error("Supabase request failed");
+}
+
 function buildHeaders(serviceRoleKey: string): HeadersInit {
   return {
     apikey: serviceRoleKey,
@@ -65,10 +105,12 @@ function createTableClient(baseUrl: string, serviceRoleKey: string, table: strin
 
   return {
     async insert(payload: Record<string, unknown>): Promise<SupabaseResult> {
-      const response = await fetch(`${baseUrl}/rest/v1/${table}`, {
+      const response = await fetchWithTimeout(`${baseUrl}/rest/v1/${table}`, {
         method: "POST",
         headers: { ...headers, Prefer: "return=minimal" },
         body: JSON.stringify(payload),
+        timeoutMs: 10000,
+        retries: 1,
       });
 
       return handleResponse(response);
@@ -86,10 +128,12 @@ function createTableClient(baseUrl: string, serviceRoleKey: string, table: strin
         const countPreference = options?.count ?? "exact";
         requestHeaders.Prefer = `count=${countPreference}`;
       }
-      const response = await fetch(url, {
+      const response = await fetchWithTimeout(url, {
         method: "GET",
         headers: requestHeaders,
         cache: "no-store",
+        timeoutMs: 8000,
+        retries: 1,
       });
 
       return handleResponse(response);
@@ -136,10 +180,12 @@ export async function selectSupabaseRows<T>(options: {
     requestUrl.searchParams.set("order", `${options.order.column}.${direction}`);
   }
 
-  const response = await fetch(requestUrl, {
+  const response = await fetchWithTimeout(requestUrl, {
     method: "GET",
     headers: buildHeaders(serviceRoleKey),
     cache: "no-store",
+    timeoutMs: 8000,
+    retries: 1,
   });
 
   if (!response.ok) {
@@ -168,15 +214,19 @@ export async function uploadSupabaseObject(options: {
   const target = `${url}/storage/v1/object/${options.bucket}/${encodeStoragePath(options.object)}`;
   const payload = options.body instanceof ArrayBuffer ? new Uint8Array(options.body) : options.body;
 
-  const response = await fetch(target, {
+  const response = await fetchWithTimeout(target, {
     method: "PUT",
     headers: {
       apikey: serviceRoleKey,
       Authorization: `Bearer ${serviceRoleKey}`,
       "Content-Type": options.contentType || "application/octet-stream",
       "Cache-Control": "max-age=31536000",
+      // Allow overwriting same key if duplicate submission happens
+      "x-upsert": "true",
     },
     body: payload,
+    timeoutMs: 15000,
+    retries: 1,
   });
 
   if (!response.ok) {
@@ -193,10 +243,12 @@ export async function createSupabaseSignedUrl(options: {
   const { url, serviceRoleKey } = getConfig();
   const target = `${url}/storage/v1/object/sign/${options.bucket}/${encodeStoragePath(options.object)}`;
 
-  const response = await fetch(target, {
+  const response = await fetchWithTimeout(target, {
     method: "POST",
     headers: buildHeaders(serviceRoleKey),
     body: JSON.stringify({ expiresIn: options.expiresInSeconds }),
+    timeoutMs: 8000,
+    retries: 1,
   });
 
   if (!response.ok) {
@@ -222,10 +274,12 @@ export async function listSupabaseObjects(options: {
   const { url, serviceRoleKey } = getConfig();
   const target = `${url}/storage/v1/object/list/${options.bucket}`;
 
-  const response = await fetch(target, {
+  const response = await fetchWithTimeout(target, {
     method: "POST",
     headers: buildHeaders(serviceRoleKey),
     body: JSON.stringify({ prefix: options.prefix, limit: options.limit ?? 20 }),
+    timeoutMs: 8000,
+    retries: 1,
   });
 
   if (!response.ok) {
