@@ -9,7 +9,6 @@ on:
 jobs:
   pa11y:
     runs-on: ubuntu-latest
-    continue-on-error: true
     timeout-minutes: 15
     steps:
       - name: Checkout

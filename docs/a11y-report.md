@@ -22,13 +22,24 @@ Files changed
 -------------
 - `app/lib/styles.ts` — changed `teamAccent.color` from `#0ea5e9` to `#007eb6` to meet WCAG contrast.
 
-Commands I ran (from repository root)
------------------------------------
-1. Start dev server (scripted): `scripts/run-pa11y.ps1` — starts the dev server, waits for readiness, runs pa11y for three pages, writes JSON files under `docs/` and stops the server.
-2. pa11y scans produced:
+How to reproduce locally (scripts)
+----------------------------------
+1) Dev-mode scan (faster, for local iteration):
+  - Run: `scripts/run-pa11y.ps1`
+  - What it does: starts `npm run dev` (Turbopack disabled), waits for readiness, warms key routes, runs pa11y with waits, writes JSON files under `docs/`, stops server.
+2) Prod-mode scan (matches CI more closely):
+  - Run: `scripts/run-pa11y-prod.ps1`
+  - What it does: starts `npm start`, warms routes, runs pa11y with waits, writes JSON files under `docs/`, stops server.
+
+pa11y JSON outputs
+------------------
+The scripts produce these files (empty array means no findings):
    - `docs/pa11y-home.json` — after the fix this file is empty (no issues).
    - `docs/pa11y-jobbsoker.json` — empty.
    - `docs/pa11y-kunde.json` — empty.
+  - `docs/pa11y-kontakt.json` — empty.
+  - `docs/pa11y-om-oss.json` — empty.
+  - `docs/pa11y-cookies.json` — empty.
 
 How I verified the fix
 ----------------------
@@ -115,6 +126,12 @@ Current automated coverage (from these runs)
 - `docs/pa11y-kontakt.json` — empty
 - `docs/pa11y-om-oss.json` — empty
 - `docs/pa11y-cookies.json` — empty
+
+CI notes
+--------
+- Workflow: `.github/workflows/a11y.yml` warms routes, runs pa11y with `--wait 3000 --timeout 60000` on six key routes, writes JSON to `docs/`, uploads them as artifacts, and prints a brief summary to logs.
+- If CI ever reports failures, download the `pa11y-reports` artifact and inspect the non-empty JSON file(s). Reproduce with `scripts/run-pa11y-prod.ps1` and fix the specific selector/message.
+-- Status: As of 2025‑11‑04 the pa11y job is BLOCKING (continue-on-error disabled). Any new findings will fail the workflow while still uploading artifacts and printing summaries.
 
 Notes and next recommended steps
 --------------------------------
