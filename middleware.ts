@@ -17,9 +17,10 @@ const csp = [
   "img-src 'self' data: blob:",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net blob:`,
+  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live blob:`,
   "worker-src 'self' blob:",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no",
+  // Allow Vercel Live (preview feedback/toolbar) to avoid CSP console noise in preview/test
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");

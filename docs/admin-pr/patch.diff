@@ -1,0 +1,108 @@
+diff --git a/lib/supabaseServer.ts b/lib/supabaseServer.ts
+new file mode 100644
+index 0000000..1111111
+--- /dev/null
++++ b/lib/supabaseServer.ts
+@@ -0,0 +1,30 @@
++import { createClient } from "@supabase/supabase-js";
++
++const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
++const serviceRole = process.env.SUPABASE_SERVICE_ROLE_KEY!;
++
++// Server-side Supabase client (service role)
++export const supabaseServer = createClient(supabaseUrl, serviceRole);
++
++export async function getSignedUrl(bucket: string, path: string): Promise<string> {
++  if (!bucket) throw new Error("missing bucket");
++  if (!path) throw new Error("missing path");
++  if (!(path.startsWith("cv/") || path.startsWith("cert/")) || path.includes("..")) {
++    throw new Error("invalid key");
++  }
++  const { data, error } = await supabaseServer
++    .storage
++    .from(bucket)
++    .createSignedUrl(path, 900); // 15 min
++  if (error) throw error;
++  return data.signedUrl;
++}
++
++export async function headObject(bucket: string, path: string) {
++  // Optional helper for existence checks
++  const { data, error } = await supabaseServer
++    .storage
++    .from(bucket)
++    .list(path.split("/").slice(0, -1).join("/"), { limit: 1 });
++  if (error) throw error;
++  return data;
++}
+
+diff --git a/app/api/storage/sign/route.ts b/app/api/storage/sign/route.ts
+new file mode 100644
+index 0000000..2222222
+--- /dev/null
++++ b/app/api/storage/sign/route.ts
+@@ -0,0 +1,41 @@
++import { NextRequest, NextResponse } from "next/server";
++import { getSignedUrl } from "@/lib/supabaseServer";
++
++export const runtime = "nodejs";
++
++function validateKey(key: string): { ok: true } | { ok: false; error: string } {
++  if (!key) return { ok: false, error: "missing key" };
++  if (!(key.startsWith("cv/") || key.startsWith("cert/"))) return { ok: false, error: "invalid prefix" };
++  if (key.includes("..")) return { ok: false, error: "invalid key" };
++  return { ok: true };
++}
++
++export async function GET(req: NextRequest) {
++  const url = new URL(req.url);
++  const key = url.searchParams.get("key") || "";
++  const valid = validateKey(key);
++  if (!valid.ok) return NextResponse.json({ ok: false, error: valid.error }, { status: 400 });
++  try {
++    const signed = await getSignedUrl("candidates-private", key);
++    return NextResponse.json({ ok: true, url: signed });
++  } catch (e: any) {
++    return NextResponse.json({ ok: false, error: e?.message || "failed" }, { status: 400 });
++  }
++}
++
++export async function OPTIONS() {
++  return new NextResponse(null, { status: 204 });
++}
+
+diff --git a/components/DownloadCvButton.tsx b/components/DownloadCvButton.tsx
+new file mode 100644
+index 0000000..3333333
+--- /dev/null
++++ b/components/DownloadCvButton.tsx
+@@ -0,0 +1,33 @@
++"use client";
++import React from "react";
++
++export function DownloadCvButton({ keyPath }: { keyPath: string }) {
++  const [loading, setLoading] = React.useState(false);
++
++  const handleClick = async () => {
++    setLoading(true);
++    try {
++      const res = await fetch(`/api/storage/sign?key=${encodeURIComponent(keyPath)}`);
++      const json = await res.json();
++      if (json?.ok && json?.url) {
++        window.open(json.url, "_blank", "noopener,noreferrer");
++      } else {
++        alert(json?.error || "Kunne ikke hente filen");
++      }
++    } catch (e) {
++      alert("Feil ved henting av fil");
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  return (
++    <button onClick={handleClick} disabled={loading} className="btn">
++      {loading ? "Henter..." : "Last ned CV"}
++    </button>
++  );
++}

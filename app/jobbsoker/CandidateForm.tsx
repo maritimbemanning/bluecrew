@@ -207,6 +207,7 @@ export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
   const isVerified = searchParams.get("verified") === "true";
+  const requireVipps = (process.env.NEXT_PUBLIC_REQUIRE_VIPPS ?? "true").toLowerCase() !== "false";
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -241,19 +242,26 @@ export default function CandidateContent() {
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
       } else {
-        // Require a valid session for compliance – redirect back to Vipps step
-        router.push("/jobbsoker/registrer");
-        return;
+        if (requireVipps) {
+          // Require a valid session for compliance – redirect back to Vipps step
+          router.push("/jobbsoker/registrer");
+          return;
+        } else {
+          // Soft mode: allow form without Vipps temporarily
+          setStatusMessage("Midleridig løsning: Du kan sende inn uten Vipps-verifisering.");
+        }
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      // On error, enforce Vipps step again
-      router.push("/jobbsoker/registrer");
-      return;
+      if (requireVipps) {
+        // On error, enforce Vipps step again
+        router.push("/jobbsoker/registrer");
+        return;
+      }
     } finally {
       setCheckingSession(false);
     }
-  }, [router, isVerified]);
+  }, [router, isVerified, requireVipps]);
 
   useEffect(() => {
     checkVippsSession();
@@ -343,8 +351,8 @@ export default function CandidateContent() {
         return;
       }
 
-      // CRITICAL: Check Vipps verification BEFORE submitting to API
-      if (!vippsSession) {
+      // CRITICAL: Check Vipps verification BEFORE submitting to API (unless soft mode)
+      if (requireVipps && !vippsSession) {
         // User should have been redirected already, but just in case
         setFormError("Du må verifisere identiteten din med Vipps først.");
         router.push("/jobbsoker/registrer");
@@ -382,7 +390,7 @@ export default function CandidateContent() {
         setIsSubmitting(false);
       }
     },
-    [vippsSession]
+    [vippsSession, requireVipps]
   );
 
   if (submitted) {

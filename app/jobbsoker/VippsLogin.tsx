@@ -256,6 +256,9 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
  * Shows after successful Vipps verification
  */
 export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
+  // Be tolerant to backend field names: phone vs phone_number, verifiedAt vs verified_at
+  const phone = (session as any).phone ?? (session as any).phone_number ?? "";
+  const verifiedAt = (session as any).verifiedAt ?? (session as any).verified_at ?? null;
   return (
     <div style={ui.verifiedBox}>
       <div style={ui.verifiedIcon}>✅</div>
@@ -263,10 +266,10 @@ export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
       <div style={ui.verifiedInfo}>
         <strong>{session.name}</strong>
         <br />
-        {session.phone}
+        {phone}
         <br />
         <span style={{ fontSize: 14, opacity: 0.7 }}>
-          Verifisert {new Date(session.verifiedAt).toLocaleString("nb-NO")}
+          Verifisert {verifiedAt ? new Date(verifiedAt).toLocaleString("nb-NO") : "nå"}
         </span>
       </div>
     </div>

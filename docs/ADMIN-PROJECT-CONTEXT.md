@@ -810,23 +810,63 @@ Resend Support: support@resend.com
 
 ---
 
-## 🔒 Storage tilgang (viktig oppdatering)
+## 🔒 Storage-tilgang (oppdatert – uten delt token)
 
-Dette prosjektet skal ikke scanne "candidate-cvs"/"candidate-certificates" buckets direkte. Public-siden lagrer nå filer i privat bucket `candidates-private` med disse nøkkelkonvensjonene:
+Public-siden lagrer filer i privat bucket `candidates-private` med disse nøkkelkonvensjonene:
 
 - CV: `cv/<hash>.pdf`
 - Sertifikater: `cert/<hash>/certificate.<pdf|zip|doc|docx>`
 
-Databasen `candidates` har kolonner `cv_key` og `certs_key` som peker på disse objektene. Admin skal hente signerte URL-er on-demand fra server:
+Databasen `candidates` har kolonnene `cv_key` og `certs_key` som peker på disse objektene.
 
-1) Kall hovednettstedet:
-   - `GET/POST https://bluecrew.no/api/admin/storage/sign`
-   - Header: `x-admin-token: <ADMIN_SIGN_TOKEN>`
-   - Body/query: `{ key: "cv/<hash>.pdf" }` eller `{ key: "cert/<hash>/certificate.pdf" }`
-   - Response: `{ ok: true, url: "https://...signed..." }` (gyldig i 15 min)
+Admin-appen skal hente filene direkte fra Supabase Storage ved å generere signerte URL-er på ADMIN‑SERVEREN med `SUPABASE_SERVICE_ROLE_KEY`. Det offentlige nettstedet (`bluecrew`) eksponerer ikke lenger en signer‑endpoint.
 
-2) For enkel feilsøking finnes det helsesjekker:
-   - `GET https://bluecrew.no/api/health/supabase/storage` → generelt Storage OK
-   - `GET https://bluecrew.no/api/health/supabase/storage/cv` → viser et lite utvalg av `cv/` nøkler
+Eksempel (Admin app, server-side):
 
-Sett `ADMIN_SIGN_TOKEN` i både hovedside og admin‑app miljøvariabler.
+```ts
+// lib/supabaseServer.ts (Admin)
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+   process.env.SUPABASE_SERVICE_ROLE_KEY!,
+);
+
+export async function getSignedUrl(bucket: string, path: string) {
+   // Validate key prefix to avoid traversal
+   if (!(path.startsWith("cv/") || path.startsWith("cert/")) || path.includes("..")) {
+      throw new Error("invalid key");
+   }
+   const { data, error } = await supabase
+      .storage
+      .from(bucket)
+      .createSignedUrl(path, 900); // 15 min
+   if (error) throw error;
+   return data.signedUrl;
+}
+```
+
+API‑route i Admin for nedlasting (server-side only):
+
+```ts
+// app/api/storage/sign/route.ts (Admin)
+import { NextRequest, NextResponse } from "next/server";
+import { getSignedUrl } from "@/lib/supabaseServer";
+
+export async function GET(req: NextRequest) {
+   const url = new URL(req.url);
+   const key = url.searchParams.get("key") || "";
+   try {
+      const signed = await getSignedUrl("candidates-private", key);
+      return NextResponse.json({ ok: true, url: signed });
+   } catch (e: any) {
+      return NextResponse.json({ ok: false, error: e?.message || "failed" }, { status: 400 });
+   }
+}
+```
+
+Helsesjekker (på public‑siden) finnes fortsatt for feilsøking:
+- `GET https://bluecrew.no/api/health/supabase/storage` → generelt Storage OK
+- `GET https://bluecrew.no/api/health/supabase/storage/cv` → lite utvalg av `cv/`‑nøkler
+
+Merk: `ADMIN_SIGN_TOKEN` er fjernet og kreves ikke lenger. Admin‑appen må beskytte egne API‑ruter med sin auth (Supabase Auth) og holde `SUPABASE_SERVICE_ROLE_KEY` kun på server.
