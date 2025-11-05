@@ -4,16 +4,11 @@
 User-agent: *
 Allow: /
 
-# Prioritized pages for crawling
-Allow: /jobbsoker/guides/
-Allow: /kunde/
-Allow: /faq
-Allow: /om-oss
-Allow: /kontakt
-
-# Block API routes and admin areas
+# Block ONLY API routes and admin areas
 Disallow: /api/
-Disallow: /api/admin/
+Disallow: /admin/
+Disallow: /_next/static/
+Disallow: /_next/image/
 
 # Sitemap location
 Sitemap: https://www.bluecrew.no/sitemap.xml
