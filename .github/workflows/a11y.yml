@@ -28,23 +28,35 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Install jq for JSON parsing
+      - name: Install system dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y jq
+          # Install Chromium dependencies for Puppeteer
+          sudo apt-get install -y \
+            libnss3 \
+            libatk-bridge2.0-0 \
+            libdrm2 \
+            libxkbcommon0 \
+            libgbm1 \
+            libasound2
 
       - name: Start server
         run: |
           nohup npm start >/dev/null 2>&1 &
           echo "Waiting for server..."
-          for i in {1..90}; do
+          for i in {1..120}; do
             if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
               echo "Server is up after $i seconds"
-              sleep 3
+              echo "Warming up..."
+              sleep 5
+              curl -sSf http://localhost:3000/ >/dev/null 2>&1 || true
+              curl -sSf http://localhost:3000/jobbsoker >/dev/null 2>&1 || true
+              curl -sSf http://localhost:3000/kunde >/dev/null 2>&1 || true
               break
             fi
-            if [ $i -eq 90 ]; then
-              echo "Server failed to start within 90 seconds"
+            if [ $i -eq 120 ]; then
+              echo "Server failed to start within 120 seconds"
               exit 1
             fi
             sleep 1
@@ -52,8 +64,8 @@ jobs:
 
       - name: Run pa11y checks (programmatic runner)
         run: |
-          export PA11Y_WAIT=10000
-          export PA11Y_TIMEOUT=90000
+          export PA11Y_WAIT=15000
+          export PA11Y_TIMEOUT=120000
           export PA11Y_WAIT_UNTIL=load
           node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
           node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
