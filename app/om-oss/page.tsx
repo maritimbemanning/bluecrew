@@ -3,15 +3,15 @@ import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
 
 export const metadata: Metadata = {
-  title: "Om oss - Maritim bemanningsleverandør i Nord-Norge",
+  title: "Om oss - Maritim bemanningsleverandør i Norge",
   description:
     "Bluecrew AS er et norsk bemanningsselskap drevet av sjøfolk. Vi leverer kvalifisert personell til havbruk, servicefartøy og fiskeri. Base i Harstad med nasjonal dekning.",
   keywords: [
     "om bluecrew",
     "maritim bemanning Harstad",
-    "bemanningsselskap Nord-Norge",
+    "bemanningsselskap Norge",
     "sjøfolk erfaring",
-    "maritime tjenester Troms",
+    "maritime tjenester Norge",
     "bemanning havbruk",
     "rekruttering offshore",
   ],

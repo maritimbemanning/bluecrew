@@ -224,7 +224,8 @@ export async function uploadSupabaseObject(options: {
       // Allow overwriting same key if duplicate submission happens
       "x-upsert": "true",
     },
-    body: payload,
+    // Ensure BodyInit type compatibility across TS/lib versions
+    body: (payload as unknown) as BodyInit,
     timeoutMs: 15000,
     retries: 1,
   });
