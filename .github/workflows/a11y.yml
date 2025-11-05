@@ -31,15 +31,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y jq
-          # Install Chromium dependencies for Puppeteer
-          sudo apt-get install -y \
-            libnss3 \
-            libatk-bridge2.0-0 \
-            libdrm2 \
-            libxkbcommon0 \
-            libgbm1 \
-            libasound2
+          sudo apt-get install -y jq libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2
 
       - name: Start server
         run: |
