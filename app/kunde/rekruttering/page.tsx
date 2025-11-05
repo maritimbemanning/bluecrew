@@ -206,7 +206,7 @@ export default function Page() {
 
               <ul style={{ margin: "16px 0 0 0", paddingLeft: 24, lineHeight: 1.7, display: "grid", gap: 10, fontSize: 16, color: "#e2e8f0" }}>
                 <li><strong>Ekte sjøerfaring:</strong> Vi har selv jobbet på fartøy og forstår hva som kreves i ulike roller.</li>
-                <li><strong>Lokalt nettverk:</strong> Vi er basert i Harstad og har sterke nettverk i hele Nord-Norge og langs kysten.</li>
+                <li><strong>Landsdekkende:</strong> Base i Nord-Norge med sterke nettverk langs hele kysten – fra Sørlandet til Finnmark.</li>
                 <li><strong>Kvalitet over kvantitet:</strong> Vi presenterer kun kandidater vi selv ville ansatt.</li>
                 <li><strong>Personlig oppfølging:</strong> Dere får én fast kontaktperson gjennom hele prosessen.</li>
                 <li><strong>Transparent prosess:</strong> Vi holder dere oppdatert på fremdrift og eventuelle utfordringer underveis.</li>

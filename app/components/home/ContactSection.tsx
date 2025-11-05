@@ -27,7 +27,7 @@ export function ContactSection(){
             <div className={styles.cardHeader}>
               <h3 className={styles.cardTitle}>Bluecrew AS</h3>
               <p className={styles.cardDescription}>
-                Daglig bemanning og langsiktige avtaler for fartøy i hele Nord-Norge og resten av kysten.
+                Base i Nord-Norge – leverer mannskap til hele Norge. Daglig bemanning og langsiktige avtaler for maritime operasjoner.
               </p>
             </div>
             {/* Redundant safeguard at list-level as well */}

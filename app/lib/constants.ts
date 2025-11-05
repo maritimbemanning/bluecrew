@@ -158,7 +158,7 @@ export const FAQS = [
   },
   {
     q: "Hvilke områder dekker dere?",
-    a: "Vi har base i Nord-Norge men opererer over hele kysten. Vårt nettverk strekker seg fra Sørlandet til Finnmark, med særlig god dekning i Nord-Norge.",
+    a: "Vi har base i Nord-Norge, men opererer i hele Norge. Vårt nettverk strekker seg fra Sørlandet til Finnmark, og vi leverer mannskap til havbruk, offshore og servicefartøy langs hele kysten.",
   },
   {
     q: "Jobber dere med alle typer fartøy?",
