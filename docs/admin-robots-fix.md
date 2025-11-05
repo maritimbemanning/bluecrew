@@ -20,7 +20,7 @@ Disallow: /
 # This is an internal admin portal - not for public indexing
 ```
 
-### 2. Eller bruk Next.js app/robots.ts
+### 2. Eller bruk Next.js app/robots.ts (anbefalt)
 
 ```typescript
 // app/robots.ts (bluecrew-admin)
@@ -31,10 +31,27 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        disallow: ["/"], // Block everything
+        disallow: ["/"], // Block everything - this is an internal admin tool
       },
     ],
+    // NO sitemap - we don't want Google to index anything
   };
+}
+```
+
+### 3. VIKTIG: Fjern sitemap fra admin-domenet
+
+Hvis det finnes en `app/sitemap.ts` eller `app/sitemap.xml` i bluecrew-admin:
+- **SLETT DEN** eller
+- **Gjør den tom:**
+
+```typescript
+// app/sitemap.ts (bluecrew-admin)
+import { MetadataRoute } from "next";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  // Return empty array - nothing should be indexed
+  return [];
 }
 ```
 
