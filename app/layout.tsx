@@ -9,7 +9,7 @@ import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
 
 const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
-  "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rask leveranse, høy kvalitet og trygg etterlevelse.";
+  "Bemanning av kvalifisert maritimt mannskap. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer til havbruk, servicefartøy og offshore.";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
 const logoPath = "/logo.png"; // exists in /public
 const logoUrl = `${siteUrl}${logoPath}`;
@@ -37,11 +37,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"),
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/icons/icononly_transparent_nobuffer.png", type: "image/png", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico", sizes: "32x32" },
     ],
-    apple: "/icons/icononly_transparent_nobuffer.png",
-    shortcut: "/icon.png",
+    apple: [
+      { url: "/icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
   },
   openGraph: {
     type: "website",
