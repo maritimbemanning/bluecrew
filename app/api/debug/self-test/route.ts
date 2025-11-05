@@ -32,6 +32,7 @@ export async function GET(req: NextRequest) {
     UPSTASH_REDIS_REST_TOKEN: !!process.env.UPSTASH_REDIS_REST_TOKEN,
     RESEND_API_KEY: !!process.env.RESEND_API_KEY,
     RESEND_FROM_EMAIL: !!process.env.RESEND_FROM_EMAIL,
+    RESEND_TO_EMAILS: !!process.env.RESEND_TO_EMAILS,
   } as const;
 
   // Check Redis connectivity (non-fatal if missing)
