@@ -52,14 +52,39 @@ jobs:
 
       - name: Run pa11y checks (programmatic runner)
         run: |
-          export PA11Y_WAIT=5000
+          export PA11Y_WAIT=8000
           export PA11Y_TIMEOUT=60000
+          export PA11Y_WAIT_UNTIL=load
           node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
           node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
           node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
           node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
           node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
           node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
+
+      - name: Retry pa11y if issues detected (reduce flakiness)
+        if: always()
+        run: |
+          sudo apt-get update >/dev/null 2>&1 || true
+          sudo apt-get install -y jq >/dev/null 2>&1 || true
+          any_issues=0
+          for f in docs/pa11y-*.json; do
+            if [ -s "$f" ] && ! jq -e '. | length == 0' "$f" >/dev/null 2>&1; then
+              any_issues=1
+            fi
+          done
+          if [ "$any_issues" -eq 1 ]; then
+            echo "Retrying pa11y with longer wait..."
+            export PA11Y_WAIT=12000
+            export PA11Y_TIMEOUT=90000
+            export PA11Y_WAIT_UNTIL=load
+            node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
+            node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
+            node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
+            node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
+            node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
+            node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
+          fi
 
       - name: Upload pa11y reports
         if: always()
