@@ -31,8 +31,6 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
-  // Login temporarily removed from public NAV to avoid unintended access paths
-  // { href: "/konto/logg-inn", label: "Logg inn", key: "konto" },
   {
     href: "/kunde",
     label: "Kunde",
