@@ -28,32 +28,32 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Install jq for JSON parsing
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y jq
+
       - name: Start server
         run: |
           nohup npm start >/dev/null 2>&1 &
-          for i in {1..60}; do
-            if curl -sSf http://localhost:3000/ >/dev/null; then
-              echo "Server is up"; break;
+          echo "Waiting for server..."
+          for i in {1..90}; do
+            if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+              echo "Server is up after $i seconds"
+              sleep 3
+              break
+            fi
+            if [ $i -eq 90 ]; then
+              echo "Server failed to start within 90 seconds"
+              exit 1
             fi
             sleep 1
-          done
-      - name: Warm up key routes
-        run: |
-          for p in \
-            / \
-            /jobbsoker \
-            /kunde \
-            /kontakt \
-            /om-oss \
-            /cookies \
-            ; do
-            curl -sS "http://localhost:3000$p" >/dev/null || true
           done
 
       - name: Run pa11y checks (programmatic runner)
         run: |
-          export PA11Y_WAIT=8000
-          export PA11Y_TIMEOUT=60000
+          export PA11Y_WAIT=10000
+          export PA11Y_TIMEOUT=90000
           export PA11Y_WAIT_UNTIL=load
           node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
           node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
@@ -61,30 +61,6 @@ jobs:
           node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
           node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
           node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
-
-      - name: Retry pa11y if issues detected (reduce flakiness)
-        if: always()
-        run: |
-          sudo apt-get update >/dev/null 2>&1 || true
-          sudo apt-get install -y jq >/dev/null 2>&1 || true
-          any_issues=0
-          for f in docs/pa11y-*.json; do
-            if [ -s "$f" ] && ! jq -e '. | length == 0' "$f" >/dev/null 2>&1; then
-              any_issues=1
-            fi
-          done
-          if [ "$any_issues" -eq 1 ]; then
-            echo "Retrying pa11y with longer wait..."
-            export PA11Y_WAIT=12000
-            export PA11Y_TIMEOUT=90000
-            export PA11Y_WAIT_UNTIL=load
-            node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
-            node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
-            node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
-            node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
-            node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
-            node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
-          fi
 
       - name: Upload pa11y reports
         if: always()
@@ -96,8 +72,6 @@ jobs:
       - name: Print non-empty findings
         if: always()
         run: |
-          sudo apt-get update >/dev/null 2>&1 || true
-          sudo apt-get install -y jq >/dev/null 2>&1 || true
           for f in docs/pa11y-*.json; do
             echo "=== $f ==="
             if [ ! -s "$f" ]; then echo "(empty or missing)"; continue; fi
@@ -110,8 +84,6 @@ jobs:
 
       - name: Fail if any issues were found
         run: |
-          sudo apt-get update >/dev/null 2>&1 || true
-          sudo apt-get install -y jq >/dev/null 2>&1 || true
           fail=0
           for f in docs/pa11y-*.json; do
             if [ -s "$f" ] && ! jq -e '. | length == 0' "$f" >/dev/null 2>&1; then

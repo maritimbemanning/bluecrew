@@ -1,0 +1,130 @@
+name: smoke-tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Start server
+        run: |
+          nohup npm start >/dev/null 2>&1 &
+          for i in {1..60}; do
+            if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+              echo "Server is up"; break;
+            fi
+            sleep 1
+          done
+
+      - name: Smoke test - public routes
+        run: |
+          echo "Testing public routes..."
+          for route in / /jobbsoker /kunde /kontakt /om-oss /faq /cookies /personvern /vilkar; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000$route")
+            echo "  $route -> $status"
+            if [ "$status" != "200" ]; then
+              echo "ERROR: $route returned $status (expected 200)"
+              exit 1
+            fi
+          done
+
+      - name: Smoke test - /admin guard (should 404)
+        run: |
+          echo "Testing /admin guard..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/admin")
+          echo "  /admin -> $status"
+          if [ "$status" != "404" ]; then
+            echo "ERROR: /admin returned $status (expected 404)"
+            exit 1
+          fi
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/admin/anything")
+          echo "  /admin/anything -> $status"
+          if [ "$status" != "404" ]; then
+            echo "ERROR: /admin/anything returned $status (expected 404)"
+            exit 1
+          fi
+
+      - name: Smoke test - API health checks
+        run: |
+          echo "Testing API health endpoints..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/health/supabase")
+          echo "  /api/health/supabase -> $status"
+          if [ "$status" != "200" ] && [ "$status" != "500" ]; then
+            echo "WARNING: health check returned $status"
+          fi
+
+      - name: Smoke test - Vipps session endpoint
+        run: |
+          echo "Testing Vipps session endpoint..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/vipps/session")
+          echo "  /api/vipps/session -> $status"
+          # Should return 401/403 without valid session
+          if [ "$status" = "500" ]; then
+            echo "ERROR: Vipps session returned 500"
+            exit 1
+          fi
+
+      - name: Smoke test - Submit candidate GET
+        run: |
+          echo "Testing submit-candidate GET..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/api/submit-candidate")
+          echo "  GET /api/submit-candidate -> $status"
+          if [ "$status" != "200" ] && [ "$status" != "405" ]; then
+            echo "WARNING: unexpected status $status"
+          fi
+
+      - name: Smoke test - robots and sitemap
+        run: |
+          echo "Testing SEO files..."
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/robots.txt")
+          echo "  /robots.txt -> $status"
+          if [ "$status" != "200" ]; then
+            echo "ERROR: robots.txt returned $status"
+            exit 1
+          fi
+          status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/sitemap.xml")
+          echo "  /sitemap.xml -> $status"
+          if [ "$status" != "200" ]; then
+            echo "ERROR: sitemap.xml returned $status"
+            exit 1
+          fi
+
+      - name: Smoke test - metadata presence
+        run: |
+          echo "Testing metadata on homepage..."
+          html=$(curl -s "http://localhost:3000/")
+          if echo "$html" | grep -q '<title>.*Norge</title>'; then
+            echo "  ✓ Title contains 'Norge'"
+          else
+            echo "  WARNING: Title may not contain 'Norge'"
+          fi
+          if echo "$html" | grep -q 'rel="icon"'; then
+            echo "  ✓ Favicon link present"
+          else
+            echo "  WARNING: Favicon link not found"
+          fi
+          if echo "$html" | grep -q 'property="og:title"'; then
+            echo "  ✓ Open Graph meta present"
+          else
+            echo "  WARNING: Open Graph meta not found"
+          fi
