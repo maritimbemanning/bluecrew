@@ -85,7 +85,7 @@ const ui = {
     fontSize: 15.5,
   },
   a: {
-    color: "#007eb6",
+    color: "#0369a1",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },

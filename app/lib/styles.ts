@@ -142,7 +142,7 @@ export const sx: Record<string, CSSProperties> = {
     transition: "color 0.2s ease, transform 0.15s ease",
   },
   navLinkActive: {
-    color: "#7dd3fc",
+    color: "#8bd4ff",
   },
   navLinkAccent: {
     color: "#ffffff",

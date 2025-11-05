@@ -7,9 +7,9 @@ import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
 
-const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
+const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
-  "Profesjonell bemanning av kvalifisert mannskap til den maritime næringen. STCW-sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rekruttering og vikarer til fartøy i hele Norge. Kontakt oss på 923 28 850.";
+  "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rask leveranse, høy kvalitet og trygg etterlevelse.";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
 const logoPath = "/logo.png"; // exists in /public
 const logoUrl = `${siteUrl}${logoPath}`;
@@ -27,9 +27,8 @@ export const metadata: Metadata = {
     "brønnbåt mannskap",
     "offshore bemanning",
     "STCW sertifisert",
-    "maritime stillinger Nord-Norge",
-    "bemanning Troms",
-    "bemanning Finnmark",
+    "maritime stillinger Norge",
+    "bemanning Norge",
     "dekksoffiser",
     "maskinoffiser",
     "maritime vikarer",
@@ -56,7 +55,7 @@ export const metadata: Metadata = {
         url: "/hero/maritime-hero.jpeg",
         width: 1920,
         height: 1080,
-        alt: "Bluecrew AS - Profesjonell maritim bemanning i Nord-Norge",
+        alt: "Bluecrew AS - Profesjonell maritim bemanning i Norge",
       },
     ],
   },
@@ -87,7 +86,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     alternateName: "Bluecrew",
     url: siteUrl,
     logo: logoUrl,
-    description: "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
+  description: "Maritim bemanningsleverandør i Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore over hele landet.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Ervikveien 110",
@@ -160,8 +159,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="no">
       <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
-        <title>Bluecrew AS – Maritim bemanning i Nord‑Norge</title>
-        {/* Explicit favicon link to help Google pick up site icon in SERP */}
+        <title>Bluecrew AS – Maritim bemanning i Norge</title>
+        {/* Explicit favicon links to help Google pick up site icon in SERP */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
+        <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
         <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
         <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
         <Script

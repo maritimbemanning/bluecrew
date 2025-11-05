@@ -124,8 +124,8 @@
   display:inline-flex;
   align-items:center;
   gap:8px;
-  padding:6px 10px;
-  border-radius:10px;
+  padding:8px 14px;
+  border-radius:999px;
   border:1px solid rgba(255,90,36,0.6);
   color:#ff5a24;
   background:transparent;
@@ -160,8 +160,8 @@
   display:inline-flex;
   align-items:center;
   gap:8px;
-  padding:6px 10px;
-  border-radius:10px;
+  padding:8px 14px;
+  border-radius:999px;
   border:1px solid rgba(148,197,255,0.35);
   color:#e2e8f0;
   background:transparent;

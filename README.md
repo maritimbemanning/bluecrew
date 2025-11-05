@@ -64,3 +64,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 For en praktisk sjekkliste over hvordan du tvinger frem en ny deploy, bekrefter at riktig kode kjører og tester e-postflyten, se [docs/vercel-redeploy.md](docs/vercel-redeploy.md).
+
+## Analytics og mål (Plausible)
+
+Nettstedet sender allerede samtykkebaserte hendelser for viktige handlinger (klikk på «Meld interesse», Vipps-verifisering, telefonklikk, leads). For å sette opp konverteringsmål og et lite dashboard i Plausible, se guiden: [docs/plausible-goals.md](docs/plausible-goals.md).

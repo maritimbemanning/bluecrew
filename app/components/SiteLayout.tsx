@@ -31,8 +31,8 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
-  // Login item stays in NAV for mobile; on desktop we render a dedicated green button on the far right
-  { href: "/konto/logg-inn", label: "Logg inn", key: "konto" },
+  // Login temporarily removed from public NAV to avoid unintended access paths
+  // { href: "/konto/logg-inn", label: "Logg inn", key: "konto" },
   {
     href: "/kunde",
     label: "Kunde",
@@ -440,7 +440,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     </button>
                   </div>
                   <ul style={sx.mobileNav}>
-                    {NAV_ITEMS.map((item) => {
+                    {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => {
                       const isActive = active === item.key;
                       const hasChildren = !!item.children?.length;
                       return (
@@ -501,7 +501,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     </button>
                   </div>
                   <ul style={sx.mobileNav}>
-                    {NAV_ITEMS.map((item) => (
+                    {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => (
                       <li key={item.key} style={sx.mobileNavItem}>
                         <Link href={item.href} style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}) }} className="mobileLink" onClick={() => closeMobileMenu()}>
                           {item.label}

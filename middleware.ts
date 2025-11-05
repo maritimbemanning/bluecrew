@@ -73,6 +73,13 @@ export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
   const { pathname } = url;
 
+  // Hard guard: Never expose /admin routes from this public site
+  if (pathname.startsWith("/admin")) {
+    // Return 404 to avoid leaking that an admin area exists
+    const res = new NextResponse("Not Found", { status: 404 });
+    return applySecurityHeaders(res);
+  }
+
   // Read maintenance flag from env (supports true/1/on). Evaluated at runtime in Edge.
   const maintenanceFlag = String(
     process.env.MAINTENANCE_MODE ?? process.env.NEXT_PUBLIC_MAINTENANCE_MODE ?? ""
