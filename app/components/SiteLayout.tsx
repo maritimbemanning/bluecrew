@@ -651,9 +651,33 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
           </div>
 
           <div style={sx.footerLegal}>
-          © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
-          <br />
-          <span style={{ fontSize: '0.9em', opacity: 0.85, marginTop: '8px', display: 'inline-block', fontWeight: 500 }}>Nettside © Didriksson Digital ENK</span>
+            © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
+          </div>
+          <div style={{ 
+            marginTop: 16, 
+            paddingTop: 16, 
+            borderTop: '1px solid rgba(226,232,240,0.15)', 
+            textAlign: 'center',
+            fontSize: 13,
+            color: 'rgba(226,232,240,0.7)'
+          }}>
+            Nettside levert av{' '}
+            <a 
+              href="https://didrikssondigital.no" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={{ 
+                color: 'rgba(226,232,240,0.9)', 
+                textDecoration: 'none',
+                fontWeight: 600,
+                transition: 'color 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#60a5fa'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(226,232,240,0.9)'}
+            >
+              Didriksson Digital
+            </a>
+            {' '}— Programvareutvikling og raske nettsider
           </div>
         </div>
       </footer>
