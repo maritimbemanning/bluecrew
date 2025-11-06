@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { SalaryCalculator } from "./SalaryCalculator";
-import { BreadcrumbsSchema } from "@/app/components/BreadcrumbsSchema";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
 
@@ -34,12 +33,6 @@ export const metadata: Metadata = {
 };
 
 export default function LonnKalkulatorPage() {
-  const breadcrumbs = [
-    { name: "Hjem", url: siteUrl },
-    { name: "Karriere", url: `${siteUrl}/karriere` },
-    { name: "Lønnkalkulator", url: `${siteUrl}/karriere/lonn-kalkulator` },
-  ];
-
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -81,7 +74,6 @@ export default function LonnKalkulatorPage() {
 
   return (
     <>
-      <BreadcrumbsSchema breadcrumbs={breadcrumbs} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
