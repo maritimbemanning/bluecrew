@@ -33,18 +33,18 @@ export function Hero(){
             </Link>
             <div className={styles.phoneCta}>
               <a
-                href="tel:+4792328850"
+                href="mailto:post@bluecrew.no"
                 className={util.btn + ' ' + styles.btnSecondary}
                 onClick={() => {
                   const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
                   if (typeof plausible === 'function') {
-                    plausible('Phone Click', { props: { location: 'hero' } });
+                    plausible('Email Click', { props: { location: 'hero' } });
                   }
                 }}
               >
-                923 28 850
+                📧 post@bluecrew.no
               </a>
-              <p className={styles.ctaSubtext}>Akutt behov?</p>
+              <p className={styles.ctaSubtext}>Akutt behov? Ring 923 28 850</p>
             </div>
           </div>
 
