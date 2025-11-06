@@ -165,61 +165,89 @@
   opacity: 1;
 }
 
-/* Compact identity verify button (Vipps orange by default) */
-.verifyBtn{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 14px;
-  border-radius:999px;
-  border:1px solid rgba(255,90,36,0.6);
-  color:#ff5a24;
-  background:transparent;
-  font-weight:800;
-  font-size:14px;
-  line-height:1.2;
-  letter-spacing:.01em;
-  text-decoration:none;
-  transition: background .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
-}
-.verifyBtn:hover,
-.verifyBtn:focus-visible{
-  background: rgba(255,90,36,0.08);
-  border-color: rgba(255,90,36,0.8);
-  box-shadow: 0 0 0 3px rgba(255,90,36,0.18);
-}
-
-/* Future: BankID theme (kept for later use) */
-.verifyBtn--bankid{
-  border-color: rgba(0,98,163,0.55);
-  color: #0062A3;
-}
-.verifyBtn--bankid:hover,
-.verifyBtn--bankid:focus-visible{
-  background: rgba(0,98,163,0.08);
-  border-color: rgba(0,98,163,0.8);
-  box-shadow: 0 0 0 3px rgba(0,98,163,0.18);
-}
-
-/* Neutral compact button used for 'Meld interesse' on the right cluster */
+/* Premium compact button - 'Meld interesse' */
 .microBtn{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 14px;
-  border-radius:999px;
-  border:1px solid rgba(148,197,255,0.35);
-  color:#e2e8f0;
-  background:transparent;
-  font-weight:800;
-  font-size:14px;
-  line-height:1.2;
-  text-decoration:none;
-  transition: background .15s ease, box-shadow .15s ease, color .15s ease, border-color .15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(148, 197, 255, 0.4);
+  color: #e2e8f0;
+  background: rgba(148, 197, 255, 0.05);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
 }
+
+.microBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(148, 197, 255, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 .microBtn:hover,
 .microBtn:focus-visible{
-  background: rgba(148,197,255,0.10);
-  border-color: rgba(148,197,255,0.55);
-  box-shadow: 0 0 0 3px rgba(148,197,255,0.18);
+  background: rgba(148, 197, 255, 0.12);
+  border-color: rgba(148, 197, 255, 0.7);
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 8px 25px rgba(148, 197, 255, 0.25),
+    0 0 0 3px rgba(148, 197, 255, 0.15);
+}
+
+.microBtn:hover::before {
+  opacity: 1;
+}
+
+/* Premium Vipps/BankID button */
+.verifyBtn{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 90, 36, 0.5);
+  color: #ff5a24;
+  background: rgba(255, 90, 36, 0.05);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.verifyBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 90, 36, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.verifyBtn:hover,
+.verifyBtn:focus-visible{
+  background: rgba(255, 90, 36, 0.12);
+  border-color: rgba(255, 90, 36, 0.8);
+  color: #ff7a52;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 8px 25px rgba(255, 90, 36, 0.3),
+    0 0 0 3px rgba(255, 90, 36, 0.2);
+}
+
+.verifyBtn:hover::before {
+  opacity: 1;
 }
