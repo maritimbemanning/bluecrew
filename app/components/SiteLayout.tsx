@@ -663,7 +663,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
           }}>
             Nettside levert av{' '}
             <a 
-              href="https://didrikssondigital.no" 
+              href="https://didriksson.no" 
               target="_blank" 
               rel="noopener noreferrer"
               style={{ 

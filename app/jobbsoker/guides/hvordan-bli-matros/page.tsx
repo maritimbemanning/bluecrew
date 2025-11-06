@@ -54,7 +54,7 @@ export default function Page() {
           </div>
 
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
           <h1 style={sx.h2}>Hvordan bli matros i Norge</h1>
           <p style={sx.leadSmall}>
@@ -414,7 +414,7 @@ export default function Page() {
               <li>Sjømannsforbundet lønnsstatistikk</li>
             </ul>
             <p style={{ margin: "12px 0 0 0", fontSize: 13, color: "#94a3b8", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025
+              Sist oppdatert: 7. november 2025
             </p>
           </div>
         </div>

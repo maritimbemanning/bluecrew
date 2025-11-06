@@ -55,9 +55,9 @@ export default function Page() {
           </div>
 
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
-          <h1 style={sx.h2}>Lønnsguide maritime stillinger 2025</h1>
+          <h1 style={sx.h2}>Lønnsguide for maritime stillinger i Norge</h1>
           <p style={sx.leadSmall}>
             Komplett oversikt over lønninger i norske maritime stillinger. Basert på tariffavtaler, bransjedata og reelle 
             jobboppslag fra offshore, cruise, havbruk og kystfart. Oppdatert oktober 2025.
@@ -557,7 +557,7 @@ export default function Page() {
               <li>SSB (Statistisk Sentralbyrå) – Maritime lønninger</li>
             </ul>
             <p style={{ margin: "12px 0 0 0", fontSize: 13, color: "#94a3b8", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025
+              Sist oppdatert: 7. november 2025
             </p>
           </div>
         </div>
