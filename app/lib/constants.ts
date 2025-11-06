@@ -120,7 +120,7 @@ export const FAQS = [
   },
   {
     q: "Hva koster bemanningsløsningene deres?",
-    a: "Pris avhenger av type stilling, kompetansekrav, varighet og oppdragets art. Vi tilbyr transparente avtaler uten skjulte kostnader. Kontakt oss for et skreddersydd pristilbud basert på ditt behov.",
+    a: "Vi tilbyr skreddersydde løsninger basert på hver kundes behov. Kontakt oss for en uforpliktende samtale der vi kan diskutere ditt prosjekt.",
   },
   {
     q: "Hvordan sikrer dere kvaliteten på mannskapet?",

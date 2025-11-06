@@ -107,12 +107,11 @@ export default function FAQPage() {
     if (faq.q === "Hva koster bemanningsløsningene deres?") {
       return (
         <>
-          Pris avhenger av type stilling, kompetansekrav, varighet og oppdragets art. Vi tilbyr transparente avtaler uten
-          skjulte kostnader.{" "}
+          Vi tilbyr skreddersydde løsninger basert på hver kundes behov.{" "}
           <Link href="/kunde/registrer-behov" style={{ textDecoration: "underline", fontWeight: 500 }}>
-            Kontakt oss for et skreddersydd pristilbud
+            Kontakt oss for en uforpliktende samtale
           </Link>{" "}
-          basert på ditt behov.
+          der vi kan diskutere ditt prosjekt.
         </>
       );
     }
