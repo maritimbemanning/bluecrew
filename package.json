@@ -34,8 +34,9 @@
     "@vanilla-extract/next-plugin": "^2.4.14",
     "eslint": "^9",
     "eslint-config-next": "15.5.5",
-    "png-to-ico": "^2.1.8",
     "pa11y": "^9.0.1",
+    "pa11y-ci": "^4.0.1",
+    "png-to-ico": "^2.1.8",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

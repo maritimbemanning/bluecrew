@@ -41,6 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/jobbsoker/guides/lonnsguide-maritime-stillinger`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
 
     // Lønnssider - VIKTIGE SEO-sider (høyt søkevolum)
+    { url: `${base}/karriere/lonn-kalkulator`, lastModified: now, changeFrequency: "monthly", priority: 1.0 },
     { url: `${base}/karriere/kaptein-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/karriere/styrmann-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${base}/karriere/matros-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },

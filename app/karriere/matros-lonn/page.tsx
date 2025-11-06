@@ -559,6 +559,24 @@ export default function Page() {
               Relaterte guider:
             </h3>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 16 }}>
+              <Link href="/karriere/lonn-kalkulator" style={{ textDecoration: "none" }}>
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
+                    padding: 20,
+                    borderRadius: 12,
+                    boxShadow: "0 4px 12px rgba(25, 118, 210, 0.3)",
+                    border: "none",
+                  }}
+                >
+                  <h4 style={{ fontSize: 16, fontWeight: 600, color: "white", marginBottom: 8 }}>
+                    ⚓ Maritim Lønnkalkulator 2025
+                  </h4>
+                  <p style={{ fontSize: 14, color: "rgba(255,255,255,0.9)", margin: 0 }}>
+                    Beregn din forventede lønn basert på stilling, erfaring og arbeidstype
+                  </p>
+                </div>
+              </Link>
               <Link href="/karriere/styrmann-lonn" style={{ textDecoration: "none" }}>
                 <div
                   style={{
