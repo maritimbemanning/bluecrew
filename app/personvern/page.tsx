@@ -130,7 +130,7 @@ export default function PersonvernPage() {
             nettstedet bluecrew.no.
           </p>
           <div style={ui.badgeRow}>
-            <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
+            <span style={ui.badge}>Oppdatert: 6. november 2025</span>
             <span style={ui.badge}>Org.nr: 936 321 194</span>
             <span style={ui.badge}>Kontakt: isak@bluecrew.no</span>
           </div>
@@ -237,8 +237,31 @@ export default function PersonvernPage() {
             <section style={ui.card}>
               <h2 style={ui.h2}>Sikkerhet</h2>
               <p style={ui.p}>
-                Vi benytter tilgangsstyring, kryptert overføring, rate-limiting og sikkerhets-headere. Opplastede filer
-                lagres i Supabase Storage med begrenset tilgang.
+                Vi har implementert tekniske og organisatoriske sikkerhetstiltak i henhold til GDPR art. 32:
+              </p>
+              <ul style={ui.ul}>
+                <li>
+                  <strong>Kryptering i transit:</strong> All kommunikasjon mellom deg og våre servere benytter HTTPS
+                  med TLS 1.3. Dette sikrer at data ikke kan avlyttes eller manipuleres underveis.
+                </li>
+                <li>
+                  <strong>Kryptering at rest:</strong> Personopplysninger lagres kryptert i Supabase sin database med
+                  AES-256 kryptering. Opplastede filer (CVer, vedlegg) lagres også kryptert i Supabase Storage.
+                </li>
+                <li>
+                  <strong>Tilgangskontroll:</strong> Row Level Security (RLS) i Supabase sikrer at kun autoriserte
+                  brukere har tilgang til egne data. Admin-tilgang krever Magic Link autentisering.
+                </li>
+                <li>
+                  <strong>Rate limiting:</strong> Upstash Redis beskytter mot brute force-angrep og spam.
+                </li>
+                <li>
+                  <strong>Sikkerhets-headere:</strong> Content Security Policy (CSP), X-Frame-Options og andre
+                  beskyttelsesmekanismer er konfigurert i next.config.ts.
+                </li>
+              </ul>
+              <p style={ui.p}>
+                Vi gjennomfører regelmessige sikkerhetsvurderinger og følger beste praksis for datasikkerhet.
               </p>
             </section>
 
