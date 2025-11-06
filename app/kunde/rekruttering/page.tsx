@@ -165,38 +165,6 @@ export default function Page() {
               </div>
             </section>
 
-            {/* Priser og garantier */}
-            <section style={{ background: "#ffffff", borderRadius: 20, border: "1px solid #e2e8f0", padding: 32, boxShadow: "0 18px 36px rgba(15, 23, 42, 0.07)", display: "grid", gap: 16 }}>
-              <h2 style={{ ...sx.h2, fontSize: 26, marginBottom: 8 }}>Priser og garantier</h2>
-              <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 17 }}>
-                Vi tar betalt basert på kandidatens årslønn. Prisen avhenger av stillingens kompleksitet og vår innsats:
-              </p>
-
-              <ul style={{ margin: "16px 0 0 0", paddingLeft: 24, color: "#334155", lineHeight: 1.7, display: "grid", gap: 8, fontSize: 16 }}>
-                <li><strong>Standardroller</strong> (matros, dekksmann, junior styrmann): 15-20% av årslønn</li>
-                <li><strong>Mellomledere</strong> (styrmann, maskinoffiser, teknisk ansvarlig): 20-25% av årslønn</li>
-                <li><strong>Seniorroller</strong> (kaptein, maskinsjef, driftsleder): 25-30% av årslønn</li>
-                <li><strong>Spesialistroller og headhunting</strong>: Skreddersydd pris basert på kompleksitet</li>
-              </ul>
-
-              <p style={{ margin: "20px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 17 }}>
-                <strong>Eksempel:</strong> Rekruttering av kaptein med årslønn på 800 000 kr = gebyr på ca. 200 000-240 000 kr (25-30%).
-              </p>
-
-              <div style={{ background: "#f0f9ff", border: "2px solid #0ea5e9", borderRadius: 12, padding: 20, marginTop: 20 }}>
-                <h3 style={{ margin: "0 0 10px 0", fontSize: 19, fontWeight: 700, color: "#0f172a" }}>Våre garantier</h3>
-                <ul style={{ margin: 0, paddingLeft: 24, color: "#334155", lineHeight: 1.7, display: "grid", gap: 6, fontSize: 16 }}>
-                  <li><strong>6 måneders garantitid:</strong> Hvis kandidaten slutter eller blir sagt opp innen 6 måneder, starter vi ny søk uten ekstra kostnader.</li>
-                  <li><strong>3 måneders delvis refusjon:</strong> Hvis kandidaten slutter innen 3 måneder, refunderer vi 50% av gebyret.</li>
-                  <li><strong>Oppfølging i prøvetiden:</strong> Vi tar kontakt med både dere og kandidaten etter 1, 3 og 6 måneder for å sikre at alt går bra.</li>
-                </ul>
-              </div>
-
-              <p style={{ margin: "20px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 16, fontStyle: "italic" }}>
-                Alle priser er eks. mva. Vi sender tilbud med fast pris før oppstart, ingen skjulte kostnader.
-              </p>
-            </section>
-
             {/* Hvorfor velge oss */}
             <section style={{ background: "#0f172a", color: "#e2e8f0", borderRadius: 20, padding: 32, display: "grid", gap: 16 }}>
               <h2 style={{ margin: 0, fontSize: 26, fontWeight: 800, marginBottom: 8 }}>Hvorfor velge Bluecrew?</h2>
