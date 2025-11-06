@@ -44,7 +44,7 @@ export function Hero(){
               >
                 📧 post@bluecrew.no
               </a>
-              <p className={styles.ctaSubtext}>Akutt behov? Ring 923 28 850</p>
+              <p className={styles.ctaSubtext}>Svar innen 24 timer</p>
             </div>
           </div>
 
