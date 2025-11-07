@@ -169,6 +169,7 @@ export async function POST(req: Request) {
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
+          status: "pending", // Venter godkjenning i Import Management (admin)
         },
       }).catch((error) => {
         console.error("⚠️ Supabase-feil (candidate):", error);
