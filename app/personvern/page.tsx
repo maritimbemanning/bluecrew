@@ -250,7 +250,7 @@ export default function PersonvernPage() {
                 </li>
                 <li>
                   <strong>Tilgangskontroll:</strong> Row Level Security (RLS) i Supabase sikrer at kun autoriserte
-                  brukere har tilgang til egne data. Admin-tilgang krever Magic Link autentisering.
+                  brukere har tilgang til egne data. Admin-tilgang krever Vipps-verifisering.
                 </li>
                 <li>
                   <strong>Rate limiting:</strong> Upstash Redis beskytter mot brute force-angrep og spam.

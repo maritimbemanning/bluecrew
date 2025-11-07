@@ -4,7 +4,6 @@ import { jwtVerify, decodeJwt, JWTPayload } from "jose";
 import { Redis } from "@upstash/redis";
 import crypto from "crypto";
 import { getVippsOpenIdConfig, getVippsJWKS } from "@/app/lib/server/vipps";
-import { ensureUserAndSendLoginLink } from "../../../lib/server/auth-admin";
 
 const redis = new Redis({
   url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -262,19 +261,6 @@ export async function GET(request: NextRequest) {
     // Clean up state/nonce cookies
     cookieStore.delete("vipps_state");
     cookieStore.delete("vipps_nonce");
-
-    // Optionally: auto-provision Supabase user and send login link (non-blocking)
-    try {
-      const email = sessionData.email;
-      const name = sessionData.name;
-      if (email && /@/.test(email)) {
-        ensureUserAndSendLoginLink(email, { name }).catch((e: unknown) => {
-          console.warn("Auth provisioning failed (non-blocking)", e);
-        });
-      }
-    } catch (provisionErr) {
-      console.warn("Auth provisioning error (ignored)", provisionErr);
-    }
 
     console.log("🔄 Redirecting to form with verified=true");
 

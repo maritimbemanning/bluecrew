@@ -276,32 +276,3 @@ export async function sendNotificationEmail(args: {
     attachments: args.attachments,
   });
 }
-
-/**
- * Send a login/magic link directly to a single recipient (candidate/user).
- * This bypasses the internal toList and is safe for transactional emails.
- */
-export async function sendLoginLinkToUser(args: {
-  email: string;
-  subject?: string;
-  html?: string;
-  text?: string;
-}) {
-  const subject = args.subject || "Logg inn på Bluecrew";
-  const html = args.html || `
-    <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-      <p>Hei,</p>
-      <p>Klikk på knappen under for å logge inn:</p>
-      <p><a href="#" style="display:inline-block;background:#2563eb;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none">Logg inn</a></p>
-      <p style="font-size:12px;color:#64748b">Lenken er personlig og utløper automatisk etter kort tid.</p>
-    </div>
-  `;
-  const text = args.text || "Hei,\n\nÅpne lenken i e-posten for å logge inn.\n";
-
-  return sendEmail({
-    subject,
-    html,
-    text,
-    to: args.email,
-  });
-}
