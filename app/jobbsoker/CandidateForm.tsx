@@ -621,16 +621,10 @@ export default function CandidateContent() {
                 onChange={() => clearFileError("cv")} 
               />
               <FileInput 
-                label="Søknadsbrev (PDF, valgfritt)" 
-                name="cover_letter" 
-                accept=".pdf" 
-                error={fileErrors.certs} 
-                onChange={() => clearFileError("certs")} 
-              />
-              <FileInput 
-                label="Sertifikater (PDF/ZIP, valgfritt)" 
+                label="Sertifikater/Helseattest (PDF/ZIP, maks 10 MB)" 
                 name="certs" 
                 accept=".pdf,.zip" 
+                required
                 error={fileErrors.certs} 
                 onChange={() => clearFileError("certs")} 
               />

@@ -12,9 +12,9 @@ bluecrew.no har **2 forskjellige søknadsskjema** som sender data til Supabase:
 - Skjema: `/jobbsoker/registrer`
 - API: `/api/submit-candidate`
 - OBLIGATORISK: CV upload (PDF, maks 10 MB)
-- VALGFRITT: Sertifikater upload (PDF/ZIP/DOC/DOCX, maks 10 MB)
+- OBLIGATORISK: Sertifikater/Helseattest upload (PDF/ZIP/DOC/DOCX, maks 10 MB)
 - Går til: `candidates` table
-- Status: `"pending"` (venter godkjenning i Import Management) ⚠️ **MÅ LEGGES TIL!**
+- Status: `"pending"` (venter godkjenning i Import Management) ✅ **IMPLEMENTERT**
 
 ### **2. INTERESSESKJEMA (enkel, rask)**
 - Skjema: `/meld-interesse`

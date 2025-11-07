@@ -57,11 +57,23 @@ export async function POST(req: Request) {
       return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
     }
 
+    const certsFile = files.certs;
+    if (!certsFile || typeof certsFile === "string" || certsFile.size === 0) {
+      return new Response("FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd", { status: 400 });
+    }
+    const allowed = [".pdf", ".zip", ".doc", ".docx"];
+    const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
+    if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
+      return new Response("FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX", { status: 400 });
+    }
+    if (certsFile.size > 10 * 1024 * 1024) {
+      return new Response("FEIL: Sertifikater for store (maks 10 MB)", { status: 400 });
+    }
+
     const submittedAt = new Date().toISOString();
     const storageBase = createCandidateStorageBase(data.email, submittedAt);
     const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
     const cvPath = buildCvPath(storageBase);
-    let certificatePath: string | null = null;
 
     try {
       await uploadSupabaseObject({
@@ -86,37 +98,27 @@ export async function POST(req: Request) {
       },
     ];
 
-    const certsFile = files.certs;
-    if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
-      if (certsFile.size > 10 * 1024 * 1024) {
-        return new Response("FEIL: Vedlegg for stort (maks 10 MB)", { status: 400 });
-      }
-      const allowed = [".pdf", ".zip", ".doc", ".docx"];
-      const lowerName = (certsFile.name || "sertifikater").toLowerCase();
-      if (!allowed.some((ext) => lowerName.endsWith(ext))) {
-        return new Response("FEIL: Vedlegg må være PDF, ZIP eller DOC/DOCX", { status: 400 });
-      }
-      const ext = extractExtension(certsFile.name || "") || ".pdf";
-      const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
-      certificatePath = buildCertificatePath(storageBase, ext);
-      try {
-        await uploadSupabaseObject({
-          bucket: "candidates-private",
-          object: certificatePath,
-          body: certificateBuffer,
-          contentType: certsFile.type || "application/octet-stream",
-        });
-      } catch (error) {
-        console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
-        console.error("Certificate path:", certificatePath);
-        // Continue with submission even if certificate storage fails
-      }
-      attachments.push({
-        filename: certsFile.name || `sertifikater${ext}`,
-        content: certificateBuffer.toString("base64"),
+    // Sertifikater er nå obligatorisk - håndter opplasting
+    const ext = extractExtension(certsFile.name || "") || ".pdf";
+    const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
+    const certificatePath = buildCertificatePath(storageBase, ext);
+    try {
+      await uploadSupabaseObject({
+        bucket: "candidates-private",
+        object: certificatePath,
+        body: certificateBuffer,
         contentType: certsFile.type || "application/octet-stream",
       });
+    } catch (error) {
+      console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
+      console.error("Certificate path:", certificatePath);
+      // Continue with submission even if certificate storage fails
     }
+    attachments.push({
+      filename: certsFile.name || `sertifikater${ext}`,
+      content: certificateBuffer.toString("base64"),
+      contentType: certsFile.type || "application/octet-stream",
+    });
 
     const location = data.postal_city
       ? `${data.postal_city}${data.postal_code ? ` (${data.postal_code})` : ""}`
