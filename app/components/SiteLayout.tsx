@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { FocusEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import "./SiteLayout.css";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
@@ -19,15 +19,57 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/jobbsoker", label: "Finn jobb", key: "jobbsoker" },
-  { href: "/kunde", label: "For bedrifter", key: "kunde" },
+  {
+    href: "/jobbsoker",
+    label: "Finn jobb",
+    key: "jobbsoker",
+    children: [
+      { href: "/jobbsoker/registrer", label: "Registrer deg" },
+      { href: "/jobbsoker/oppdrag", label: "Ledige oppdrag" },
+      { href: "/faq", label: "Vanlige spørsmål" },
+    ],
+  },
+  {
+    href: "/kunde",
+    label: "For bedrifter",
+    key: "kunde",
+    children: [
+      { href: "/kunde/registrer-behov", label: "Registrer behov" },
+      { href: "/kunde/bemanning", label: "Bemanning" },
+      { href: "/kunde/rekruttering", label: "Rekruttering" },
+    ],
+  },
+  {
+    href: "/jobbsoker/guides",
+    label: "Karriere",
+    key: "karriere",
+    children: [
+      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Bli skipsfører" },
+      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Bli matros" },
+      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Bli maskinoffiser" },
+      { href: "/jobbsoker/guides", label: "Sertifikatkrav" },
+    ],
+  },
+  {
+    href: "/jobbsoker/guides/lonnsguide-maritime-stillinger",
+    label: "Lønn",
+    key: "lonn",
+    children: [
+      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide" },
+      { href: "/karriere/kaptein-lonn", label: "Kaptein" },
+      { href: "/karriere/matros-lonn", label: "Matros" },
+      { href: "/karriere/maskinoffiser-lonn", label: "Maskinoffiser" },
+    ],
+  },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
 export function SiteLayout({ children, active }: { children: ReactNode; active?: string }) {
+  const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const mobileSheetRef = useRef<HTMLDivElement | null>(null);
   const shouldIgnoreOverlay = useRef(false);
@@ -41,7 +83,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
   const closeMobileMenu = useCallback(() => {
     shouldIgnoreOverlay.current = false;
     setMobileMenuOpen(false);
+    setOpenKey(null);
   }, []);
+
+  const cancelClose = () => {
+    if (closeTimeout.current) {
+      clearTimeout(closeTimeout.current);
+      closeTimeout.current = null;
+    }
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -158,6 +208,24 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
     };
   }, []);
 
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimeout.current = setTimeout(() => {
+      setOpenKey(null);
+      closeTimeout.current = null;
+    }, 200);
+  };
+
+  const [focusedKey, setFocusedKey] = useState<string | null>(null);
+
+  const handleBlur = (key: string, event: FocusEvent<Element>) => {
+    const next = event.relatedTarget as Node | null;
+    if (!event.currentTarget.contains(next)) {
+      cancelClose();
+      setOpenKey((prev) => (prev === key ? null : prev));
+    }
+  };
+
   const handleOpenCookieSettings = useCallback(() => {
     try {
       // Clear consent and reload to show the banner again
@@ -184,19 +252,86 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <span style={sx.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
-          {/* Desktop navigation - clean and simple */}
-          <nav style={{ ...sx.nav, gap: 32, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+          {/* Desktop navigation - med dropdowns */}
+          <nav style={{ ...sx.nav, gap: 24, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
+              const hasChildren = !!item.children?.length;
+              const isOpen = openKey === item.key;
+
+              if (!hasChildren) {
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    className="navLink"
+                    style={{ ...sx.navLink, ...(isActive ? sx.navLinkActive : {}) }}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              }
+
               return (
-                <Link
-                  key={item.key}
-                  href={item.href}
-                  className="navLink"
-                  style={{ ...sx.navLink, ...(isActive ? sx.navLinkActive : {}) }}
+                <div 
+                  key={item.key} 
+                  style={sx.navItem} 
+                  onMouseEnter={() => { cancelClose(); setOpenKey(item.key); }} 
+                  onMouseLeave={scheduleClose}
                 >
-                  {item.label}
-                </Link>
+                  <button
+                    type="button"
+                    aria-haspopup="menu"
+                    aria-expanded={isOpen}
+                    aria-controls={`${item.key}-submenu`}
+                    onClick={() => setOpenKey((prev) => (prev === item.key ? null : item.key))}
+                    onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
+                    onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
+                    className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
+                    style={{ ...(isActive ? sx.navLinkActive : undefined) }}
+                  >
+                    <span>{item.label}</span>
+                    <span aria-hidden="true" style={sx.navCaret}>▾</span>
+                  </button>
+
+                  {isOpen && (
+                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
+                      <ul
+                        id={`${item.key}-submenu`}
+                        role="menu"
+                        style={{ listStyle: "none", margin: 0, padding: 0 }}
+                        aria-label={`${item.label} undermeny`}
+                      >
+                        <li>
+                          <Link 
+                            href={item.href} 
+                            style={{ ...sx.navDropdownLink, fontWeight: 800 }} 
+                            className="dropdownLink" 
+                            role="menuitem" 
+                            onClick={() => setOpenKey(null)} 
+                            tabIndex={-1}
+                          >
+                            {item.label}
+                          </Link>
+                        </li>
+                        {item.children!.map((child) => (
+                          <li key={child.href}>
+                            <Link 
+                              href={child.href} 
+                              style={sx.navDropdownLink} 
+                              className="dropdownLink" 
+                              role="menuitem" 
+                              onClick={() => setOpenKey(null)} 
+                              tabIndex={-1}
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
               );
             })}
           </nav>
@@ -283,18 +418,33 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <ul style={sx.mobileNav}>
                     {NAV_ITEMS.map((item) => {
                       const isActive = active === item.key;
+                      const hasChildren = !!item.children?.length;
                       return (
                         <li key={item.key} style={sx.mobileNavItem}>
                           <Link
                             href={item.href}
                             style={{ ...sx.mobileNavLink, ...(isActive ? sx.mobileNavLinkActive : {}) }}
                             className="mobileLink"
-                            onClick={() => {
-                              closeMobileMenu();
-                            }}
+                            onClick={() => closeMobileMenu()}
                           >
                             {item.label}
                           </Link>
+                          {hasChildren && (
+                            <ul style={sx.mobileChildList}>
+                              {item.children!.map((child) => (
+                                <li key={child.href}>
+                                  <Link 
+                                    href={child.href} 
+                                    style={sx.mobileChildLink} 
+                                    className="mobileLink" 
+                                    onClick={() => closeMobileMenu()}
+                                  >
+                                    {child.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </li>
                       );
                     })}
@@ -350,9 +500,30 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <ul style={sx.mobileNav}>
                     {NAV_ITEMS.map((item) => (
                       <li key={item.key} style={sx.mobileNavItem}>
-                        <Link href={item.href} style={{ ...sx.mobileNavLink }} className="mobileLink" onClick={() => closeMobileMenu()}>
+                        <Link 
+                          href={item.href} 
+                          style={sx.mobileNavLink} 
+                          className="mobileLink" 
+                          onClick={() => closeMobileMenu()}
+                        >
                           {item.label}
                         </Link>
+                        {item.children && (
+                          <ul style={sx.mobileChildList}>
+                            {item.children.map((child) => (
+                              <li key={child.href}>
+                                <Link 
+                                  href={child.href} 
+                                  style={sx.mobileChildLink} 
+                                  className="mobileLink" 
+                                  onClick={() => closeMobileMenu()}
+                                >
+                                  {child.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                     ))}
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
