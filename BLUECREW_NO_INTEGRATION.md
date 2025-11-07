@@ -25,11 +25,36 @@ bluecrew.no har **2 forskjellige søknadsskjema** som sender data til Supabase:
 
 ---
 
-## 🔧 **HVA MÅ ENDRES I BLUECREW.NO:**
+## 🔧 **STATUS: ALLEREDE IMPLEMENTERT! ✅**
 
-### **VIKTIG! Legg til `status` felt når kandidat opprettes:**
+**bluecrew.no sender allerede `status: "pending"` for alle nye kandidater!**
 
-#### **Før (gammel kode):**
+Koden i `/api/submit-candidate` ble oppdatert 7. november 2025 og inkluderer nå:
+
+```typescript
+await insertSupabaseRow({
+  table: "candidates",
+  payload: {
+    name: data.name,
+    email: data.email,
+    phone: data.phone,
+    // ... andre felter ...
+    status: "pending", // ✅ ALLEREDE IMPLEMENTERT!
+  },
+});
+```
+
+**Hva som skjer nå:**
+- ✅ Nye kandidatsøknader får automatisk `status: "pending"`
+- ✅ Vises i Import Management med 📋 FULL SØKNAD badge (blå)
+- ✅ Admin kan godkjenne → status endres til "godkjent"
+- ✅ Interesseskjemaet fungerer perfekt (ingen endringer nødvendig)
+
+---
+
+## 🔧 **HVA SOM BLE ENDRET (For referanse):**
+
+### **Før (gammel kode):**
 ```typescript
 // ❌ FEIL - sender ikke status
 const { data, error } = await supabase
@@ -44,9 +69,9 @@ const { data, error } = await supabase
   }]);
 ```
 
-#### **Etter (ny kode):**
+#### **Etter (implementert 7. nov 2025):**
 ```typescript
-// ✅ RIKTIG - sender status: "pending"
+// ✅ IMPLEMENTERT - sender status: "pending"
 const { data, error } = await supabase
   .from('candidates')
   .insert([{
@@ -55,14 +80,14 @@ const { data, error } = await supabase
     phone: formData.phone,
     cv_key: cvPath,
     certs_key: certsPath,
-    status: "pending",       // ← LEGG TIL DENNE!
+    status: "pending",       // ✅ DENNE ER NÅ MED!
     // ... andre felt
   }]);
 ```
 
 ---
 
-## 📋 **SQL SOM MÅ KJØRES I SUPABASE:**
+## 📋 **SQL SOM MÅ KJØRES I SUPABASE (hvis ikke gjort):**
 
 **Kjør denne SQL i Supabase SQL Editor for å legge til status kolonne:**
 
@@ -114,8 +139,9 @@ Admin får fortsatt email når kandidat søker (både full søknad og interesse)
 
 ## ✅ **SJEKKLISTE FOR BLUECREW.NO UTVIKLER:**
 
-- [ ] Kjør SQL i Supabase (legg til `status` kolonne)
-- [ ] Legg til `status: "pending"` når kandidat opprettes
+- [x] ~~Legg til `status: "pending"` når kandidat opprettes~~ ✅ **FERDIG (7. nov 2025)**
+- [x] ~~Gjør sertifikater/helseattest obligatorisk~~ ✅ **FERDIG (7. nov 2025)**
+- [ ] Kjør SQL i Supabase (legg til `status` kolonne hvis den ikke eksisterer)
 - [ ] Test: Send inn en søknad fra bluecrew.no
 - [ ] Verifiser: Se at kandidaten vises i Import Management (admin.bluecrew.no)
 - [ ] Test: Admin godkjenner → kandidat vises i hovedsystemet
