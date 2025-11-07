@@ -336,33 +336,59 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             })}
           </nav>
 
-          {/* Desktop-only right cluster: Meld interesse (prominent CTA) */}
+          {/* Desktop-only right cluster: Registrer deg + Vipps */}
           {!isMobile && (
-            <Link
-              href="/jobbsoker/registrer"
-              className="microBtn"
-              style={{
-                padding: "10px 24px",
-                background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                color: "#fff",
-                borderRadius: 12,
-                fontWeight: 700,
-                fontSize: 15,
-                textDecoration: "none",
-                border: "1px solid rgba(255,255,255,0.2)",
-                boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
-                transition: "all 0.2s ease",
-                whiteSpace: "nowrap",
-              }}
-              onClick={() => {
-                const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
-                if (typeof plausible === "function") {
-                  plausible("CTA Click", { props: { location: "header", cta: "Registrer deg" } });
-                }
-              }}
-            >
-              Registrer deg
-            </Link>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <Link
+                href="/meld-interesse"
+                style={{
+                  padding: "10px 24px",
+                  background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                  color: "#fff",
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: 15,
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
+                  transition: "all 0.2s ease",
+                  whiteSpace: "nowrap",
+                }}
+                onClick={() => {
+                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                  if (typeof plausible === "function") {
+                    plausible("CTA Click", { props: { location: "header", cta: "Registrer deg" } });
+                  }
+                }}
+              >
+                Registrer deg
+              </Link>
+              <Link
+                href="/api/vipps/start"
+                style={{
+                  padding: "10px 16px",
+                  background: "#FF5B24",
+                  color: "#fff",
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "0 4px 12px rgba(255, 91, 36, 0.3)",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+                title="Verifiser med Vipps"
+              >
+                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
+                  <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
+                </svg>
+                Vipps
+              </Link>
+            </div>
           )}
 
           {/* Mobile menu trigger */}
@@ -450,7 +476,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     })}
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                       <Link
-                        href="/jobbsoker/registrer"
+                        href="/meld-interesse"
                         style={{ 
                           ...sx.mobileNavLink, 
                           background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
@@ -463,7 +489,33 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        Registrer deg som jobbsøker
+                        Registrer deg
+                      </Link>
+                    </li>
+                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                      <Link
+                        href="/api/vipps/start"
+                        style={{ 
+                          ...sx.mobileNavLink, 
+                          background: "#FF5B24",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
+                          <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
+                        </svg>
+                        Verifiser med Vipps
                       </Link>
                     </li>
                   </ul>
@@ -528,7 +580,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     ))}
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                       <Link
-                        href="/jobbsoker/registrer"
+                        href="/meld-interesse"
                         style={{ 
                           ...sx.mobileNavLink, 
                           background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
@@ -541,7 +593,33 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        Registrer deg som jobbsøker
+                        Registrer deg
+                      </Link>
+                    </li>
+                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                      <Link
+                        href="/api/vipps/start"
+                        style={{ 
+                          ...sx.mobileNavLink, 
+                          background: "#FF5B24",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
+                          <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
+                        </svg>
+                        Verifiser med Vipps
                       </Link>
                     </li>
                   </ul>
