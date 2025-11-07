@@ -7,7 +7,6 @@ import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { FloatingPhone } from "./FloatingPhone";
-import VerifyIdentity from "./VerifyIdentity";
 import { clearConsent } from "../lib/consent";
 
 type NavChild = { href: string; label: string; description?: string };
@@ -337,7 +336,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             })}
           </nav>
 
-          {/* Desktop-only right cluster: Registrer deg + Magic link + Vipps */}
+          {/* Desktop-only right cluster: Registrer deg + Vipps */}
           {!isMobile && (
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <Link
@@ -364,7 +363,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               >
                 Registrer deg
               </Link>
-              <VerifyIdentity />
               <Link
                 href="/api/vipps/start"
                 style={{
