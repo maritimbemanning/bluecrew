@@ -30,8 +30,19 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("📝 Processing candidate submission...");
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
+    
+    console.log("📋 Form values:", {
+      name: values.name,
+      email: values.email,
+      workAreasCount: values.work_main?.length || 0,
+      hasCV: !!files.cv,
+      hasCerts: !!files.certs,
+      cvSize: files.cv?.size || 0,
+      certsSize: files.certs?.size || 0,
+    });
 
     if (values.honey) {
       return new Response(null, { status: 204 });
@@ -45,9 +56,13 @@ export async function POST(req: Request) {
 
     const data = parsed.data;
 
+    // Validate CV file
     const cvFile = files.cv;
-    if (!cvFile || typeof cvFile === "string" || cvFile.size === 0) {
+    if (!cvFile || typeof cvFile === "string") {
       return new Response("FEIL: CV (PDF) er påkrevd", { status: 400 });
+    }
+    if (cvFile.size === 0) {
+      return new Response("FEIL: CV-filen er tom", { status: 400 });
     }
     const cvName = (cvFile.name || "CV.pdf").toLowerCase();
     if (!cvName.endsWith(".pdf")) {
@@ -57,18 +72,35 @@ export async function POST(req: Request) {
       return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
     }
 
+    // Validate certificate file (REQUIRED)
     const certsFile = files.certs;
-    if (!certsFile || typeof certsFile === "string" || certsFile.size === 0) {
+    console.log("🔍 Certificate file check:", {
+      exists: !!certsFile,
+      type: typeof certsFile,
+      size: certsFile?.size || 0,
+      name: certsFile?.name || "NO_NAME",
+    });
+    
+    if (!certsFile || typeof certsFile === "string") {
+      console.error("❌ Certificate file missing or invalid type");
       return new Response("FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd", { status: 400 });
+    }
+    if (certsFile.size === 0) {
+      console.error("❌ Certificate file is empty");
+      return new Response("FEIL: Sertifikatfilen er tom", { status: 400 });
     }
     const allowed = [".pdf", ".zip", ".doc", ".docx"];
     const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
     if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
+      console.error("❌ Certificate file has invalid extension:", lowerCertsName);
       return new Response("FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX", { status: 400 });
     }
     if (certsFile.size > 10 * 1024 * 1024) {
+      console.error("❌ Certificate file too large:", certsFile.size);
       return new Response("FEIL: Sertifikater for store (maks 10 MB)", { status: 400 });
     }
+    
+    console.log("✅ Certificate validation passed");
 
     const submittedAt = new Date().toISOString();
     const storageBase = createCandidateStorageBase(data.email, submittedAt);

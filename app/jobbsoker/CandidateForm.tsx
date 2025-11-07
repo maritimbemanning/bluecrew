@@ -326,6 +326,8 @@ export default function CandidateContent() {
       const parsed = candidateSchema.safeParse(values);
 
       const nextErrors: FieldErrors = {};
+      const nextFileErrors: FileErrors = {};
+      
       if (!parsed.success) {
         console.log("Validation errors:", parsed.error.issues);
         for (const issue of parsed.error.issues) {
@@ -343,9 +345,40 @@ export default function CandidateContent() {
         return;
       }
 
-      if (Object.keys(nextErrors).length > 0) {
+      // Client-side file validation
+      const cvFile = formData.get("cv") as File | null;
+      const certsFile = formData.get("certs") as File | null;
+      
+      console.log("📎 File validation:", {
+        cv: { exists: !!cvFile, size: cvFile?.size || 0, name: cvFile?.name || "N/A" },
+        certs: { exists: !!certsFile, size: certsFile?.size || 0, name: certsFile?.name || "N/A" },
+      });
+
+      if (!cvFile || cvFile.size === 0) {
+        nextFileErrors.cv = "CV (PDF) er påkrevd";
+      } else if (cvFile.size > 10 * 1024 * 1024) {
+        nextFileErrors.cv = "CV må være under 10 MB";
+      } else if (!cvFile.name.toLowerCase().endsWith(".pdf")) {
+        nextFileErrors.cv = "CV må være en PDF-fil";
+      }
+
+      if (!certsFile || certsFile.size === 0) {
+        nextFileErrors.certs = "Sertifikater/Helseattest er påkrevd";
+      } else if (certsFile.size > 10 * 1024 * 1024) {
+        nextFileErrors.certs = "Fil må være under 10 MB";
+      } else {
+        const allowed = [".pdf", ".zip", ".doc", ".docx"];
+        const name = certsFile.name.toLowerCase();
+        if (!allowed.some((ext) => name.endsWith(ext))) {
+          nextFileErrors.certs = "Fil må være PDF, ZIP eller DOC/DOCX";
+        }
+      }
+
+      if (Object.keys(nextErrors).length > 0 || Object.keys(nextFileErrors).length > 0) {
         console.log("Form errors:", nextErrors);
+        console.log("File errors:", nextFileErrors);
         setFieldErrors(nextErrors);
+        setFileErrors(nextFileErrors);
         setFormError("Kontroller feltene markert i rødt.");
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
@@ -354,15 +387,20 @@ export default function CandidateContent() {
       // CRITICAL: Check Vipps verification BEFORE submitting to API (unless soft mode)
       if (requireVipps && !vippsSession) {
         // User should have been redirected already, but just in case
+        console.error("❌ Vipps verification missing when required");
         setFormError("Du må verifisere identiteten din med Vipps først.");
+        window.scrollTo({ top: 0, behavior: "smooth" });
         router.push("/jobbsoker/registrer");
         return;
       }
 
       // Vipps verified—submit to API
       setFieldErrors({});
+      setFileErrors({});
       setFormError(null);
       setIsSubmitting(true);
+
+      console.log("🚀 Submitting form to API...");
 
       try {
         const response = await fetch("/api/submit-candidate", {
@@ -372,8 +410,11 @@ export default function CandidateContent() {
 
         if (!response.ok) {
           const message = await response.text();
+          console.error("❌ API error:", message);
           throw new Error(message || "Innsending feilet");
         }
+
+        console.log("✅ Form submitted successfully");
 
         // Clear draft after successful submit
         try {
@@ -386,11 +427,13 @@ export default function CandidateContent() {
 
         window.location.href = "/jobbsoker/registrer/skjema?sent=worker";
       } catch (error) {
+        console.error("❌ Submission error:", error);
         setFormError(error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen.");
         setIsSubmitting(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [vippsSession, requireVipps]
+    [vippsSession, requireVipps, router]
   );
 
   if (submitted) {
