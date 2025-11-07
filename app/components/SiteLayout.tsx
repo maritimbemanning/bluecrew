@@ -382,10 +382,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                 }}
                 title="Verifiser med Vipps"
               >
-                <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
-                  <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
-                </svg>
+                <img 
+                  src="/icons/vipps-logo.jpeg" 
+                  alt="Vipps" 
+                  width="20" 
+                  height="20" 
+                  style={{ borderRadius: 4 }}
+                />
                 Vipps
               </Link>
             </div>
@@ -511,10 +514,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
-                          <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
-                        </svg>
+                        <img 
+                          src="/icons/vipps-logo.jpeg" 
+                          alt="Vipps" 
+                          width="24" 
+                          height="24" 
+                          style={{ borderRadius: 4 }}
+                        />
                         Verifiser med Vipps
                       </Link>
                     </li>
@@ -615,10 +621,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        <svg width="20" height="20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M50 0C22.4 0 0 22.4 0 50s22.4 50 50 50 50-22.4 50-50S77.6 0 50 0z" fill="#fff"/>
-                          <path d="M73.8 35.2c-1.6-3.2-4.8-5.6-8.4-6.4-3.6-.8-7.6 0-10.4 2.4L38.6 47.6c-2.4 2-3.6 5.2-3.2 8.4.4 3.2 2.4 6 5.2 7.6l16.8 9.6c2.8 1.6 6.4 1.6 9.2 0 2.8-1.6 4.8-4.4 5.2-7.6l3.6-26c.4-3.6-.8-7.2-2.8-10z" fill="#FF5B24"/>
-                        </svg>
+                        <img 
+                          src="/icons/vipps-logo.jpeg" 
+                          alt="Vipps" 
+                          width="24" 
+                          height="24" 
+                          style={{ borderRadius: 4 }}
+                        />
                         Verifiser med Vipps
                       </Link>
                     </li>
