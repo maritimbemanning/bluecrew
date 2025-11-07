@@ -1,13 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import "./SiteLayout.css";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { FloatingPhone } from "./FloatingPhone";
-import VerifyIdentity from "./VerifyIdentity";
 import { clearConsent } from "../lib/consent";
 
 type NavChild = { href: string; label: string; description?: string };
@@ -20,63 +19,15 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/", label: "Hjem", key: "home" },
-  {
-    href: "/jobbsoker",
-    label: "Finn jobb",
-    key: "jobbsoker",
-    children: [
-      { href: "/jobbsoker/registrer", label: "Registrer deg" },
-      { href: "/jobbsoker/oppdrag", label: "Oppdrag" },
-      { href: "/faq", label: "Vanlige spørsmål" },
-    ],
-  },
-  {
-    href: "/kunde",
-    label: "Kunde",
-    key: "kunde",
-    children: [
-      { href: "/kunde/registrer-behov", label: "Registrer behov" },
-      { href: "/kunde/bemanning", label: "Bemanning" },
-      { href: "/kunde/rekruttering", label: "Rekruttering" },
-      { href: "/kunde/hva-vi-hjelper-med", label: "Hva vi hjelper din bedrift med" },
-      { href: "/kontakt", label: "Kontakt oss" },
-    ],
-  },
-  {
-    href: "/jobbsoker/guides",
-    label: "Karriere",
-    key: "karriere",
-    children: [
-      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Hvordan bli skipsfører" },
-      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Hvordan bli matros" },
-      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Hvordan bli maskinoffiser" },
-      { href: "/jobbsoker/guides", label: "Se alle sertifikatkrav" },
-    ],
-  },
-  {
-    href: "/jobbsoker/guides/lonnsguide-maritime-stillinger",
-    label: "Lønn til sjøs",
-    key: "lonn",
-    children: [
-      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide maritime stillinger" },
-      { href: "/karriere/kaptein-lonn", label: "Kaptein lønn" },
-      { href: "/karriere/styrmann-lonn", label: "Styrmann lønn" },
-      { href: "/karriere/matros-lonn", label: "Matros lønn" },
-      { href: "/karriere/maskinoffiser-lonn", label: "Maskinoffiser lønn" },
-      { href: "/karriere/dekksoffiser-lonn", label: "Dekksoffiser lønn" },
-    ],
-  },
+  { href: "/jobbsoker", label: "Finn jobb", key: "jobbsoker" },
+  { href: "/kunde", label: "For bedrifter", key: "kunde" },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
-  { href: "/meld-interesse", label: "Meld interesse", key: "meld-interesse" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
 export function SiteLayout({ children, active }: { children: ReactNode; active?: string }) {
-  const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const mobileSheetRef = useRef<HTMLDivElement | null>(null);
   const shouldIgnoreOverlay = useRef(false);
@@ -90,15 +41,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
   const closeMobileMenu = useCallback(() => {
     shouldIgnoreOverlay.current = false;
     setMobileMenuOpen(false);
-    setOpenKey(null);
   }, []);
-
-  const cancelClose = () => {
-    if (closeTimeout.current) {
-      clearTimeout(closeTimeout.current);
-      closeTimeout.current = null;
-    }
-  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -215,24 +158,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
     };
   }, []);
 
-  const scheduleClose = () => {
-    cancelClose();
-    closeTimeout.current = setTimeout(() => {
-      setOpenKey(null);
-      closeTimeout.current = null;
-    }, 200);
-  };
-
-  const [focusedKey, setFocusedKey] = useState<string | null>(null);
-
-  const handleBlur = (key: string, event: FocusEvent<Element>) => {
-    const next = event.relatedTarget as Node | null;
-    if (!event.currentTarget.contains(next)) {
-      cancelClose();
-      setOpenKey((prev) => (prev === key ? null : prev));
-    }
-  };
-
   const handleOpenCookieSettings = useCallback(() => {
     try {
       // Clear consent and reload to show the banner again
@@ -244,19 +169,6 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
       // no-op
     }
   }, []);
-
-  // Helpers for keyboard navigation inside dropdowns
-  const getMenuItems = (key: string) => {
-    if (typeof document === "undefined") return [] as HTMLElement[];
-    return Array.from(document.querySelectorAll(`#${key}-submenu [role='menuitem']`)) as HTMLElement[];
-  };
-
-  const focusMenuItem = (key: string, index: number) => {
-    const items = getMenuItems(key);
-    if (!items || items.length === 0) return;
-    const idx = Math.max(0, Math.min(index, items.length - 1));
-    items[idx].focus();
-  };
 
   return (
     <div style={sx.page}>
@@ -272,119 +184,50 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <span style={sx.brandSlogan}>Bemanning til sjøs</span>
             </div>
           </Link>
-          {/* Desktop navigation (excludes login which is rendered as a distinct green button on the far right) */}
-          <nav style={{ ...sx.nav, gap: 16, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
-            {NAV_ITEMS.filter((n) => n.key !== "konto" && n.key !== "meld-interesse").map((item) => {
+          {/* Desktop navigation - clean and simple */}
+          <nav style={{ ...sx.nav, gap: 32, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+            {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
-              const hasChildren = !!item.children?.length;
-              const isOpen = openKey === item.key;
-
-              if (!hasChildren) {
-                return (
-                  <Link
-                    key={item.key}
-                    href={item.href}
-                    className={item.accent ? "navLink accentButton" : "navLink"}
-                    style={{ ...(item.accent ? { ...sx.navLink, ...sx.navLinkAccent } : sx.navLink), ...(isActive && !item.accent ? sx.navLinkActive : {}) }}
-                  >
-                    {item.label}
-                  </Link>
-                );
-              }
-
               return (
-                <div key={item.key} style={sx.navItem} onMouseEnter={() => { cancelClose(); setOpenKey(item.key); }} onMouseLeave={scheduleClose}>
-                  <button
-                    type="button"
-                    aria-haspopup="menu"
-                    aria-expanded={isOpen}
-                    aria-controls={`${item.key}-submenu`}
-                    onClick={() => setOpenKey((prev) => (prev === item.key ? null : item.key))}
-                    onKeyDown={(e: KeyboardEvent<HTMLButtonElement>) => {
-                      if (e.key === "ArrowDown") {
-                        e.preventDefault();
-                        setOpenKey(item.key);
-                        setTimeout(() => focusMenuItem(item.key, 0), 0);
-                      }
-                    }}
-                    onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
-                    onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
-                    className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
-                    style={{ ...(isActive ? sx.navLinkActive : undefined) }}
-                  >
-                    <span>{item.label}</span>
-                    <span aria-hidden="true" style={sx.navCaret}>▾</span>
-                  </button>
-
-                  {isOpen && (
-                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
-                        <ul
-                          id={`${item.key}-submenu`}
-                          role="menu"
-                          style={{ listStyle: "none", margin: 0, padding: 0 }}
-                          aria-label={`${item.label} undermeny`}
-                          onKeyDown={(e: KeyboardEvent<HTMLUListElement>) => {
-                            const items = getMenuItems(item.key);
-                            if (!items.length) return;
-                            const idx = items.indexOf(document.activeElement as HTMLElement);
-                            if (e.key === "ArrowDown") {
-                              e.preventDefault();
-                              focusMenuItem(item.key, (idx + 1) % items.length);
-                            } else if (e.key === "ArrowUp") {
-                              e.preventDefault();
-                              focusMenuItem(item.key, (idx - 1 + items.length) % items.length);
-                            } else if (e.key === "Home") {
-                              e.preventDefault();
-                              focusMenuItem(item.key, 0);
-                            } else if (e.key === "End") {
-                              e.preventDefault();
-                              focusMenuItem(item.key, items.length - 1);
-                            } else if (e.key === "Escape") {
-                              e.preventDefault();
-                              setOpenKey(null);
-                              const trigger = document.querySelector(`[aria-controls='${item.key}-submenu']`) as HTMLElement | null;
-                              trigger?.focus();
-                            }
-                          }}
-                        >
-                        <li>
-                            <Link href={item.href} style={{ ...sx.navDropdownLink, fontWeight: 800 }} className="dropdownLink" role="menuitem" onClick={() => setOpenKey(null)} tabIndex={-1}>
-                            {item.label}
-                          </Link>
-                        </li>
-                        {item.children!.map((child) => (
-                          <li key={child.href}>
-                              <Link href={child.href} style={sx.navDropdownLink} className="dropdownLink" role="menuitem" onClick={() => setOpenKey(null)} tabIndex={-1}>
-                              {child.label}
-                              {child.description && <span style={sx.navDropdownDescription}>{child.description}</span>}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className="navLink"
+                  style={{ ...sx.navLink, ...(isActive ? sx.navLinkActive : {}) }}
+                >
+                  {item.label}
+                </Link>
               );
             })}
           </nav>
 
-          {/* Desktop-only right cluster: Meld interesse + Vipps verify */}
+          {/* Desktop-only right cluster: Meld interesse (prominent CTA) */}
           {!isMobile && (
-            <div style={{ display: 'flex', gap: 10, marginLeft: 8, alignItems: 'center' }}>
-              <Link
-                href="/meld-interesse"
-                className="microBtn"
-                onClick={() => {
-                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
-                  if (typeof plausible === "function") {
-                    plausible("CTA Click", { props: { location: "header", cta: "Meld interesse" } });
-                  }
-                }}
-              >
-                Meld interesse
-              </Link>
-              <VerifyIdentity />
-            </div>
+            <Link
+              href="/jobbsoker/registrer"
+              className="microBtn"
+              style={{
+                padding: "10px 24px",
+                background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                color: "#fff",
+                borderRadius: 12,
+                fontWeight: 700,
+                fontSize: 15,
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.2)",
+                boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
+                transition: "all 0.2s ease",
+                whiteSpace: "nowrap",
+              }}
+              onClick={() => {
+                const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                if (typeof plausible === "function") {
+                  plausible("CTA Click", { props: { location: "header", cta: "Registrer deg" } });
+                }
+              }}
+            >
+              Registrer deg
+            </Link>
           )}
 
           {/* Mobile menu trigger */}
@@ -438,14 +281,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     </button>
                   </div>
                   <ul style={sx.mobileNav}>
-                    {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => {
+                    {NAV_ITEMS.map((item) => {
                       const isActive = active === item.key;
-                      const hasChildren = !!item.children?.length;
                       return (
                         <li key={item.key} style={sx.mobileNavItem}>
                           <Link
                             href={item.href}
-                            style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}), ...(isActive ? sx.mobileNavLinkActive : {}) }}
+                            style={{ ...sx.mobileNavLink, ...(isActive ? sx.mobileNavLinkActive : {}) }}
                             className="mobileLink"
                             onClick={() => {
                               closeMobileMenu();
@@ -453,20 +295,27 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                           >
                             {item.label}
                           </Link>
-                          {hasChildren && (
-                            <ul style={sx.mobileChildList}>
-                              {item.children!.map((child) => (
-                                <li key={child.href}>
-                                  <Link href={child.href} style={sx.mobileChildLink} className="mobileLink" onClick={() => closeMobileMenu()}>
-                                    {child.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
                         </li>
                       );
                     })}
+                    <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
+                      <Link
+                        href="/jobbsoker/registrer"
+                        style={{ 
+                          ...sx.mobileNavLink, 
+                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        Registrer deg som jobbsøker
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>,
@@ -499,24 +348,31 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     </button>
                   </div>
                   <ul style={sx.mobileNav}>
-                    {NAV_ITEMS.filter((n) => n.key !== "konto").map((item) => (
+                    {NAV_ITEMS.map((item) => (
                       <li key={item.key} style={sx.mobileNavItem}>
-                        <Link href={item.href} style={{ ...sx.mobileNavLink, ...(item.accent ? sx.mobileNavLinkAccent : {}) }} className="mobileLink" onClick={() => closeMobileMenu()}>
+                        <Link href={item.href} style={{ ...sx.mobileNavLink }} className="mobileLink" onClick={() => closeMobileMenu()}>
                           {item.label}
                         </Link>
-                        {item.children && (
-                          <ul style={sx.mobileChildList}>
-                            {item.children.map((child) => (
-                              <li key={child.href}>
-                                <Link href={child.href} style={sx.mobileChildLink} className="mobileLink" onClick={() => closeMobileMenu()}>
-                                  {child.label}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
                       </li>
                     ))}
+                    <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
+                      <Link
+                        href="/jobbsoker/registrer"
+                        style={{ 
+                          ...sx.mobileNavLink, 
+                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        Registrer deg som jobbsøker
+                      </Link>
+                    </li>
                   </ul>
                 </div>
               </div>
