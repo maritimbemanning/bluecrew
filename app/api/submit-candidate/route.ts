@@ -12,7 +12,6 @@ import {
   createCandidateStorageBase,
   extractExtension,
 } from "../../lib/server/candidate-files";
-import { captureServerException } from "../../lib/server/observability";
 
 export const runtime = "nodejs";
 
@@ -31,8 +30,19 @@ export async function POST(req: Request) {
       });
     }
 
+    console.log("📝 Processing candidate submission...");
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
+    
+    console.log("📋 Form values:", {
+      name: values.name,
+      email: values.email,
+      workAreasCount: values.work_main?.length || 0,
+      hasCV: !!files.cv,
+      hasCerts: !!files.certs,
+      cvSize: files.cv?.size || 0,
+      certsSize: files.certs?.size || 0,
+    });
 
     if (values.honey) {
       return new Response(null, { status: 204 });
@@ -46,9 +56,13 @@ export async function POST(req: Request) {
 
     const data = parsed.data;
 
+    // Validate CV file
     const cvFile = files.cv;
-    if (!cvFile || typeof cvFile === "string" || cvFile.size === 0) {
+    if (!cvFile || typeof cvFile === "string") {
       return new Response("FEIL: CV (PDF) er påkrevd", { status: 400 });
+    }
+    if (cvFile.size === 0) {
+      return new Response("FEIL: CV-filen er tom", { status: 400 });
     }
     const cvName = (cvFile.name || "CV.pdf").toLowerCase();
     if (!cvName.endsWith(".pdf")) {
@@ -58,11 +72,40 @@ export async function POST(req: Request) {
       return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
     }
 
+    // Validate certificate file (REQUIRED)
+    const certsFile = files.certs;
+    console.log("🔍 Certificate file check:", {
+      exists: !!certsFile,
+      type: typeof certsFile,
+      size: certsFile?.size || 0,
+      name: certsFile?.name || "NO_NAME",
+    });
+    
+    if (!certsFile || typeof certsFile === "string") {
+      console.error("❌ Certificate file missing or invalid type");
+      return new Response("FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd", { status: 400 });
+    }
+    if (certsFile.size === 0) {
+      console.error("❌ Certificate file is empty");
+      return new Response("FEIL: Sertifikatfilen er tom", { status: 400 });
+    }
+    const allowed = [".pdf", ".zip", ".doc", ".docx"];
+    const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
+    if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
+      console.error("❌ Certificate file has invalid extension:", lowerCertsName);
+      return new Response("FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX", { status: 400 });
+    }
+    if (certsFile.size > 10 * 1024 * 1024) {
+      console.error("❌ Certificate file too large:", certsFile.size);
+      return new Response("FEIL: Sertifikater for store (maks 10 MB)", { status: 400 });
+    }
+    
+    console.log("✅ Certificate validation passed");
+
     const submittedAt = new Date().toISOString();
     const storageBase = createCandidateStorageBase(data.email, submittedAt);
     const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
     const cvPath = buildCvPath(storageBase);
-    let certificatePath: string | null = null;
 
     try {
       await uploadSupabaseObject({
@@ -72,9 +115,11 @@ export async function POST(req: Request) {
         contentType: cvFile.type || "application/pdf",
       });
     } catch (error) {
-      captureServerException(error, { scope: "candidate-upload-cv" });
-      console.error("❌ Klarte ikke å lagre CV i Supabase", error);
-      return new Response("FEIL: Kunne ikke lagre CV", { status: 500 });
+      console.error("❌ Klarte ikke å lagre CV i Supabase:", error);
+      console.error("CV path:", cvPath);
+      console.error("Bucket:", "candidates-private");
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      // Continue with submission even if storage fails; CV will be in email attachment
     }
 
     const attachments: { filename: string; content: string; contentType?: string }[] = [
@@ -85,57 +130,38 @@ export async function POST(req: Request) {
       },
     ];
 
-    const certsFile = files.certs;
-    if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
-      if (certsFile.size > 10 * 1024 * 1024) {
-        return new Response("FEIL: Vedlegg for stort (maks 10 MB)", { status: 400 });
-      }
-      const allowed = [".pdf", ".zip", ".doc", ".docx"];
-      const lowerName = (certsFile.name || "sertifikater").toLowerCase();
-      if (!allowed.some((ext) => lowerName.endsWith(ext))) {
-        return new Response("FEIL: Vedlegg må være PDF, ZIP eller DOC/DOCX", { status: 400 });
-      }
-      const ext = extractExtension(certsFile.name || "") || ".pdf";
-      const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
-      certificatePath = buildCertificatePath(storageBase, ext);
-      try {
-        await uploadSupabaseObject({
-          bucket: "candidates-private",
-          object: certificatePath,
-          body: certificateBuffer,
-          contentType: certsFile.type || "application/octet-stream",
-        });
-      } catch (error) {
-        captureServerException(error, { scope: "candidate-upload-certificate" });
-        console.error("❌ Klarte ikke å lagre sertifikater i Supabase", error);
-        return new Response("FEIL: Kunne ikke lagre sertifikater", { status: 500 });
-      }
-      attachments.push({
-        filename: certsFile.name || `sertifikater${ext}`,
-        content: certificateBuffer.toString("base64"),
+    // Sertifikater er nå obligatorisk - håndter opplasting
+    const ext = extractExtension(certsFile.name || "") || ".pdf";
+    const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
+    const certificatePath = buildCertificatePath(storageBase, ext);
+    try {
+      await uploadSupabaseObject({
+        bucket: "candidates-private",
+        object: certificatePath,
+        body: certificateBuffer,
         contentType: certsFile.type || "application/octet-stream",
       });
+    } catch (error) {
+      console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
+      console.error("Certificate path:", certificatePath);
+      // Continue with submission even if certificate storage fails
     }
+    attachments.push({
+      filename: certsFile.name || `sertifikater${ext}`,
+      content: certificateBuffer.toString("base64"),
+      contentType: certsFile.type || "application/octet-stream",
+    });
 
-    const stcwSummary =
-      data.stcw_has === "ja"
-        ? `Ja${data.stcw_mod?.length ? ` (${data.stcw_mod.join(", ")})` : ""}`
-        : "Nei";
-    const deckSummary =
-      data.deck_has === "ja" ? `Ja${data.deck_class ? ` (klasse ${data.deck_class})` : ""}` : "Nei";
-
-    const location = data.municipality
-      ? data.county
-        ? `${data.municipality} (${data.county})`
-        : data.municipality
-      : data.county || "-";
+    const location = data.postal_city
+      ? `${data.postal_city}${data.postal_code ? ` (${data.postal_code})` : ""}`
+      : data.street_address || "-";
 
     const lines: string[] = [
       "NY JOBBSØKER",
       `Navn: ${data.name}`,
       `E-post: ${data.email}`,
       `Telefon: ${data.phone}`,
-      `Bosted: ${location}`,
+      `Adresse: ${location}`,
       `Tilgjengelig fra: ${data.available_from || "-"}`,
       "",
       "Ønsket arbeid:",
@@ -143,8 +169,7 @@ export async function POST(req: Request) {
       "",
       `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
       "",
-      `STCW: ${stcwSummary}`,
-      `Dekksoffiser: ${deckSummary}`,
+      `STCW bekreftet: ${data.stcw_confirm ? "Ja" : "Nei"}`,
       "",
       "Kompetanse og erfaring:",
       data.skills || "-",
@@ -155,8 +180,6 @@ export async function POST(req: Request) {
 
     const html = buildHtmlSummary({
       ...data,
-      stcwSummary,
-      deckSummary,
       location,
     });
 
@@ -167,14 +190,12 @@ export async function POST(req: Request) {
           name: data.name,
           email: data.email,
           phone: data.phone,
-          county: data.county,
-          municipality: data.municipality,
+          street_address: data.street_address || null,
+          postal_code: data.postal_code || null,
+          postal_city: data.postal_city || null,
           available_from: data.available_from || null,
           wants_temporary: data.wants_temporary,
-          stcw_has: data.stcw_has,
-          stcw_mod: data.stcw_mod ?? [],
-          deck_has: data.deck_has,
-          deck_class: data.deck_class || null,
+          stcw_confirm: data.stcw_confirm,
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
@@ -182,9 +203,9 @@ export async function POST(req: Request) {
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
+          status: "pending", // Venter godkjenning i Import Management (admin)
         },
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-insert", table: "candidates" });
         console.error("⚠️ Supabase-feil (candidate):", error);
       }),
       sendNotificationEmail({
@@ -194,14 +215,12 @@ export async function POST(req: Request) {
         replyTo: data.email,
         attachments,
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-email" });
         console.error("❌ Sendefeil (candidate):", error);
       }),
       sendCandidateReceipt({
         name: data.name,
         email: data.email,
       }).catch((error) => {
-        captureServerException(error, { scope: "candidate-receipt" });
         console.error("⚠️ Sendte ikke kvittering (candidate):", error);
       }),
     ]);
@@ -215,7 +234,6 @@ export async function POST(req: Request) {
     return NextResponse.redirect(back, { status: 303 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    captureServerException(err, { scope: "candidate-handler" });
     console.error("❌ Uventet feil (candidate):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
@@ -225,19 +243,15 @@ function buildHtmlSummary(data: {
   name?: string;
   email?: string;
   phone?: string;
-  county?: string | null;
-  municipality?: string | null;
+  street_address?: string | null;
+  postal_code?: string | null;
+  postal_city?: string | null;
   available_from?: string | null;
   wants_temporary?: string | null;
-  stcw_has?: string | null;
-  stcw_mod?: string[] | null;
-  deck_has?: string | null;
-  deck_class?: string | null;
+  stcw_confirm?: boolean;
   work_main?: string[] | null;
   skills?: string | null;
   other_comp?: string | null;
-  stcwSummary: string;
-  deckSummary: string;
   location: string;
 }) {
   const workList = (data.work_main ?? [])
@@ -255,11 +269,10 @@ function buildHtmlSummary(data: {
         <tr><td style=\"padding:4px 8px\"><b>Navn</b></td><td style=\"padding:4px 8px\">${esc(data.name || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.email || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.phone || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Bosted</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>Adresse</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
         <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>STCW</b></td><td style=\"padding:4px 8px\">${esc(data.stcwSummary)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Dekksoffiser</b></td><td style=\"padding:4px 8px\">${esc(data.deckSummary)}</td></tr>
+        <tr><td style=\"padding:4px 8px\"><b>STCW bekreftet</b></td><td style=\"padding:4px 8px\">${data.stcw_confirm ? "Ja" : "Nei"}</td></tr>
       </table>
       <div style="margin-top:16px">
         <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>

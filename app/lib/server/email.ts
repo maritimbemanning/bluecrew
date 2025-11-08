@@ -23,14 +23,20 @@ const toList = (process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,SanderBerg@blu
   .map((s) => s.trim())
   .filter(Boolean);
 
-if (!resendKey) {
-  console.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
-}
-if (!fromEmail) {
-  console.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
-}
-if (toList.length === 0) {
-  console.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+// Reduce log noise during build by warning only once, on first send attempt
+let hasWarnedEmailConfig = false;
+function warnMissingEmailConfig() {
+  if (hasWarnedEmailConfig) return;
+  hasWarnedEmailConfig = true;
+  if (!resendKey) {
+    console.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
+  }
+  if (!fromEmail) {
+    console.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
+  }
+  if (toList.length === 0) {
+    console.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+  }
 }
 
 const resend = resendKey ? new Resend(resendKey) : null;
@@ -38,16 +44,16 @@ const resend = resendKey ? new Resend(resendKey) : null;
 const complianceLines = [
   "",
   "--",
-  "Bluecrew AS · Org.nr 936 321 194",
-  "Østenbekkveien 43, 9403 Harstad",
+  "Bluecrew AS (Org.nr: 936321194)",
+  "Ervikveien 110, 9402 Harstad",
   "E-post: post@bluecrew.no · https://bluecrew.no",
   "Personvern: https://bluecrew.no/personvern",
 ].join("\n");
 
 const complianceHtml = `
   <hr style="margin:16px 0;border:none;border-top:1px solid #e2e8f0" />
-  <p style="color:#64748b;font-size:12px;margin:0">Bluecrew AS · Org.nr 936 321 194</p>
-  <p style="color:#64748b;font-size:12px;margin:4px 0 0">Østenbekkveien 43, 9403 Harstad</p>
+  <p style="color:#64748b;font-size:12px;margin:0">Bluecrew AS (Org.nr: 936321194)</p>
+  <p style="color:#64748b;font-size:12px;margin:4px 0 0">Ervikveien 110, 9402 Harstad</p>
   <p style="color:#64748b;font-size:12px;margin:4px 0 0">
     E-post: <a href="mailto:post@bluecrew.no" style="color:inherit">post@bluecrew.no</a> ·
     <a href="https://bluecrew.no/personvern" style="color:inherit">Personvern</a>
@@ -90,6 +96,8 @@ function withComplianceHtml(subject: string, html?: string, text?: string) {
 }
 
 async function sendEmail({ subject, html, text, to, replyTo, attachments }: SendEmailArgs) {
+  // Warn lazily on first use rather than on import
+  warnMissingEmailConfig();
   if (!resend || !fromEmail) return null;
   const recipients = Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
   if (recipients.length === 0) return null;
@@ -222,6 +230,27 @@ export async function sendClientConfirmation(payload: { name?: string; email?: s
 
   return sendEmail({
     subject: "Takk for henvendelsen til Bluecrew",
+    html,
+    text,
+    to: payload.email,
+  });
+}
+
+export async function sendInterestReceipt(payload: { name?: string; email?: string }) {
+  if (!payload.email) return null;
+
+  const text = `Hei ${payload.name || ""},\n\nTakk for at du meldte interesse hos Bluecrew. Vi går gjennom informasjonen din og tar kontakt når vi har oppdrag som passer din erfaring.\n\nHilsen Bluecrew-teamet`;
+
+  const html = `
+  <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
+    <p>Hei ${esc(payload.name || "")},</p>
+    <p>Takk for at du meldte interesse hos Bluecrew.</p>
+    <p>Vi går gjennom informasjonen din og tar kontakt når vi har oppdrag som passer din erfaring.</p>
+    <p style="margin-top:20px">Hilsen Bluecrew-teamet</p>
+  </div>`;
+
+  return sendEmail({
+    subject: "Takk for interessen – Bluecrew",
     html,
     text,
     to: payload.email,

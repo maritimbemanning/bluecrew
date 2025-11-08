@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Konverteringssider
     { url: `${base}/jobbsoker/registrer`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/kunde/registrer-behov`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+  { url: `${base}/meld-interesse`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     
     // Informasjonssider
     { url: `${base}/kunde/hva-vi-hjelper-med`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
@@ -39,9 +40,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/jobbsoker/guides/hvordan-bli-maskinoffiser`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/jobbsoker/guides/lonnsguide-maritime-stillinger`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
 
+    // Lønnssider - VIKTIGE SEO-sider (høyt søkevolum)
+    { url: `${base}/karriere/lonn-kalkulator`, lastModified: now, changeFrequency: "monthly", priority: 1.0 },
+    { url: `${base}/karriere/kaptein-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/styrmann-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/matros-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/maskinoffiser-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/karriere/dekksoffiser-lonn`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+
     // Juridiske sider (GDPR / Informasjonsplikt)
     { url: `${base}/personvern`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/cookies`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${base}/vilkar`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${base}/vilkar/bemanning`, lastModified: now, changeFrequency: "yearly", priority: 0.5 },
   ];
 }

@@ -1,5 +1,29 @@
+import { Metadata } from "next";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
+
+export const metadata: Metadata = {
+  title: "Hva vi hjelper din bedrift med - Bluecrew AS",
+  description:
+    "Bluecrew tilbyr rådgivning og bemanningstjenester som dekker hele oppdraget. Fra planlegging til ferdig levert mannskap.",
+  keywords: [
+    "bemanning rådgivning",
+    "maritime tjenester",
+    "bemanningsstrategi",
+    "kompetansebehov",
+    "HMS-prosedyrer",
+    "turnus planlegging",
+    "bemanning koordinering",
+  ],
+  openGraph: {
+    title: "Hva vi hjelper din bedrift med | Bluecrew AS",
+    description: "Rådgivning og bemanningstjenester som dekker hele oppdraget.",
+    type: "website",
+  },
+  alternates: {
+    canonical: "/kunde/hva-vi-hjelper-med",
+  },
+};
 
 export default function Page() {
   return (

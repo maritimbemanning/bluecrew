@@ -1,6 +1,6 @@
 export const WORK: Record<string, string[]> = {
   "Servicefartøy mannskap": ["Skipper/Styrmann", "Matros", "Kokekyndig", "Annet"],
-  Havbruk: ["Operativt", "Akvatekniker m/fagbrev", "Laseroperatør", "Fôringsoperatør", "Annet"],
+  Havbruk: ["Operativ drift", "Akvatekniker m/fagbrev", "Vedlikehold", "Annet"],
   Fiskeri: ["Skipper/Styrmann", "Matros", "Annet"],
   "Logistikk og støtte": ["Supply", "Offshore service", "Annet"],
   Annet: ["Annet"],
@@ -120,7 +120,7 @@ export const FAQS = [
   },
   {
     q: "Hva koster bemanningsløsningene deres?",
-    a: "Pris avhenger av type stilling, kompetansekrav, varighet og oppdragets art. Vi tilbyr transparente avtaler uten skjulte kostnader. Kontakt oss for et skreddersydd pristilbud basert på ditt behov.",
+    a: "Vi tilbyr skreddersydde løsninger basert på hver kundes behov. Kontakt oss for en uforpliktende samtale der vi kan diskutere ditt prosjekt.",
   },
   {
     q: "Hvordan sikrer dere kvaliteten på mannskapet?",
@@ -139,6 +139,10 @@ export const FAQS = [
     a: "Alt mannskap er forsikret og følger gjeldende HMS-regelverk. Vi sikrer at nødvendig HMS-dokumentasjon er på plass før oppstart og følger opp underveis i oppdraget.",
   },
   {
+    q: "Følger dere ILO Maritime Labour Convention (MLC 2006)?",
+    a: "Ja, Bluecrew AS følger ILO Maritime Labour Convention (MLC 2006) for alle maritime og offshore oppdrag. Dette sikrer skriftlig arbeidskontrakt (MLC Standard A2.1), minstelønn etter tariff/flaggstat (A2.2), regulert hviletid og arbeidstid (A2.3 – max 14 timer/dag, 72 timer/uke), og sosial sikkerhet for sjøfolk (A4.5). Vi sikrer også at alle kandidater har gyldig medisinsk sertifikat (A1.2 – helseattest) før ombordstigning. MLC 2006 ble ratifisert av Norge i 2013 og gjelder for alle fartøy i NOR/NIS-registeret.",
+  },
+  {
     q: "Jobber dere med både norske og utenlandske mannskaper?",
     a: "Vi fokuserer primært på norske sjøfolk med god kjennskap til norsk kyst og regelverk. Dette sikrer språk, kultur og kompetanse som passer norske forhold.",
   },
@@ -154,7 +158,7 @@ export const FAQS = [
   },
   {
     q: "Hvilke områder dekker dere?",
-    a: "Vi har base i Nord-Norge men opererer over hele kysten. Vårt nettverk strekker seg fra Sørlandet til Finnmark, med særlig god dekning i Nord-Norge.",
+    a: "Vi har base i Nord-Norge, men opererer i hele Norge. Vårt nettverk strekker seg fra Sørlandet til Finnmark, og vi leverer mannskap til havbruk, offshore og servicefartøy langs hele kysten.",
   },
   {
     q: "Jobber dere med alle typer fartøy?",
@@ -565,18 +569,18 @@ export const MUNICIPALITIES_BY_COUNTY: Record<string, string[]> = {
 export const CONTACT_POINTS = [
   { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
   { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
-  { label: "Besøk oss", value: "Østenbekkveien 43, 9403 Harstad" },
+  { label: "Besøk oss", value: "Ervikveien 110, 9402 Harstad" },
 ];
 
 export const SOCIAL_LINKS = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/company/bluecrew-as/",
+    href: "https://www.linkedin.com/company/bluecrewas",
     description: "Følg oss for innsikt fra prosjektene våre",
   },
   {
     label: "Facebook",
-    href: "https://www.facebook.com/bluecrewAS",
+    href: "https://www.facebook.com/profile.php?id=61582845493676",
     description: "Følg oss på Facebook",
   },
   {

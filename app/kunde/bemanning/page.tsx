@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     description: "Erfarne mannskaper til havbruk, servicefartøy og offshore. STCW-sertifisert med rask oppstart.",
     type: "website",
   },
+  alternates: {
+    canonical: "/kunde/bemanning",
+  },
 };
 
 export default function Page() {
@@ -30,10 +33,10 @@ export default function Page() {
     <SiteLayout active="kunde">
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
-          <h1 style={sx.h2}>Bemanning når operasjonen ikke kan stoppe</h1>
+          <h1 style={sx.h2}>Rekruttering og bemanning til maritim næring</h1>
           <p style={sx.leadSmall}>
-            Vi leverer komplette team eller enkeltressurser til havbruk, fiskeri, servicefartøy, logistikk og beredskap. Bluecrew
-            håndterer skiftplan, kontrakter og dokumentasjon slik at du kan fokusere på driften.
+            Vi leverer både <strong>rekruttering</strong> (faste ansettelser) og <strong>bemanning/vikarer</strong> (utleie) til havbruk, 
+            fiskeri, servicefartøy, logistikk og beredskap. Bluecrew håndterer hele prosessen fra kvalifisering til oppstart.
           </p>
 
           {/* Våre leveranser */}
@@ -132,37 +135,8 @@ export default function Page() {
               </ul>
               
               <p style={{ margin: "20px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 16 }}>
-                Vi er medlem av NHO og følger Bemanningsforskriften. Dette sikrer at både dere og mannskapet får ordnede forhold, 
-                korrekt lønn og trygge arbeidsvilkår.
-              </p>
-            </section>
-
-            {/* Priser */}
-            <section style={{ background: "#f8fafc", borderRadius: 20, padding: 32, display: "grid", gap: 16 }}>
-              <h2 style={{ ...sx.h2, fontSize: 26, marginBottom: 8 }}>Priser og avtaleformer</h2>
-              <p style={{ margin: 0, color: "#475569", lineHeight: 1.7, fontSize: 17 }}>
-                Vi tilbyr transparente priser basert på markedslønn pluss vårt påslag. Prisene varierer med:
-              </p>
-              
-              <ul style={{ margin: "16px 0 0 0", paddingLeft: 24, color: "#334155", lineHeight: 1.7, display: "grid", gap: 8, fontSize: 16 }}>
-                <li>Stillingens ansvarsnivå (matros vs. kaptein)</li>
-                <li>Kompetansekrav og sertifiseringer</li>
-                <li>Oppdragets varighet (korttid dyrere enn langtid)</li>
-                <li>Geografi og tilgjengelighet</li>
-              </ul>
-              
-              <p style={{ margin: "20px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 17 }}>
-                <strong>Eksempel timepris (veiledende):</strong> Matros/dekksmann fra ca. 450-550 kr/time. Styrmann/maskinoffiser fra ca. 
-                600-750 kr/time. Kaptein/maskinsjef fra ca. 750-950 kr/time. Alle priser inkluderer sosiale kostnader, forsikring og vårt påslag.
-              </p>
-              
-              <p style={{ margin: "16px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 16 }}>
-                Vi kan tilby <strong>rammeavtaler</strong> for kunder med jevnlig behov. Dette gir forutsigbare priser, prioritert tilgang 
-                til våre beste kandidater og raskere oppstartstid.
-              </p>
-              
-              <p style={{ margin: "16px 0 0 0", color: "#475569", lineHeight: 1.7, fontSize: 16, fontStyle: "italic" }}>
-                Kontakt oss for skreddersydd pristilbud basert på deres spesifikke behov.
+                Vi følger Bemanningsforskriften og AML-loven. Dette sikrer at både dere og mannskapet får ordnede forhold, 
+                korrekt lønn, forsvarlige arbeidsvilkår og nødvendig HMS-oppfølging.
               </p>
             </section>
 

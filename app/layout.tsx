@@ -4,10 +4,15 @@ import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
 
-const title = "Bluecrew AS – Maritim bemanning i Nord-Norge";
+const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
-  "Erfarne mannskaper til havbruk, servicefartøy og offshore. Base i Nord-Norge, nasjonal dekning. STCW-sertifisert bemanning med rask oppstart.";
+  "Bemanning av kvalifisert maritimt mannskap. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer til havbruk, servicefartøy og offshore.";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
+const logoPath = "/logo.png"; // exists in /public
+const logoUrl = `${siteUrl}${logoPath}`;
 
 export const metadata: Metadata = {
   title: {
@@ -22,9 +27,8 @@ export const metadata: Metadata = {
     "brønnbåt mannskap",
     "offshore bemanning",
     "STCW sertifisert",
-    "maritime stillinger Nord-Norge",
-    "bemanning Troms",
-    "bemanning Finnmark",
+    "maritime stillinger Norge",
+    "bemanning Norge",
     "dekksoffiser",
     "maskinoffiser",
     "maritime vikarer",
@@ -40,11 +44,20 @@ export const metadata: Metadata = {
     siteName: "Bluecrew AS",
     title,
     description,
+    images: [
+      {
+        url: "/hero/maritime-hero.jpeg",
+        width: 1920,
+        height: 1080,
+        alt: "Bluecrew AS - Profesjonell maritim bemanning i Norge",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: ["/hero/maritime-hero.jpeg"],
   },
   robots: {
     index: true,
@@ -69,15 +82,14 @@ export default function RootLayout({
     "@type": "Organization",
     name: "Bluecrew AS",
     alternateName: "Bluecrew",
-    url: "https://bluecrew.no",
-    logo: "https://bluecrew.no/logo.png",
-    description:
-      "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
+    url: siteUrl,
+    logo: logoUrl,
+    description: "Maritim bemanningsleverandør i Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore over hele landet.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Østenbekkveien 43",
+      streetAddress: "Ervikveien 110",
       addressLocality: "Harstad",
-      postalCode: "9403",
+      postalCode: "9402",
       addressRegion: "Troms",
       addressCountry: "NO",
     },
@@ -89,7 +101,9 @@ export default function RootLayout({
       availableLanguage: ["Norwegian", "English"],
     },
     sameAs: [
-      // Legg til LinkedIn, Facebook etc når dere får dem
+      "https://www.linkedin.com/company/bluecrewas",
+      "https://www.facebook.com/profile.php?id=61582845493676",
+      "https://www.instagram.com/bluecrew.no/",
     ],
   };
 
@@ -98,14 +112,14 @@ export default function RootLayout({
     "@type": "LocalBusiness",
     "@id": "https://bluecrew.no/#organization",
     name: "Bluecrew AS",
-    image: "https://bluecrew.no/logo.png",
+    image: logoUrl,
     telephone: "+47-923-28-850",
     email: "post@bluecrew.no",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Østenbekkveien 43",
+      streetAddress: "Ervikveien 110",
       addressLocality: "Harstad",
-      postalCode: "9403",
+      postalCode: "9402",
       addressRegion: "Troms",
       addressCountry: "NO",
     },
@@ -127,9 +141,30 @@ export default function RootLayout({
     },
   };
 
+  const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    url: siteUrl,
+    name: "Bluecrew AS",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?s={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang="no">
       <head>
+        {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
+        <title>Bluecrew AS – Maritim bemanning i Norge</title>
+        {/* Explicit favicon links to help Google pick up site icon in SERP */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
+        <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
+        <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
+        <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
         <Script
           id="organization-schema"
           type="application/ld+json"
@@ -144,11 +179,18 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessSchema),
           }}
         />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
+        />
+        <BreadcrumbsSchema />
       </head>
       <body>
         {children}
         <CookieBanner />
         <PlausibleLoader />
+        <SpeedInsights />
       </body>
     </html>
   );

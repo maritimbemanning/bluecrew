@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -26,6 +27,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om veien til å bli skipsfører: Utdanning, sertifikater, fartstid og karrieremuligheter.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-skipsforer",
+  },
 };
 
 export default function Page() {
@@ -41,15 +45,19 @@ export default function Page() {
             position: "relative",
             height: 400
           }}>
-            <img 
-              src="/hero/Skipper-styrmann-hero.jpeg" 
-              alt="Skipsfører på broen styrer fartøy på norsk kyst" 
+            <Image 
+              src="/guides/skipsforer-navigasjon.jpeg" 
+              alt="Erfaren skipsfører navigerer fra broen på servicefartøy i norske farvann - maritim bemanning" 
+              width={1200}
+              height={675}
+              priority
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, 800px"
             />
           </div>
 
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
           <h1 style={sx.h2}>Hvordan bli skipsfører i Norge</h1>
           <p style={sx.leadSmall}>
@@ -455,7 +463,7 @@ export default function Page() {
               <li>Lønnsstatistikk fra Sjøoffisersforbundet og rederier</li>
             </ul>
             <p style={{ margin: "12px 0 0 0", fontSize: 13, color: "#94a3b8", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025
+              Sist oppdatert: 7. november 2025
             </p>
           </div>
         </div>

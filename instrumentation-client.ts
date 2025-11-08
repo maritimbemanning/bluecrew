@@ -1,0 +1,1 @@
+// Sentry removed — this client instrumentation is intentionally left empty.

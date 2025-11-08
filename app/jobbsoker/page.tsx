@@ -4,9 +4,9 @@ import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
 
 export const metadata: Metadata = {
-  title: "Maritime jobber - Dekksmannskap, offiserer og teknikere",
+  title: "Maritime jobber – dekksmannskap, offiserer og teknikere",
   description:
-    "Søk maritime stillinger til havbruk, servicefartøy og offshore. STCW-kurs, konkurransedyktig lønn og tett oppfølging. Registrer CV for ledige oppdrag.",
+    "Registrer deg for maritime oppdrag innen havbruk, servicefartøy og offshore. STCW-krav, forutsigbar turnus og konkurransedyktige vilkår.",
   keywords: [
     "maritime jobber",
     "sjøfolk jobb",
@@ -23,9 +23,26 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Maritime jobber og oppdrag | Bluecrew AS",
-    description: "Søk maritime stillinger til havbruk, servicefartøy og offshore. Konkurransedyktige vilkår.",
+    description:
+      "Registrer deg for maritime oppdrag innen havbruk, servicefartøy og offshore. STCW-krav og forutsigbar turnus.",
     type: "website",
+    images: [
+      {
+        url: "/hero/maritime-hero.jpeg",
+        width: 1920,
+        height: 1080,
+        alt: "Maritime jobber – Bluecrew AS",
+      },
+    ],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Maritime jobber – Bluecrew AS",
+    description:
+      "Registrer deg for maritime oppdrag innen havbruk, servicefartøy og offshore. STCW-krav og forutsigbar turnus.",
+    images: ["/hero/maritime-hero.jpeg"],
+  },
+  alternates: { canonical: "/jobbsoker" },
 };
 
 export default function Page() {
@@ -36,7 +53,7 @@ export default function Page() {
           <h1 style={sx.h2}>Jobb til sjøs med Bluecrew</h1>
           <p style={sx.leadSmall}>
             Vi tilbyr oppdrag for sjøfolk som ønsker forutsigbarhet, ordnede forhold og utvikling. Som en del av Bluecrew får du
-            tett dialog med ledere som selv har stått i skiftet og vet hvordan hverdagen om bord er.
+            tett dialog med folk som selv har erfaring fra havet og vet hvordan hverdagen om bord ser ut.
           </p>
           <div style={{ display: "grid", gap: 26, marginTop: 36 }}>
             <div style={{ background: "#ffffff", borderRadius: 20, border: "1px solid #e2e8f0", padding: 28, boxShadow: "0 14px 30px rgba(15, 23, 42, 0.06)", display: "grid", gap: 12 }}>

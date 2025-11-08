@@ -7,6 +7,7 @@ export function Input({
   label,
   name,
   type = "text",
+  placeholder,
   required,
   error,
   onChange,
@@ -16,6 +17,7 @@ export function Input({
   label: string;
   name: string;
   type?: string;
+  placeholder?: string;
   required?: boolean;
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +36,7 @@ export function Input({
         id={id}
         name={name}
         type={type}
+        placeholder={placeholder}
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
@@ -56,6 +59,7 @@ export function Textarea({
   name,
   rows = 4,
   full = false,
+  required = false,
   description,
   error,
   onChange,
@@ -65,6 +69,7 @@ export function Textarea({
   name: string;
   rows?: number;
   full?: boolean;
+  required?: boolean;
   description?: string;
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -73,7 +78,7 @@ export function Textarea({
   const id = `${name}-id`;
   return (
     <label style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }} htmlFor={id}>
-      <span>{label}</span>
+      <span>{label}{required ? " *" : ""}</span>
       {description ? (
         <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
       ) : null}
@@ -81,6 +86,7 @@ export function Textarea({
         id={id}
         name={name}
         rows={rows}
+        required={required}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-err` : undefined}
         style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}

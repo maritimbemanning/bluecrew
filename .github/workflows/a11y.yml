@@ -1,0 +1,103 @@
+name: a11y-pa11y
+
+# Temporarily disabled - needs debugging in CI environment
+# Re-enable after fixing timeout issues
+on:
+  workflow_dispatch:  # Manual trigger only
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  pa11y:
+    runs-on: ubuntu-latest
+    # Block merges when accessibility fails
+    continue-on-error: false
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y jq libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2
+
+      - name: Start server
+        run: |
+          nohup npm start >/dev/null 2>&1 &
+          echo "Waiting for server..."
+          for i in {1..120}; do
+            if curl -sSf http://localhost:3000/ >/dev/null 2>&1; then
+              echo "Server is up after $i seconds"
+              echo "Warming up..."
+              sleep 5
+              curl -sSf http://localhost:3000/ >/dev/null 2>&1 || true
+              curl -sSf http://localhost:3000/jobbsoker >/dev/null 2>&1 || true
+              curl -sSf http://localhost:3000/kunde >/dev/null 2>&1 || true
+              break
+            fi
+            if [ $i -eq 120 ]; then
+              echo "Server failed to start within 120 seconds"
+              exit 1
+            fi
+            sleep 1
+          done
+
+      - name: Run pa11y checks (programmatic runner)
+        run: |
+          export PA11Y_WAIT=15000
+          export PA11Y_TIMEOUT=120000
+          export PA11Y_WAIT_UNTIL=load
+          node scripts/pa11y-runner.js http://localhost:3000/ docs/pa11y-home.json
+          node scripts/pa11y-runner.js http://localhost:3000/jobbsoker docs/pa11y-jobbsoker.json
+          node scripts/pa11y-runner.js http://localhost:3000/kunde docs/pa11y-kunde.json
+          node scripts/pa11y-runner.js http://localhost:3000/kontakt docs/pa11y-kontakt.json
+          node scripts/pa11y-runner.js http://localhost:3000/om-oss docs/pa11y-om-oss.json
+          node scripts/pa11y-runner.js http://localhost:3000/cookies docs/pa11y-cookies.json
+
+      - name: Upload pa11y reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pa11y-reports
+          path: docs/pa11y-*.json
+
+      - name: Print non-empty findings
+        if: always()
+        run: |
+          for f in docs/pa11y-*.json; do
+            echo "=== $f ==="
+            if [ ! -s "$f" ]; then echo "(empty or missing)"; continue; fi
+            if jq -e '. | length == 0' "$f" >/dev/null 2>&1; then
+              echo "No issues"
+            else
+              jq -r '.[] | "- [\(.type)] \(.code): \(.message) (selector: \(.selector))"' "$f" || cat "$f"
+            fi
+          done
+
+      - name: Fail if any issues were found
+        run: |
+          fail=0
+          for f in docs/pa11y-*.json; do
+            if [ -s "$f" ] && ! jq -e '. | length == 0' "$f" >/dev/null 2>&1; then
+              echo "Accessibility issues present in $f";
+              fail=1
+            fi
+          done
+          if [ "$fail" -eq 1 ]; then
+            echo "Accessibility checks failed"; exit 1;
+          fi

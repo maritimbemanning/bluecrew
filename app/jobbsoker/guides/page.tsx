@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om STCW-krav, dekks- og maskinoffiser sertifikater, og kvalifikasjoner for maritime stillinger.",
     type: "website",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides",
+  },
 };
 
 export default function Page() {
@@ -36,7 +39,7 @@ export default function Page() {
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
           <h1 style={sx.h2}>Maritime sertifikatkrav i Norge</h1>
           <p style={sx.leadSmall}>
@@ -54,7 +57,7 @@ export default function Page() {
               <a href="https://www.sdir.no" target="_blank" rel="noopener" style={{ color: "#0ea5e9", textDecoration: "underline" }}>
                 Sjøfartsdirektoratet
               </a>{" "}
-              for oppdaterte krav og unntak. Sist oppdatert: 24. oktober 2025.
+              for oppdaterte krav og unntak. Sist oppdatert: 7. november 2025.
             </p>
           </div>
 
@@ -579,7 +582,7 @@ export default function Page() {
               </li>
             </ul>
             <p style={{ margin: "16px 0 0 0", fontSize: 13, color: "#64748b", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025. Dette er en veiledende oversikt. Sjekk alltid offisielle kilder for gjeldende krav.
+              Sist oppdatert: 7. november 2025. Dette er en veiledende oversikt. Sjekk alltid offisielle kilder for gjeldende krav.
             </p>
           </div>
         </div>

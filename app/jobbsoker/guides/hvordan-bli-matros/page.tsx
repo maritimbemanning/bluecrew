@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -26,6 +27,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om å bli matros: Utdanning, sertifikater, lønn og karrierevei fra lettmatros til styrmann.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-matros",
+  },
 };
 
 export default function Page() {
@@ -33,8 +37,27 @@ export default function Page() {
     <SiteLayout active="jobbsoker">
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
+          <div style={{ 
+            marginBottom: 32, 
+            borderRadius: 16, 
+            overflow: "hidden", 
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            position: "relative",
+            height: 400
+          }}>
+            <Image 
+              src="/guides/Matros-dekksarbeid.jpeg" 
+              alt="Matros utfører profesjonelt dekksarbeid med tau og fortøyning på havbruksfartøy Nord-Norge" 
+              width={1200}
+              height={675}
+              priority
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, 800px"
+            />
+          </div>
+
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
           <h1 style={sx.h2}>Hvordan bli matros i Norge</h1>
           <p style={sx.leadSmall}>
@@ -394,7 +417,7 @@ export default function Page() {
               <li>Sjømannsforbundet lønnsstatistikk</li>
             </ul>
             <p style={{ margin: "12px 0 0 0", fontSize: 13, color: "#94a3b8", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025
+              Sist oppdatert: 7. november 2025
             </p>
           </div>
         </div>

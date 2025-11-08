@@ -18,6 +18,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    canonical: "/vilkar",
+  },
 };
 
 const ui = {
@@ -83,7 +86,7 @@ const ui = {
     fontSize: 15.5,
   },
   a: {
-    color: "#007eb6",
+    color: "#0369a1",
     textDecoration: "none",
     borderBottom: "1px dashed rgba(14,165,233,0.35)",
   },
@@ -164,6 +167,15 @@ export default function TermsPage() {
               <p style={ui.p}>
                 Nettstedet kan inneholde lenker til eksterne sider. Vi er ikke ansvarlige for innholdet eller praksisen
                 til tredjeparts nettsteder.
+              </p>
+            </section>
+
+            <section style={ui.card}>
+              <h2 style={ui.h2}>Arbeidsvilkår for bemanning og innleie</h2>
+              <p style={ui.p}>
+                Bluecrew er et bemanningsforetak som følger Arbeidsmiljøloven Kap 14 og Bemanningsforskriften.
+                Les mer om arbeidsgivers ansvar, likebehandling, forsikring og HMS på{" "}
+                <a href="/vilkar/bemanning" style={ui.a}>arbeidsvilkår for bemanning</a>.
               </p>
             </section>
 

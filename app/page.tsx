@@ -5,30 +5,34 @@ import { TrustSection } from "./components/home/TrustSection";
 import { ServiceCards } from "./components/home/ServiceCards";
 import { JobsHighlight } from "./components/home/JobsHighlight";
 import { ContactSection } from "./components/home/ContactSection";
+import { InterestSection } from "./components/home/InterestSection";
 
 export const metadata: Metadata = {
   title: "Maritim bemanning til havbruk, servicefartøy og offshore",
   description:
-    "Erfarne mannskaper til havbruk, servicefartøy og offshore. Base i Nord-Norge med nasjonal dekning. STCW-sertifisert, rask oppstart, personlig oppfølging.",
+    "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer. Rask leveranse, høy kvalitet og trygg etterlevelse.",
   keywords: [
     "maritim bemanning",
     "servicefartøy bemanning",
     "havbruk bemanning",
     "brønnbåt mannskap",
-    "offshore bemanning Nord-Norge",
+    "offshore bemanning Norge",
     "STCW mannskap",
     "dekksoffiser",
     "maskinoffiser",
-    "maritime stillinger Troms",
-    "fartøy bemanning Harstad",
+    "maritime stillinger",
+    "fartøy bemanning Norge",
     "aquaculture crew",
     "service vessel manning",
   ],
   openGraph: {
-    title: "Bluecrew AS - Maritim bemanning i Nord-Norge",
-    description: "Erfarne mannskaper til havbruk, servicefartøy og offshore. STCW-sertifisert med rask oppstart.",
+    title: "Bluecrew AS - Maritim bemanning i Norge",
+    description: "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifisert med rask oppstart.",
     type: "website",
     url: "https://bluecrew.no",
+  },
+  alternates: {
+    canonical: "/",
   },
 };
 
@@ -39,6 +43,7 @@ export default function Page() {
       <TrustSection />
       <ServiceCards />
       <JobsHighlight />
+  <InterestSection />
       <ContactSection />
     </SiteLayout>
   );

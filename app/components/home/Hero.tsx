@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import * as styles from './Hero.css';
@@ -30,10 +32,19 @@ export function Hero(){
               </div>
             </Link>
             <div className={styles.phoneCta}>
-              <a href="tel:+4792328850" className={util.btn + ' ' + styles.btnSecondary}>
-                923 28 850
+              <a
+                href="mailto:post@bluecrew.no"
+                className={util.btn + ' ' + styles.btnSecondary}
+                onClick={() => {
+                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                  if (typeof plausible === 'function') {
+                    plausible('Email Click', { props: { location: 'hero' } });
+                  }
+                }}
+              >
+                📧 post@bluecrew.no
               </a>
-              <p className={styles.ctaSubtext}>Akutt behov?</p>
+              <p className={styles.ctaSubtext}>Svar innen 24 timer</p>
             </div>
           </div>
 
@@ -48,7 +59,7 @@ export function Hero(){
             </div>
             <div className={styles.trustItem}>
               <span className={styles.trustIcon}>✓</span>
-              <span className={styles.trustLabel}>Kjenner havbruk og offshore</span>
+              <span className={styles.trustLabel}>Digital matching med AI-teknologi</span>
             </div>
           </div>
         </div>

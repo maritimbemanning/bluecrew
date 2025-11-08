@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import SiteLayout from "../../../components/SiteLayout";
 import { sx } from "../../../lib/styles";
 
@@ -25,6 +26,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om maskinoffiser: Utdanning, M1-M4 sertifikater, fartstidskrav, lønn og karrierevei til maskinsjef.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-maskinoffiser",
+  },
 };
 
 export default function Page() {
@@ -32,8 +36,27 @@ export default function Page() {
     <SiteLayout active="jobbsoker">
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
+          <div style={{ 
+            marginBottom: 32, 
+            borderRadius: 16, 
+            overflow: "hidden", 
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            position: "relative",
+            height: 400
+          }}>
+            <Image 
+              src="/guides/Maskinoffiser-maskinrom.jpeg" 
+              alt="Maskinoffiser inspiserer teknisk utstyr og motorer i maskinrom på brønnbåt - maritime tekniske operasjoner" 
+              width={1200}
+              height={675}
+              priority
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, 800px"
+            />
+          </div>
+
           <div style={{ fontSize: 14, color: "#64748b", marginBottom: 8, fontWeight: 500 }}>
-            Sist oppdatert: 24. oktober 2025
+            Sist oppdatert: 7. november 2025
           </div>
           <h1 style={sx.h2}>Hvordan bli maskinoffiser i Norge</h1>
           <p style={sx.leadSmall}>
@@ -451,7 +474,7 @@ export default function Page() {
               <li>Maskinistforbundet lønnsstatistikk</li>
             </ul>
             <p style={{ margin: "12px 0 0 0", fontSize: 13, color: "#94a3b8", fontStyle: "italic" }}>
-              Sist oppdatert: 24. oktober 2025
+              Sist oppdatert: 7. november 2025
             </p>
           </div>
         </div>

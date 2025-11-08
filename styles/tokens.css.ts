@@ -4,7 +4,7 @@ export const vars = createGlobalTheme(':root', {
   color: {
     bg: '#ffffff',
     text: '#0f172a',
-    primary: '#007eb6',
+    primary: '#0369a1',
     accent: '#0ea5e9',
     muted: '#64748b',
     cta: '#0369a1',

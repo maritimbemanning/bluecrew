@@ -11,7 +11,7 @@ export function ServiceCards(){
     },
     {
       title: 'Havbruk',
-      description: 'Brønnbåt, fôring, vedlikehold og transport. Erfaring fra norsk oppdrettsnæring.',
+      description: 'Brønnbåt, drift, vedlikehold og transport. Erfaring fra norsk oppdrettsnæring.',
       link: '/kunde/bemanning',
     },
     {
