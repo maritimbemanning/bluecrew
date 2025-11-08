@@ -28,6 +28,10 @@ Thumbs.db
 logs
 *.log
 
+# Backups (GDPR deletion backups - should be in CI artifacts only)
+backups/
+*.backup.json
+
 # Optional caches
 .cache/
 coverage/
