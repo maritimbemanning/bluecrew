@@ -8,9 +8,9 @@
  * SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=... node scripts/backup-expired-data.js
  */
 
-import { createClient } from '@supabase/supabase-js';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+const { createClient } = require('@supabase/supabase-js');
+const { writeFile, mkdir } = require('fs/promises');
+const { join } = require('path');
 
 // Lagringstider (må matche delete-expired-data.js)
 const CANDIDATE_RETENTION_MONTHS = 24;

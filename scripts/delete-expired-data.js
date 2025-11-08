@@ -8,7 +8,7 @@
  * SUPABASE_URL=https://... SUPABASE_SERVICE_ROLE_KEY=... node scripts/delete-expired-data.js
  */
 
-import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
 
 // Lagringstider (i måneder)
 const CANDIDATE_RETENTION_MONTHS = 24;
