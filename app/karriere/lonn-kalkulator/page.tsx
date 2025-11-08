@@ -30,6 +30,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  alternates: {
+    canonical: "/karriere/lonn-kalkulator",
+  },
 };
 
 export default function LonnKalkulatorPage() {

@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Hva tjener en matros i Norge? Gjennomsnittlig lønn, STCW-krav og karriereveier fra lettmatros til båtsmann.",
     type: "article",
   },
+  alternates: {
+    canonical: "/karriere/matros-lonn",
+  },
 };
 
 export default function Page() {

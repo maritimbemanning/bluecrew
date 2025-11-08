@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om STCW-krav, dekks- og maskinoffiser sertifikater, og kvalifikasjoner for maritime stillinger.",
     type: "website",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides",
+  },
 };
 
 export default function Page() {

@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     description: "Vi finner erfarne maritime ledere til nøkkelroller. Proaktivt søk og grundig prosess.",
     type: "website",
   },
+  alternates: {
+    canonical: "/kunde/rekruttering",
+  },
 };
 
 export default function Page() {

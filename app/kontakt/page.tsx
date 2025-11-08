@@ -19,6 +19,9 @@ export const metadata: Metadata = {
     description: "Ta kontakt for bemanning til havbruk, servicefartøy og offshore. Vi svarer raskt.",
     type: "website",
   },
+  alternates: {
+    canonical: "/kontakt",
+  },
 };
 
 export default function Page() {

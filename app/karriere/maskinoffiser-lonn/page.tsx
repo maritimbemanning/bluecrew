@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Hva tjener en maskinoffiser i Norge? M1-M4 klasser, STCW-krav og karrierevei fra motormann til sjefsingeniør.",
     type: "article",
   },
+  alternates: {
+    canonical: "/karriere/maskinoffiser-lonn",
+  },
 };
 
 export default function Page() {

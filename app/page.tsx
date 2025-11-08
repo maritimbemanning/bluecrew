@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://bluecrew.no",
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function Page() {

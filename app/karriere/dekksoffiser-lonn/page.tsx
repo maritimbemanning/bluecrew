@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Hva tjener en dekksoffiser i Norge? D1-D6 klasser, STCW-krav og karrierevei fra lettmatros til overstyrsmann.",
     type: "article",
   },
+  alternates: {
+    canonical: "/karriere/dekksoffiser-lonn",
+  },
 };
 
 export default function Page() {

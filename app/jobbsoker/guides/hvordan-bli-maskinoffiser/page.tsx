@@ -26,6 +26,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om maskinoffiser: Utdanning, M1-M4 sertifikater, fartstidskrav, lønn og karrierevei til maskinsjef.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-maskinoffiser",
+  },
 };
 
 export default function Page() {

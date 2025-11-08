@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     description: "Hva tjener en styrmann i Norge? Lønn fra 500.000 til 850.000 kr/år. Offshore, havbruk, servicefartøy - komplett oversikt.",
     type: "article",
   },
+  alternates: {
+    canonical: "/karriere/styrmann-lonn",
+  },
 };
 
 export default function Page() {

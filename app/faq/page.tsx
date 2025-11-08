@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     description: "Svar på spørsmål om bemanning, STCW-krav, lønn og kontrakter.",
     type: "website",
   },
+  alternates: {
+    canonical: "/faq",
+  },
 };
 
 export default function FAQPage() {

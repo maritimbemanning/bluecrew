@@ -20,6 +20,9 @@ export const metadata: Metadata = {
     description: "Bemanningsselskap drevet av sjøfolk. Leverer til havbruk, servicefartøy og fiskeri.",
     type: "website",
   },
+  alternates: {
+    canonical: "/om-oss",
+  },
 };
 
 export default function Page() {

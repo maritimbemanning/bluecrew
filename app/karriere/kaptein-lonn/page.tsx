@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     description: "Hva tjener en kaptein i Norge? Lønn fra 650.000 til 1.200.000+ kr/år. Offshore, havbruk, servicefartøy - alle sektorer dekket.",
     type: "article",
   },
+  alternates: {
+    canonical: "/karriere/kaptein-lonn",
+  },
 };
 
 export default function Page() {

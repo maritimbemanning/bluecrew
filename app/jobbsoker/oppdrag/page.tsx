@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     description: "Se ledige oppdrag til havbruk, fiskeri og servicefartøy. Konkurransedyktige vilkår.",
     type: "website",
   },
+  alternates: {
+    canonical: "/jobbsoker/oppdrag",
+  },
 };
 
 export default function Page() {

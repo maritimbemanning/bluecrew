@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om å bli matros: Utdanning, sertifikater, lønn og karrierevei fra lettmatros til styrmann.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-matros",
+  },
 };
 
 export default function Page() {

@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     description: "Erfarne mannskaper til havbruk, servicefartøy og offshore. STCW-sertifisert med rask oppstart.",
     type: "website",
   },
+  alternates: {
+    canonical: "/kunde/bemanning",
+  },
 };
 
 export default function Page() {

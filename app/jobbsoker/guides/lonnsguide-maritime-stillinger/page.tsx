@@ -28,6 +28,9 @@ export const metadata: Metadata = {
     description: "Komplett oversikt over lønninger i maritime stillinger: Skipsfører, styrmann, matros, maskinoffiser og mer.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/lonnsguide-maritime-stillinger",
+  },
 };
 
 export default function Page() {

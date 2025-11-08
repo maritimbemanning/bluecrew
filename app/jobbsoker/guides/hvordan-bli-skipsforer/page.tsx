@@ -27,6 +27,9 @@ export const metadata: Metadata = {
     description: "Alt du trenger å vite om veien til å bli skipsfører: Utdanning, sertifikater, fartstid og karrieremuligheter.",
     type: "article",
   },
+  alternates: {
+    canonical: "/jobbsoker/guides/hvordan-bli-skipsforer",
+  },
 };
 
 export default function Page() {
