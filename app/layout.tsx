@@ -30,15 +30,9 @@ export const metadata: Metadata = {
     "maritime vikarer",
     "fartøy bemanning Norge",
   ],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"),
-  icons: {
-    icon: [
-      { url: "/icon.png", type: "image/png" },
-      { url: "/icons/FullLogo_Transparent.png", type: "image/png", sizes: "any" },
-    ],
-    apple: "/icons/FullLogo_Transparent.png",
-    shortcut: "/icon.png",
-  },
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"
+  ),
   openGraph: {
     type: "website",
     locale: "nb_NO",
@@ -65,7 +59,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -73,7 +71,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     alternateName: "Bluecrew",
     url: "https://bluecrew.no",
     logo: "https://bluecrew.no/logo.png",
-    description: "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
+    description:
+      "Maritim bemanningsleverandør med base i Nord-Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Østenbekkveien 43",
@@ -134,12 +133,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script
           id="organization-schema"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
         />
         <Script
           id="local-business-schema"
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema),
+          }}
         />
       </head>
       <body>
