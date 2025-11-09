@@ -525,7 +525,7 @@ export default function Page() {
                   Hva tjener en kaptein? Lønn fra 650k til 1.2M kr/år
                 </p>
               </Link>
-              <Link href="/karriere/guides/hvordan-bli-matros" style={{ 
+              <Link href="/karriere/matros" style={{ 
                 display: "block",
                 padding: 20, 
                 background: "#f8fafc", 
@@ -540,7 +540,7 @@ export default function Page() {
                   Utdanning, sertifikater og karrierevei fra lettmatros til styrmann
                 </p>
               </Link>
-              <Link href="/karriere/guides/lonnsguide-maritime-stillinger" style={{ 
+              <Link href="/lonn/oversikt" style={{ 
                 display: "block",
                 padding: 20, 
                 background: "#f8fafc", 
@@ -563,3 +563,5 @@ export default function Page() {
     </SiteLayout>
   );
 }
+
+

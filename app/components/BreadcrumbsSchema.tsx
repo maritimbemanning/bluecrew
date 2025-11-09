@@ -42,3 +42,4 @@ function segmentToTitle(seg: string) {
   };
   return map[seg] || seg.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
 }
+

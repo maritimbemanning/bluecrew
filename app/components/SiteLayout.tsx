@@ -48,20 +48,19 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    href: "/karriere/guides",
+    href: "/karriere",
     label: "Karriere",
     key: "karriere",
     children: [
       {
-        href: "/karriere/guides/hvordan-bli-skipsforer",
+        href: "/karriere/skipsforer",
         label: "Bli skipsfører",
       },
-      { href: "/karriere/guides/hvordan-bli-matros", label: "Bli matros" },
+      { href: "/karriere/matros", label: "Bli matros" },
       {
-        href: "/karriere/guides/hvordan-bli-maskinoffiser",
+        href: "/karriere/maskinoffiser",
         label: "Bli maskinoffiser",
       },
-      { href: "/karriere/guides", label: "Sertifikatkrav" },
     ],
   },
   {
@@ -70,7 +69,7 @@ const NAV_ITEMS: NavItem[] = [
     key: "lonn",
     children: [
       {
-        href: "/karriere/guides/lonnsguide-maritime-stillinger",
+        href: "/lonn/oversikt",
         label: "Lønnsguide",
       },
       { href: "/lonn/kalkulator", label: "Kalkulator" },
@@ -772,39 +771,22 @@ export function SiteLayout({
               <h2 style={sx.footerHeading}>Karriereguider</h2>
               <ul style={sx.footerList}>
                 <li style={sx.footerListItem}>
-                  <Link href="/karriere/guides" style={sx.footerLink}>
-                    Maritime sertifikater
-                  </Link>
-                </li>
-                <li style={sx.footerListItem}>
-                  <Link
-                    href="/karriere/guides/hvordan-bli-skipsforer"
-                    style={sx.footerLink}
-                  >
+                  <Link href="/karriere/skipsforer" style={sx.footerLink}>
                     Hvordan bli skipsfører
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link
-                    href="/karriere/guides/hvordan-bli-matros"
-                    style={sx.footerLink}
-                  >
+                  <Link href="/karriere/matros" style={sx.footerLink}>
                     Hvordan bli matros
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link
-                    href="/karriere/guides/hvordan-bli-maskinoffiser"
-                    style={sx.footerLink}
-                  >
+                  <Link href="/karriere/maskinoffiser" style={sx.footerLink}>
                     Hvordan bli maskinoffiser
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link
-                    href="/karriere/guides/lonnsguide-maritime-stillinger"
-                    style={sx.footerLink}
-                  >
+                  <Link href="/lonn/oversikt" style={sx.footerLink}>
                     Lønnsguide 2025
                   </Link>
                 </li>

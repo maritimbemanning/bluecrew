@@ -7,3 +7,4 @@
 export default function CandidateContent() {
   return null;
 }
+

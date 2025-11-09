@@ -43,3 +43,4 @@ export function Logo({ size = 36 }: { size?: number }) {
 }
 
 export default Logo;
+

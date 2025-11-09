@@ -412,3 +412,4 @@ export function VippsLoginPage() {
     </div>
   );
 }
+

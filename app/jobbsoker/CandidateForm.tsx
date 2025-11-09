@@ -746,3 +746,4 @@ export default function CandidateContent() {
 
 // Export as named export for use in /jobbsoker/registrer/skjema
 export { CandidateContent as CandidateForm };
+

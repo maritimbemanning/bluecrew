@@ -509,7 +509,7 @@ export default function Page() {
           <div style={{ marginTop: 56, paddingTop: 32, borderTop: "1px solid #e2e8f0" }}>
             <h2 style={{ ...sx.h2, fontSize: 24, marginBottom: 24 }}>Relaterte karriereguider</h2>
             <div style={{ display: "grid", gap: 16 }}>
-              <Link href="/karriere/guides/hvordan-bli-skipsforer" style={{ 
+              <Link href="/karriere/skipsforer" style={{ 
                 display: "block",
                 padding: 20, 
                 background: "#f8fafc", 
@@ -540,7 +540,7 @@ export default function Page() {
                   Hva tjener en styrmann i Norge? Lønn per sektor og erfaring
                 </p>
               </Link>
-              <Link href="/karriere/guides/lonnsguide-maritime-stillinger" style={{ 
+              <Link href="/lonn/oversikt" style={{ 
                 display: "block",
                 padding: 20, 
                 background: "#f8fafc", 
@@ -563,3 +563,5 @@ export default function Page() {
     </SiteLayout>
   );
 }
+
+

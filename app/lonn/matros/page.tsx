@@ -616,7 +616,7 @@ export default function Page() {
                   </p>
                 </div>
               </Link>
-              <Link href="/karriere/guides/hvordan-bli-matros" style={{ textDecoration: "none" }}>
+              <Link href="/karriere/matros" style={{ textDecoration: "none" }}>
                 <div
                   style={{
                     background: "white",
@@ -641,3 +641,5 @@ export default function Page() {
     </SiteLayout>
   );
 }
+
+

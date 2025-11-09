@@ -57,3 +57,4 @@ export function TeamSection(){
 }
 
 export default TeamSection;
+

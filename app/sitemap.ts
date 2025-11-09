@@ -80,33 +80,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
 
-    // Karriere - Guides (viktige SEO-sider - "hvordan bli X")
+    // Karriere - Jobber (viktige SEO-sider - "hvordan bli X")
     {
-      url: `${base}/karriere/guides`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${base}/karriere/guides/hvordan-bli-skipsforer`,
+      url: `${base}/karriere/skipsforer`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: `${base}/karriere/guides/hvordan-bli-matros`,
+      url: `${base}/karriere/matros`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,
     },
     {
-      url: `${base}/karriere/guides/hvordan-bli-maskinoffiser`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    {
-      url: `${base}/karriere/guides/lonnsguide-maritime-stillinger`,
+      url: `${base}/karriere/maskinoffiser`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,
@@ -118,6 +106,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 1.0,
+    },
+    {
+      url: `${base}/lonn/oversikt`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
     },
     {
       url: `${base}/lonn/kaptein`,
