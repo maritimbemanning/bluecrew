@@ -53,7 +53,7 @@ export default function FAQPage() {
         <>
           Minimum STCW grunnleggende sikkerhetskurs (PST, FPFF, EFA) og gyldig helseattest. Avhengig av stilling kan du
           trenge fagbrev, dekksoffiser- eller maskinoffisersertifikater.{" "}
-          <Link href="/jobbsoker/guides" style={{ textDecoration: "underline", fontWeight: 500 }}>
+          <Link href="/karriere/guides" style={{ textDecoration: "underline", fontWeight: 500 }}>
             Se vår komplette sertifikatoversikt
           </Link>{" "}
           for alle krav, eller kontakt oss så hjelper vi deg med å kartlegge hva som kreves.
@@ -67,7 +67,7 @@ export default function FAQPage() {
         <>
           Lønn varierer etter stilling, erfaring og type fartøy. Vi tilbyr konkurransedyktig lønn over tariff der innsats
           og kompetanse belønnes.{" "}
-          <Link href="/jobbsoker/guides/lonnsguide-maritime-stillinger" style={{ textDecoration: "underline", fontWeight: 500 }}>
+          <Link href="/karriere/guides/lonnsguide-maritime-stillinger" style={{ textDecoration: "underline", fontWeight: 500 }}>
             Se vår komplette lønnsguide for maritime stillinger
           </Link>{" "}
           eller kontakt oss for konkrete lønnsestimater basert på din bakgrunn.
@@ -80,7 +80,7 @@ export default function FAQPage() {
       return (
         <>
           Vi hjelper deg med å kartlegge hvilke kurs du trenger og kan gi veiledning om hvor du tar dem.{" "}
-          <Link href="/jobbsoker/guides" style={{ textDecoration: "underline", fontWeight: 500 }}>
+          <Link href="/karriere/guides" style={{ textDecoration: "underline", fontWeight: 500 }}>
             Les mer om STCW-krav og maritime sertifikater
           </Link>
           . I noen tilfeller kan kunden dekke kurskostnader hvis du forplikter deg til et lengre oppdrag.

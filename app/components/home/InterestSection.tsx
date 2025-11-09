@@ -18,7 +18,10 @@ export function InterestSection() {
     const fd = new FormData(form);
 
     // Honeypot
-    if (typeof fd.get("company") === "string" && (fd.get("company") as string).trim()) {
+    if (
+      typeof fd.get("company") === "string" &&
+      (fd.get("company") as string).trim()
+    ) {
       setState("success");
       form.reset();
       return;
@@ -37,7 +40,18 @@ export function InterestSection() {
       form.reset();
       try {
         if (typeof window !== "undefined" && (window as any).plausible) {
-          (window as any).plausible("Interest Submitted", { props: { form: "candidate_interest" } });
+          (window as any).plausible("Interest Submitted", {
+            props: { form: "candidate_interest" },
+          });
+        }
+        // Track to Google Ads (Candidate Lead Conversion)
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "conversion", {
+            send_to: "AW-17715214678/YYYYYY", // 👈 Erstatt YYYYYY med conversion label for kandidater
+            value: 0.5,
+            currency: "NOK",
+            transaction_id: `candidate_${Date.now()}`,
+          });
         }
       } catch {}
     } else {
@@ -50,10 +64,13 @@ export function InterestSection() {
   return (
     <section style={sx.section} aria-labelledby="interest-heading">
       <div style={sx.wrapNarrow}>
-        <h2 id="interest-heading" style={sx.h2}>Meld interesse – bemanning i maritim sektor</h2>
+        <h2 id="interest-heading" style={sx.h2}>
+          Meld interesse – bemanning i maritim sektor
+        </h2>
         <p style={sx.leadSmall}>
-          Vi er sjøfolk som bygger Bluecrew – et godkjent bemanningsforetak for hele den maritime sektoren. Meld interesse
-          uforpliktende, så tar vi kontakt når vi har oppdrag som passer din erfaring.
+          Vi er sjøfolk som bygger Bluecrew – et godkjent bemanningsforetak for
+          hele den maritime sektoren. Meld interesse uforpliktende, så tar vi
+          kontakt når vi har oppdrag som passer din erfaring.
         </p>
 
         <form onSubmit={onSubmit} style={sx.form}>
@@ -110,35 +127,70 @@ export function InterestSection() {
           </label>
           <label style={{ ...sx.label, gridColumn: "1 / -1" }}>
             <span>Oppstart (valgfritt)</span>
-            <input name="start_from" placeholder="F.eks. snarest, uke 45" style={sx.input} />
+            <input
+              name="start_from"
+              placeholder="F.eks. snarest, uke 45"
+              style={sx.input}
+            />
           </label>
           <label style={{ ...sx.label, gridColumn: "1 / -1" }}>
             <span>Sertifikater (valgfritt)</span>
-            <input name="certificates" placeholder="F.eks. D5L, HSE-kurs, STCW" style={sx.input} />
+            <input
+              name="certificates"
+              placeholder="F.eks. D5L, HSE-kurs, STCW"
+              style={sx.input}
+            />
           </label>
           <label style={{ ...sx.label, gridColumn: "1 / -1" }}>
             <span>Tilleggsinfo (valgfritt)</span>
-            <textarea name="notes" rows={3} style={{ ...sx.input, height: 90 }} />
+            <textarea
+              name="notes"
+              rows={3}
+              style={{ ...sx.input, height: 90 }}
+            />
           </label>
 
-          <label style={{ ...sx.label, gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "20px 1fr", alignItems: "start", gap: 10 }}>
+          <label
+            style={{
+              ...sx.label,
+              gridColumn: "1 / -1",
+              display: "grid",
+              gridTemplateColumns: "20px 1fr",
+              alignItems: "start",
+              gap: 10,
+            }}
+          >
             <input name="consent" type="checkbox" required />
             <span style={{ fontSize: 14 }}>
-              Jeg samtykker til at Bluecrew behandler mine opplysninger for å vurdere meg for fremtidige maritime oppdrag og
-              kontakte meg når noe passer. Jeg kan når som helst trekke samtykket tilbake. <Link href="/personvern">Les personvernerklæringen</Link>.
+              Jeg samtykker til at Bluecrew behandler mine opplysninger for å
+              vurdere meg for fremtidige maritime oppdrag og kontakte meg når
+              noe passer. Jeg kan når som helst trekke samtykket tilbake.{" "}
+              <Link href="/personvern">Les personvernerklæringen</Link>.
             </span>
           </label>
 
-          {error ? (
-            <div style={sx.formError}>{error}</div>
-          ) : null}
+          {error ? <div style={sx.formError}>{error}</div> : null}
 
-          <div style={{ gridColumn: "1 / -1", display: "flex", gap: 12, alignItems: "center" }}>
-            <button type="submit" disabled={state === "submitting"} style={sx.btnSecondary}>
+          <div
+            style={{
+              gridColumn: "1 / -1",
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+            }}
+          >
+            <button
+              type="submit"
+              disabled={state === "submitting"}
+              style={sx.btnSecondary}
+            >
               {state === "submitting" ? "Sender…" : "Meld interesse"}
             </button>
             {state === "success" ? (
-              <div style={sx.ok}>Takk! Vi har sendt en bekreftelse på e‑post og tar kontakt når noe passer.</div>
+              <div style={sx.ok}>
+                Takk! Vi har sendt en bekreftelse på e‑post og tar kontakt når
+                noe passer.
+              </div>
             ) : null}
           </div>
         </form>
