@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { FocusEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import {
+  FocusEvent,
+  KeyboardEvent,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "./SiteLayout.css";
 import { createPortal } from "react-dom";
 import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
@@ -40,32 +48,50 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    href: "/jobbsoker/guides",
+    href: "/karriere/guides",
     label: "Karriere",
     key: "karriere",
     children: [
-      { href: "/jobbsoker/guides/hvordan-bli-skipsforer", label: "Bli skipsfører" },
-      { href: "/jobbsoker/guides/hvordan-bli-matros", label: "Bli matros" },
-      { href: "/jobbsoker/guides/hvordan-bli-maskinoffiser", label: "Bli maskinoffiser" },
-      { href: "/jobbsoker/guides", label: "Sertifikatkrav" },
+      {
+        href: "/karriere/guides/hvordan-bli-skipsforer",
+        label: "Bli skipsfører",
+      },
+      { href: "/karriere/guides/hvordan-bli-matros", label: "Bli matros" },
+      {
+        href: "/karriere/guides/hvordan-bli-maskinoffiser",
+        label: "Bli maskinoffiser",
+      },
+      { href: "/karriere/guides", label: "Sertifikatkrav" },
     ],
   },
   {
-    href: "/jobbsoker/guides/lonnsguide-maritime-stillinger",
+    href: "/lonn",
     label: "Lønn",
     key: "lonn",
     children: [
-      { href: "/jobbsoker/guides/lonnsguide-maritime-stillinger", label: "Lønnsguide" },
-      { href: "/karriere/kaptein-lonn", label: "Kaptein" },
-      { href: "/karriere/matros-lonn", label: "Matros" },
-      { href: "/karriere/maskinoffiser-lonn", label: "Maskinoffiser" },
+      {
+        href: "/karriere/guides/lonnsguide-maritime-stillinger",
+        label: "Lønnsguide",
+      },
+      { href: "/lonn/kalkulator", label: "Kalkulator" },
+      { href: "/lonn/kaptein", label: "Kaptein" },
+      { href: "/lonn/styrmann", label: "Styrmann" },
+      { href: "/lonn/matros", label: "Matros" },
+      { href: "/lonn/maskinoffiser", label: "Maskinoffiser" },
+      { href: "/lonn/dekksoffiser", label: "Dekksoffiser" },
     ],
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
   { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
-export function SiteLayout({ children, active }: { children: ReactNode; active?: string }) {
+export function SiteLayout({
+  children,
+  active,
+}: {
+  children: ReactNode;
+  active?: string;
+}) {
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -169,8 +195,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
     const sheet = mobileSheetRef.current;
     if (!sheet) return;
 
-    const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    const focusable = Array.from(sheet.querySelectorAll(focusableSelector)) as HTMLElement[];
+    const focusableSelector =
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const focusable = Array.from(
+      sheet.querySelectorAll(focusableSelector)
+    ) as HTMLElement[];
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
 
@@ -244,7 +273,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
         <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
           <Link
             href="/"
-            style={{ display: "flex", alignItems: "center", gap: 14, textDecoration: "none", color: "inherit" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              textDecoration: "none",
+              color: "inherit",
+            }}
             aria-label="Bluecrew – bemanning til sjøs"
           >
             <div style={sx.brandMark}>
@@ -253,7 +288,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             </div>
           </Link>
           {/* Desktop navigation - med dropdowns */}
-          <nav style={{ ...sx.nav, gap: 24, ...(isMobile ? { display: "none" } : {}) }} aria-label="Hovedmeny">
+          <nav
+            style={{
+              ...sx.nav,
+              gap: 24,
+              ...(isMobile ? { display: "none" } : {}),
+            }}
+            aria-label="Hovedmeny"
+          >
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.key;
               const hasChildren = !!item.children?.length;
@@ -265,7 +307,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     key={item.key}
                     href={item.href}
                     className="navLink"
-                    style={{ ...sx.navLink, ...(isActive ? sx.navLinkActive : {}) }}
+                    style={{
+                      ...sx.navLink,
+                      ...(isActive ? sx.navLinkActive : {}),
+                    }}
                   >
                     {item.label}
                   </Link>
@@ -273,10 +318,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               }
 
               return (
-                <div 
-                  key={item.key} 
-                  style={sx.navItem} 
-                  onMouseEnter={() => { cancelClose(); setOpenKey(item.key); }} 
+                <div
+                  key={item.key}
+                  style={sx.navItem}
+                  onMouseEnter={() => {
+                    cancelClose();
+                    setOpenKey(item.key);
+                  }}
                   onMouseLeave={scheduleClose}
                 >
                   <button
@@ -284,18 +332,35 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     aria-haspopup="menu"
                     aria-expanded={isOpen}
                     aria-controls={`${item.key}-submenu`}
-                    onClick={() => setOpenKey((prev) => (prev === item.key ? null : item.key))}
-                    onFocus={() => { cancelClose(); setOpenKey(item.key); setFocusedKey(item.key); }}
-                    onBlur={(event) => { setFocusedKey(null); handleBlur(item.key, event); }}
+                    onClick={() =>
+                      setOpenKey((prev) =>
+                        prev === item.key ? null : item.key
+                      )
+                    }
+                    onFocus={() => {
+                      cancelClose();
+                      setOpenKey(item.key);
+                      setFocusedKey(item.key);
+                    }}
+                    onBlur={(event) => {
+                      setFocusedKey(null);
+                      handleBlur(item.key, event);
+                    }}
                     className={`navTriggerButton ${focusedKey === item.key ? "focusVisible" : ""}`}
                     style={{ ...(isActive ? sx.navLinkActive : undefined) }}
                   >
                     <span>{item.label}</span>
-                    <span aria-hidden="true" style={sx.navCaret}>▾</span>
+                    <span aria-hidden="true" style={sx.navCaret}>
+                      ▾
+                    </span>
                   </button>
 
                   {isOpen && (
-                    <div style={sx.navDropdown} onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
+                    <div
+                      style={sx.navDropdown}
+                      onMouseEnter={cancelClose}
+                      onMouseLeave={scheduleClose}
+                    >
                       <ul
                         id={`${item.key}-submenu`}
                         role="menu"
@@ -303,12 +368,12 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         aria-label={`${item.label} undermeny`}
                       >
                         <li>
-                          <Link 
-                            href={item.href} 
-                            style={{ ...sx.navDropdownLink, fontWeight: 800 }} 
-                            className="dropdownLink" 
-                            role="menuitem" 
-                            onClick={() => setOpenKey(null)} 
+                          <Link
+                            href={item.href}
+                            style={{ ...sx.navDropdownLink, fontWeight: 800 }}
+                            className="dropdownLink"
+                            role="menuitem"
+                            onClick={() => setOpenKey(null)}
                             tabIndex={-1}
                           >
                             {item.label}
@@ -316,12 +381,12 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         </li>
                         {item.children!.map((child) => (
                           <li key={child.href}>
-                            <Link 
-                              href={child.href} 
-                              style={sx.navDropdownLink} 
-                              className="dropdownLink" 
-                              role="menuitem" 
-                              onClick={() => setOpenKey(null)} 
+                            <Link
+                              href={child.href}
+                              style={sx.navDropdownLink}
+                              className="dropdownLink"
+                              role="menuitem"
+                              onClick={() => setOpenKey(null)}
                               tabIndex={-1}
                             >
                               {child.label}
@@ -338,12 +403,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
 
           {/* Desktop-only right cluster: Registrer deg + Vipps */}
           {!isMobile && (
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
                 href="/meld-interesse"
                 style={{
                   padding: "10px 24px",
-                  background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                  background:
+                    "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                   color: "#fff",
                   borderRadius: 12,
                   fontWeight: 700,
@@ -355,9 +421,18 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   whiteSpace: "nowrap",
                 }}
                 onClick={() => {
-                  const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
+                  const plausible = (
+                    window as typeof window & {
+                      plausible?: (
+                        e: string,
+                        o?: { props?: Record<string, unknown> }
+                      ) => void;
+                    }
+                  ).plausible;
                   if (typeof plausible === "function") {
-                    plausible("CTA Click", { props: { location: "header", cta: "Registrer deg" } });
+                    plausible("CTA Click", {
+                      props: { location: "header", cta: "Registrer deg" },
+                    });
                   }
                 }}
               >
@@ -382,11 +457,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                 }}
                 title="Verifiser med Vipps"
               >
-                <img 
-                  src="/icons/vipps-logo.jpeg" 
-                  alt="Vipps" 
-                  width="20" 
-                  height="20" 
+                <img
+                  src="/icons/vipps-logo.jpeg"
+                  alt="Vipps"
+                  width="20"
+                  height="20"
                   style={{ borderRadius: 4 }}
                 />
                 Vipps
@@ -396,9 +471,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
 
           {/* Mobile menu trigger */}
           <div style={{ display: isMobile ? "block" : "none" }}>
-            <button 
-              type="button" 
-              onClick={openMobileMenu} 
+            <button
+              type="button"
+              onClick={openMobileMenu}
               aria-label="Åpne meny"
               aria-controls="mobile-nav"
               aria-expanded={mobileMenuOpen}
@@ -416,123 +491,142 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
           </div>
 
           {/* Mobile sheet (portal when available) */}
-          {mobileMenuOpen && (
-            canPortal && typeof document !== "undefined" ? createPortal(
-              <div
-                style={sx.mobileSheetOverlay}
-                onClick={closeMobileMenu}
-              >
-                <div
-                  role="dialog"
-                  aria-modal="true"
-                  aria-labelledby="mobile-nav-title"
-                  id="mobile-nav"
-                  ref={mobileSheetRef}
-                  onClick={(event) => {
-                    event.stopPropagation();
-                  }}
-                  style={sx.mobileSheet}
-                >
-                  <div style={sx.mobileSheetHeader}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={sx.brandMarkMobile}>
-                        <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
-                        <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
-                      </div>
-                    </div>
-                    <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
-                      Lukk
-                    </button>
-                  </div>
-                  <ul style={sx.mobileNav}>
-                    {NAV_ITEMS.map((item) => {
-                      const isActive = active === item.key;
-                      const hasChildren = !!item.children?.length;
-                      return (
-                        <li key={item.key} style={sx.mobileNavItem}>
-                          <Link
-                            href={item.href}
-                            style={{ ...sx.mobileNavLink, ...(isActive ? sx.mobileNavLinkActive : {}) }}
-                            className="mobileLink"
-                            onClick={() => closeMobileMenu()}
-                          >
-                            {item.label}
-                          </Link>
-                          {hasChildren && (
-                            <ul style={sx.mobileChildList}>
-                              {item.children!.map((child) => (
-                                <li key={child.href}>
-                                  <Link 
-                                    href={child.href} 
-                                    style={sx.mobileChildLink} 
-                                    className="mobileLink" 
-                                    onClick={() => closeMobileMenu()}
-                                  >
-                                    {child.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </li>
-                      );
-                    })}
-                    <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
-                      <Link
-                        href="/meld-interesse"
-                        style={{ 
-                          ...sx.mobileNavLink, 
-                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
-                          color: "#fff",
-                          fontWeight: 700,
-                          padding: "14px 20px",
-                          borderRadius: 12,
-                          textAlign: "center",
-                        }}
-                        className="mobileLink"
-                        onClick={() => closeMobileMenu()}
-                      >
-                        Registrer deg
-                      </Link>
-                    </li>
-                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
-                      <Link
-                        href="/api/vipps/start"
-                        style={{ 
-                          ...sx.mobileNavLink, 
-                          background: "#FF5B24",
-                          color: "#fff",
-                          fontWeight: 700,
-                          padding: "14px 20px",
-                          borderRadius: 12,
-                          textAlign: "center",
+          {mobileMenuOpen &&
+            (canPortal && typeof document !== "undefined" ? (
+              createPortal(
+                <div style={sx.mobileSheetOverlay} onClick={closeMobileMenu}>
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="mobile-nav-title"
+                    id="mobile-nav"
+                    ref={mobileSheetRef}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                    }}
+                    style={sx.mobileSheet}
+                  >
+                    <div style={sx.mobileSheetHeader}>
+                      <div
+                        style={{
                           display: "flex",
                           alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
+                          gap: 12,
                         }}
-                        className="mobileLink"
-                        onClick={() => closeMobileMenu()}
                       >
-                        <img 
-                          src="/icons/vipps-logo.jpeg" 
-                          alt="Vipps" 
-                          width="24" 
-                          height="24" 
-                          style={{ borderRadius: 4 }}
-                        />
-                        Verifiser med Vipps
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>,
-              document.body
+                        <div style={sx.brandMarkMobile}>
+                          <span
+                            style={sx.brandWordmarkMobile}
+                            id="mobile-nav-title"
+                          >
+                            Bluecrew
+                          </span>
+                          <span style={sx.brandSloganMobile}>
+                            Bemanning til sjøs
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={closeMobileMenu}
+                        style={sx.mobileClose}
+                        aria-label="Lukk meny"
+                        ref={closeButtonRef}
+                      >
+                        Lukk
+                      </button>
+                    </div>
+                    <ul style={sx.mobileNav}>
+                      {NAV_ITEMS.map((item) => {
+                        const isActive = active === item.key;
+                        const hasChildren = !!item.children?.length;
+                        return (
+                          <li key={item.key} style={sx.mobileNavItem}>
+                            <Link
+                              href={item.href}
+                              style={{
+                                ...sx.mobileNavLink,
+                                ...(isActive ? sx.mobileNavLinkActive : {}),
+                              }}
+                              className="mobileLink"
+                              onClick={() => closeMobileMenu()}
+                            >
+                              {item.label}
+                            </Link>
+                            {hasChildren && (
+                              <ul style={sx.mobileChildList}>
+                                {item.children!.map((child) => (
+                                  <li key={child.href}>
+                                    <Link
+                                      href={child.href}
+                                      style={sx.mobileChildLink}
+                                      className="mobileLink"
+                                      onClick={() => closeMobileMenu()}
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </li>
+                        );
+                      })}
+                      <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
+                        <Link
+                          href="/meld-interesse"
+                          style={{
+                            ...sx.mobileNavLink,
+                            background:
+                              "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                            color: "#fff",
+                            fontWeight: 700,
+                            padding: "14px 20px",
+                            borderRadius: 12,
+                            textAlign: "center",
+                          }}
+                          className="mobileLink"
+                          onClick={() => closeMobileMenu()}
+                        >
+                          Registrer deg
+                        </Link>
+                      </li>
+                      <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                        <Link
+                          href="/api/vipps/start"
+                          style={{
+                            ...sx.mobileNavLink,
+                            background: "#FF5B24",
+                            color: "#fff",
+                            fontWeight: 700,
+                            padding: "14px 20px",
+                            borderRadius: 12,
+                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 8,
+                          }}
+                          className="mobileLink"
+                          onClick={() => closeMobileMenu()}
+                        >
+                          <img
+                            src="/icons/vipps-logo.jpeg"
+                            alt="Vipps"
+                            width="24"
+                            height="24"
+                            style={{ borderRadius: 4 }}
+                          />
+                          Verifiser med Vipps
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>,
+                document.body
+              )
             ) : (
-              <div
-                style={sx.mobileSheetOverlay}
-                onClick={closeMobileMenu}
-              >
+              <div style={sx.mobileSheetOverlay} onClick={closeMobileMenu}>
                 <div
                   role="dialog"
                   aria-modal="true"
@@ -545,23 +639,38 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   style={sx.mobileSheet}
                 >
                   <div style={sx.mobileSheetHeader}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
                       <div style={sx.brandMarkMobile}>
-                        <span style={sx.brandWordmarkMobile} id="mobile-nav-title">Bluecrew</span>
-                        <span style={sx.brandSloganMobile}>Bemanning til sjøs</span>
+                        <span
+                          style={sx.brandWordmarkMobile}
+                          id="mobile-nav-title"
+                        >
+                          Bluecrew
+                        </span>
+                        <span style={sx.brandSloganMobile}>
+                          Bemanning til sjøs
+                        </span>
                       </div>
                     </div>
-                    <button type="button" onClick={closeMobileMenu} style={sx.mobileClose} aria-label="Lukk meny" ref={closeButtonRef}>
+                    <button
+                      type="button"
+                      onClick={closeMobileMenu}
+                      style={sx.mobileClose}
+                      aria-label="Lukk meny"
+                      ref={closeButtonRef}
+                    >
                       Lukk
                     </button>
                   </div>
                   <ul style={sx.mobileNav}>
                     {NAV_ITEMS.map((item) => (
                       <li key={item.key} style={sx.mobileNavItem}>
-                        <Link 
-                          href={item.href} 
-                          style={sx.mobileNavLink} 
-                          className="mobileLink" 
+                        <Link
+                          href={item.href}
+                          style={sx.mobileNavLink}
+                          className="mobileLink"
                           onClick={() => closeMobileMenu()}
                         >
                           {item.label}
@@ -570,10 +679,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                           <ul style={sx.mobileChildList}>
                             {item.children.map((child) => (
                               <li key={child.href}>
-                                <Link 
-                                  href={child.href} 
-                                  style={sx.mobileChildLink} 
-                                  className="mobileLink" 
+                                <Link
+                                  href={child.href}
+                                  style={sx.mobileChildLink}
+                                  className="mobileLink"
                                   onClick={() => closeMobileMenu()}
                                 >
                                   {child.label}
@@ -587,9 +696,10 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                       <Link
                         href="/meld-interesse"
-                        style={{ 
-                          ...sx.mobileNavLink, 
-                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                        style={{
+                          ...sx.mobileNavLink,
+                          background:
+                            "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                           color: "#fff",
                           fontWeight: 700,
                           padding: "14px 20px",
@@ -605,8 +715,8 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                     <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                       <Link
                         href="/api/vipps/start"
-                        style={{ 
-                          ...sx.mobileNavLink, 
+                        style={{
+                          ...sx.mobileNavLink,
                           background: "#FF5B24",
                           color: "#fff",
                           fontWeight: 700,
@@ -621,11 +731,11 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        <img 
-                          src="/icons/vipps-logo.jpeg" 
-                          alt="Vipps" 
-                          width="24" 
-                          height="24" 
+                        <img
+                          src="/icons/vipps-logo.jpeg"
+                          alt="Vipps"
+                          width="24"
+                          height="24"
                           style={{ borderRadius: 4 }}
                         />
                         Verifiser med Vipps
@@ -634,8 +744,7 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   </ul>
                 </div>
               </div>
-            )
-          )}
+            ))}
         </div>
       </header>
 
@@ -651,8 +760,9 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
             <div>
               <h2 style={sx.footerHeading}>Om oss</h2>
               <p style={sx.footerText}>
-                Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og spesialfartøy. Vi er sjøfolk som bygger team
-                sammen med kundene våre.
+                Bluecrew AS leverer sertifisert mannskap til havbruk, fiskeri og
+                spesialfartøy. Vi er sjøfolk som bygger team sammen med kundene
+                våre.
               </p>
               <Link href="/om-oss" style={sx.footerLink}>
                 Bli kjent med teamet vårt
@@ -662,27 +772,39 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <h2 style={sx.footerHeading}>Karriereguider</h2>
               <ul style={sx.footerList}>
                 <li style={sx.footerListItem}>
-                  <Link href="/jobbsoker/guides" style={sx.footerLink}>
+                  <Link href="/karriere/guides" style={sx.footerLink}>
                     Maritime sertifikater
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link href="/jobbsoker/guides/hvordan-bli-skipsforer" style={sx.footerLink}>
+                  <Link
+                    href="/karriere/guides/hvordan-bli-skipsforer"
+                    style={sx.footerLink}
+                  >
                     Hvordan bli skipsfører
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link href="/jobbsoker/guides/hvordan-bli-matros" style={sx.footerLink}>
+                  <Link
+                    href="/karriere/guides/hvordan-bli-matros"
+                    style={sx.footerLink}
+                  >
                     Hvordan bli matros
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link href="/jobbsoker/guides/hvordan-bli-maskinoffiser" style={sx.footerLink}>
+                  <Link
+                    href="/karriere/guides/hvordan-bli-maskinoffiser"
+                    style={sx.footerLink}
+                  >
                     Hvordan bli maskinoffiser
                   </Link>
                 </li>
                 <li style={sx.footerListItem}>
-                  <Link href="/jobbsoker/guides/lonnsguide-maritime-stillinger" style={sx.footerLink}>
+                  <Link
+                    href="/karriere/guides/lonnsguide-maritime-stillinger"
+                    style={sx.footerLink}
+                  >
                     Lønnsguide 2025
                   </Link>
                 </li>
@@ -693,7 +815,15 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <ul style={sx.footerList}>
                 {CONTACT_POINTS.map((point) => (
                   <li key={point.label} style={sx.footerListItem}>
-                    <span style={{ display: "block", fontSize: 12, opacity: 0.7, letterSpacing: ".08em", textTransform: "uppercase" }}>
+                    <span
+                      style={{
+                        display: "block",
+                        fontSize: 12,
+                        opacity: 0.7,
+                        letterSpacing: ".08em",
+                        textTransform: "uppercase",
+                      }}
+                    >
                       {point.label}
                     </span>
                     {point.href ? (
@@ -711,7 +841,14 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
               <h2 style={sx.footerHeading}>Følg oss</h2>
               <div style={sx.footerSocials}>
                 {SOCIAL_LINKS.map((social) => (
-                  <Link key={social.href} href={social.href} style={sx.footerSocialLink} target="_blank" rel="noreferrer" aria-label={`${social.label} – ${social.description}`}>
+                  <Link
+                    key={social.href}
+                    href={social.href}
+                    style={sx.footerSocialLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${social.label} – ${social.description}`}
+                  >
                     <span>{social.label}</span>
                   </Link>
                 ))}
@@ -744,7 +881,13 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                   <button
                     type="button"
                     onClick={handleOpenCookieSettings}
-                    style={{ ...sx.footerLink, background: "transparent", border: 0, padding: 0, cursor: "pointer" }}
+                    style={{
+                      ...sx.footerLink,
+                      background: "transparent",
+                      border: 0,
+                      padding: 0,
+                      cursor: "pointer",
+                    }}
                     aria-label="Åpne cookie-innstillinger"
                   >
                     Cookie-innstillinger
@@ -752,46 +895,77 @@ export function SiteLayout({ children, active }: { children: ReactNode; active?:
                 </li>
               </ul>
               <div style={{ marginTop: 12 }}>
-                <div style={{ fontSize: 14, color: "rgba(226,232,240,0.7)", fontWeight: 700 }}>Adresse</div>
-                <div style={{ fontSize: 15, color: "#e2e8f0", marginTop: 6 }}>Ervikveien 110, 9402 Harstad</div>
-                <div style={{ fontSize: 13, color: "rgba(226,232,240,0.6)", marginTop: 6 }}>Org.nr: 936 321 194</div>
+                <div
+                  style={{
+                    fontSize: 14,
+                    color: "rgba(226,232,240,0.7)",
+                    fontWeight: 700,
+                  }}
+                >
+                  Adresse
+                </div>
+                <div style={{ fontSize: 15, color: "#e2e8f0", marginTop: 6 }}>
+                  Ervikveien 110, 9402 Harstad
+                </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: "rgba(226,232,240,0.6)",
+                    marginTop: 6,
+                  }}
+                >
+                  Org.nr: 936 321 194
+                </div>
               </div>
             </div>
           </div>
           <div style={{ marginTop: 32, textAlign: "center" }}>
-            <Link href="/faq" style={{ ...sx.btnGhost, display: "inline-flex", alignItems: "center" }}>
+            <Link
+              href="/faq"
+              style={{
+                ...sx.btnGhost,
+                display: "inline-flex",
+                alignItems: "center",
+              }}
+            >
               Vanlige spørsmål
             </Link>
           </div>
 
           <div style={sx.footerLegal}>
-            © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra Datatilsynet i all behandling av kandidatdata.
+            © {new Date().getFullYear()} Bluecrew AS – Effektiv bemanning til
+            sjøs. Vi følger GDPR, norsk personopplysningslov og veiledning fra
+            Datatilsynet i all behandling av kandidatdata.
           </div>
-          <div style={{ 
-            marginTop: 16, 
-            paddingTop: 16, 
-            borderTop: '1px solid rgba(226,232,240,0.15)', 
-            textAlign: 'center',
-            fontSize: 13,
-            color: 'rgba(226,232,240,0.7)'
-          }}>
-            Nettside levert av{' '}
-            <a 
-              href="https://didriksson.no" 
-              target="_blank" 
+          <div
+            style={{
+              marginTop: 16,
+              paddingTop: 16,
+              borderTop: "1px solid rgba(226,232,240,0.15)",
+              textAlign: "center",
+              fontSize: 13,
+              color: "rgba(226,232,240,0.7)",
+            }}
+          >
+            Nettside levert av{" "}
+            <a
+              href="https://didriksson.no"
+              target="_blank"
               rel="noopener noreferrer"
-              style={{ 
-                color: 'rgba(226,232,240,0.9)', 
-                textDecoration: 'none',
+              style={{
+                color: "rgba(226,232,240,0.9)",
+                textDecoration: "none",
                 fontWeight: 600,
-                transition: 'color 0.2s ease'
+                transition: "color 0.2s ease",
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#60a5fa'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(226,232,240,0.9)'}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#60a5fa")}
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.color = "rgba(226,232,240,0.9)")
+              }
             >
               Didriksson Digital
-            </a>
-            {' '}— Programvareutvikling og raske nettsider
+            </a>{" "}
+            — Programvareutvikling og raske nettsider
           </div>
         </div>
       </footer>
