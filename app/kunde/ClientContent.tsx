@@ -114,11 +114,26 @@ export default function ClientContent() {
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
+    
+    // Track to Plausible
     const plausible = (window as typeof window & {
       plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
     }).plausible;
     if (typeof plausible === "function") {
       plausible("Lead Submitted", { props: { form: "client" } });
+    }
+
+    // Track to Google Ads (CONVERSION!)
+    const gtag = (window as typeof window & {
+      gtag?: (...args: unknown[]) => void;
+    }).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", "conversion", {
+        send_to: "AW-17715214678/XXXXXX", // 👈 Erstatt XXXXXX med conversion label fra Google Ads
+        value: 1.0,
+        currency: "NOK",
+        transaction_id: `client_${Date.now()}`,
+      });
     }
   }, [submitted]);
 

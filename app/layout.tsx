@@ -84,7 +84,8 @@ export default function RootLayout({
     alternateName: "Bluecrew",
     url: siteUrl,
     logo: logoUrl,
-    description: "Maritim bemanningsleverandør i Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore over hele landet.",
+    description:
+      "Maritim bemanningsleverandør i Norge. Leverer kvalifisert mannskap til havbruk, servicefartøy og offshore over hele landet.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Ervikveien 110",
@@ -149,8 +150,8 @@ export default function RootLayout({
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/?s={search_term_string}`,
-      "query-input": "required name=search_term_string"
-    }
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (
@@ -165,6 +166,22 @@ export default function RootLayout({
         <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
         <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
         <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
+        {/* Google Ads Conversion Tracking */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17715214678"
+        ></script>
+        <script
+          id="google-ads-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-17715214678');
+            `,
+          }}
+        />
         <Script
           id="organization-schema"
           type="application/ld+json"
