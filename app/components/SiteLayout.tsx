@@ -81,7 +81,6 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   { href: "/om-oss", label: "Om oss", key: "om-oss" },
-  { href: "/kontakt", label: "Kontakt", key: "kontakt" },
 ];
 
 export function SiteLayout({
