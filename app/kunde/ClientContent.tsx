@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Input, Select, Textarea } from "../components/FormControls";
-import { WORK, COUNTIES, MUNICIPALITIES_BY_COUNTY } from "../lib/constants";
+import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
 
@@ -13,56 +13,74 @@ type FieldErrors = Record<string, string>;
 
 const ui = {
   wrap: {
-    maxWidth: 920,
+    maxWidth: 720,
     margin: "0 auto",
     padding: "40px clamp(20px, 5vw, 32px) 80px",
   },
   formShell: {
     background: "#ffffff",
     borderRadius: 20,
-    padding: "40px clamp(24px, 6vw, 48px)",
+    padding: "32px clamp(24px, 6vw, 40px)",
     border: "1px solid #e2e8f0",
     boxShadow: "0 10px 40px rgba(15, 23, 42, 0.08)",
     display: "grid",
-    gap: 32,
+    gap: 24,
   },
-  section: {
+  formHeader: {
     display: "grid",
-    gap: 18,
+    gap: 8,
+    marginBottom: 8,
   },
-  sectionHeader: {
-    display: "grid",
-    gap: 6,
-  },
-  sectionTitle: {
+  formTitle: {
     margin: 0,
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 800,
     color: "#0b1f3a",
   },
-  sectionLead: {
+  formLead: {
     margin: 0,
-    fontSize: 15,
+    fontSize: 16,
     color: "#475569",
     lineHeight: 1.6,
   },
   fieldGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
     gap: 16,
+  },
+  fieldRow: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+    gap: 14,
+  },
+  expandButton: {
+    background: "transparent",
+    border: "1px solid #cbd5e1",
+    borderRadius: 12,
+    padding: "12px 20px",
+    fontSize: 15,
+    fontWeight: 600,
+    color: "#0369a1",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
   },
   divider: {
     height: 1,
     background:
       "linear-gradient(90deg, transparent, #e2e8f0 10%, #e2e8f0 90%, transparent)",
+    margin: "12px 0",
   },
-  consentBox: {
-    background: "#f0f9ff",
-    borderRadius: 18,
-    border: "1px solid #bae6fd",
-    padding: 18,
-    display: "grid",
-    gap: 10,
+  microCopy: {
+    fontSize: 13,
+    color: "#64748b",
+    lineHeight: 1.7,
+    padding: "14px 18px",
+    background: "#f8fafc",
+    borderRadius: 12,
+    border: "1px solid #e2e8f0",
   },
   submitRow: {
     display: "flex",
@@ -117,7 +135,6 @@ export default function ClientContent() {
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
 
-    // Track to Plausible
     const plausible = (
       window as typeof window & {
         plausible?: (
@@ -130,7 +147,6 @@ export default function ClientContent() {
       plausible("Lead Submitted", { props: { form: "client" } });
     }
 
-    // Track to Google Ads (CONVERSION!)
     const gtag = (
       window as typeof window & {
         gtag?: (...args: unknown[]) => void;
@@ -138,7 +154,7 @@ export default function ClientContent() {
     ).gtag;
     if (typeof gtag === "function") {
       gtag("event", "conversion", {
-        send_to: "AW-17715214678/XXXXXX", // 👈 Erstatt XXXXXX med conversion label fra Google Ads
+        send_to: "AW-17715214678/XXXXXX",
         value: 1.0,
         currency: "NOK",
         transaction_id: `client_${Date.now()}`,
@@ -150,13 +166,10 @@ export default function ClientContent() {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orgLookupLoading, setOrgLookupLoading] = useState(false);
-  const [selectedCounty, setSelectedCounty] = useState<string>("");
+  const [showStep2, setShowStep2] = useState(false);
 
-  // Brønnøysund API lookup - call directly from client
-  const lookupOrganization = async (
-    orgnr: string,
-    isWorkLocation: boolean = false
-  ) => {
+  // Brønnøysund API lookup
+  const lookupOrganization = async (orgnr: string) => {
     const cleanOrgnr = orgnr.replace(/\s/g, "");
     if (!/^\d{9}$/.test(cleanOrgnr)) return;
 
@@ -172,34 +185,26 @@ export default function ClientContent() {
 
       const data = await response.json();
 
-      if (isWorkLocation) {
-        // Populate work location fields
-        const nameField = document.querySelector<HTMLInputElement>(
-          'input[name="c_work_location_name"]'
-        );
-        const streetField = document.querySelector<HTMLInputElement>(
-          'input[name="c_street_address"]'
-        );
-        const postalCodeField = document.querySelector<HTMLInputElement>(
-          'input[name="c_postal_code"]'
-        );
-        const postalCityField = document.querySelector<HTMLInputElement>(
-          'input[name="c_postal_city"]'
-        );
+      // Autoutfyll Selskap og Arbeidssted
+      const companyField = document.querySelector<HTMLInputElement>(
+        'input[name="company"]'
+      );
+      const workLocationField = document.querySelector<HTMLInputElement>(
+        'input[name="work_location"]'
+      );
 
-        if (nameField) nameField.value = data.navn || "";
-        if (data.forretningsadresse) {
-          const addr = data.forretningsadresse;
-          if (streetField) streetField.value = addr.adresse || "";
-          if (postalCodeField) postalCodeField.value = addr.postnummer || "";
-          if (postalCityField) postalCityField.value = addr.poststed || "";
-        }
-      } else {
-        // Populate company name
-        const companyField = document.querySelector<HTMLInputElement>(
-          'input[name="company"]'
+      if (companyField) companyField.value = data.navn || "";
+      if (workLocationField) workLocationField.value = data.navn || "";
+
+      // Valgfritt: Fyll ut kontaktinfo hvis tilgjengelig
+      if (data.forretningsadresse) {
+        const addr = data.forretningsadresse;
+        const addressField = document.querySelector<HTMLInputElement>(
+          'input[name="address_info"]'
         );
-        if (companyField) companyField.value = data.navn || "";
+        if (addressField && addr.adresse && addr.poststed) {
+          addressField.value = `${addr.adresse}, ${addr.postnummer} ${addr.poststed}`;
+        }
       }
     } catch (error) {
       console.error("Org lookup failed:", error);
@@ -225,7 +230,6 @@ export default function ClientContent() {
 
     const nextErrors: FieldErrors = {};
     if (!parsed.success) {
-      console.log("Validation errors:", parsed.error.issues);
       for (const issue of parsed.error.issues) {
         const key = issue.path[0];
         if (typeof key === "string" && !nextErrors[key]) {
@@ -234,7 +238,7 @@ export default function ClientContent() {
       }
     }
 
-    // Honeypot: må matche input-navnet under
+    // Honeypot check
     if (values.honey) {
       event.preventDefault();
       setFieldErrors({});
@@ -244,7 +248,6 @@ export default function ClientContent() {
 
     if (Object.keys(nextErrors).length > 0) {
       event.preventDefault();
-      console.log("Form errors:", nextErrors);
       setFieldErrors(nextErrors);
       setFormError("Kontroller feltene markert i rødt.");
       setIsSubmitting(false);
@@ -255,7 +258,6 @@ export default function ClientContent() {
     setFieldErrors({});
     setFormError(null);
     setIsSubmitting(true);
-    // Ikke preventDefault ved OK – la browseren poste til /api/submit-client
   }, []);
 
   if (submitted) {
@@ -304,41 +306,46 @@ export default function ClientContent() {
           </div>
         ) : null}
 
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Kontaktinformasjon</h2>
-            <p style={ui.sectionLead}>
-              Vi trenger en kontaktperson som kan ta raske avklaringer.
-            </p>
-          </div>
-          <div style={ui.fieldGrid}>
-            <Input
-              label="Organisasjonsnummer (9 siffer)"
-              name="org_number"
-              placeholder="123 456 789"
-              error={fieldErrors.org_number}
-              onChange={(e) => {
-                clearFieldError("org_number");
-                const value = e.target.value;
-                if (/^\d{9}$/.test(value.replace(/\s/g, ""))) {
-                  lookupOrganization(value, false);
-                }
-              }}
-            />
-            <Input
-              label="Selskap"
-              name="company"
-              required
-              error={fieldErrors.company}
-              onChange={() => clearFieldError("company")}
-              placeholder={orgLookupLoading ? "Henter..." : ""}
-            />
+        <div style={ui.formHeader}>
+          <h1 style={ui.formTitle}>Registrer bemanningsbehov</h1>
+          <p style={ui.formLead}>
+            Vi kontakter deg for avklaring og presenterer kandidater så raskt som mulig.
+          </p>
+        </div>
+
+        {/* STEG 1: Grunnleggende info (1 min) */}
+        <div style={ui.fieldGrid}>
+          <Input
+            label="Selskap"
+            name="company"
+            required
+            error={fieldErrors.company}
+            onChange={() => clearFieldError("company")}
+            placeholder={orgLookupLoading ? "Henter..." : "Bedriftsnavn"}
+          />
+
+          <Input
+            label="Autoutfyll med org.nr (valgfritt)"
+            name="org_number"
+            placeholder="123 456 789"
+            error={fieldErrors.org_number}
+            onChange={(e) => {
+              clearFieldError("org_number");
+              const value = e.target.value;
+              if (/^\d{9}$/.test(value.replace(/\s/g, ""))) {
+                lookupOrganization(value);
+              }
+            }}
+          />
+
+          <div style={ui.fieldRow}>
             <Input
               label="Kontaktperson"
               name="contact"
               required
               error={fieldErrors.contact}
               onChange={() => clearFieldError("contact")}
+              placeholder="Fornavn Etternavn"
             />
             <Input
               label="E-post"
@@ -347,252 +354,176 @@ export default function ClientContent() {
               required
               error={fieldErrors.c_email}
               onChange={() => clearFieldError("c_email")}
-            />
-            <Input
-              label="Telefon"
-              name="c_phone"
-              required
-              error={fieldErrors.c_phone}
-              onChange={() => clearFieldError("c_phone")}
+              placeholder="din@epost.no"
             />
           </div>
-        </div>
 
-        <div style={ui.divider} />
+          <Input
+            label="Telefon (anbefales for raske avklaringer)"
+            name="c_phone"
+            error={fieldErrors.c_phone}
+            onChange={() => clearFieldError("c_phone")}
+            placeholder="123 45 678"
+          />
 
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Arbeidssted</h2>
-            <p style={ui.sectionLead}>
-              Oppgi fullstendig adresse hvor mannskapet skal jobbe.
-            </p>
-          </div>
-          <div style={ui.fieldGrid}>
-            <Input
-              label="Org.nr arbeidssted (valgfritt - fyller ut adresse automatisk)"
-              name="work_org_number"
-              placeholder="123 456 789"
-              error={fieldErrors.work_org_number}
-              onChange={(e) => {
-                clearFieldError("work_org_number");
-                const value = e.target.value;
-                if (/^\d{9}$/.test(value.replace(/\s/g, ""))) {
-                  lookupOrganization(value, true);
-                }
-              }}
-            />
-            <Input
-              label="Arbeidssted (bedriftsnavn eller skipsnavn)"
-              name="c_work_location_name"
-              placeholder="Eksempel: Brønnbåt MS ARCTIC eller Havbruk AS"
-              required
-              error={fieldErrors.c_work_location_name}
-              onChange={() => clearFieldError("c_work_location_name")}
-            />
-          </div>
-          <div style={ui.fieldGrid}>
-            <Input
-              label="Gateadresse"
-              name="c_street_address"
-              placeholder="Eksempel: Havnegata 12"
-              required
-              error={fieldErrors.c_street_address}
-              onBlur={() => clearFieldError("c_street_address")}
-            />
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: 12,
-              }}
-            >
-              <Input
-                label="Postnummer"
-                name="c_postal_code"
-                placeholder="0150"
-                required
-                error={fieldErrors.c_postal_code}
-                onBlur={() => clearFieldError("c_postal_code")}
-              />
-              <Input
-                label="Poststed"
-                name="c_postal_city"
-                placeholder="OSLO"
-                required
-                error={fieldErrors.c_postal_city}
-                onBlur={() => clearFieldError("c_postal_city")}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div style={ui.divider} />
-
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Oppdraget</h2>
-            <p style={ui.sectionLead}>
-              Beskriv oppgaven og ønsket profil. Jo mer konkret, desto raskere
-              kan vi presentere riktige kandidater.
-            </p>
-          </div>
-          <div style={ui.fieldGrid}>
-            <Select
-              label="Type behov"
-              name="need_type"
-              options={Object.keys(WORK)}
-              placeholder="Velg kategori"
-              required
-              error={fieldErrors.need_type}
-              onBlur={() => clearFieldError("need_type")}
-              onChange={() => clearFieldError("need_type")}
-            />
-            <Select
-              label="Oppdragstype"
-              name="need_duration"
-              options={[
-                "Langsiktig bemanning",
-                "Midlertidig bemanning",
-                "Usikker / kombinasjon",
-              ]}
-              placeholder="Velg ønsket varighet"
-              required
-              error={fieldErrors.need_duration}
-              onBlur={() => clearFieldError("need_duration")}
-              onChange={() => clearFieldError("need_duration")}
-            />
+          <div style={ui.fieldRow}>
             <Input
               label="Antall personer"
               name="num_people"
               type="number"
+              required
               placeholder="F.eks. 2"
               error={fieldErrors.num_people}
               onChange={() => clearFieldError("num_people")}
             />
             <Input
-              label="Ønsket oppstartsdato"
+              label="Oppstart"
               name="start_date"
               type="date"
+              required
               error={fieldErrors.start_date}
               onChange={() => clearFieldError("start_date")}
             />
           </div>
 
-          <div>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
-              Hvor raskt trenger du mannskap?
-            </div>
-            <div style={sx.inlineRadios}>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="urgency"
-                  value="akutt"
-                  onChange={() => clearFieldError("urgency")}
-                />
-                Akutt (&lt;48 timer)
-              </label>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="urgency"
-                  value="1uke"
-                  onChange={() => clearFieldError("urgency")}
-                />
-                Innen 1 uke
-              </label>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="urgency"
-                  value="1mnd"
-                  onChange={() => clearFieldError("urgency")}
-                />
-                Innen 1 måned
-              </label>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="urgency"
-                  value="fleksibel"
-                  onChange={() => clearFieldError("urgency")}
-                />
-                Fleksibel
-              </label>
-            </div>
-            {fieldErrors.urgency ? (
-              <div style={sx.errText} role="alert">
-                {fieldErrors.urgency}
-              </div>
-            ) : null}
-          </div>
+          <Input
+            label="Arbeidssted (skipsnavn eller område)"
+            name="work_location"
+            required
+            placeholder="F.eks. MS ARCTIC eller Harstad-området"
+            error={fieldErrors.work_location}
+            onChange={() => clearFieldError("work_location")}
+          />
 
-          <Textarea
-            label="Beskriv bemanningsbehovet"
-            name="desc"
-            rows={5}
-            full
-            description="Valgfritt: Hvilke stillinger, kompetansekrav, turnus, sertifikater, arbeidstid, osv.?"
-            error={fieldErrors.desc}
-            onBlur={() => clearFieldError("desc")}
+          <Select
+            label="Kategori"
+            name="need_type"
+            options={Object.keys(WORK)}
+            placeholder="Velg type bemanning"
+            required
+            error={fieldErrors.need_type}
+            onChange={() => clearFieldError("need_type")}
           />
         </div>
 
-        <div style={ui.divider} />
+        {/* STEG 2: Flere detaljer (valgfritt) */}
+        {!showStep2 && (
+          <button
+            type="button"
+            style={ui.expandButton}
+            onClick={() => setShowStep2(true)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "#f0f9ff";
+              e.currentTarget.style.borderColor = "#0369a1";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.borderColor = "#cbd5e1";
+            }}
+          >
+            <span>+ Legg til flere detaljer (valgfritt)</span>
+          </button>
+        )}
 
-        <div style={ui.section}>
-          <div style={ui.consentBox}>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                fontSize: 14.5,
-                color: "#0b1f3a",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                type="checkbox"
-                id="gdpr_client"
-                required
-                name="gdpr_client"
-                aria-invalid={!!fieldErrors.gdpr_client}
-                onChange={() => clearFieldError("gdpr_client")}
-                style={{ marginTop: 3, flexShrink: 0 }}
+        {showStep2 && (
+          <>
+            <div style={ui.divider} />
+            <div style={ui.fieldGrid}>
+              <Select
+                label="Oppdragstype"
+                name="need_duration"
+                options={[
+                  "Langsiktig bemanning",
+                  "Midlertidig bemanning",
+                  "Usikker / kombinasjon",
+                ]}
+                placeholder="Velg varighet"
+                error={fieldErrors.need_duration}
+                onChange={() => clearFieldError("need_duration")}
               />
-              <span>
-                Jeg samtykker til at Bluecrew AS lagrer forespørselen min for å
-                levere mannskap. Data lagres i<strong> 6–12 måneder</strong> og
-                slettes ved avsluttet samarbeid eller på forespørsel.{" "}
-                <Link
-                  href="/personvern"
-                  style={{
-                    color: "#0369a1",
-                    textDecoration: "underline",
-                    fontWeight: 600,
-                  }}
-                >
-                  Les personvernerklæringen
-                </Link>
-                .
-              </span>
-            </label>
-            {fieldErrors.gdpr_client ? (
-              <div style={sx.errText} role="alert">
-                {fieldErrors.gdpr_client}
+
+              <div>
+                <div style={{ fontWeight: 600, marginBottom: 10, color: "#0b1f3a", fontSize: 15 }}>
+                  Hvor raskt trenger du mannskap?
+                </div>
+                <div style={sx.inlineRadios}>
+                  <label style={sx.radioLabel}>
+                    <input
+                      type="radio"
+                      name="urgency"
+                      value="akutt"
+                      onChange={() => clearFieldError("urgency")}
+                    />
+                    Akutt (&lt;48t)
+                  </label>
+                  <label style={sx.radioLabel}>
+                    <input
+                      type="radio"
+                      name="urgency"
+                      value="1uke"
+                      onChange={() => clearFieldError("urgency")}
+                    />
+                    Innen 1 uke
+                  </label>
+                  <label style={sx.radioLabel}>
+                    <input
+                      type="radio"
+                      name="urgency"
+                      value="1mnd"
+                      onChange={() => clearFieldError("urgency")}
+                    />
+                    Innen 1 måned
+                  </label>
+                  <label style={sx.radioLabel}>
+                    <input
+                      type="radio"
+                      name="urgency"
+                      value="fleksibel"
+                      onChange={() => clearFieldError("urgency")}
+                    />
+                    Fleksibel
+                  </label>
+                </div>
+                {fieldErrors.urgency ? (
+                  <div style={sx.errText} role="alert">
+                    {fieldErrors.urgency}
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-          </div>
+
+              <Textarea
+                label="Kort kravbeskrivelse (maks 280 tegn)"
+                name="desc"
+                rows={4}
+                full
+                maxLength={280}
+                description="Hvilke stillinger, sertifikater, turnus, osv.?"
+                error={fieldErrors.desc}
+                onChange={() => clearFieldError("desc")}
+              />
+            </div>
+          </>
+        )}
+
+        {/* Mikrocopy i stedet for samtykkeboks */}
+        <div style={ui.microCopy}>
+          Ved å sende skjemaet ber du Bluecrew AS kontakte deg om bemanning. Vi behandler opplysningene for å vurdere og levere oppdrag og lagrer dem i inntil <strong>12 måneder</strong>.{" "}
+          <Link
+            href="/personvern"
+            style={{
+              color: "#0369a1",
+              textDecoration: "underline",
+              fontWeight: 600,
+            }}
+          >
+            Les vår personvernerklæring
+          </Link>
+          .
         </div>
 
-        {/* Honeypot: må matche values.honey */}
+        {/* Honeypot */}
         <div aria-hidden="true" style={sx.honeypot}>
-          <label>
-            <span>Dette feltet skal stå tomt</span>
-            <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
-          </label>
+          <input name="honey" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
         <div style={ui.submitRow}>
@@ -608,7 +539,7 @@ export default function ClientContent() {
             Send forespørsel
           </button>
           <div style={ui.submitNote}>
-            Vi ringer deg så snart vurderingen er gjort. Telefonnummer:{" "}
+            Vi ringer deg så snart vurderingen er gjort. Telefon:{" "}
             <strong>923 28 850</strong>
           </div>
         </div>
@@ -616,4 +547,3 @@ export default function ClientContent() {
     </div>
   );
 }
-
