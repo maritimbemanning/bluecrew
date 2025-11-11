@@ -48,7 +48,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    href: "/karriere",
+    href: "/karriere/skipsforer",
     label: "Karriere",
     key: "karriere",
     children: [
@@ -64,7 +64,7 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
-    href: "/lonn",
+    href: "/lonn/oversikt",
     label: "Lønn",
     key: "lonn",
     children: [
