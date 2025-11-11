@@ -325,6 +325,13 @@ export function SalaryCalculator() {
               bransjesnitt i 2025. Faktisk lønn kan variere basert på
               arbeidsgiver, lokasjon, turnus og individuelle forhandlinger.
             </p>
+            <p
+              style={{ marginTop: "0.75rem", fontSize: "0.8rem", opacity: 0.8 }}
+            >
+              📊 <strong>Kilder:</strong> Lønnsdata basert på SSB (Statistisk
+              sentralbyrå), NHO Sjøfart, tariffavtaler og Bluecrew sine egne
+              markedsdata fra 2024-2025.
+            </p>
           </div>
         </div>
 

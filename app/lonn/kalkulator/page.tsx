@@ -125,7 +125,12 @@ export default function LonnKalkulatorPage() {
               Hjem
             </Link>
             <span style={{ margin: "0 0.5rem", color: "#cbd5e1" }}>/</span>
-            <span>Lønnsoversikt</span>
+            <Link
+              href="/lonn/oversikt"
+              style={{ color: "#3b82f6", textDecoration: "none" }}
+            >
+              Lønnsoversikt
+            </Link>
           </div>
         </nav>
 
