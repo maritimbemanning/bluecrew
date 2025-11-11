@@ -15,20 +15,23 @@ export function SalaryCalculatorCTA() {
                 <TrendingUp size={16} />
                 Populært verktøy
               </div>
-              
+
               <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
                 📊 Lønnsoversikt Maritim 2025
               </h2>
-              
+
               <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
-                Se typiske lønninger for maritime stillinger i Norge. 
-                Sammenlign matros, styrmann, kaptein og maskinoffiser basert på reelle tall fra bransjen.
+                Se typiske lønninger for maritime stillinger i Norge. Sammenlign
+                matros, styrmann, kaptein og maskinoffiser basert på reelle tall
+                fra bransjen.
               </p>
 
               <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-3">
                   <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <span className="text-green-600 dark:text-green-400 text-sm">✓</span>
+                    <span className="text-green-600 dark:text-green-400 text-sm">
+                      ✓
+                    </span>
                   </div>
                   <span className="text-slate-600 dark:text-slate-300">
                     Basert på bransjesnitt fra 2025
@@ -36,7 +39,9 @@ export function SalaryCalculatorCTA() {
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <span className="text-green-600 dark:text-green-400 text-sm">✓</span>
+                    <span className="text-green-600 dark:text-green-400 text-sm">
+                      ✓
+                    </span>
                   </div>
                   <span className="text-slate-600 dark:text-slate-300">
                     Sammenlign havbruk, offshore og servicefartøy
@@ -44,7 +49,9 @@ export function SalaryCalculatorCTA() {
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                    <span className="text-green-600 dark:text-green-400 text-sm">✓</span>
+                    <span className="text-green-600 dark:text-green-400 text-sm">
+                      ✓
+                    </span>
                   </div>
                   <span className="text-slate-600 dark:text-slate-300">
                     Juster for erfaring og stilling
@@ -58,11 +65,15 @@ export function SalaryCalculatorCTA() {
               >
                 <Calculator size={20} />
                 Se lønnsoversikt
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
               </Link>
 
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
-                * Tallene er veiledende. Faktisk lønn avhenger av arbeidsgiver og avtale.
+                * Tallene er veiledende. Faktisk lønn avhenger av arbeidsgiver
+                og avtale.
               </p>
             </div>
 
@@ -72,10 +83,13 @@ export function SalaryCalculatorCTA() {
                 {/* Decorative elements */}
                 <div className="absolute -top-4 -left-4 w-24 h-24 bg-white/10 rounded-2xl rotate-12 blur-sm"></div>
                 <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-white/10 rounded-2xl -rotate-12 blur-sm"></div>
-                
+
                 {/* Main icon */}
                 <div className="relative bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl p-12 shadow-2xl">
-                  <Calculator size={80} className="text-blue-600 dark:text-blue-400 mx-auto mb-4" />
+                  <Calculator
+                    size={80}
+                    className="text-blue-600 dark:text-blue-400 mx-auto mb-4"
+                  />
                   <div className="text-center">
                     <div className="text-4xl font-bold text-slate-900 dark:text-white mb-1">
                       450k - 1.2M

@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Lønnkalkulator Maritim | Beregn Din Lønn som Sjømann 2025",
-    description: "Beregn forventet lønn for maritime stillinger. Matros, styrmann, kaptein, maskinoffiser og dekksoffiser.",
+    description:
+      "Beregn forventet lønn for maritime stillinger. Matros, styrmann, kaptein, maskinoffiser og dekksoffiser.",
     url: `${siteUrl}/lonn/kalkulator`,
     type: "website",
     images: [
@@ -82,17 +83,28 @@ export default function LonnKalkulatorPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      
-      <main className="container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1rem" }}>
+
+      <main
+        className="container"
+        style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1rem" }}
+      >
         {/* Breadcrumbs & Back Navigation */}
-        <nav style={{ marginBottom: "2rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-          <Link 
-            href="/" 
+        <nav
+          style={{
+            marginBottom: "2rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "1rem",
+            flexWrap: "wrap",
+          }}
+        >
+          <Link
+            href="/"
             className="hover:bg-slate-200 hover:text-slate-900"
-            style={{ 
-              display: "inline-flex", 
-              alignItems: "center", 
-              gap: "0.5rem", 
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
               padding: "0.5rem 1rem",
               backgroundColor: "#f1f5f9",
               borderRadius: "8px",
@@ -100,14 +112,14 @@ export default function LonnKalkulatorPage() {
               color: "#475569",
               fontSize: "0.9rem",
               fontWeight: "500",
-              transition: "all 0.2s"
+              transition: "all 0.2s",
             }}
           >
             ← Tilbake til forsiden
           </Link>
-          
+
           <div style={{ color: "#cbd5e1" }}>•</div>
-          
+
           <div style={{ fontSize: "0.9rem", color: "#64748b" }}>
             <Link href="/" style={{ color: "#3b82f6", textDecoration: "none" }}>
               Hjem
@@ -118,70 +130,165 @@ export default function LonnKalkulatorPage() {
         </nav>
 
         <header style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+          <h1
+            style={{
+              fontSize: "2.5rem",
+              fontWeight: "bold",
+              marginBottom: "1rem",
+            }}
+          >
             ⚓ Maritim Lønnkalkulator
           </h1>
-          <p style={{ fontSize: "1.25rem", color: "#666", maxWidth: "700px", margin: "0 auto" }}>
-            Beregn forventet lønn for maritime stillinger i Norge. Basert på reelle lønnsdata fra 2025.
+          <p
+            style={{
+              fontSize: "1.25rem",
+              color: "#666",
+              maxWidth: "700px",
+              margin: "0 auto",
+            }}
+          >
+            Beregn forventet lønn for maritime stillinger i Norge. Basert på
+            reelle lønnsdata fra 2025.
           </p>
         </header>
 
         <SalaryCalculator />
 
-        <section style={{ marginTop: "4rem", padding: "2rem", backgroundColor: "#f8f9fa", borderRadius: "12px" }}>
-          <h2 style={{ fontSize: "1.75rem", fontWeight: "bold", marginBottom: "1.5rem" }}>
+        <section
+          style={{
+            marginTop: "4rem",
+            padding: "2rem",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "12px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: "bold",
+              marginBottom: "1.5rem",
+            }}
+          >
             Ofte stilte spørsmål om maritim lønn
           </h2>
-          
+
           <div style={{ display: "grid", gap: "1.5rem" }}>
-            <details style={{ padding: "1rem", backgroundColor: "white", borderRadius: "8px" }}>
-              <summary style={{ fontWeight: "600", cursor: "pointer", fontSize: "1.1rem" }}>
+            <details
+              style={{
+                padding: "1rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+              }}
+            >
+              <summary
+                style={{
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                }}
+              >
                 Hva tjener en matros i Norge?
               </summary>
               <p style={{ marginTop: "1rem", color: "#555" }}>
-                En matros i Norge tjener typisk mellom 450 000 - 650 000 kr i året, avhengig av erfaring og arbeidssted. 
-                Med offshore-tillegg kan lønnen overstige 700 000 kr.
+                En matros i Norge tjener typisk mellom 450 000 - 650 000 kr i
+                året, avhengig av erfaring og arbeidssted. Med offshore-tillegg
+                kan lønnen overstige 700 000 kr.
               </p>
             </details>
 
-            <details style={{ padding: "1rem", backgroundColor: "white", borderRadius: "8px" }}>
-              <summary style={{ fontWeight: "600", cursor: "pointer", fontSize: "1.1rem" }}>
+            <details
+              style={{
+                padding: "1rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+              }}
+            >
+              <summary
+                style={{
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                }}
+              >
                 Hvor mye tjener en kaptein på havbruk?
               </summary>
               <p style={{ marginTop: "1rem", color: "#555" }}>
-                En kaptein på havbruksanlegg tjener typisk 700 000 - 950 000 kr årlig. 
-                Med god erfaring og lederansvar kan lønnen overstige 1 million kr.
+                En kaptein på havbruksanlegg tjener typisk 700 000 - 950 000 kr
+                årlig. Med god erfaring og lederansvar kan lønnen overstige 1
+                million kr.
               </p>
             </details>
 
-            <details style={{ padding: "1rem", backgroundColor: "white", borderRadius: "8px" }}>
-              <summary style={{ fontWeight: "600", cursor: "pointer", fontSize: "1.1rem" }}>
+            <details
+              style={{
+                padding: "1rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+              }}
+            >
+              <summary
+                style={{
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                }}
+              >
                 Påvirker STCW-sertifikat lønnen min?
               </summary>
               <p style={{ marginTop: "1rem", color: "#555" }}>
-                Ja, gyldig STCW-sertifikat er et krav for de fleste maritime stillinger og påvirker både jobbmuligheter og lønn. 
-                Spesialiserte sertifikater som DP (Dynamic Positioning) kan øke lønnen med 15-25%.
+                Ja, gyldig STCW-sertifikat er et krav for de fleste maritime
+                stillinger og påvirker både jobbmuligheter og lønn.
+                Spesialiserte sertifikater som DP (Dynamic Positioning) kan øke
+                lønnen med 15-25%.
               </p>
             </details>
 
-            <details style={{ padding: "1rem", backgroundColor: "white", borderRadius: "8px" }}>
-              <summary style={{ fontWeight: "600", cursor: "pointer", fontSize: "1.1rem" }}>
+            <details
+              style={{
+                padding: "1rem",
+                backgroundColor: "white",
+                borderRadius: "8px",
+              }}
+            >
+              <summary
+                style={{
+                  fontWeight: "600",
+                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                }}
+              >
                 Hvordan påvirker erfaring maritim lønn?
               </summary>
               <p style={{ marginTop: "1rem", color: "#555" }}>
-                Erfaring har stor innvirkning. 0-2 år erfaring gir basislønn, 2-5 år kan øke lønnen med 20-30%, 
-                og over 5 års erfaring kan gi 40-60% høyere lønn enn startlønn.
+                Erfaring har stor innvirkning. 0-2 år erfaring gir basislønn,
+                2-5 år kan øke lønnen med 20-30%, og over 5 års erfaring kan gi
+                40-60% høyere lønn enn startlønn.
               </p>
             </details>
           </div>
         </section>
 
-        <section style={{ marginTop: "3rem", textAlign: "center", padding: "2rem", backgroundColor: "#e3f2fd", borderRadius: "12px" }}>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+        <section
+          style={{
+            marginTop: "3rem",
+            textAlign: "center",
+            padding: "2rem",
+            backgroundColor: "#e3f2fd",
+            borderRadius: "12px",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              marginBottom: "1rem",
+            }}
+          >
             Klar for neste steg i karrieren?
           </h2>
           <p style={{ marginBottom: "1.5rem", color: "#555" }}>
-            Vi hjelper deg med å finne maritime oppdrag som matcher din erfaring og lønnsforventning.
+            Vi hjelper deg med å finne maritime oppdrag som matcher din erfaring
+            og lønnsforventning.
           </p>
           <a
             href="/jobbsoker/registrer"
@@ -203,5 +310,3 @@ export default function LonnKalkulatorPage() {
     </>
   );
 }
-
-

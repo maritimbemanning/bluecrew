@@ -28,7 +28,8 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: "Bluecrew AS - Maritim bemanning i Norge",
-    description: "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifisert med rask oppstart.",
+    description:
+      "Bemanning av kvalifisert maritimt mannskap over hele Norge. STCW‑sertifisert med rask oppstart.",
     type: "website",
     url: "https://bluecrew.no",
   },
@@ -50,4 +51,3 @@ export default function Page() {
     </SiteLayout>
   );
 }
-
