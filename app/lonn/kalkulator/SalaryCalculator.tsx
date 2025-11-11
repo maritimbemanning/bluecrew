@@ -322,15 +322,31 @@ export function SalaryCalculator() {
           <div className={styles.disclaimer}>
             <p>
               💡 <strong>Merk:</strong> Dette er estimerte tall basert på
-              bransjesnitt i 2025. Faktisk lønn kan variere basert på
-              arbeidsgiver, lokasjon, turnus og individuelle forhandlinger.
+              lønnsundersøkelser og tariffavtaler fra 2024-2025. Faktisk lønn
+              kan variere betydelig basert på arbeidsgiver, lokasjon, turnus,
+              erfaring og individuelle forhandlinger.
             </p>
             <p
-              style={{ marginTop: "0.75rem", fontSize: "0.8rem", opacity: 0.8 }}
+              id="metode"
+              style={{
+                marginTop: "0.75rem",
+                fontSize: "0.85rem",
+                opacity: 0.85,
+              }}
             >
-              📊 <strong>Kilder:</strong> Tallene er sammensatt fra offentlig tilgjengelige 
-              kilder som SSB (Statistisk sentralbyrå), NHO Sjøfart, tariffavtaler og 
-              bransjerapporter. Tallene er veiledende og ikke juridisk bindende.
+              📊 <strong>Kilder og metode:</strong> Tallene er sammensatt fra
+              offentlig tilgjengelige kilder: SSB (Statistisk sentralbyrå)
+              lønnsstatistikk for maritim sektor, NHO Sjøfarts lønnsrapport
+              2024, Norsk Sjøoffisersforbunds tariffavtaler, og Fellesforbundets
+              tariffavtaler for matroser. Erfaringstillegg er estimert basert på
+              gjennomsnittlig lønnsutvikling i bransjen.
+              <strong> Tallene er veiledende og ikke juridisk bindende.</strong>
+            </p>
+            <p
+              style={{ marginTop: "0.5rem", fontSize: "0.8rem", opacity: 0.7 }}
+            >
+              🗓️ <strong>Sist oppdatert:</strong> November 2025. Datagrunnlag:
+              Januar 2024 - Oktober 2025.
             </p>
           </div>
         </div>

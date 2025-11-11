@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
 const baseConfig: NextConfig = {
-  // Ikke stopp bygg på ESLint-feil (så Vercel får deployet)
-  eslint: { ignoreDuringBuilds: true },
-  // Valgfritt, men gjør livet enkelt nå: ikke stopp bygg på TS-feil
-  typescript: { ignoreBuildErrors: true },
   images: {
     remotePatterns: [
       {

@@ -64,6 +64,7 @@ export function Textarea({
   error,
   onChange,
   onBlur,
+  maxLength,
 }: {
   label: string;
   name: string;
@@ -74,6 +75,7 @@ export function Textarea({
   error?: string;
   onChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+  maxLength?: number;
 }) {
   const id = `${name}-id`;
   return (
@@ -87,6 +89,7 @@ export function Textarea({
         name={name}
         rows={rows}
         required={required}
+        maxLength={maxLength}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-err` : undefined}
         style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}

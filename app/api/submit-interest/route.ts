@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { enforceRateLimit } from "@/app/lib/server/rate-limit";
 import { supabaseServer } from "@/app/lib/server/supabase";
 import { sendInterestReceipt, sendNotificationEmail } from "@/app/lib/server/email";
+import { requireCsrfToken } from "../../lib/server/csrf";
+import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";
 
@@ -9,7 +11,7 @@ function parseBody(text: string) {
   try {
     return JSON.parse(text);
   } catch {
-    return Object.fromEntries(new URLSearchParams(text) as any);
+    return Object.fromEntries(new URLSearchParams(text));
   }
 }
 
@@ -24,6 +26,16 @@ function getClientIp(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    // CSRF Protection
+    try {
+      await requireCsrfToken(req);
+    } catch (error) {
+      logger.error("CSRF validation failed:", error);
+      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
+        status: 403,
+      });
+    }
+
     const rateKey = `interest:${getClientIp(req)}`;
     const rate = await enforceRateLimit(rateKey);
     if (!rate.allowed) {
@@ -83,7 +95,7 @@ export async function POST(req: Request) {
         honey: "",
       });
     } catch (e) {
-      console.error("Supabase insert feilet (candidate_interest):", e);
+      logger.error("Supabase insert feilet (candidate_interest):", e);
       // continue with email notifications even if DB fails
     }
 
@@ -115,7 +127,7 @@ export async function POST(req: Request) {
     const back = new URL("/?interest=ok", req.url);
     return NextResponse.redirect(back, { status: 303 });
   } catch (err) {
-    console.error("[/api/submit-interest] uventet feil:", err);
+    logger.error("[/api/submit-interest] uventet feil:", err);
     return NextResponse.json({ error: "Uventet feil" }, { status: 500 });
   }
 }

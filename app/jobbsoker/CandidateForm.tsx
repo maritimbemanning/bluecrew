@@ -576,7 +576,7 @@ export default function CandidateContent() {
               name="email"
               type="email"
               required
-              defaultValue={(vippsSession?.email || draftValues?.email) ?? ""}
+              defaultValue={((vippsSession as any)?.email || draftValues?.email) ?? ""}
               error={fieldErrors.email}
               onChange={() => clearFieldError("email")}
             />
@@ -585,7 +585,7 @@ export default function CandidateContent() {
               name="phone"
               required
               defaultValue={
-                (vippsSession?.phone_number || draftValues?.phone) ?? ""
+                (vippsSession?.phone || draftValues?.phone) ?? ""
               }
               error={fieldErrors.phone}
               onChange={() => clearFieldError("phone")}

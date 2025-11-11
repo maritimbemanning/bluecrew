@@ -21,9 +21,8 @@ export function SalaryCalculatorCTA() {
               </h2>
 
               <p className="text-lg text-slate-600 dark:text-slate-300 mb-6">
-                Se typiske lønninger for maritime stillinger i Norge. Sammenlign
-                matros, styrmann, kaptein og maskinoffiser basert på reelle tall
-                fra bransjen.
+                Veiledende lønnsintervaller for 6 maritime stillinger i Norge.
+                Basert på offentlige kilder (SSB, NHO Sjøfart, tariffavtaler).
               </p>
 
               <ul className="space-y-3 mb-8">
@@ -34,7 +33,7 @@ export function SalaryCalculatorCTA() {
                     </span>
                   </div>
                   <span className="text-slate-600 dark:text-slate-300">
-                    Basert på bransjesnitt fra 2025
+                    6 maritime stillinger (matros til kaptein)
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -54,7 +53,7 @@ export function SalaryCalculatorCTA() {
                     </span>
                   </div>
                   <span className="text-slate-600 dark:text-slate-300">
-                    Juster for erfaring og stilling
+                    Juster for erfaring (0-10+ år)
                   </span>
                 </li>
               </ul>
@@ -73,8 +72,11 @@ export function SalaryCalculatorCTA() {
               </Link>
 
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-4">
-                * Tallene er veiledende. Faktisk lønn avhenger av arbeidsgiver
-                og avtale.
+                * Tallene er veiledende og ikke juridisk bindende. Faktisk lønn
+                avhenger av arbeidsgiver, lokasjon og individuelle avtaler.
+                <Link href="/lonn/kalkulator#metode" className="underline ml-1">
+                  Se kilder og metode
+                </Link>
               </p>
             </div>
 
@@ -101,12 +103,9 @@ export function SalaryCalculatorCTA() {
                   </div>
                 </div>
 
-                {/* Floating badges */}
-                <div className="absolute -top-8 right-0 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg animate-bounce">
-                  +15% erfaring
-                </div>
-                <div className="absolute -bottom-6 left-0 bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  5 stillinger
+                {/* Floating badges - removed misleading "+15% erfaring" and "5 stillinger" */}
+                <div className="absolute -top-8 right-0 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                  Oppdatert nov 2025
                 </div>
               </div>
             </div>

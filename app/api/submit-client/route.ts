@@ -6,6 +6,8 @@ import {
   sendNotificationEmail,
 } from "../../lib/server/email";
 import { insertSupabaseRow } from "../../lib/server/supabase";
+import { requireCsrfToken } from "../../lib/server/csrf";
+import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";
 
@@ -17,6 +19,16 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    // CSRF Protection
+    try {
+      await requireCsrfToken(req);
+    } catch (error) {
+      logger.error("CSRF validation failed:", error);
+      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
+        status: 403,
+      });
+    }
+
     const rateKey = getClientKey(req, "client");
     const rate = await enforceRateLimit(rateKey);
     if (!rate.allowed) {
@@ -81,7 +93,7 @@ export async function POST(req: Request) {
           source_ip: getClientIp(req),
         },
       }).catch((error) => {
-        console.error("⚠️ Supabase-feil (client):", error);
+        logger.error("⚠️ Supabase-feil (client):", error);
       }),
       sendNotificationEmail({
         subject: `Bluecrew kunde: ${data.company || "(uten selskap)"}`,
@@ -89,14 +101,14 @@ export async function POST(req: Request) {
         html,
         replyTo: data.c_email,
       }).catch((error) => {
-        console.error("❌ Sendefeil (client):", error);
+        logger.error("❌ Sendefeil (client):", error);
       }),
       sendClientConfirmation({
         name: data.contact,
         email: data.c_email,
         company: data.company,
       }).catch((error) => {
-        console.error("⚠️ Sendte ikke kvittering (client):", error);
+        logger.error("⚠️ Sendte ikke kvittering (client):", error);
       }),
     ]);
 
@@ -111,7 +123,7 @@ export async function POST(req: Request) {
     return NextResponse.redirect(back, { status: 303 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("❌ Uventet feil (client):", err);
+    logger.error("❌ Uventet feil (client):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
 }

@@ -5,6 +5,8 @@ import {
   sendReceiptToSender,
   type ContactPayload,
 } from "@/app/lib/server/email";
+import { requireCsrfToken } from "../../lib/server/csrf";
+import { logger } from "../../lib/logger";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -25,6 +27,16 @@ function readField(data: Record<string, unknown>, key: string) {
 
 export async function POST(req: Request) {
   try {
+    // CSRF Protection
+    try {
+      await requireCsrfToken(req);
+    } catch (error) {
+      logger.error("CSRF validation failed:", error);
+      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
+        status: 403,
+      });
+    }
+
     const unknownData = (await req.json().catch(() => ({}))) as unknown;
     const data = isRecord(unknownData) ? unknownData : {};
     const payload: ContactPayload = {
@@ -45,7 +57,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("[/api/contact] error:", err);
+    logger.error("[/api/contact] error:", err);
     return NextResponse.json({ ok: false, error: "Kunne ikke sende e-post." }, { status: 500 });
   }
 }

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Link from "next/link";
+// import Link from "next/link"; // unused
 import SiteLayout from "../../components/SiteLayout";
 
 export const metadata: Metadata = {

@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import crypto from "crypto";
 import { getVippsOpenIdConfig } from "@/app/lib/server/vipps";
+import { logger } from "../../../lib/logger";
 
 export async function GET(request: NextRequest) {
-  console.log("🚀 Vipps start endpoint called");
+  logger.debug("🚀 Vipps start endpoint called");
 
   // Validate environment variables
   if (!process.env.VIPPS_CLIENT_ID || !process.env.VIPPS_API_BASE_URL) {
-    console.error("❌ Missing Vipps environment variables");
+    logger.error("❌ Missing Vipps environment variables");
     return NextResponse.redirect(
       new URL("/jobbsoker/registrer?vipps_error=missing_config", request.url)
     );
@@ -17,7 +18,7 @@ export async function GET(request: NextRequest) {
   const state = crypto.randomBytes(16).toString("hex");
   const nonce = crypto.randomBytes(16).toString("hex");
 
-  console.log("✅ Generated state and nonce", { state, nonce });
+  logger.success(" Generated state and nonce", { state, nonce });
 
   // Ensure cookies work across apex and www in production
   const hostname = new URL(request.url).hostname;
@@ -66,7 +67,7 @@ export async function GET(request: NextRequest) {
 
   const authUrl = `${cfg.authorization_endpoint}?${params}`;
 
-  console.log("🔗 Redirecting to Vipps:", authUrl);
+  logger.debug("🔗 Redirecting to Vipps", { url: authUrl });
 
   return NextResponse.redirect(authUrl);
 }

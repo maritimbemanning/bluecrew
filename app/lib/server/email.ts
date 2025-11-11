@@ -1,5 +1,6 @@
 // app/lib/server/email.ts
 import { Resend } from "resend";
+import { logger } from "../logger";
 
 type EmailAttachment = {
   filename: string;
@@ -29,13 +30,13 @@ function warnMissingEmailConfig() {
   if (hasWarnedEmailConfig) return;
   hasWarnedEmailConfig = true;
   if (!resendKey) {
-    console.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
+    logger.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
   }
   if (!fromEmail) {
-    console.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
+    logger.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
   }
   if (toList.length === 0) {
-    console.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+    logger.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
   }
 }
 

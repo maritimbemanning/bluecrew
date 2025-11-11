@@ -341,7 +341,7 @@ export default function Page() {
                   4. Radiosertifikat (GOC/LRC)
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
-                  GOC (General Operator's Certificate) eller LRC (Long Range Certificate) for radiokommunikasjon.
+                  GOC (General Operator&apos;s Certificate) eller LRC (Long Range Certificate) for radiokommunikasjon.
                 </p>
               </div>
             </div>
@@ -404,8 +404,8 @@ export default function Page() {
                   Hva er forskjellen på 1. styrmann og overstyrsmann?
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
-                  Ingen forskjell - det er samme stilling! "Overstyrsmann" er norsk offisiell tittel, "1. styrmann" er 
-                  dagligdags betegnelse. Engelsk: "Chief Mate" eller "First Officer".
+                  Ingen forskjell - det er samme stilling! &quot;Overstyrsmann&quot; er norsk offisiell tittel, &quot;1. styrmann&quot; er 
+                  dagligdags betegnelse. Engelsk: &quot;Chief Mate&quot; eller &quot;First Officer&quot;.
                 </p>
               </div>
 
@@ -447,7 +447,7 @@ export default function Page() {
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
                   Ja! Med fartstid som matros (18+ måneder) og kvalifikasjonsbevis kan du bygge karriere til styrmann. 
-                  Tar lengre tid enn med bachelor (10-12 år vs 6-7 år), men mange styrmenn har "jobbet seg opp" fra dekk. 
+                  Tar lengre tid enn med bachelor (10-12 år vs 6-7 år), men mange styrmenn har &quot;jobbet seg opp&quot; fra dekk. 
                   Krever STCW II/1 og D2-D6 sertifikat uansett.
                 </p>
               </div>

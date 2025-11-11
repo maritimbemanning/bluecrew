@@ -5,22 +5,22 @@ import { SalaryCalculator } from "./SalaryCalculator";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
 
 export const metadata: Metadata = {
-  title: "Lønnkalkulator Maritim | Beregn Din Lønn som Sjømann 2025",
+  title: "Lønnsoversikt Maritim 2025 | Veiledende Lønninger for Sjøfolk",
   description:
-    "Interaktiv lønnkalkulator for maritime stillinger i Norge. Beregn forventet lønn som matros, styrmann, kaptein, maskinoffiser og dekksoffiser. Oppdatert for 2025.",
+    "Veiledende lønnsintervaller for 6 maritime stillinger i Norge (matros, styrmann, kaptein, maskinoffiser, dekksoffiser, akvatekniker). Basert på SSB, NHO Sjøfart og tariffavtaler. Oppdatert november 2025.",
   keywords: [
-    "maritim lønn kalkulator",
-    "sjømann lønn beregner",
-    "matros lønn kalkulator",
-    "kaptein lønn beregner",
-    "offshore lønn kalkulator",
-    "havbruk lønn beregner",
-    "STCW lønn Norge",
+    "maritim lønn oversikt",
+    "sjømann lønn veiledning",
+    "matros lønn Norge",
+    "kaptein lønn havbruk",
+    "offshore lønn estimat",
+    "tariffavtaler sjøfolk",
+    "STCW lønn 2025",
   ],
   openGraph: {
-    title: "Lønnkalkulator Maritim | Beregn Din Lønn som Sjømann 2025",
+    title: "Lønnsoversikt Maritim 2025 | Veiledende Lønninger",
     description:
-      "Beregn forventet lønn for maritime stillinger. Matros, styrmann, kaptein, maskinoffiser og dekksoffiser.",
+      "Veiledende lønnsintervaller for 6 maritime stillinger. Matros, styrmann, kaptein, maskinoffiser, dekksoffiser og akvatekniker. Basert på offentlige kilder.",
     url: `${siteUrl}/lonn/kalkulator`,
     type: "website",
     images: [
@@ -71,7 +71,7 @@ export default function LonnKalkulatorPage() {
         name: "Hvordan påvirker erfaring maritim lønn?",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "Erfaring har stor innvirkning. 0-2 år erfaring gir basislønn, 2-5 år kan øke lønnen med 20-30%, og over 5 års erfaring kan gi 40-60% høyere lønn enn startlønn.",
+          text: "Erfaring har stor innvirkning. I vår kalkulator estimerer vi at 2-5 år erfaring kan øke lønnen med 20-30% over basislønn, mens 5+ års erfaring kan gi 35-65% høyere lønn. Faktisk lønnsutvikling varierer mellom arbeidsgivere og bransjesegment.",
         },
       },
     ],
@@ -152,8 +152,8 @@ export default function LonnKalkulatorPage() {
               margin: "0 auto",
             }}
           >
-            Beregn forventet lønn for maritime stillinger i Norge. Basert på
-            reelle lønnsdata fra 2025.
+            Veiledende lønnsintervaller for 6 maritime stillinger i Norge.
+            Basert på offentlige kilder (SSB, NHO Sjøfart, tariffavtaler).
           </p>
         </header>
 
@@ -265,9 +265,10 @@ export default function LonnKalkulatorPage() {
                 Hvordan påvirker erfaring maritim lønn?
               </summary>
               <p style={{ marginTop: "1rem", color: "#555" }}>
-                Erfaring har stor innvirkning. 0-2 år erfaring gir basislønn,
-                2-5 år kan øke lønnen med 20-30%, og over 5 års erfaring kan gi
-                40-60% høyere lønn enn startlønn.
+                Erfaring har stor innvirkning. I vår kalkulator estimerer vi at
+                2-5 år erfaring kan øke lønnen med 20-30% over basislønn, mens
+                5+ års erfaring kan gi 35-65% høyere lønn. Faktisk
+                lønnsutvikling varierer mellom arbeidsgivere og bransjesegment.
               </p>
             </details>
           </div>

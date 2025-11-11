@@ -258,9 +258,6 @@ export const ctaButton = style({
     boxShadow:
       "0 8px 16px rgba(25, 118, 210, 0.3), 0 0 20px rgba(25, 118, 210, 0.2)",
   },
-  ":hover::before": {
-    opacity: 1,
-  },
   ":active": {
     transform: "translateY(0) scale(0.98)",
   },

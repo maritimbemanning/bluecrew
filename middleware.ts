@@ -94,7 +94,6 @@ export function middleware(req: NextRequest) {
     /^\/robots\.txt$/,
     /^\/sitemap\.xml$/,
     /^\/api\/health(\/|$)/,
-    /^\/api\/debug(\/|$)/,
     /^\/api\/sentry-example-api(\/|$)/,
     // Public assets (served from /public)
     /^\/icons\//,

@@ -12,6 +12,8 @@ import {
   createCandidateStorageBase,
   extractExtension,
 } from "../../lib/server/candidate-files";
+import { requireCsrfToken } from "../../lib/server/csrf";
+import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";
 
@@ -21,6 +23,16 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
+    // CSRF Protection
+    try {
+      await requireCsrfToken(req);
+    } catch (error) {
+      logger.error("CSRF validation failed:", error);
+      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
+        status: 403,
+      });
+    }
+
     const rateKey = getClientKey(req, "candidate");
     const rate = await enforceRateLimit(rateKey);
     if (!rate.allowed) {
@@ -30,11 +42,11 @@ export async function POST(req: Request) {
       });
     }
 
-    console.log("📝 Processing candidate submission...");
+    logger.debug("📝 Processing candidate submission...");
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
     
-    console.log("📋 Form values:", {
+    logger.debug("📋 Form values:", {
       name: values.name,
       email: values.email,
       workAreasCount: values.work_main?.length || 0,
@@ -74,7 +86,7 @@ export async function POST(req: Request) {
 
     // Validate certificate file (REQUIRED)
     const certsFile = files.certs;
-    console.log("🔍 Certificate file check:", {
+    logger.debug("🔍 Certificate file check:", {
       exists: !!certsFile,
       type: typeof certsFile,
       size: certsFile?.size || 0,
@@ -82,25 +94,25 @@ export async function POST(req: Request) {
     });
     
     if (!certsFile || typeof certsFile === "string") {
-      console.error("❌ Certificate file missing or invalid type");
+      logger.error("❌ Certificate file missing or invalid type");
       return new Response("FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd", { status: 400 });
     }
     if (certsFile.size === 0) {
-      console.error("❌ Certificate file is empty");
+      logger.error("❌ Certificate file is empty");
       return new Response("FEIL: Sertifikatfilen er tom", { status: 400 });
     }
     const allowed = [".pdf", ".zip", ".doc", ".docx"];
     const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
     if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
-      console.error("❌ Certificate file has invalid extension:", lowerCertsName);
+      logger.error("❌ Certificate file has invalid extension:", lowerCertsName);
       return new Response("FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX", { status: 400 });
     }
     if (certsFile.size > 10 * 1024 * 1024) {
-      console.error("❌ Certificate file too large:", certsFile.size);
+      logger.error("❌ Certificate file too large:", certsFile.size);
       return new Response("FEIL: Sertifikater for store (maks 10 MB)", { status: 400 });
     }
     
-    console.log("✅ Certificate validation passed");
+    logger.debug("✅ Certificate validation passed");
 
     const submittedAt = new Date().toISOString();
     const storageBase = createCandidateStorageBase(data.email, submittedAt);
@@ -115,10 +127,10 @@ export async function POST(req: Request) {
         contentType: cvFile.type || "application/pdf",
       });
     } catch (error) {
-      console.error("❌ Klarte ikke å lagre CV i Supabase:", error);
-      console.error("CV path:", cvPath);
-      console.error("Bucket:", "candidates-private");
-      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      logger.error("❌ Klarte ikke å lagre CV i Supabase:", error);
+      logger.error("CV path:", cvPath);
+      logger.error("Bucket:", "candidates-private");
+      logger.error("Error details:", error instanceof Error ? error.message : String(error));
       // Continue with submission even if storage fails; CV will be in email attachment
     }
 
@@ -142,8 +154,8 @@ export async function POST(req: Request) {
         contentType: certsFile.type || "application/octet-stream",
       });
     } catch (error) {
-      console.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
-      console.error("Certificate path:", certificatePath);
+      logger.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
+      logger.error("Certificate path:", certificatePath);
       // Continue with submission even if certificate storage fails
     }
     attachments.push({
@@ -206,7 +218,7 @@ export async function POST(req: Request) {
           status: "pending", // Venter godkjenning i Import Management (admin)
         },
       }).catch((error) => {
-        console.error("⚠️ Supabase-feil (candidate):", error);
+        logger.error("⚠️ Supabase-feil (candidate):", error);
       }),
       sendNotificationEmail({
         subject: `Bluecrew jobbsøker: ${data.name || "(uten navn)"}`,
@@ -215,13 +227,13 @@ export async function POST(req: Request) {
         replyTo: data.email,
         attachments,
       }).catch((error) => {
-        console.error("❌ Sendefeil (candidate):", error);
+        logger.error("❌ Sendefeil (candidate):", error);
       }),
       sendCandidateReceipt({
         name: data.name,
         email: data.email,
       }).catch((error) => {
-        console.error("⚠️ Sendte ikke kvittering (candidate):", error);
+        logger.error("⚠️ Sendte ikke kvittering (candidate):", error);
       }),
     ]);
 
@@ -234,7 +246,7 @@ export async function POST(req: Request) {
     return NextResponse.redirect(back, { status: 303 });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("❌ Uventet feil (candidate):", err);
+    logger.error("❌ Uventet feil (candidate):", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
 }

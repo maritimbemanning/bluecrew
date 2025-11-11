@@ -176,7 +176,7 @@ export default function Page() {
               <li>STCW II/2 (Master &lt; 3000 GT)</li>
               <li>Dekksoffiser D1 eller D2</li>
               <li>Erfaring fra havbruk eller offshore (2-5 år)</li>
-              <li>GOC (General Operator's Certificate) radiosertifikat</li>
+              <li>GOC (General Operator&apos;s Certificate) radiosertifikat</li>
               <li>Ofte krav om Dynamic Positioning (DP) sertifikat</li>
               <li>HMS-kompetanse spesifikk for akvakultur</li>
             </ul>
@@ -324,7 +324,7 @@ export default function Page() {
                   4. Radiosertifikat (GOC)
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
-                  General Operator's Certificate - nødvendig for VHF/MF/HF radiokommunikasjon.
+                  General Operator&apos;s Certificate - nødvendig for VHF/MF/HF radiokommunikasjon.
                 </p>
               </div>
             </div>
@@ -401,8 +401,8 @@ export default function Page() {
                   Hva er forskjellen på kaptein og skipsfører?
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
-                  Ingen forskjell - det er samme stilling. "Skipsfører" er norsk offisiell tittel, "kaptein" er 
-                  dagligdags betegnelse. Engelsk: "Master". Alle refererer til den øverste ansvarlige om bord.
+                  Ingen forskjell - det er samme stilling. &quot;Skipsfører&quot; er norsk offisiell tittel, &quot;kaptein&quot; er 
+                  dagligdags betegnelse. Engelsk: &quot;Master&quot;. Alle refererer til den øverste ansvarlige om bord.
                 </p>
               </div>
 
@@ -444,7 +444,7 @@ export default function Page() {
                 </h3>
                 <p style={{ margin: 0, color: "#475569", lineHeight: 1.7 }}>
                   Ja! Med fartstid og kvalifikasjonsbevis kan du bygge karriere til kaptein uten høyskoleutdanning. 
-                  Tar lengre tid (10-15 år vs 5-7 år med bachelor), men mange erfarne kapteiner har "jobbet seg opp" 
+                  Tar lengre tid (10-15 år vs 5-7 år med bachelor), men mange erfarne kapteiner har &quot;jobbet seg opp&quot; 
                   fra matros. Krever STCW II/2 og tilstrekkelig fartstid uansett.
                 </p>
               </div>

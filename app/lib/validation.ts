@@ -109,10 +109,10 @@ export function extractCandidateForm(fd: FormData): {
     .map((value) => String(value).trim())
     .filter(Boolean);
 
-  const stcwMods = fd
-    .getAll("stcw_mod")
-    .map((value) => String(value).trim())
-    .filter(Boolean);
+  // const stcwMods = fd
+  //     .getAll("stcw_mod")
+  //     .map((value) => String(value).trim())
+  //     .filter(Boolean);
 
   const otherNotes: Record<string, string> = {};
   for (const [key, value] of fd.entries()) {

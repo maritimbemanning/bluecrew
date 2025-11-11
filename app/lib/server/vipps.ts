@@ -9,7 +9,7 @@ type OpenIdConfig = {
 };
 
 declare global {
-  // eslint-disable-next-line no-var
+  
   var __vippsOpenIdConfigCache__: { value: OpenIdConfig; fetchedAt: number } | undefined;
 }
 
