@@ -21,7 +21,8 @@ export const formSection = style({
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 20px rgba(0, 0, 0, 0.05)",
   transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   ":hover": {
-    boxShadow: "0 8px 12px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.08)",
+    boxShadow:
+      "0 8px 12px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.08)",
     transform: "translateY(-2px)",
   },
 });
@@ -100,7 +101,8 @@ export const resultCard = style({
   padding: "2.5rem",
   background: "linear-gradient(135deg, #1976d2 0%, #1565c0 100%)",
   borderRadius: "16px",
-  boxShadow: "0 8px 16px rgba(25, 118, 210, 0.3), 0 16px 32px rgba(25, 118, 210, 0.15)",
+  boxShadow:
+    "0 8px 16px rgba(25, 118, 210, 0.3), 0 16px 32px rgba(25, 118, 210, 0.15)",
   color: "white",
   position: "relative",
   overflow: "hidden",
@@ -111,7 +113,8 @@ export const resultCard = style({
     left: 0,
     right: 0,
     bottom: 0,
-    background: "radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 60%)",
+    background:
+      "radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 60%)",
     pointerEvents: "none",
   },
 });
@@ -244,14 +247,16 @@ export const ctaButton = style({
     left: 0,
     right: 0,
     bottom: 0,
-    background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%)",
+    background:
+      "radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%)",
     opacity: 0,
     transition: "opacity 0.25s",
   },
   ":hover": {
     backgroundColor: "#1565c0",
     transform: "translateY(-2px) scale(1.02)",
-    boxShadow: "0 8px 16px rgba(25, 118, 210, 0.3), 0 0 20px rgba(25, 118, 210, 0.2)",
+    boxShadow:
+      "0 8px 16px rgba(25, 118, 210, 0.3), 0 0 20px rgba(25, 118, 210, 0.2)",
   },
   ":hover::before": {
     opacity: 1,

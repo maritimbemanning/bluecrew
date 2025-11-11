@@ -93,10 +93,10 @@ export function SalaryCalculatorCTA() {
                   />
                   <div className="text-center">
                     <div className="text-4xl font-bold text-slate-900 dark:text-white mb-1">
-                      450k - 1.2M
+                      Hva tjener du?
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-300">
-                      Årlig lønnsspenn
+                      Sjekk din lønn nå
                     </div>
                   </div>
                 </div>

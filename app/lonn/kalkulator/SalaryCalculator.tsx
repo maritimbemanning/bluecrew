@@ -145,7 +145,9 @@ export function SalaryCalculator() {
         ? data.certificationBonus || 0
         : 0;
 
-    const total = Math.round(baseSalary * expMultiplier + workBonus + certBonus);
+    const total = Math.round(
+      baseSalary * expMultiplier + workBonus + certBonus
+    );
 
     // Animate the number
     const start = calculatedSalary;
