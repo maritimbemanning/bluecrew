@@ -494,6 +494,26 @@ export default function CandidateContent() {
           <strong>isak@bluecrew.no</strong> eller ring{" "}
           <strong>923 28 850</strong>.
         </p>
+        <Link
+          href="/"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            padding: "14px 28px",
+            backgroundColor: "#0ea5e9",
+            color: "#ffffff",
+            textDecoration: "none",
+            borderRadius: "12px",
+            fontWeight: "700",
+            fontSize: "1rem",
+            transition: "all 0.2s ease",
+            marginTop: "16px",
+            boxShadow: "0 4px 12px rgba(14, 165, 233, 0.3)",
+          }}
+        >
+          ← Tilbake til forsiden
+        </Link>
       </div>
     );
   }
