@@ -64,6 +64,32 @@ export const select = style({
   },
 });
 
+export const checkboxLabel = style({
+  display: "flex",
+  alignItems: "center",
+  gap: "0.5rem",
+  padding: "0.75rem",
+  backgroundColor: "#f0f7ff",
+  borderRadius: "10px",
+  border: "2px solid #e3f2fd",
+  cursor: "pointer",
+  transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+  fontSize: "1rem",
+  fontWeight: "600",
+  color: "#333",
+  ":hover": {
+    backgroundColor: "#e3f2fd",
+    borderColor: "#1976d2",
+  },
+});
+
+export const checkbox = style({
+  width: "1.25rem",
+  height: "1.25rem",
+  cursor: "pointer",
+  accentColor: "#1976d2",
+});
+
 export const resultSection = style({
   display: "flex",
   flexDirection: "column",

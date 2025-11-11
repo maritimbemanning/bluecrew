@@ -3,15 +3,23 @@
 import { useState, useEffect } from "react";
 import * as styles from "./SalaryCalculator.css";
 
-type Position = "matros" | "dekksoffiser" | "styrmann" | "kaptein" | "maskinoffiser";
+type Position =
+  | "matros"
+  | "dekksoffiser"
+  | "styrmann"
+  | "kaptein"
+  | "maskinoffiser"
+  | "akvatekniker";
 type Experience = "0-2" | "2-5" | "5-10" | "10+";
 type WorkType = "havbruk" | "offshore" | "servicefartoy" | "kystfart";
+type Certification = "none" | "fagbrev";
 
 interface SalaryData {
   position: Position;
   baseSalary: number;
   experienceMultiplier: Record<Experience, number>;
   workTypeBonus: Record<WorkType, number>;
+  certificationBonus?: number; // Fagbrev-tillegg (bare Akvatekniker)
 }
 
 const salaryData: SalaryData[] = [
@@ -19,31 +27,78 @@ const salaryData: SalaryData[] = [
     position: "matros",
     baseSalary: 450000,
     experienceMultiplier: { "0-2": 1.0, "2-5": 1.2, "5-10": 1.35, "10+": 1.5 },
-    workTypeBonus: { havbruk: 0, offshore: 50000, servicefartoy: 20000, kystfart: 0 },
+    workTypeBonus: {
+      havbruk: 0,
+      offshore: 50000,
+      servicefartoy: 20000,
+      kystfart: 0,
+    },
   },
   {
     position: "dekksoffiser",
     baseSalary: 550000,
     experienceMultiplier: { "0-2": 1.0, "2-5": 1.25, "5-10": 1.4, "10+": 1.6 },
-    workTypeBonus: { havbruk: 30000, offshore: 80000, servicefartoy: 40000, kystfart: 10000 },
+    workTypeBonus: {
+      havbruk: 30000,
+      offshore: 80000,
+      servicefartoy: 40000,
+      kystfart: 10000,
+    },
   },
   {
     position: "styrmann",
     baseSalary: 650000,
     experienceMultiplier: { "0-2": 1.0, "2-5": 1.3, "5-10": 1.45, "10+": 1.65 },
-    workTypeBonus: { havbruk: 40000, offshore: 100000, servicefartoy: 50000, kystfart: 15000 },
+    workTypeBonus: {
+      havbruk: 40000,
+      offshore: 100000,
+      servicefartoy: 50000,
+      kystfart: 15000,
+    },
   },
   {
     position: "kaptein",
     baseSalary: 750000,
     experienceMultiplier: { "0-2": 1.0, "2-5": 1.35, "5-10": 1.5, "10+": 1.7 },
-    workTypeBonus: { havbruk: 50000, offshore: 120000, servicefartoy: 60000, kystfart: 20000 },
+    workTypeBonus: {
+      havbruk: 50000,
+      offshore: 120000,
+      servicefartoy: 60000,
+      kystfart: 20000,
+    },
   },
   {
     position: "maskinoffiser",
     baseSalary: 600000,
-    experienceMultiplier: { "0-2": 1.0, "2-5": 1.28, "5-10": 1.43, "10+": 1.62 },
-    workTypeBonus: { havbruk: 35000, offshore: 90000, servicefartoy: 45000, kystfart: 12000 },
+    experienceMultiplier: {
+      "0-2": 1.0,
+      "2-5": 1.28,
+      "5-10": 1.43,
+      "10+": 1.62,
+    },
+    workTypeBonus: {
+      havbruk: 35000,
+      offshore: 90000,
+      servicefartoy: 45000,
+      kystfart: 12000,
+    },
+  },
+  {
+    position: "akvatekniker",
+    baseSalary: 420000,
+    experienceMultiplier: {
+      "0-2": 1.0,
+      "2-5": 1.24,
+      "5-10": 1.43,
+      "10+": 1.62,
+    },
+    workTypeBonus: {
+      havbruk: 0,
+      offshore: 40000,
+      servicefartoy: 25000,
+      kystfart: 5000,
+    },
+    certificationBonus: 80000, // Fagbrev-tillegg
   },
 ];
 
@@ -53,6 +108,7 @@ const positionLabels: Record<Position, string> = {
   styrmann: "Styrmann",
   kaptein: "Kaptein",
   maskinoffiser: "Maskinoffiser",
+  akvatekniker: "Akvatekniker",
 };
 
 const workTypeLabels: Record<WorkType, string> = {
@@ -66,27 +122,33 @@ export function SalaryCalculator() {
   const [position, setPosition] = useState<Position>("matros");
   const [experience, setExperience] = useState<Experience>("0-2");
   const [workType, setWorkType] = useState<WorkType>("havbruk");
+  const [hasCertification, setHasCertification] = useState<boolean>(false);
   const [calculatedSalary, setCalculatedSalary] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     calculateSalary();
-  }, [position, experience, workType]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, experience, workType, hasCertification]);
 
   const calculateSalary = () => {
     setIsAnimating(true);
-    
+
     const data = salaryData.find((d) => d.position === position);
     if (!data) return;
 
     const baseSalary = data.baseSalary;
     const expMultiplier = data.experienceMultiplier[experience];
     const workBonus = data.workTypeBonus[workType];
+    const certBonus =
+      position === "akvatekniker" && hasCertification
+        ? data.certificationBonus || 0
+        : 0;
 
-    const total = Math.round(baseSalary * expMultiplier + workBonus);
-    
+    const total = Math.round(baseSalary * expMultiplier + workBonus + certBonus);
+
     // Animate the number
-    let start = calculatedSalary;
+    const start = calculatedSalary;
     const end = total;
     const duration = 500;
     const startTime = Date.now();
@@ -94,10 +156,12 @@ export function SalaryCalculator() {
     const animate = () => {
       const now = Date.now();
       const progress = Math.min((now - startTime) / duration, 1);
-      const current = Math.round(start + (end - start) * easeOutCubic(progress));
-      
+      const current = Math.round(
+        start + (end - start) * easeOutCubic(progress)
+      );
+
       setCalculatedSalary(current);
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
@@ -174,49 +238,90 @@ export function SalaryCalculator() {
             ))}
           </select>
         </div>
+
+        {position === "akvatekniker" && (
+          <div className={styles.inputGroup}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={hasCertification}
+                onChange={(e) => setHasCertification(e.target.checked)}
+                className={styles.checkbox}
+              />
+              <span className={styles.labelIcon}>📜</span>
+              Fagbrev (+80 000 kr/år)
+            </label>
+          </div>
+        )}
       </div>
 
       <div className={styles.resultSection}>
         <div className={styles.resultCard}>
           <h3 className={styles.resultLabel}>Forventet årslønn</h3>
-          <div className={`${styles.salaryAmount} ${isAnimating ? styles.animating : ""}`}>
+          <div
+            className={`${styles.salaryAmount} ${isAnimating ? styles.animating : ""}`}
+          >
             <span className={styles.currencySymbol}>kr</span>
-            <span className={styles.amount}>{formatSalary(calculatedSalary)}</span>
+            <span className={styles.amount}>
+              {formatSalary(calculatedSalary)}
+            </span>
           </div>
           <p className={styles.monthlySalary}>
             ≈ {formatSalary(monthlySalary)} kr per måned
           </p>
-          
+
           <div className={styles.breakdown}>
             <div className={styles.breakdownItem}>
               <span className={styles.breakdownLabel}>Grunnlønn:</span>
               <span className={styles.breakdownValue}>
                 {formatSalary(
-                  salaryData.find((d) => d.position === position)?.baseSalary || 0
-                )} kr
+                  salaryData.find((d) => d.position === position)?.baseSalary ||
+                    0
+                )}{" "}
+                kr
               </span>
             </div>
             <div className={styles.breakdownItem}>
               <span className={styles.breakdownLabel}>Erfaringstillegg:</span>
               <span className={styles.breakdownValue}>
                 {((salaryData.find((d) => d.position === position)
-                  ?.experienceMultiplier[experience] || 1) - 1) * 100}%
+                  ?.experienceMultiplier[experience] || 1) -
+                  1) *
+                  100}
+                %
               </span>
             </div>
             <div className={styles.breakdownItem}>
               <span className={styles.breakdownLabel}>Arbeidstype bonus:</span>
               <span className={styles.breakdownValue}>
-                +{formatSalary(
-                  salaryData.find((d) => d.position === position)?.workTypeBonus[workType] || 0
-                )} kr
+                +
+                {formatSalary(
+                  salaryData.find((d) => d.position === position)
+                    ?.workTypeBonus[workType] || 0
+                )}{" "}
+                kr
               </span>
             </div>
+            {position === "akvatekniker" && hasCertification && (
+              <div className={styles.breakdownItem}>
+                <span className={styles.breakdownLabel}>Fagbrev-tillegg:</span>
+                <span className={styles.breakdownValue}>
+                  +
+                  {formatSalary(
+                    salaryData.find((d) => d.position === position)
+                      ?.certificationBonus || 0
+                  )}{" "}
+                  kr
+                </span>
+              </div>
+            )}
           </div>
 
           <div className={styles.disclaimer}>
             <p>
-              💡 <strong>Merk:</strong> Dette er estimerte tall basert på bransjesnitt i 2025. 
-              Faktisk lønn kan variere basert på arbeidsgiver, lokasjon, turnus og individuelle forhandlinger.
+              💡 <strong>Merk:</strong> Dette er estimerte tall basert på
+              bransjesnitt i 2025. Faktisk lønn kan variere basert på
+              arbeidsgiver, lokasjon, turnus og individuelle forhandlinger.
             </p>
           </div>
         </div>
@@ -234,5 +339,3 @@ export function SalaryCalculator() {
     </div>
   );
 }
-
-
