@@ -1,13 +1,18 @@
 import { NextResponse } from "next/server";
 import { clientSchema, extractClientForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
-import { sendClientConfirmation, sendNotificationEmail } from "../../lib/server/email";
+import {
+  sendClientConfirmation,
+  sendNotificationEmail,
+} from "../../lib/server/email";
 import { insertSupabaseRow } from "../../lib/server/supabase";
 
 export const runtime = "nodejs";
 
 export async function GET() {
-  return new Response("submit-client API er oppe. Bruk POST fra skjemaet.", { status: 200 });
+  return new Response("submit-client API er oppe. Bruk POST fra skjemaet.", {
+    status: 200,
+  });
 }
 
 export async function POST(req: Request) {
@@ -30,7 +35,9 @@ export async function POST(req: Request) {
 
     const parsed = clientSchema.safeParse(values);
     if (!parsed.success) {
-      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      const message =
+        parsed.error.issues.map((issue) => issue.message).join("; ") ||
+        "Ugyldige felter";
       return new Response("FEIL: " + message, { status: 400 });
     }
 
@@ -93,7 +100,9 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
+    const acceptsJson = (req.headers.get("accept") || "").includes(
+      "application/json"
+    );
     if (acceptsJson) {
       return NextResponse.json({ ok: true });
     }
@@ -141,7 +150,10 @@ function buildClientHtml(data: {
 }
 
 function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function getClientIp(req: Request) {

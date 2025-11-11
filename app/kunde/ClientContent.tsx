@@ -309,7 +309,8 @@ export default function ClientContent() {
         <div style={ui.formHeader}>
           <h1 style={ui.formTitle}>Registrer bemanningsbehov</h1>
           <p style={ui.formLead}>
-            Vi kontakter deg for avklaring og presenterer kandidater så raskt som mulig.
+            Vi kontakter deg for avklaring og presenterer kandidater så raskt
+            som mulig.
           </p>
         </div>
 
@@ -443,7 +444,14 @@ export default function ClientContent() {
               />
 
               <div>
-                <div style={{ fontWeight: 600, marginBottom: 10, color: "#0b1f3a", fontSize: 15 }}>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    marginBottom: 10,
+                    color: "#0b1f3a",
+                    fontSize: 15,
+                  }}
+                >
                   Hvor raskt trenger du mannskap?
                 </div>
                 <div style={sx.inlineRadios}>
@@ -507,7 +515,9 @@ export default function ClientContent() {
 
         {/* Mikrocopy i stedet for samtykkeboks */}
         <div style={ui.microCopy}>
-          Ved å sende skjemaet ber du Bluecrew AS kontakte deg om bemanning. Vi behandler opplysningene for å vurdere og levere oppdrag og lagrer dem i inntil <strong>12 måneder</strong>.{" "}
+          Ved å sende skjemaet ber du Bluecrew AS kontakte deg om bemanning. Vi
+          behandler opplysningene for å vurdere og levere oppdrag og lagrer dem
+          i inntil <strong>12 måneder</strong>.{" "}
           <Link
             href="/personvern"
             style={{

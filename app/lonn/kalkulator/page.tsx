@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { SalaryCalculator } from "./SalaryCalculator";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
@@ -83,6 +84,39 @@ export default function LonnKalkulatorPage() {
       />
       
       <main className="container" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1rem" }}>
+        {/* Breadcrumbs & Back Navigation */}
+        <nav style={{ marginBottom: "2rem", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+          <Link 
+            href="/" 
+            className="hover:bg-slate-200 hover:text-slate-900"
+            style={{ 
+              display: "inline-flex", 
+              alignItems: "center", 
+              gap: "0.5rem", 
+              padding: "0.5rem 1rem",
+              backgroundColor: "#f1f5f9",
+              borderRadius: "8px",
+              textDecoration: "none",
+              color: "#475569",
+              fontSize: "0.9rem",
+              fontWeight: "500",
+              transition: "all 0.2s"
+            }}
+          >
+            ← Tilbake til forsiden
+          </Link>
+          
+          <div style={{ color: "#cbd5e1" }}>•</div>
+          
+          <div style={{ fontSize: "0.9rem", color: "#64748b" }}>
+            <Link href="/" style={{ color: "#3b82f6", textDecoration: "none" }}>
+              Hjem
+            </Link>
+            <span style={{ margin: "0 0.5rem", color: "#cbd5e1" }}>/</span>
+            <span>Lønnsoversikt</span>
+          </div>
+        </nav>
+
         <header style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
             ⚓ Maritim Lønnkalkulator

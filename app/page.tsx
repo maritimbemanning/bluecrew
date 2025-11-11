@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import SiteLayout from "./components/SiteLayout";
 import { Hero } from "./components/home/Hero";
+import { SalaryCalculatorCTA } from "./components/home/SalaryCalculatorCTA";
 import { TrustSection } from "./components/home/TrustSection";
 import { ServiceCards } from "./components/home/ServiceCards";
 import { JobsHighlight } from "./components/home/JobsHighlight";
@@ -40,10 +41,11 @@ export default function Page() {
   return (
     <SiteLayout active="home">
       <Hero />
+      <SalaryCalculatorCTA />
       <TrustSection />
       <ServiceCards />
       <JobsHighlight />
-  <InterestSection />
+      <InterestSection />
       <ContactSection />
     </SiteLayout>
   );

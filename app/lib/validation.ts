@@ -36,11 +36,19 @@ export const candidateSchema = z
     other_comp: z.string().trim().optional(),
     work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
     other_notes: z.record(z.string().trim()).optional(),
-    wants_temporary: z.enum(["ja", "nei"], "Velg om du er åpen for midlertidige oppdrag"),
+    wants_temporary: z.enum(
+      ["ja", "nei"],
+      "Velg om du er åpen for midlertidige oppdrag"
+    ),
     stcw_confirm: z
       .boolean()
-      .refine((v) => v === true, "Du må bekrefte at du har eller vil skaffe STCW og helseattest"),
-    gdpr: z.boolean().refine((v) => v === true, "Samtykke til personvern er påkrevd"),
+      .refine(
+        (v) => v === true,
+        "Du må bekrefte at du har eller vil skaffe STCW og helseattest"
+      ),
+    gdpr: z
+      .boolean()
+      .refine((v) => v === true, "Samtykke til personvern er påkrevd"),
     honey: z.literal(""),
   })
   .superRefine((values, ctx) => {
@@ -71,24 +79,26 @@ export type ClientFormValues = {
   honey: string;
 };
 
-export const clientSchema = z
-  .object<ClientFormValues>({
-    company: z.string().trim().min(2, "Oppgi selskap."),
-    contact: z.string().trim().min(2, "Oppgi kontaktperson."),
-    c_email: z.string().trim().email("Oppgi gyldig e-post."),
-    c_phone: z.string().trim().optional(),
-    need_type: z.string().trim().min(2, "Velg kategori."),
-    num_people: z.string().trim().min(1, "Oppgi antall personer."),
-    start_date: z.string().trim().min(1, "Oppgi oppstartsdato."),
-    work_location: z.string().trim().min(2, "Oppgi arbeidssted."),
-    need_duration: z.string().trim().optional(),
-    urgency: z.string().trim().optional(),
-    desc: z.string().trim().max(280, "Maks 280 tegn.").optional(),
-    org_number: z.string().trim().optional(),
-    honey: z.literal(""),
-  });
+export const clientSchema = z.object<ClientFormValues>({
+  company: z.string().trim().min(2, "Oppgi selskap."),
+  contact: z.string().trim().min(2, "Oppgi kontaktperson."),
+  c_email: z.string().trim().email("Oppgi gyldig e-post."),
+  c_phone: z.string().trim().optional(),
+  need_type: z.string().trim().min(2, "Velg kategori."),
+  num_people: z.string().trim().min(1, "Oppgi antall personer."),
+  start_date: z.string().trim().min(1, "Oppgi oppstartsdato."),
+  work_location: z.string().trim().min(2, "Oppgi arbeidssted."),
+  need_duration: z.string().trim().optional(),
+  urgency: z.string().trim().optional(),
+  desc: z.string().trim().max(280, "Maks 280 tegn.").optional(),
+  org_number: z.string().trim().optional(),
+  honey: z.literal(""),
+});
 
-export function extractCandidateForm(fd: FormData): { values: CandidateFormValues; files: CandidateFiles } {
+export function extractCandidateForm(fd: FormData): {
+  values: CandidateFormValues;
+  files: CandidateFiles;
+} {
   const getString = (name: string) => {
     const value = fd.get(name);
     return value === null ? "" : String(value).trim();
