@@ -62,9 +62,10 @@ export function SalaryCalculatorCTA() {
               <Link
                 href="/lonn/kalkulator"
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg w-fit group"
+                style={{ color: "#ffffff" }}
               >
                 <Calculator size={20} />
-                Se lønnsoversikt
+                <span style={{ color: "#ffffff" }}>Se lønnsoversikt</span>
                 <ArrowRight
                   size={18}
                   className="group-hover:translate-x-1 transition-transform"
