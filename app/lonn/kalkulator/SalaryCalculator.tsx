@@ -328,9 +328,9 @@ export function SalaryCalculator() {
             <p
               style={{ marginTop: "0.75rem", fontSize: "0.8rem", opacity: 0.8 }}
             >
-              📊 <strong>Kilder:</strong> Lønnsdata basert på SSB (Statistisk
-              sentralbyrå), NHO Sjøfart, tariffavtaler og Bluecrew sine egne
-              markedsdata fra 2024-2025.
+              📊 <strong>Kilder:</strong> Tallene er sammensatt fra offentlig tilgjengelige 
+              kilder som SSB (Statistisk sentralbyrå), NHO Sjøfart, tariffavtaler og 
+              bransjerapporter. Tallene er veiledende og ikke juridisk bindende.
             </p>
           </div>
         </div>
