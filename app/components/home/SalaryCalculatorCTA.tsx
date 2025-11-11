@@ -93,10 +93,10 @@ export function SalaryCalculatorCTA() {
                   />
                   <div className="text-center">
                     <div className="text-4xl font-bold text-slate-900 dark:text-white mb-1">
-                      Hva tjener du?
+                      Sjekk nå!
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-300">
-                      Sjekk din lønn nå
+                      Lønnskalkulator
                     </div>
                   </div>
                 </div>
