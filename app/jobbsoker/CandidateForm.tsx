@@ -576,7 +576,9 @@ export default function CandidateContent() {
               name="email"
               type="email"
               required
-              defaultValue={((vippsSession as any)?.email || draftValues?.email) ?? ""}
+              defaultValue={
+                ((vippsSession as any)?.email || draftValues?.email) ?? ""
+              }
               error={fieldErrors.email}
               onChange={() => clearFieldError("email")}
             />
@@ -584,9 +586,7 @@ export default function CandidateContent() {
               label="Telefon"
               name="phone"
               required
-              defaultValue={
-                (vippsSession?.phone || draftValues?.phone) ?? ""
-              }
+              defaultValue={(vippsSession?.phone || draftValues?.phone) ?? ""}
               error={fieldErrors.phone}
               onChange={() => clearFieldError("phone")}
             />
@@ -623,6 +623,29 @@ export default function CandidateContent() {
                 error={fieldErrors.postal_city}
                 onChange={() => clearFieldError("postal_city")}
               />
+            </div>
+            <div>
+              <label style={sx.label}>
+                <span>Region *</span>
+                <select
+                  name="region"
+                  required
+                  style={sx.input}
+                  onChange={() => clearFieldError("region")}
+                >
+                  <option value="">Velg region</option>
+                  <option>Nord-Norge</option>
+                  <option>Midt-Norge</option>
+                  <option>Vestlandet</option>
+                  <option>Østlandet</option>
+                  <option>Svalbard</option>
+                </select>
+              </label>
+              {fieldErrors.region ? (
+                <div style={sx.errText} role="alert">
+                  {fieldErrors.region}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

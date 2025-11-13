@@ -111,9 +111,9 @@ export function InterestSection() {
             </select>
           </label>
           <label style={sx.label}>
-            <span>Region</span>
-            <select name="region" style={sx.input}>
-              <option>Ikke spesifisert</option>
+            <span>Region *</span>
+            <select name="region" required style={sx.input}>
+              <option value="">Velg region</option>
               <option>Nord-Norge</option>
               <option>Midt-Norge</option>
               <option>Vestlandet</option>
@@ -200,4 +200,3 @@ export function InterestSection() {
 }
 
 export default InterestSection;
-
