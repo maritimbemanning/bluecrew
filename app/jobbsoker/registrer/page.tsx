@@ -1,9 +1,18 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 import { VippsLoginPage } from "../VippsLogin";
 
 export const dynamic = "force-dynamic"; // Disable all caching
+
+export const metadata: Metadata = {
+  title: "Registrer deg som jobbsøker - Bluecrew AS",
+  description: "Registrer deg som jobbsøker hos Bluecrew. Få tilgang til maritime jobber i Norge.",
+  alternates: {
+    canonical: "/jobbsoker/registrer",
+  },
+};
 
 export default function Page() {
   return (
