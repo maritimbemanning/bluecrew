@@ -200,8 +200,10 @@ type VippsSession = {
   givenName: string;
   familyName: string;
   phone: string;
+  email: string;
   birthDate: string;
   verifiedAt: string;
+  sub: string;
 };
 
 type StoredCandidateDraft = Partial<CandidateFormValues> & {
