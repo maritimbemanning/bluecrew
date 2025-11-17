@@ -38,6 +38,12 @@ const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    href: "/stillinger",
+    label: "Ledige stillinger",
+    key: "stillinger",
+    accent: true,
+  },
+  {
     href: "/kunde",
     label: "For bedrifter",
     key: "kunde",
