@@ -37,12 +37,13 @@ const NAV_ITEMS: NavItem[] = [
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
-  {
-    href: "/stillinger",
-    label: "Ledige stillinger",
-    key: "stillinger",
-    accent: true,
-  },
+  // HIDDEN - Testing in progress
+  // {
+  //   href: "/stillinger",
+  //   label: "Ledige stillinger",
+  //   key: "stillinger",
+  //   accent: true,
+  // },
   {
     href: "/kunde",
     label: "For bedrifter",
