@@ -79,10 +79,18 @@ export function Textarea({
 }) {
   const id = `${name}-id`;
   return (
-    <label style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }} htmlFor={id}>
-      <span>{label}{required ? " *" : ""}</span>
+    <label
+      style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }}
+      htmlFor={id}
+    >
+      <span>
+        {label}
+        {required ? " *" : ""}
+      </span>
       {description ? (
-        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
+        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>
+          {description}
+        </span>
       ) : null}
       <textarea
         id={id}
@@ -92,7 +100,11 @@ export function Textarea({
         maxLength={maxLength}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-err` : undefined}
-        style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}
+        style={{
+          ...sx.input,
+          height: rows * 24,
+          ...(error ? sx.inputErr : null),
+        }}
         onChange={onChange}
         onBlur={onBlur}
       />
@@ -172,6 +184,7 @@ export function FileInput({
   accept,
   error,
   required,
+  multiple,
   onChange,
 }: {
   label: string;
@@ -179,6 +192,7 @@ export function FileInput({
   accept?: string;
   error?: string;
   required?: boolean;
+  multiple?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   const id = `${name}-id`;
@@ -195,6 +209,7 @@ export function FileInput({
         type="file"
         accept={accept}
         required={required}
+        multiple={multiple}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
         style={{ ...sx.input, cursor: "pointer" }}
@@ -208,4 +223,3 @@ export function FileInput({
     </label>
   );
 }
-

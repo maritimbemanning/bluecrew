@@ -6,14 +6,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Briefcase,
-  MapPin,
-  Calendar,
-  Clock,
-  Search,
-  Loader2,
-} from "lucide-react";
+import { Briefcase, MapPin, Clock, Search, Loader2 } from "lucide-react";
 import Link from "next/link";
 import SiteLayout from "../components/SiteLayout";
 import * as styles from "./Stillinger.css";
