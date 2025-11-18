@@ -610,7 +610,8 @@ export default function CandidateContent() {
                   <option value="Nordland">Nordland</option>
                   <option value="Oslo">Oslo</option>
                   <option value="Rogaland">Rogaland</option>
-                  <option value="Troms og Finnmark">Troms og Finnmark</option>
+                  <option value="Troms">Troms</option>
+                  <option value="Finnmark">Finnmark</option>
                   <option value="Trøndelag">Trøndelag</option>
                   <option value="Vestfold og Telemark">
                     Vestfold og Telemark

@@ -5,7 +5,10 @@ import {
   sendCandidateReceipt,
   sendNotificationEmail,
 } from "../../lib/server/email";
-import { insertSupabaseRow, uploadSupabaseObject } from "../../lib/server/supabase";
+import {
+  insertSupabaseRow,
+  uploadSupabaseObject,
+} from "../../lib/server/supabase";
 import {
   buildCertificatePath,
   buildCvPath,
@@ -18,7 +21,9 @@ import { logger } from "../../lib/logger";
 export const runtime = "nodejs";
 
 export async function GET() {
-  return new Response("submit-candidate API er oppe. Bruk POST fra skjemaet.", { status: 200 });
+  return new Response("submit-candidate API er oppe. Bruk POST fra skjemaet.", {
+    status: 200,
+  });
 }
 
 export async function POST(req: Request) {
@@ -48,7 +53,7 @@ export async function POST(req: Request) {
     logger.debug("📝 Processing candidate submission...");
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
-    
+
     logger.debug("📋 Form values:", {
       name: values.name,
       email: values.email,
@@ -65,7 +70,9 @@ export async function POST(req: Request) {
 
     const parsed = candidateSchema.safeParse(values);
     if (!parsed.success) {
-      const message = parsed.error.issues.map((issue) => issue.message).join("; ") || "Ugyldige felter";
+      const message =
+        parsed.error.issues.map((issue) => issue.message).join("; ") ||
+        "Ugyldige felter";
       return new Response(`FEIL: ${message}`, { status: 400 });
     }
 
@@ -95,10 +102,13 @@ export async function POST(req: Request) {
       size: certsFile?.size || 0,
       name: certsFile?.name || "NO_NAME",
     });
-    
+
     if (!certsFile || typeof certsFile === "string") {
       logger.error("❌ Certificate file missing or invalid type");
-      return new Response("FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd", { status: 400 });
+      return new Response(
+        "FEIL: Sertifikater/Helseattest (PDF/ZIP) er påkrevd",
+        { status: 400 }
+      );
     }
     if (certsFile.size === 0) {
       logger.error("❌ Certificate file is empty");
@@ -107,14 +117,22 @@ export async function POST(req: Request) {
     const allowed = [".pdf", ".zip", ".doc", ".docx"];
     const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
     if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
-      logger.error("❌ Certificate file has invalid extension:", lowerCertsName);
-      return new Response("FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX", { status: 400 });
+      logger.error(
+        "❌ Certificate file has invalid extension:",
+        lowerCertsName
+      );
+      return new Response(
+        "FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX",
+        { status: 400 }
+      );
     }
     if (certsFile.size > 10 * 1024 * 1024) {
       logger.error("❌ Certificate file too large:", certsFile.size);
-      return new Response("FEIL: Sertifikater for store (maks 10 MB)", { status: 400 });
+      return new Response("FEIL: Sertifikater for store (maks 10 MB)", {
+        status: 400,
+      });
     }
-    
+
     logger.debug("✅ Certificate validation passed");
 
     const submittedAt = new Date().toISOString();
@@ -133,11 +151,18 @@ export async function POST(req: Request) {
       logger.error("❌ Klarte ikke å lagre CV i Supabase:", error);
       logger.error("CV path:", cvPath);
       logger.error("Bucket:", "candidates-private");
-      logger.error("Error details:", error instanceof Error ? error.message : String(error));
+      logger.error(
+        "Error details:",
+        error instanceof Error ? error.message : String(error)
+      );
       // Continue with submission even if storage fails; CV will be in email attachment
     }
 
-    const attachments: { filename: string; content: string; contentType?: string }[] = [
+    const attachments: {
+      filename: string;
+      content: string;
+      contentType?: string;
+    }[] = [
       {
         filename: cvFile.name || "CV.pdf",
         content: cvBuffer.toString("base64"),
@@ -167,20 +192,22 @@ export async function POST(req: Request) {
       contentType: certsFile.type || "application/octet-stream",
     });
 
-    const location = data.postal_city
-      ? `${data.postal_city}${data.postal_code ? ` (${data.postal_code})` : ""}`
-      : data.street_address || "-";
+    const location = data.kommune
+      ? `${data.kommune}${data.fylke ? `, ${data.fylke}` : ""}`
+      : "-";
 
     const lines: string[] = [
       "NY JOBBSØKER",
       `Navn: ${data.name}`,
       `E-post: ${data.email}`,
       `Telefon: ${data.phone}`,
-      `Adresse: ${location}`,
+      `Sted: ${location}`,
       `Tilgjengelig fra: ${data.available_from || "-"}`,
       "",
       "Ønsket arbeid:",
-      ...(data.work_main?.length ? data.work_main.map((w) => `- ${w}`) : ["- (ikke valgt)"]),
+      ...(data.work_main?.length
+        ? data.work_main.map((w) => `- ${w}`)
+        : ["- (ikke valgt)"]),
       "",
       `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
       "",
@@ -239,7 +266,9 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
+    const acceptsJson = (req.headers.get("accept") || "").includes(
+      "application/json"
+    );
     if (acceptsJson) {
       return NextResponse.json({ ok: true });
     }
@@ -295,14 +324,14 @@ function buildHtmlSummary(data: {
       ${
         data.skills
           ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Kompetanse</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.skills,
+              data.skills
             )}</p></div>`
           : ""
       }
       ${
         data.other_comp
           ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Andre kommentarer</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.other_comp,
+              data.other_comp
             )}</p></div>`
           : ""
       }
@@ -311,7 +340,10 @@ function buildHtmlSummary(data: {
 }
 
 function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function getClientIp(req: Request) {
