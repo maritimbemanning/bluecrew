@@ -4,9 +4,8 @@ export type CandidateFormValues = {
   name: string;
   email: string;
   phone: string;
-  street_address?: string;
-  postal_code?: string;
-  postal_city?: string;
+  fylke?: string;
+  kommune?: string;
   available_from?: string;
   skills?: string;
   other_comp?: string;
@@ -28,9 +27,8 @@ export const candidateSchema = z
     name: z.string().trim().min(2, "Oppgi fullt navn"),
     email: z.string().trim().email("Oppgi gyldig e-post"),
     phone: z.string().trim().min(6, "Oppgi telefon"),
-    street_address: z.string().trim().optional(),
-    postal_code: z.string().trim().optional(),
-    postal_city: z.string().trim().optional(),
+    fylke: z.string().trim().min(1, "Velg fylke"),
+    kommune: z.string().trim().min(1, "Oppgi kommune"),
     available_from: z.string().trim().optional(),
     skills: z.string().trim().optional(),
     other_comp: z.string().trim().optional(),
@@ -128,9 +126,8 @@ export function extractCandidateForm(fd: FormData): {
     name: getString("name"),
     email: getString("email"),
     phone: getString("phone"),
-    street_address: getString("street_address") || undefined,
-    postal_code: getString("postal_code") || undefined,
-    postal_city: getString("postal_city") || undefined,
+    fylke: getString("fylke") || undefined,
+    kommune: getString("kommune") || undefined,
     available_from: getString("available_from") || undefined,
     skills: getString("skills") || undefined,
     other_comp: getString("other_comp") || undefined,
