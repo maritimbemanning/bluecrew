@@ -594,54 +594,47 @@ export default function CandidateContent() {
             />
           </div>
           <div style={ui.fieldGrid}>
-            <Input
-              label="Gateadresse (valgfritt)"
-              name="street_address"
-              placeholder="Eksempel: Storgata 15"
-              defaultValue={(draftValues?.street_address as string) ?? ""}
-              error={fieldErrors.street_address}
-              onChange={() => clearFieldError("street_address")}
-            />
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: 12,
-              }}
-            >
-              <Input
-                label="Postnummer"
-                name="postal_code"
-                placeholder="0150"
-                defaultValue={(draftValues?.postal_code as string) ?? ""}
-                error={fieldErrors.postal_code}
-                onChange={() => clearFieldError("postal_code")}
-              />
-              <Input
-                label="Poststed"
-                name="postal_city"
-                placeholder="OSLO"
-                defaultValue={(draftValues?.postal_city as string) ?? ""}
-                error={fieldErrors.postal_city}
-                onChange={() => clearFieldError("postal_city")}
-              />
+            <div>
+              <label style={sx.label}>
+                <span>Fylke *</span>
+                <select
+                  name="fylke"
+                  required
+                  style={sx.input}
+                  onChange={() => clearFieldError("fylke")}
+                >
+                  <option value="">Velg fylke</option>
+                  <option value="Agder">Agder</option>
+                  <option value="Innlandet">Innlandet</option>
+                  <option value="Møre og Romsdal">Møre og Romsdal</option>
+                  <option value="Nordland">Nordland</option>
+                  <option value="Oslo">Oslo</option>
+                  <option value="Rogaland">Rogaland</option>
+                  <option value="Troms og Finnmark">Troms og Finnmark</option>
+                  <option value="Trøndelag">Trøndelag</option>
+                  <option value="Vestfold og Telemark">Vestfold og Telemark</option>
+                  <option value="Vestland">Vestland</option>
+                  <option value="Viken">Viken</option>
+                  <option value="Svalbard">Svalbard</option>
+                </select>
+              </label>
+              {fieldErrors.fylke ? (
+                <div style={sx.errText} role="alert">
+                  {fieldErrors.fylke}
+                </div>
+              ) : null}
             </div>
             <div>
               <label style={sx.label}>
-                <span>Region *</span>
-                <select
-                  name="region"
+                <span>Kommune *</span>
+                <input
+                  type="text"
+                  name="kommune"
                   required
+                  placeholder="F.eks. Bergen, Tromsø, Stavanger"
                   style={sx.input}
-                  onChange={() => clearFieldError("region")}
-                >
-                  <option value="">Velg region</option>
-                  <option>Nord-Norge</option>
-                  <option>Midt-Norge</option>
-                  <option>Vestlandet</option>
-                  <option>Østlandet</option>
-                  <option>Svalbard</option>
-                </select>
+                  onChange={() => clearFieldError("kommune")}
+                />
               </label>
               {fieldErrors.region ? (
                 <div style={sx.errText} role="alert">
@@ -843,9 +836,10 @@ export default function CandidateContent() {
               onChange={() => clearFileError("cv")}
             />
             <FileInput
-              label="Sertifikater/Helseattest (PDF/ZIP, maks 10 MB)"
+              label="Sertifikater/Helseattest (flere filer tillatt, PDF/ZIP, maks 10 MB per fil)"
               name="certs"
               accept=".pdf,.zip"
+              multiple
               required
               error={fileErrors.certs}
               onChange={() => clearFileError("certs")}
