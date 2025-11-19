@@ -169,7 +169,7 @@ export default function RootLayout({
         {/* Google Ads Conversion Tracking */}
         <script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17715214678"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
         ></script>
         <script
           id="google-ads-init"
@@ -178,7 +178,7 @@ export default function RootLayout({
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'AW-17715214678');
+              gtag('config', 'AW-17731534362');
             `,
           }}
         />
