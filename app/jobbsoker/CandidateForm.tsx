@@ -596,10 +596,9 @@ export default function CandidateContent() {
           <div style={ui.fieldGrid}>
             <div>
               <label style={sx.label}>
-                <span>Fylke *</span>
+                <span>Fylke</span>
                 <select
                   name="fylke"
-                  required
                   style={sx.input}
                   onChange={() => clearFieldError("fylke")}
                 >
@@ -629,11 +628,10 @@ export default function CandidateContent() {
             </div>
             <div>
               <label style={sx.label}>
-                <span>Kommune *</span>
+                <span>Kommune</span>
                 <input
                   type="text"
                   name="kommune"
-                  required
                   placeholder="F.eks. Bergen, Tromsø, Stavanger"
                   style={sx.input}
                   onChange={() => clearFieldError("kommune")}
