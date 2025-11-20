@@ -4,6 +4,8 @@
  * Respects NODE_ENV to control output
  */
 
+import { captureServerException } from "./server/observability";
+
 // type LogLevel = "debug" | "info" | "warn" | "error"; // unused for now
 
 interface LogContext {
@@ -45,17 +47,19 @@ class Logger {
    */
   error(message: string, error?: Error | unknown, context?: LogContext): void {
     const errorObj = error instanceof Error ? error : new Error(String(error));
-    
+
     console.error(`❌ [ERROR] ${message}`, {
       error: errorObj.message,
       stack: this.isDevelopment ? errorObj.stack : undefined,
       ...context,
     });
 
-    // In production, you could send to external service here
-    // e.g., Sentry, LogRocket, DataDog, etc.
+    // Send to error monitoring service in production
     if (this.isProduction) {
-      // TODO: Send to error monitoring service
+      captureServerException(errorObj, {
+        message,
+        ...context,
+      });
     }
   }
 
