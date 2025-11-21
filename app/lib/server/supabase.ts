@@ -58,7 +58,7 @@ function isRetriableStatus(status: number) {
 
 async function fetchWithTimeout(
   input: RequestInfo | URL,
-  init: RequestInit & { timeoutMs?: number; retries?: number } = {},
+  init: RequestInit & { timeoutMs?: number; retries?: number } = {}
 ) {
   const { timeoutMs = 10000, retries = 1, ...rest } = init;
 
@@ -79,7 +79,8 @@ async function fetchWithTimeout(
     } catch (err) {
       clearTimeout(timer);
       lastError = err;
-      const isAbort = (err as any)?.name === "AbortError";
+      const isAbort =
+        (err as unknown as { name?: string })?.name === "AbortError";
       if (attempt < retries && isAbort) {
         // retry once on timeout
         continue;
@@ -100,7 +101,11 @@ function buildHeaders(serviceRoleKey: string): HeadersInit {
   };
 }
 
-function createTableClient(baseUrl: string, serviceRoleKey: string, table: string) {
+function createTableClient(
+  baseUrl: string,
+  serviceRoleKey: string,
+  table: string
+) {
   const headers = buildHeaders(serviceRoleKey);
 
   return {
@@ -116,14 +121,20 @@ function createTableClient(baseUrl: string, serviceRoleKey: string, table: strin
       return handleResponse(response);
     },
 
-    async select(_columns: string, options?: SupabaseSelectOptions): Promise<SupabaseResult> {
+    async select(
+      _columns: string,
+      options?: SupabaseSelectOptions
+    ): Promise<SupabaseResult> {
       const url = new URL(`${baseUrl}/rest/v1/${table}`);
       url.searchParams.set("select", "id");
       url.searchParams.set("limit", "1");
 
       // Use a plain Record<string,string> so we can set custom Supabase
       // Prefer headers without TypeScript complaints about HeadersInit.
-      const requestHeaders: Record<string, string> = { ...headers } as Record<string, string>;
+      const requestHeaders: Record<string, string> = { ...headers } as Record<
+        string,
+        string
+      >;
       if (options?.count || options?.head) {
         const countPreference = options?.count ?? "exact";
         requestHeaders.Prefer = `count=${countPreference}`;
@@ -151,10 +162,9 @@ export function supabaseServer() {
   };
 }
 
-export async function insertSupabaseRow<T extends Record<string, unknown>>(opts: {
-  table: string;
-  payload: T;
-}) {
+export async function insertSupabaseRow<
+  T extends Record<string, unknown>,
+>(opts: { table: string; payload: T }) {
   const sb = supabaseServer();
   const { error } = await sb.from(opts.table).insert(opts.payload);
   if (error) throw new Error(error.message);
@@ -167,7 +177,9 @@ export async function selectSupabaseRows<T>(options: {
   order?: { column: string; ascending?: boolean };
 }): Promise<T[]> {
   const { url, serviceRoleKey } = getConfig();
-  const columns = Array.isArray(options.columns) ? options.columns.join(",") : options.columns;
+  const columns = Array.isArray(options.columns)
+    ? options.columns.join(",")
+    : options.columns;
   const requestUrl = new URL(`${url}/rest/v1/${options.table}`);
   requestUrl.searchParams.set("select", columns || "*");
 
@@ -177,7 +189,10 @@ export async function selectSupabaseRows<T>(options: {
 
   if (options.order) {
     const direction = options.order.ascending === false ? "desc" : "asc";
-    requestUrl.searchParams.set("order", `${options.order.column}.${direction}`);
+    requestUrl.searchParams.set(
+      "order",
+      `${options.order.column}.${direction}`
+    );
   }
 
   const response = await fetchWithTimeout(requestUrl, {
@@ -212,7 +227,10 @@ export async function uploadSupabaseObject(options: {
 }) {
   const { url, serviceRoleKey } = getConfig();
   const target = `${url}/storage/v1/object/${options.bucket}/${encodeStoragePath(options.object)}`;
-  const payload = options.body instanceof ArrayBuffer ? new Uint8Array(options.body) : options.body;
+  const payload =
+    options.body instanceof ArrayBuffer
+      ? new Uint8Array(options.body)
+      : options.body;
 
   const response = await fetchWithTimeout(target, {
     method: "PUT",
@@ -225,7 +243,7 @@ export async function uploadSupabaseObject(options: {
       "x-upsert": "true",
     },
     // Ensure BodyInit type compatibility across TS/lib versions
-    body: (payload as unknown) as BodyInit,
+    body: payload as unknown as BodyInit,
     timeoutMs: 15000,
     retries: 1,
   });
@@ -258,7 +276,8 @@ export async function createSupabaseSignedUrl(options: {
   }
 
   const data = await response.json().catch(() => null);
-  const signedPath = typeof data?.signedURL === "string" ? data.signedURL : data?.signedUrl;
+  const signedPath =
+    typeof data?.signedURL === "string" ? data.signedURL : data?.signedUrl;
 
   if (typeof signedPath !== "string") {
     throw new Error("Supabase did not return a signed URL");
@@ -278,7 +297,10 @@ export async function listSupabaseObjects(options: {
   const response = await fetchWithTimeout(target, {
     method: "POST",
     headers: buildHeaders(serviceRoleKey),
-    body: JSON.stringify({ prefix: options.prefix, limit: options.limit ?? 20 }),
+    body: JSON.stringify({
+      prefix: options.prefix,
+      limit: options.limit ?? 20,
+    }),
     timeoutMs: 8000,
     retries: 1,
   });

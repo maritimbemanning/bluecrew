@@ -12,7 +12,6 @@ type Position =
   | "akvatekniker";
 type Experience = "0-2" | "2-5" | "5-10" | "10+";
 type WorkType = "havbruk" | "offshore" | "servicefartoy" | "kystfart";
-type Certification = "none" | "fagbrev";
 
 interface SalaryData {
   position: Position;

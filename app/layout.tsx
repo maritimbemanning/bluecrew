@@ -167,12 +167,13 @@ export default function RootLayout({
         <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
         <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
         {/* Google Ads Conversion Tracking */}
-        <script
-          async
+        <Script
           src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
-        ></script>
-        <script
+          strategy="afterInteractive"
+        />
+        <Script
           id="google-ads-init"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];

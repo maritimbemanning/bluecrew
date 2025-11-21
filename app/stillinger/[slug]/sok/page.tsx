@@ -15,7 +15,6 @@ import { motion } from "framer-motion";
 import {
   Briefcase,
   Upload,
-  FileText,
   CheckCircle,
   ArrowLeft,
   AlertCircle,
@@ -191,9 +190,7 @@ export default function JobApplicationPage() {
     } catch (err) {
       console.error("Error submitting application:", err);
       setError(
-        err instanceof Error
-          ? err.message
-          : "Noe gikk galt. Prøv igjen senere."
+        err instanceof Error ? err.message : "Noe gikk galt. Prøv igjen senere."
       );
     } finally {
       setSubmitting(false);
