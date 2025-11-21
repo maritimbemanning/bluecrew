@@ -5,11 +5,26 @@ import { MetadataRoute } from "next";
  * Kun sider som faktisk eksisterer i app/
  * Priority: 1.0 = viktigst, 0.9 = meget viktig, 0.8 = viktig, 0.7 = viktig, 0.5 = standard, 0.3 = lav
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
   const now = new Date();
 
-  return [
+  // Fetch active job postings
+  let jobs: Array<{ slug: string; updated_at?: string }> = [];
+  try {
+    const adminUrl =
+      process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no";
+    const response = await fetch(`${adminUrl}/api/job-postings?status=active`, {
+      cache: "no-store",
+    });
+    if (response.ok) {
+      jobs = await response.json();
+    }
+  } catch (error) {
+    console.error("Failed to fetch jobs for sitemap:", error);
+  }
+
+  const staticPages: MetadataRoute.Sitemap = [
     // Forside
     {
       url: `${base}/`,
@@ -183,5 +198,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.3,
     },
+
+    // Jobbportal
+    {
+      url: `${base}/stillinger`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
   ];
+
+  // Add dynamic job posting pages
+  const jobPages: MetadataRoute.Sitemap = jobs.map((job) => ({
+    url: `${base}/stillinger/${job.slug}`,
+    lastModified: job.updated_at ? new Date(job.updated_at) : now,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [...staticPages, ...jobPages];
 }

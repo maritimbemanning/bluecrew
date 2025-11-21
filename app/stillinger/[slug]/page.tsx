@@ -73,7 +73,7 @@ export default function JobDetailPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admincrew.no'}/api/job-postings?status=active`,
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-postings?status=active`,
         { cache: "no-store" }
       );
 
@@ -93,7 +93,7 @@ export default function JobDetailPage() {
 
       // Increment view count (fire and forget)
       fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admincrew.no'}/api/job-postings?id=${foundJob.id}`,
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-postings?id=${foundJob.id}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -127,8 +127,7 @@ export default function JobDetailPage() {
     );
     if (days < 0) return { text: "Utgått", isUrgent: false, isExpired: true };
     if (days === 0) return { text: "I dag", isUrgent: true, isExpired: false };
-    if (days === 1)
-      return { text: "1 dag", isUrgent: true, isExpired: false };
+    if (days === 1) return { text: "1 dag", isUrgent: true, isExpired: false };
     return {
       text: `${days} dager`,
       isUrgent: days <= 7,
@@ -202,8 +201,63 @@ export default function JobDetailPage() {
 
   const deadline = daysUntilDeadline(job.application_deadline);
 
+  // Generate Google Jobs JSON-LD structured data
+  const jobPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description,
+    datePosted: job.published_at || job.created_at,
+    validThrough: job.application_deadline || undefined,
+    employmentType:
+      job.job_type === "Fast"
+        ? "FULL_TIME"
+        : job.job_type === "Vikariat"
+          ? "TEMPORARY"
+          : "CONTRACTOR",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: job.company_name || "Bluecrew AS",
+      sameAs: "https://bluecrew.no",
+      logo: "https://bluecrew.no/logo.png",
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: job.location,
+        addressRegion: job.fylke,
+        addressCountry: "NO",
+      },
+    },
+    baseSalary: job.salary_text
+      ? {
+          "@type": "MonetaryAmount",
+          currency: "NOK",
+          value: {
+            "@type": "QuantitativeValue",
+            value: job.salary_text,
+          },
+        }
+      : undefined,
+    occupationalCategory: job.category,
+    industry: "Maritime",
+    workHours: job.duration_days ? `${job.duration_days} dager` : undefined,
+    identifier: {
+      "@type": "PropertyValue",
+      name: "Bluecrew",
+      value: job.id,
+    },
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Google Jobs Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchema) }}
+      />
+
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-12 px-6">
         <div className="max-w-5xl mx-auto">
@@ -353,7 +407,9 @@ export default function JobDetailPage() {
               {deadline && deadline.isExpired ? (
                 <div className="text-center">
                   <AlertCircle className="h-12 w-12 mx-auto mb-3" />
-                  <h3 className="text-xl font-bold mb-2">Søknadsfristen er utgått</h3>
+                  <h3 className="text-xl font-bold mb-2">
+                    Søknadsfristen er utgått
+                  </h3>
                   <p className="text-blue-100 text-sm">
                     Denne stillingen tar ikke lenger imot søknader.
                   </p>
