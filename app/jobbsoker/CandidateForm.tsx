@@ -579,7 +579,9 @@ export default function CandidateContent() {
               type="email"
               required
               defaultValue={
-                ((vippsSession as any)?.email || draftValues?.email) ?? ""
+                ((vippsSession as unknown as { email?: string })?.email ||
+                  draftValues?.email) ??
+                ""
               }
               error={fieldErrors.email}
               onChange={() => clearFieldError("email")}

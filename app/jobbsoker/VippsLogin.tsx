@@ -1,6 +1,6 @@
 /**
  * Vipps Login Step Component
- * 
+ *
  * First step in candidate registration - requires Vipps authentication
  * for identity verification before showing the registration form.
  */
@@ -29,7 +29,8 @@ interface VippsLoginProps {
 
 const ui = {
   container: {
-    background: "linear-gradient(155deg, #0a1d39 0%, #0f2648 55%, #051427 100%)",
+    background:
+      "linear-gradient(155deg, #0a1d39 0%, #0f2648 55%, #051427 100%)",
     borderRadius: 24,
     padding: "48px clamp(24px, 6vw, 48px)",
     color: "#e2e8f0",
@@ -88,7 +89,8 @@ const ui = {
     border: "1.5px solid #ff5100",
     borderRadius: 12,
     cursor: "pointer",
-    transition: "background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease",
+    transition:
+      "background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -187,12 +189,12 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
   return (
     <div style={ui.container}>
       <div style={ui.icon}>🔐</div>
-      
+
       <h2 style={ui.title}>Verifiser identitet med Vipps</h2>
-      
+
       <p style={ui.description}>
-        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav,
-        må du verifisere identiteten din med Vipps før du registrerer deg.
+        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav, må
+        du verifisere identiteten din med Vipps før du registrerer deg.
       </p>
 
       <div style={ui.whyBox}>
@@ -227,7 +229,13 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
           </>
         ) : (
           <>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
               <circle cx="12" cy="12" r="10" fill="#ff5100" />
               <rect x="7" y="11" width="10" height="2" rx="1" fill="#ffffff" />
             </svg>
@@ -258,8 +266,14 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
  */
 export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
   // Be tolerant to backend field names: phone vs phone_number, verifiedAt vs verified_at
-  const phone = (session as any).phone ?? (session as any).phone_number ?? "";
-  const verifiedAt = (session as any).verifiedAt ?? (session as any).verified_at ?? null;
+  const sessionData = session as unknown as {
+    phone?: string;
+    phone_number?: string;
+    verifiedAt?: string;
+    verified_at?: string;
+  };
+  const phone = sessionData.phone ?? sessionData.phone_number ?? "";
+  const verifiedAt = sessionData.verifiedAt ?? sessionData.verified_at ?? null;
   return (
     <div style={ui.verifiedBox}>
       <div style={ui.verifiedIcon}>✅</div>
@@ -270,7 +284,8 @@ export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
         {phone}
         <br />
         <span style={{ fontSize: 14, opacity: 0.7 }}>
-          Verifisert {verifiedAt ? new Date(verifiedAt).toLocaleString("nb-NO") : "nå"}
+          Verifisert{" "}
+          {verifiedAt ? new Date(verifiedAt).toLocaleString("nb-NO") : "nå"}
         </span>
       </div>
     </div>
@@ -350,12 +365,12 @@ export function VippsLoginPage() {
   return (
     <div style={ui.container}>
       <div style={ui.icon}>🔐</div>
-      
+
       <h2 style={ui.title}>Verifiser identitet med Vipps</h2>
-      
+
       <p style={ui.description}>
-        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav,
-        må du verifisere identiteten din med Vipps før du registrerer deg.
+        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav, må
+        du verifisere identiteten din med Vipps før du registrerer deg.
       </p>
 
       <div style={ui.whyBox}>
@@ -390,7 +405,13 @@ export function VippsLoginPage() {
           </>
         ) : (
           <>
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
               <circle cx="12" cy="12" r="10" fill="#ff5100" />
               <rect x="7" y="11" width="10" height="2" rx="1" fill="#ffffff" />
             </svg>
@@ -414,4 +435,3 @@ export function VippsLoginPage() {
     </div>
   );
 }
-
