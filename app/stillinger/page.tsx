@@ -102,7 +102,7 @@ export default function StillingerPage() {
         <div className={util.container}>
           {/* Header */}
           <div className={styles.header}>
-            <h1 className={styles.title}>Ledige Stillinger</h1>
+            <h1 className={styles.title}>Ledige jobber</h1>
             <p className={styles.subtitle}>
               Finn din neste jobb innen havbruk, offshore og skipsfart
             </p>
