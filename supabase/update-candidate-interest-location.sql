@@ -12,8 +12,8 @@ ADD COLUMN IF NOT EXISTS kommune TEXT;
 ALTER TABLE public.candidate_interest 
 DROP COLUMN IF EXISTS street_address,
 DROP COLUMN IF EXISTS postal_code,
-DROP COLUMN IF EXISTS postal_city,
-DROP COLUMN IF EXISTS region;
+DROP COLUMN IF EXISTS postal_city;
+-- DROP COLUMN IF EXISTS region;  -- DO NOT DROP - form uses this field!
 
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_candidate_interest_fylke ON public.candidate_interest(fylke);
