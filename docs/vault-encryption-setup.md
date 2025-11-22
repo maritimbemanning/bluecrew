@@ -1,11 +1,23 @@
-# Supabase Vault PII Encryption Setup
+# PII Encryption Setup for Bluecrew
 
-This guide explains how to enable encryption for personally identifiable information (PII) in the Bluecrew database using Supabase Vault and pgsodium.
+This guide explains how to enable encryption for personally identifiable information (PII) in the Bluecrew database.
 
-## Prerequisites
+## What Supabase Already Provides
 
-- **Supabase Pro plan** (required for Vault features)
-- Admin access to Supabase dashboard
+Before adding extra encryption, know that Supabase already provides:
+
+- **Encryption at Rest**: All database files are encrypted with AES-256
+- **Encryption in Transit**: All traffic encrypted via HTTPS/TLS 1.2+
+- **Row Level Security (RLS)**: Fine-grained access control
+- **Vault**: Secure storage for secrets and API keys
+
+## Why Add Column Encryption?
+
+Additional column-level encryption provides:
+
+1. **Defense in depth**: Even if someone gains database access, PII remains encrypted
+2. **GDPR Article 32**: "Appropriate technical measures" for data protection
+3. **Audit compliance**: Shows proactive security measures
 
 ## What Gets Encrypted
 
@@ -24,38 +36,15 @@ This guide explains how to enable encryption for personally identifiable informa
 | `email` | Email address | `email_encrypted` |
 | `phone` | Phone number | `phone_encrypted` |
 
-## How to Apply the Migration
+## Technical Implementation
 
-### Option 1: Supabase Dashboard (Recommended)
+### Encryption Method
+- **Algorithm**: AES-256-CBC (industry standard)
+- **Library**: pgcrypto (Supabase-supported)
+- **Key Storage**: Supabase Vault (encrypted secrets)
+- **IV Handling**: Random 16-byte IV per encryption (prepended to ciphertext)
 
-1. Go to your Supabase project dashboard
-2. Navigate to **SQL Editor**
-3. Open the migration file: `supabase/migrations/20251122_enable_vault_pii_encryption.sql`
-4. Copy the entire contents
-5. Paste into the SQL Editor
-6. Click **Run**
-
-### Option 2: Supabase CLI
-
-```bash
-# Make sure you're logged in
-supabase login
-
-# Link to your project (if not already linked)
-supabase link --project-ref uqwfesvsfiqjcpzwetkz
-
-# Push the migration
-supabase db push
-```
-
-## How It Works
-
-### Encryption Process
-1. **Automatic**: New data is encrypted automatically via database triggers
-2. **Deterministic**: Uses AEAD-det encryption which allows searching on encrypted values
-3. **Key Management**: Keys are stored securely in pgsodium key table
-
-### Data Flow
+### How It Works
 ```
 User submits form
        |
@@ -63,55 +52,124 @@ User submits form
 API writes to database
        |
        v
-Trigger fires (encrypt_candidate_pii)
+Trigger fires (auto_encrypt_candidate_pii)
        |
        v
-PII is encrypted and stored in *_encrypted columns
-Original columns remain for backward compatibility
+1. Get encryption key from Vault
+2. Generate random IV
+3. Encrypt PII with AES-256-CBC
+4. Store IV + ciphertext in *_encrypted columns
+5. Set is_encrypted = TRUE
 ```
 
-### Accessing Data
+## How to Apply the Migration
 
-**For normal API operations**: Use the regular table - triggers handle encryption automatically
+### Step 1: Open Supabase SQL Editor
 
-**For admin/reporting**: Use the decrypted views:
-- `candidates_decrypted` - Shows decrypted candidate data
-- `leads_decrypted` - Shows decrypted lead data
+1. Go to your Supabase project dashboard: https://supabase.com/dashboard
+2. Navigate to **SQL Editor** (left sidebar)
 
-These views are only accessible with `service_role` key.
+### Step 2: Run the Migration
 
-## Verification
+1. Open the file: `supabase/migrations/20251122_enable_pgcrypto_pii_encryption.sql`
+2. Copy the entire contents
+3. Paste into the SQL Editor
+4. Click **Run**
 
-After running the migration, verify it worked:
+The migration will:
+1. Enable pgcrypto extension
+2. Generate and store encryption key in Vault
+3. Create `encrypt_pii()` and `decrypt_pii()` functions
+4. Add encrypted columns to tables
+5. Create auto-encryption triggers
+6. Encrypt all existing data
+7. Create secure views for admin access
+
+### Step 3: Verify It Worked
+
+Run this in SQL Editor:
 
 ```sql
--- Check encryption keys exist
-SELECT name, key_type FROM pgsodium.valid_key
-WHERE name IN ('candidates_pii_key', 'leads_pii_key');
+-- Check encryption key exists in Vault
+SELECT name, description FROM vault.decrypted_secrets
+WHERE name = 'pii_encryption_key';
 
--- Check encrypted data exists
+-- Check candidates are encrypted
 SELECT
   COUNT(*) as total,
-  COUNT(name_encrypted) as encrypted
+  COUNT(*) FILTER (WHERE is_encrypted = TRUE) as encrypted
 FROM public.candidates;
 
--- Test decryption (service_role only)
-SELECT name, email FROM public.candidates_decrypted LIMIT 1;
+-- Check leads are encrypted
+SELECT
+  COUNT(*) as total,
+  COUNT(*) FILTER (WHERE is_encrypted = TRUE) as encrypted
+FROM public.leads;
+
+-- Test encryption/decryption
+SELECT
+  encrypt_pii('test@example.com') as encrypted,
+  decrypt_pii(encrypt_pii('test@example.com')) as decrypted;
+
+-- View decrypted data (service_role only)
+SELECT name, email FROM public.candidates_secure LIMIT 5;
 ```
 
-## Security Notes
+## Accessing Data
 
-1. **Keys are managed by Supabase**: You don't need to handle key rotation manually
-2. **Service role only**: Decryption functions are restricted to `service_role`
-3. **Backward compatible**: Original columns still work during transition
-4. **Searchable**: Deterministic encryption allows `WHERE email_encrypted = encrypt_pii('test@example.com')`
+### For Normal API Operations
+The application code doesn't need changes. The original columns (`name`, `email`, etc.) still work for writing. Triggers handle encryption automatically.
+
+### For Admin/Reporting
+Use the secure views that automatically decrypt:
+- `candidates_secure` - Decrypted candidate data
+- `leads_secure` - Decrypted lead data
+
+These views only work with `service_role` key.
+
+### Example: Reading from Admin Dashboard
+```sql
+-- Get all candidates with decrypted PII
+SELECT * FROM candidates_secure ORDER BY submitted_at DESC;
+
+-- Search by decrypted email
+SELECT * FROM candidates_secure WHERE email LIKE '%@example.com';
+```
+
+## Security Model
+
+### Access Control
+| Role | encrypt_pii() | decrypt_pii() | *_secure views |
+|------|--------------|---------------|----------------|
+| anon | No | No | No |
+| authenticated | No | No | No |
+| service_role | Yes | Yes | Yes |
+
+### Key Management
+- Key is generated automatically (32 bytes / 256 bits)
+- Key is stored encrypted in Supabase Vault
+- Key never leaves the database
+- Key is only accessible to service_role
+
+## Trade-offs
+
+### Performance
+- Encryption/decryption adds ~1-2ms per operation
+- Encrypted columns cannot be indexed for searching
+- Batch operations may be slower
+
+### Recommendations
+- Don't encrypt columns you need to search/filter by
+- Use secure views for reporting, not raw tables
+- Keep original columns during transition period
 
 ## Future Steps (Optional)
 
-Once you've verified encryption works:
+### Phase 2: Remove Plaintext Columns
+After verifying encryption works (1-2 weeks):
 
-1. **Remove plaintext columns** (after sufficient testing):
 ```sql
+-- Remove plaintext columns
 ALTER TABLE public.candidates
   DROP COLUMN name,
   DROP COLUMN email,
@@ -121,23 +179,45 @@ ALTER TABLE public.candidates
 -- Rename encrypted columns
 ALTER TABLE public.candidates
   RENAME COLUMN name_encrypted TO name;
+ALTER TABLE public.candidates
+  RENAME COLUMN email_encrypted TO email;
 -- etc.
 ```
 
-2. **Update application code** to use decrypted views for admin
-
-3. **Enable audit logging** with pgAudit (separate migration)
+### Phase 3: Update Application Code
+Modify the application to use encrypted columns directly and decrypt on read.
 
 ## Troubleshooting
 
-### "extension pgsodium does not exist"
-Your Supabase project needs the pgsodium extension enabled. This should be automatic on Pro plans.
+### "extension pgcrypto does not exist"
+```sql
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+```
 
 ### "permission denied for function"
-Make sure you're running the migration with service_role key, not anon key.
+You're not using service_role. Check your connection:
+```sql
+SELECT current_user, session_user;
+```
 
-### "key not found"
-The encryption keys weren't created. Check the pgsodium.valid_key table and re-run the key creation section.
+### "Encryption key not found in Vault"
+Re-run the key generation part of the migration:
+```sql
+DO $$
+BEGIN
+  PERFORM vault.create_secret(
+    encode(gen_random_bytes(32), 'hex'),
+    'pii_encryption_key',
+    'AES-256 key for PII column encryption'
+  );
+END $$;
+```
+
+### Decryption returns NULL
+The data might not be encrypted, or the key changed. Check:
+```sql
+SELECT is_encrypted, name_encrypted FROM candidates LIMIT 1;
+```
 
 ## GDPR Compliance
 
@@ -146,7 +226,15 @@ This encryption helps with:
 - **Article 5(1)(f)**: Integrity and confidentiality
 - **Recital 83**: Appropriate technical measures
 
-Combined with your existing:
+Combined with existing Bluecrew features:
 - Automatic data deletion (24 months candidates, 12 months leads)
-- User portal for data access requests
+- User portal for data access requests (`/min-side`)
 - Rate limiting and CSRF protection
+- Cookie consent banner
+
+## Sources
+
+- [Supabase Column Encryption](https://supabase.com/docs/guides/database/column-encryption)
+- [Supabase Vault](https://supabase.com/docs/guides/database/vault)
+- [pgcrypto Documentation](https://www.postgresql.org/docs/current/pgcrypto.html)
+- [GDPR Article 32](https://gdpr-info.eu/art-32-gdpr/)
