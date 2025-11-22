@@ -19,6 +19,8 @@ const baseConfig: NextConfig = {
     return [
       { source: "/sentry-example-page", destination: "/", permanent: true },
       { source: "/api/sentry-example-api", destination: "/", permanent: true },
+      // Phase out interest form - redirect to job listings
+      { source: "/meld-interesse", destination: "/stillinger", permanent: false },
     ];
   },
 };

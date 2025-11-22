@@ -49,9 +49,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Konverteringssider (VIKTIGST!)
     {
-      url: `${base}/meld-interesse`,
+      url: `${base}/stillinger`,
       lastModified: now,
-      changeFrequency: "monthly",
+      changeFrequency: "daily",
       priority: 1.0,
     },
     {
@@ -59,6 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 1.0,
+    },
+    {
+      url: `${base}/min-side`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
 
     // Tjenestesider - kunde
@@ -199,13 +205,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     },
 
-    // Jobbportal
-    {
-      url: `${base}/stillinger`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
   ];
 
   // Add dynamic job posting pages
