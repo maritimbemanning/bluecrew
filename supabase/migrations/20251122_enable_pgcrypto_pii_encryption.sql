@@ -16,7 +16,9 @@
 -- STEP 1: Enable pgcrypto extension
 -- ============================================================================
 
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+-- pgcrypto is pre-installed in Supabase in the 'extensions' schema
+-- We just need to ensure it's enabled
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 
 -- ============================================================================
 -- STEP 2: Create encryption key storage in Vault
@@ -39,8 +41,8 @@ BEGIN
   LIMIT 1;
 
   IF existing_key IS NULL THEN
-    -- Generate a new 32-byte key
-    new_key := encode(gen_random_bytes(32), 'hex');
+    -- Generate a new 32-byte key (using extensions.gen_random_bytes for Supabase)
+    new_key := encode(extensions.gen_random_bytes(32), 'hex');
 
     -- Store in Vault
     PERFORM vault.create_secret(
@@ -64,7 +66,7 @@ CREATE OR REPLACE FUNCTION encrypt_pii(plaintext TEXT)
 RETURNS TEXT
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, vault
+SET search_path = public, vault, extensions
 AS $$
 DECLARE
   encryption_key BYTEA;
@@ -86,10 +88,10 @@ BEGIN
   END IF;
 
   -- Generate random IV (16 bytes for AES)
-  iv := gen_random_bytes(16);
+  iv := extensions.gen_random_bytes(16);
 
   -- Encrypt using AES-256-CBC
-  encrypted := encrypt_iv(
+  encrypted := extensions.encrypt_iv(
     convert_to(plaintext, 'UTF8'),
     encryption_key,
     iv,
@@ -106,7 +108,7 @@ CREATE OR REPLACE FUNCTION decrypt_pii(ciphertext TEXT)
 RETURNS TEXT
 LANGUAGE plpgsql
 SECURITY DEFINER
-SET search_path = public, vault
+SET search_path = public, vault, extensions
 AS $$
 DECLARE
   encryption_key BYTEA;
@@ -137,7 +139,7 @@ BEGIN
   encrypted := substring(raw_data from 17);
 
   -- Decrypt
-  decrypted := decrypt_iv(
+  decrypted := extensions.decrypt_iv(
     encrypted,
     encryption_key,
     iv,
