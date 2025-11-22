@@ -148,8 +148,8 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
       if (data.verified && data.session) {
         onVerified(data.session);
       }
-    } catch (err) {
-      console.error("Failed to check Vipps session:", err);
+    } catch {
+      // Non-critical error - user will just see the login prompt
     } finally {
       setCheckingSession(false);
     }
@@ -167,7 +167,6 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
       // Redirect directly to Vipps start endpoint (GET request)
       window.location.href = "/api/vipps/start";
     } catch (err) {
-      console.error("Vipps login error:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -321,8 +320,7 @@ export function VippsLoginPage() {
       if (isReturningFromVipps && !data.verified) {
         setError("Vipps-verifisering feilet. Prøv igjen.");
       }
-    } catch (err) {
-      console.error("Failed to check Vipps session:", err);
+    } catch {
       if (isReturningFromVipps) {
         setError("Kunne ikke bekrefte Vipps-sesjonen. Prøv igjen.");
       }
@@ -343,7 +341,6 @@ export function VippsLoginPage() {
       // Redirect directly to Vipps start endpoint (GET request)
       window.location.href = "/api/vipps/start";
     } catch (err) {
-      console.error("Vipps login error:", err);
       setError(
         err instanceof Error
           ? err.message

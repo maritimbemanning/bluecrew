@@ -626,7 +626,7 @@ export default function Page() {
                 Registrer som kandidat
               </Link>
               <Link
-                href="/karriere/guides"
+                href="/faq"
                 style={{
                   display: "inline-block",
                   padding: "14px 28px",
@@ -638,7 +638,7 @@ export default function Page() {
                   border: "1px solid #e2e8f0",
                 }}
               >
-                Les flere guider
+                Ofte stilte spørsmål
               </Link>
             </div>
           </div>
@@ -687,7 +687,7 @@ export default function Page() {
                   </p>
                 </div>
               </Link>
-              <Link href="/karriere/guides/hvordan-bli-styrmann" style={{ textDecoration: "none" }}>
+              <Link href="/lonn/styrmann" style={{ textDecoration: "none" }}>
                 <div
                   style={{
                     background: "white",

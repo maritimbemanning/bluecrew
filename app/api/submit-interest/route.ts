@@ -26,9 +26,7 @@ function getClientIp(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    // CSRF Protection - TEMPORARILY DISABLED
-    // TODO: Re-enable after adding CSRF token to forms
-    /*
+    // CSRF Protection
     try {
       await requireCsrfToken(req);
     } catch (error) {
@@ -37,7 +35,6 @@ export async function POST(req: Request) {
         status: 403,
       });
     }
-    */
 
     const rateKey = `interest:${getClientIp(req)}`;
     const rate = await enforceRateLimit(rateKey);

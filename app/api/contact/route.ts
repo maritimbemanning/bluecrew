@@ -6,7 +6,17 @@ import {
   type ContactPayload,
 } from "@/app/lib/server/email";
 import { requireCsrfToken } from "../../lib/server/csrf";
+import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { logger } from "../../lib/logger";
+
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -35,6 +45,16 @@ export async function POST(req: Request) {
       return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
         status: 403,
       });
+    }
+
+    // Rate limiting
+    const rateKey = `contact:${getClientIp(req)}`;
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "For mange forespørsler. Prøv igjen senere." },
+        { status: 429, headers: { "Retry-After": String(rate.resetSeconds || 60) } }
+      );
     }
 
     const unknownData = (await req.json().catch(() => ({}))) as unknown;

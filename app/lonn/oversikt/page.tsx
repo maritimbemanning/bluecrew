@@ -1560,7 +1560,7 @@ export default function Page() {
                 → Hvordan bli skipsfører
               </Link>
               <Link
-                href="/karriere/guides"
+                href="/faq"
                 style={{
                   color: "#0ea5e9",
                   textDecoration: "none",
@@ -1568,7 +1568,7 @@ export default function Page() {
                   fontWeight: 600,
                 }}
               >
-                → Maritime sertifikatkrav (komplett oversikt)
+                → Ofte stilte spørsmål
               </Link>
               <Link
                 href="/faq"

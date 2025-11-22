@@ -23,7 +23,6 @@ import {
   Clock,
   XCircle,
   Shield,
-  AlertCircle,
 } from "lucide-react";
 
 type VippsSession = {
