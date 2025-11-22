@@ -8,14 +8,12 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
-  Briefcase,
   Upload,
   CheckCircle,
   ArrowLeft,
-  AlertCircle,
   Loader2,
   MapPin,
   Building,
@@ -23,7 +21,6 @@ import {
   Clock,
   FileText,
   Mail,
-  Calendar,
 } from "lucide-react";
 import Link from "next/link";
 import SiteLayout from "@/app/components/SiteLayout";
@@ -68,7 +65,6 @@ export default function JobApplicationPage() {
   // Form state
   const [coverLetter, setCoverLetter] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const [certsFile, setCertsFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -149,27 +145,20 @@ export default function JobApplicationPage() {
         throw new Error("Missing required data");
       }
 
-      // Upload files
+      // Upload CV
       let cvKey = null;
-      let certsKey = null;
-
       if (cvFile) {
         cvKey = await uploadFile(cvFile, "cv");
-      }
-
-      if (certsFile) {
-        certsKey = await uploadFile(certsFile, "certificates");
       }
 
       // Submit application
       const applicationData = {
         job_posting_id: job.id,
         name: vippsSession.name,
-        email: vippsSession.email || "", // TODO: Get from Vipps if available
+        email: vippsSession.email || "",
         phone: vippsSession.phone,
         cover_letter: coverLetter,
         cv_key: cvKey,
-        certificates_key: certsKey,
         vipps_verified: true,
         vipps_sub: vippsSession.sub,
         vipps_phone: vippsSession.phone,
