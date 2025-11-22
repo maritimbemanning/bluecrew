@@ -18,6 +18,9 @@ export async function GET(request: NextRequest) {
   const state = crypto.randomBytes(16).toString("hex");
   const nonce = crypto.randomBytes(16).toString("hex");
 
+  // Get optional return URL for post-verification redirect
+  const returnUrl = request.nextUrl.searchParams.get("return");
+
   logger.success(" Generated state and nonce", { state, nonce });
 
   // Ensure cookies work across apex and www in production
@@ -43,6 +46,18 @@ export async function GET(request: NextRequest) {
     maxAge: 600,
     ...(cookieDomain ? { domain: cookieDomain } : {}),
   });
+
+  // Store return URL if provided (for job application flow)
+  if (returnUrl) {
+    cookieStore.set("vipps_return", returnUrl, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 600,
+      ...(cookieDomain ? { domain: cookieDomain } : {}),
+    });
+    logger.debug("📍 Stored return URL", { returnUrl });
+  }
 
   // Prefer deriving redirect URI from the current host to avoid www/apex mismatches in prod.
   const currentOrigin = new URL(request.url).origin;

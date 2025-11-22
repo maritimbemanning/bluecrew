@@ -63,6 +63,7 @@ export default function JobApplicationPage() {
   const [loadingJob, setLoadingJob] = useState(true);
 
   // Form state
+  const [email, setEmail] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -104,6 +105,10 @@ export default function JobApplicationPage() {
 
       if (data.verified && data.session) {
         setVippsSession(data.session);
+        // Pre-fill email from Vipps if available
+        if (data.session.email) {
+          setEmail(data.session.email);
+        }
       }
     } catch (err) {
       console.error("Failed to check Vipps session:", err);
@@ -155,7 +160,7 @@ export default function JobApplicationPage() {
       const applicationData = {
         job_posting_id: job.id,
         name: vippsSession.name,
-        email: vippsSession.email || "",
+        email: email, // User can edit this
         phone: vippsSession.phone,
         cover_letter: coverLetter,
         cv_key: cvKey,
@@ -409,8 +414,8 @@ export default function JobApplicationPage() {
                   </label>
                   <input
                     type="email"
-                    value={vippsSession.email || ""}
-                    onChange={() => {}}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="din@epost.no"
                     className={styles.input}
                     required
