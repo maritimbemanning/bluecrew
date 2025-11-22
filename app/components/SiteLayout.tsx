@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   FocusEvent,
-  KeyboardEvent,
   ReactNode,
   useCallback,
   useEffect,
@@ -27,22 +26,6 @@ type NavItem = {
 };
 
 const NAV_ITEMS: NavItem[] = [
-  {
-    href: "/stillinger",
-    label: "Ledige stillinger",
-    key: "stillinger",
-    accent: true,
-  },
-  {
-    href: "/jobbsoker",
-    label: "For jobbsøkere",
-    key: "jobbsoker",
-    children: [
-      { href: "/stillinger", label: "Se ledige stillinger" },
-      { href: "/jobbsoker/registrer", label: "Opprett profil" },
-      { href: "/faq", label: "Vanlige spørsmål" },
-    ],
-  },
   {
     href: "/kunde",
     label: "For bedrifter",
@@ -405,13 +388,13 @@ export function SiteLayout({
             })}
           </nav>
 
-          {/* Desktop-only right cluster: Registrer deg + Vipps */}
+          {/* Desktop-only right cluster: CTA button */}
           {!isMobile && (
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
                 href="/stillinger"
                 style={{
-                  padding: "10px 24px",
+                  padding: "12px 28px",
                   background:
                     "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                   color: "#fff",
@@ -435,40 +418,12 @@ export function SiteLayout({
                   ).plausible;
                   if (typeof plausible === "function") {
                     plausible("CTA Click", {
-                      props: { location: "header", cta: "Ledige stillinger" },
+                      props: { location: "header", cta: "Ledige jobber" },
                     });
                   }
                 }}
               >
-                Se stillinger
-              </Link>
-              <Link
-                href="/api/vipps/start"
-                style={{
-                  padding: "10px 16px",
-                  background: "#FF5B24",
-                  color: "#fff",
-                  borderRadius: 12,
-                  fontWeight: 700,
-                  fontSize: 14,
-                  textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  boxShadow: "0 4px 12px rgba(255, 91, 36, 0.3)",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-                title="Verifiser med Vipps"
-              >
-                <img
-                  src="/icons/vipps-logo.jpeg"
-                  alt="Vipps"
-                  width="20"
-                  height="20"
-                  style={{ borderRadius: 4 }}
-                />
-                Vipps
+                Ledige jobber
               </Link>
             </div>
           )}
@@ -699,7 +654,7 @@ export function SiteLayout({
                     ))}
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                       <Link
-                        href="/meld-interesse"
+                        href="/stillinger"
                         style={{
                           ...sx.mobileNavLink,
                           background:
@@ -713,36 +668,7 @@ export function SiteLayout({
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        Registrer deg
-                      </Link>
-                    </li>
-                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
-                      <Link
-                        href="/api/vipps/start"
-                        style={{
-                          ...sx.mobileNavLink,
-                          background: "#FF5B24",
-                          color: "#fff",
-                          fontWeight: 700,
-                          padding: "14px 20px",
-                          borderRadius: 12,
-                          textAlign: "center",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: 8,
-                        }}
-                        className="mobileLink"
-                        onClick={() => closeMobileMenu()}
-                      >
-                        <img
-                          src="/icons/vipps-logo.jpeg"
-                          alt="Vipps"
-                          width="24"
-                          height="24"
-                          style={{ borderRadius: 4 }}
-                        />
-                        Verifiser med Vipps
+                        Ledige jobber
                       </Link>
                     </li>
                   </ul>
