@@ -388,7 +388,7 @@ export function SiteLayout({
             })}
           </nav>
 
-          {/* Desktop-only right cluster: CTA button */}
+          {/* Desktop-only right cluster: CTA buttons */}
           {!isMobile && (
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
@@ -424,6 +424,34 @@ export function SiteLayout({
                 }}
               >
                 Ledige jobber
+              </Link>
+              <Link
+                href="/min-side"
+                style={{
+                  padding: "12px 20px",
+                  background: "#FF5B24",
+                  color: "#fff",
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "0 4px 12px rgba(255, 91, 36, 0.3)",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+                title="Min side"
+              >
+                <img
+                  src="/icons/vipps-logo.jpeg"
+                  alt="Vipps"
+                  width="20"
+                  height="20"
+                  style={{ borderRadius: 4 }}
+                />
+                Min side
               </Link>
             </div>
           )}
@@ -669,6 +697,35 @@ export function SiteLayout({
                         onClick={() => closeMobileMenu()}
                       >
                         Ledige jobber
+                      </Link>
+                    </li>
+                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                      <Link
+                        href="/min-side"
+                        style={{
+                          ...sx.mobileNavLink,
+                          background: "#FF5B24",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        <img
+                          src="/icons/vipps-logo.jpeg"
+                          alt="Vipps"
+                          width="24"
+                          height="24"
+                          style={{ borderRadius: 4 }}
+                        />
+                        Min side
                       </Link>
                     </li>
                   </ul>
