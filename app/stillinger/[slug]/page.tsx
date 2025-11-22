@@ -51,6 +51,7 @@ type JobPosting = {
   salary_text: string | null;
   application_deadline: string | null;
   published_at: string | null;
+  created_at: string;
   slug: string;
   view_count: number;
   application_count: number;
