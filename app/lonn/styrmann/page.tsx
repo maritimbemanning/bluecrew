@@ -487,21 +487,21 @@ export default function Page() {
               >
                 Registrer deg som kandidat →
               </Link>
-              <Link 
-                href="/karriere/guides" 
-                style={{ 
+              <Link
+                href="/faq"
+                style={{
                   display: "inline-block",
-                  padding: "16px 32px", 
-                  background: "rgba(255,255,255,0.15)", 
-                  color: "#ffffff", 
+                  padding: "16px 32px",
+                  background: "rgba(255,255,255,0.15)",
+                  color: "#ffffff",
                   border: "2px solid rgba(255,255,255,0.5)",
-                  borderRadius: 12, 
+                  borderRadius: 12,
                   fontWeight: 700,
                   fontSize: 17,
                   textDecoration: "none"
                 }}
               >
-                Les flere karriereguider
+                Ofte stilte spørsmål
               </Link>
             </div>
           </div>

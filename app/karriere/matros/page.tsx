@@ -923,7 +923,7 @@ export default function Page() {
             </h3>
             <div style={{ display: "grid", gap: 12 }}>
               <Link
-                href="/karriere/hvordan-bli-skipsforer"
+                href="/karriere/skipsforer"
                 style={{
                   color: "#0ea5e9",
                   textDecoration: "none",
@@ -934,7 +934,7 @@ export default function Page() {
                 → Hvordan bli skipsfører
               </Link>
               <Link
-                href="/karriere/lonnsguide-maritime-stillinger"
+                href="/lonn/oversikt"
                 style={{
                   color: "#0ea5e9",
                   textDecoration: "none",
@@ -945,7 +945,7 @@ export default function Page() {
                 → Lønnsguide maritime stillinger 2025
               </Link>
               <Link
-                href="/karriere/guides"
+                href="/lonn/oversikt"
                 style={{
                   color: "#0ea5e9",
                   textDecoration: "none",
@@ -953,7 +953,7 @@ export default function Page() {
                   fontWeight: 600,
                 }}
               >
-                → Maritime sertifikatkrav (komplett oversikt)
+                → Maritime lønnsoversikt
               </Link>
               <Link
                 href="/faq"

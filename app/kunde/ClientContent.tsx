@@ -8,6 +8,7 @@ import { Input, Select, Textarea } from "../components/FormControls";
 import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
+import { useCsrfToken } from "../hooks/useCsrfToken";
 
 type FieldErrors = Record<string, string>;
 
@@ -131,6 +132,7 @@ const ui = {
 export default function ClientContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "client";
+  const { csrfToken } = useCsrfToken();
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -147,19 +149,21 @@ export default function ClientContent() {
       plausible("Lead Submitted", { props: { form: "client" } });
     }
 
-    const gtag = (
-      window as typeof window & {
-        gtag?: (...args: unknown[]) => void;
-      }
-    ).gtag;
-    if (typeof gtag === "function") {
-      gtag("event", "conversion", {
-        send_to: "AW-17715214678/XXXXXX",
-        value: 1.0,
-        currency: "NOK",
-        transaction_id: `client_${Date.now()}`,
-      });
-    }
+    // Google Ads conversion tracking - disabled until conversion label is configured
+    // TODO: Add conversion label from Google Ads dashboard to enable tracking
+    // const gtag = (
+    //   window as typeof window & {
+    //     gtag?: (...args: unknown[]) => void;
+    //   }
+    // ).gtag;
+    // if (typeof gtag === "function") {
+    //   gtag("event", "conversion", {
+    //     send_to: "AW-17715214678/YOUR_CONVERSION_LABEL",
+    //     value: 1.0,
+    //     currency: "NOK",
+    //     transaction_id: `client_${Date.now()}`,
+    //   });
+    // }
   }, [submitted]);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -530,6 +534,9 @@ export default function ClientContent() {
           </Link>
           .
         </div>
+
+        {/* CSRF Token */}
+        <input type="hidden" name="csrf_token" value={csrfToken} />
 
         {/* Honeypot */}
         <div aria-hidden="true" style={sx.honeypot}>

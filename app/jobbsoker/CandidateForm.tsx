@@ -14,6 +14,7 @@ import {
   type CandidateFormValues,
 } from "../lib/validation";
 import { VippsVerifiedBadge } from "./VippsLogin";
+import { useCsrfToken } from "../hooks/useCsrfToken";
 
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
@@ -217,6 +218,7 @@ export default function CandidateContent() {
   const isVerified = searchParams.get("verified") === "true";
   const requireVipps =
     (process.env.NEXT_PUBLIC_REQUIRE_VIPPS ?? "true").toLowerCase() !== "false";
+  const { csrfToken } = useCsrfToken();
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -431,6 +433,11 @@ export default function CandidateContent() {
 
       console.log("🚀 Submitting form to API...");
 
+      // Add CSRF token to form data
+      if (csrfToken) {
+        formData.set("csrf_token", csrfToken);
+      }
+
       try {
         const response = await fetch("/api/submit-candidate", {
           method: "POST",
@@ -464,7 +471,7 @@ export default function CandidateContent() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [vippsSession, requireVipps, router]
+    [vippsSession, requireVipps, router, csrfToken]
   );
 
   if (submitted) {
