@@ -2,16 +2,14 @@
  * JOB APPLICATION FORM
  * Route: bluecrew.no/stillinger/[slug]/sok
  *
- * Step 1: Vipps verification (using existing VippsLogin component)
- * Step 2: Application form with CV upload
- * Step 3: Submit application
+ * Clean, focused application with Vipps/BankID verification
+ * Design: Bluecrew brand - professional, maritime, trustworthy
  */
 
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import {
   Briefcase,
   Upload,
@@ -19,9 +17,17 @@ import {
   ArrowLeft,
   AlertCircle,
   Loader2,
+  MapPin,
+  Building,
+  Shield,
+  Clock,
+  FileText,
+  Mail,
+  Calendar,
 } from "lucide-react";
 import Link from "next/link";
-import VippsLogin from "@/app/jobbsoker/VippsLogin";
+import SiteLayout from "@/app/components/SiteLayout";
+import * as styles from "./page.css";
 
 // Types
 type VippsSession = {
@@ -40,6 +46,9 @@ type JobPosting = {
   id: string;
   title: string;
   company_name: string | null;
+  location: string;
+  fylke: string;
+  job_type: string;
   slug: string;
 };
 
@@ -206,253 +215,287 @@ export default function JobApplicationPage() {
   // Success screen
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center px-6">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-12 max-w-2xl w-full text-center"
-        >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mb-6">
-            <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
+      <SiteLayout active="stillinger">
+        <div className={styles.container}>
+          <div className={styles.formSection} style={{ marginTop: "120px" }}>
+            <div className={styles.successCard}>
+              <div className={styles.successIcon}>
+                <CheckCircle size={40} />
+              </div>
+              <h2 className={styles.successTitle}>Søknaden er sendt!</h2>
+              <p className={styles.successText}>
+                Takk for din søknad til stillingen som {job?.title}.
+                Vi gjennomgår søknaden din og tar kontakt innen 2-3 virkedager.
+              </p>
+              <div className={styles.successActions}>
+                <Link href="/stillinger" className={styles.successButtonPrimary}>
+                  Se flere stillinger
+                </Link>
+                <Link href="/" className={styles.successButtonSecondary}>
+                  Til forsiden
+                </Link>
+              </div>
+            </div>
           </div>
-
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
-            Søknad sendt!
-          </h1>
-
-          <p className="text-lg text-slate-600 dark:text-slate-300 mb-2">
-            Takk for din søknad på stillingen:
-          </p>
-          <p className="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-6">
-            {job?.title}
-          </p>
-
-          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 mb-8">
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Vi har mottatt søknaden din og vil gjennomgå den så snart som
-              mulig. Du vil motta en e-post når vi har tatt en avgjørelse.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/stillinger"
-              className="px-6 py-3 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium"
-            >
-              Se flere stillinger
-            </Link>
-            <Link
-              href="/"
-              className="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
-            >
-              Tilbake til forsiden
-            </Link>
-          </div>
-        </motion.div>
-      </div>
+        </div>
+      </SiteLayout>
     );
   }
 
   // Loading screen
   if (loadingJob || checkingSession) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="inline-block w-12 h-12 animate-spin text-blue-600 mb-4" />
-          <p className="text-slate-600 dark:text-slate-400">Laster...</p>
+      <SiteLayout active="stillinger">
+        <div className={styles.container}>
+          <div className={styles.formSection} style={{ marginTop: "120px" }}>
+            <div className={styles.formCard}>
+              <div className={styles.loadingState}>
+                <div className={styles.spinner} />
+                <p className={styles.loadingText}>Laster søknadsskjema...</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </SiteLayout>
     );
   }
 
   // Vipps verification step
   if (!vippsSession) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12 px-6">
-        <div className="max-w-2xl mx-auto">
-          <Link
-            href={`/stillinger/${slug}`}
-            className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            Tilbake til stillingen
-          </Link>
+      <SiteLayout active="stillinger">
+        <div className={styles.container}>
+          <section className={styles.heroSection}>
+            <div className={styles.heroInner}>
+              <Link href={`/stillinger/${slug}`} className={styles.backLink}>
+                <ArrowLeft size={18} />
+                Tilbake til stillingen
+              </Link>
+              {job && (
+                <>
+                  <div className={styles.jobBadge}>
+                    <Building size={16} />
+                    {job.company_name || "Bluecrew AS"}
+                  </div>
+                  <h1 className={styles.heroTitle}>Søk på: {job.title}</h1>
+                  <div className={styles.heroMeta}>
+                    <span className={styles.metaItem}>
+                      <MapPin size={18} />
+                      {job.location || job.fylke}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+          </section>
 
-          {job && (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 mb-8">
-              <div className="flex items-center gap-4 mb-4">
-                <Briefcase className="h-8 w-8 text-blue-600" />
-                <div>
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-                    {job.title}
-                  </h2>
-                  {job.company_name && (
-                    <p className="text-slate-600 dark:text-slate-400">
-                      {job.company_name}
-                    </p>
-                  )}
-                </div>
+          <div className={styles.formSection}>
+            <div className={styles.notVerifiedCard}>
+              <Shield size={64} style={{ color: "#0ea5e9", marginBottom: "24px" }} />
+              <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#0f172a", marginBottom: "12px" }}>
+                Verifiser identiteten din
+              </h2>
+              <p style={{ color: "#64748b", maxWidth: "400px", margin: "0 auto", lineHeight: 1.6 }}>
+                For å sikre en trygg søknadsprosess bruker vi Vipps/BankID for identitetsverifisering.
+                Dette tar kun 30 sekunder.
+              </p>
+              <Link
+                href={`/api/vipps/start?return=/stillinger/${slug}/sok`}
+                className={styles.vippsButton}
+              >
+                <img src="/icons/vipps-logo.jpeg" alt="Vipps" className={styles.vippsLogo} />
+                Verifiser med Vipps
+              </Link>
+              <div className={styles.trustFooter}>
+                <span className={styles.trustItem}>
+                  <Shield size={16} className={styles.trustIcon} />
+                  BankID-sikkerhet
+                </span>
+                <span className={styles.trustItem}>
+                  <Clock size={16} className={styles.trustIcon} />
+                  30 sekunder
+                </span>
+                <span className={styles.trustItem}>
+                  <CheckCircle size={16} className={styles.trustIcon} />
+                  Trygg prosess
+                </span>
               </div>
             </div>
-          )}
-
-          <VippsLogin onVerified={(session) => setVippsSession(session)} />
+          </div>
         </div>
-      </div>
+      </SiteLayout>
     );
   }
 
-  // Application form
+  // Main application form (verified with Vipps)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12 px-6">
-      <div className="max-w-3xl mx-auto">
-        <Link
-          href={`/stillinger/${slug}`}
-          className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 mb-6 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          Tilbake til stillingen
-        </Link>
+    <SiteLayout active="stillinger">
+      <div className={styles.container}>
+        <section className={styles.heroSection}>
+          <div className={styles.heroInner}>
+            <Link href={`/stillinger/${slug}`} className={styles.backLink}>
+              <ArrowLeft size={18} />
+              Tilbake til stillingen
+            </Link>
+            {job && (
+              <>
+                <div className={styles.jobBadge}>
+                  <Building size={16} />
+                  {job.company_name || "Bluecrew AS"}
+                </div>
+                <h1 className={styles.heroTitle}>Søk på: {job.title}</h1>
+                <div className={styles.heroMeta}>
+                  <span className={styles.metaItem}>
+                    <MapPin size={18} />
+                    {job.location || job.fylke}
+                  </span>
+                </div>
+              </>
+            )}
+          </div>
+        </section>
 
-        {/* Job Info */}
-        {job && (
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <Briefcase className="h-8 w-8 text-blue-600" />
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-                  Søk på stilling
-                </h1>
-                <p className="text-slate-600 dark:text-slate-400 mt-1">
-                  {job.title} hos {job.company_name || "Bluecrew"}
+        <div className={styles.formSection}>
+          <div className={styles.formCard}>
+            {/* Verified banner */}
+            <div className={styles.verifiedBanner}>
+              <div className={styles.verifiedIcon}>
+                <CheckCircle size={24} />
+              </div>
+              <div className={styles.verifiedContent}>
+                <p className={styles.verifiedTitle}>
+                  <Shield size={16} />
+                  Verifisert med Vipps
+                </p>
+                <p className={styles.verifiedDetails}>
+                  {vippsSession.name} • {vippsSession.phone}
                 </p>
               </div>
             </div>
 
-            {/* Verified Badge */}
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400 flex-shrink-0" />
-                <div>
-                  <p className="font-medium text-green-900 dark:text-green-100">
-                    Identitet verifisert med Vipps
-                  </p>
-                  <p className="text-sm text-green-700 dark:text-green-300">
-                    {vippsSession.name} • {vippsSession.phone}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Application Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8 space-y-6">
-            {/* Cover Letter */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Søknadstekst (valgfritt)
-              </label>
-              <textarea
-                value={coverLetter}
-                onChange={(e) => setCoverLetter(e.target.value)}
-                rows={8}
-                placeholder="Fortell oss hvorfor du er den rette kandidaten for denne stillingen..."
-                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-xl bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              />
-            </div>
-
-            {/* CV Upload */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Last opp CV *
-              </label>
-              <div className="relative">
-                <input
-                  type="file"
-                  accept=".pdf,.doc,.docx"
-                  onChange={(e) => setCvFile(e.target.files?.[0] || null)}
-                  required
-                  className="w-full px-4 py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-700 cursor-pointer"
-                />
-                {cvFile && (
-                  <div className="mt-2 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
-                    <CheckCircle className="h-4 w-4" />
-                    <span>{cvFile.name}</span>
-                  </div>
-                )}
-              </div>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                PDF, DOC eller DOCX (maks 10MB)
+            {/* Form */}
+            <form onSubmit={handleSubmit} className={styles.formBody}>
+              <h2 className={styles.formTitle}>Fullfør søknaden</h2>
+              <p className={styles.formSubtitle}>
+                Navn og telefon er hentet fra Vipps. Legg til CV og send inn.
               </p>
-            </div>
 
-            {/* Certificates Upload */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Last opp sertifikater (valgfritt)
-              </label>
-              <div className="relative">
-                <input
-                  type="file"
-                  accept=".pdf,.zip"
-                  onChange={(e) => setCertsFile(e.target.files?.[0] || null)}
-                  className="w-full px-4 py-3 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-slate-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-700 cursor-pointer"
-                />
-                {certsFile && (
-                  <div className="mt-2 flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
-                    <CheckCircle className="h-4 w-4" />
-                    <span>{certsFile.name}</span>
+              {error && <div className={styles.errorMessage}>{error}</div>}
+
+              <div className={styles.formGrid}>
+                {/* CV Upload */}
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FileText size={18} className={styles.labelIcon} />
+                    CV (PDF)
+                    <span className={styles.required}>*</span>
+                  </label>
+                  <div className={`${styles.fileUpload} ${cvFile ? styles.fileUploadActive : ""}`}>
+                    <Upload size={32} className={styles.fileUploadIcon} />
+                    <p className={styles.fileUploadText}>
+                      {cvFile ? "Bytt fil" : "Klikk for å velge fil"}
+                    </p>
+                    <p className={styles.fileUploadHint}>PDF, maks 10 MB</p>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => setCvFile(e.target.files?.[0] || null)}
+                      className={styles.fileUploadInput}
+                    />
+                    {cvFile && (
+                      <div className={styles.fileName}>
+                        <CheckCircle size={18} />
+                        {cvFile.name}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                PDF eller ZIP-fil med alle relevante sertifikater
-              </p>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-700 dark:text-red-300">
-                    {error}
-                  </p>
                 </div>
-              </div>
-            )}
 
-            {/* Submit Button */}
-            <div className="flex gap-4">
-              <Link
-                href={`/stillinger/${slug}`}
-                className="flex-1 px-6 py-4 border border-slate-300 dark:border-slate-600 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors font-medium text-center"
-              >
-                Avbryt
-              </Link>
-              <button
-                type="submit"
-                disabled={submitting || !cvFile}
-                className="flex-1 px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-bold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    Sender søknad...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="h-5 w-5" />
-                    Send søknad
-                  </>
-                )}
-              </button>
-            </div>
+                {/* Email - added since Vipps might not provide it */}
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <Mail size={18} className={styles.labelIcon} />
+                    E-post
+                    <span className={styles.required}>*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={vippsSession.email || ""}
+                    onChange={() => {}}
+                    placeholder="din@epost.no"
+                    className={styles.input}
+                    required
+                  />
+                </div>
+
+                {/* Cover Letter */}
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    Kort om deg (valgfritt)
+                  </label>
+                  <textarea
+                    value={coverLetter}
+                    onChange={(e) => setCoverLetter(e.target.value)}
+                    placeholder="Skriv gjerne litt om din erfaring og hvorfor du er interessert i stillingen..."
+                    className={styles.textarea}
+                    rows={4}
+                  />
+                </div>
+
+                {/* Consent */}
+                <div className={styles.consentBox}>
+                  <label className={styles.consentLabel}>
+                    <input
+                      type="checkbox"
+                      required
+                      className={styles.checkbox}
+                    />
+                    <span>
+                      Jeg samtykker til at Bluecrew AS lagrer og behandler mine
+                      personopplysninger for denne søknaden.{" "}
+                      <Link href="/personvern" style={{ color: "#0ea5e9" }}>
+                        Les personvernerklæringen
+                      </Link>
+                    </span>
+                  </label>
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className={`${styles.submitButton} ${submitting ? styles.submitButtonLoading : ""}`}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={20} style={{ animation: "spin 1s linear infinite" }} />
+                      Sender søknad...
+                    </>
+                  ) : (
+                    "Send søknad"
+                  )}
+                </button>
+              </div>
+
+              {/* Trust indicators */}
+              <div className={styles.trustFooter}>
+                <span className={styles.trustItem}>
+                  <Shield size={16} className={styles.trustIcon} />
+                  GDPR-sikret
+                </span>
+                <span className={styles.trustItem}>
+                  <CheckCircle size={16} className={styles.trustIcon} />
+                  BankID-verifisert
+                </span>
+                <span className={styles.trustItem}>
+                  <Clock size={16} className={styles.trustIcon} />
+                  Svar innen 2-3 dager
+                </span>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
-    </div>
+    </SiteLayout>
   );
 }
