@@ -259,14 +259,24 @@ export async function GET(request: NextRequest) {
       ...(cookieDomain ? { domain: cookieDomain } : {}),
     });
 
-    // Clean up state/nonce cookies
+    // Get return URL if set (for job application flow)
+    const returnUrl = cookieStore.get("vipps_return")?.value;
+
+    // Clean up state/nonce/return cookies
     cookieStore.delete("vipps_state");
     cookieStore.delete("vipps_nonce");
+    cookieStore.delete("vipps_return");
 
-    logger.debug("🔄 Redirecting to form with verified=true");
+    // Determine redirect destination
+    // If return URL is set and is a valid internal path, use it
+    const redirectPath = returnUrl && returnUrl.startsWith("/")
+      ? returnUrl
+      : "/jobbsoker/registrer/skjema?verified=true";
+
+    logger.debug("🔄 Redirecting after Vipps verification", { redirectPath });
 
     return NextResponse.redirect(
-      new URL("/jobbsoker/registrer/skjema?verified=true", request.url)
+      new URL(redirectPath, request.url)
     );
   } catch (error) {
     logger.error("Vipps callback error:", error);
