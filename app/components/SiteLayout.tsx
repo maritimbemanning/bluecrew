@@ -28,22 +28,21 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
+    href: "/stillinger",
+    label: "Ledige stillinger",
+    key: "stillinger",
+    accent: true,
+  },
+  {
     href: "/jobbsoker",
-    label: "Finn jobb",
+    label: "For jobbsøkere",
     key: "jobbsoker",
     children: [
-      { href: "/jobbsoker/registrer", label: "Registrer deg" },
-      { href: "/jobbsoker/oppdrag", label: "Ledige oppdrag" },
+      { href: "/stillinger", label: "Se ledige stillinger" },
+      { href: "/jobbsoker/registrer", label: "Opprett profil" },
       { href: "/faq", label: "Vanlige spørsmål" },
     ],
   },
-  // HIDDEN - Testing in progress
-  // {
-  //   href: "/stillinger",
-  //   label: "Ledige stillinger",
-  //   key: "stillinger",
-  //   accent: true,
-  // },
   {
     href: "/kunde",
     label: "For bedrifter",
@@ -410,7 +409,7 @@ export function SiteLayout({
           {!isMobile && (
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
-                href="/meld-interesse"
+                href="/stillinger"
                 style={{
                   padding: "10px 24px",
                   background:
@@ -436,12 +435,12 @@ export function SiteLayout({
                   ).plausible;
                   if (typeof plausible === "function") {
                     plausible("CTA Click", {
-                      props: { location: "header", cta: "Registrer deg" },
+                      props: { location: "header", cta: "Ledige stillinger" },
                     });
                   }
                 }}
               >
-                Registrer deg
+                Se stillinger
               </Link>
               <Link
                 href="/api/vipps/start"
@@ -579,7 +578,7 @@ export function SiteLayout({
                       })}
                       <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                         <Link
-                          href="/meld-interesse"
+                          href="/stillinger"
                           style={{
                             ...sx.mobileNavLink,
                             background:
@@ -593,7 +592,7 @@ export function SiteLayout({
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
                         >
-                          Registrer deg
+                          Se ledige stillinger
                         </Link>
                       </li>
                       <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
