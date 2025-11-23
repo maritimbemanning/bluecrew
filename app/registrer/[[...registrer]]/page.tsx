@@ -15,6 +15,8 @@ export default function RegistrerPage() {
       }}
     >
       <SignUp
+        routing="path"
+        path="/registrer"
         appearance={{
           elements: {
             rootBox: {
