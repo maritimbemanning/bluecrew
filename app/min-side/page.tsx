@@ -286,7 +286,7 @@ export default function MinSidePage() {
               <FileText size={32} style={{ marginBottom: 12, opacity: 0.5 }} />
               <p>Du har ingen søknader ennå.</p>
               <Link
-                href="/stillinger"
+                href="/jobbsoker/registrer/skjema"
                 style={{
                   display: "inline-block",
                   marginTop: 16,
@@ -294,7 +294,7 @@ export default function MinSidePage() {
                   fontWeight: 600,
                 }}
               >
-                Se ledige jobber →
+                Registrer deg som jobbsøker →
               </Link>
             </div>
           ) : (
