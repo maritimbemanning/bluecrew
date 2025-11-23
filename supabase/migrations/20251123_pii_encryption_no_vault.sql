@@ -265,8 +265,9 @@ SECURITY DEFINER
 AS $$
 BEGIN
   IF NEW.is_encrypted IS NOT TRUE THEN
-    IF NEW.name IS NOT NULL AND NEW.name != '' THEN
-      NEW.name_encrypted := encrypt_pii(NEW.name);
+    -- Note: leads table uses 'contact' instead of 'name'
+    IF NEW.contact IS NOT NULL AND NEW.contact != '' THEN
+      NEW.name_encrypted := encrypt_pii(NEW.contact);
     END IF;
     IF NEW.email IS NOT NULL AND NEW.email != '' THEN
       NEW.email_encrypted := encrypt_pii(NEW.email);
@@ -300,10 +301,10 @@ SET
   is_encrypted = TRUE
 WHERE is_encrypted IS NOT TRUE OR is_encrypted IS NULL;
 
--- Encrypt leads
+-- Encrypt leads (note: leads uses 'contact' not 'name')
 UPDATE public.leads
 SET
-  name_encrypted = encrypt_pii(name),
+  name_encrypted = encrypt_pii(contact),
   email_encrypted = encrypt_pii(email),
   phone_encrypted = encrypt_pii(phone),
   is_encrypted = TRUE
@@ -338,7 +339,7 @@ FROM public.candidates;
 CREATE OR REPLACE VIEW public.leads_secure AS
 SELECT
   id,
-  COALESCE(decrypt_pii(name_encrypted), name) as name,
+  COALESCE(decrypt_pii(name_encrypted), contact) as contact,
   COALESCE(decrypt_pii(email_encrypted), email) as email,
   COALESCE(decrypt_pii(phone_encrypted), phone) as phone,
   company,
