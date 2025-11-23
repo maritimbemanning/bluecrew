@@ -1,3 +1,5 @@
+"use client";
+
 import { SignUp } from "@clerk/nextjs";
 
 export default function RegistrerPage() {
@@ -46,7 +48,7 @@ export default function RegistrerPage() {
             },
           },
         }}
-        forceRedirectUrl="/min-side"
+        fallbackRedirectUrl="/min-side"
         signInUrl="/logg-inn"
       />
     </div>
