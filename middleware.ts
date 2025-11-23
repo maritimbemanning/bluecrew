@@ -18,14 +18,15 @@ const isProtectedRoute = createRouteMatcher([
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
-  "form-action 'self'",
+  "form-action 'self' https://*.clerk.accounts.dev https://*.clerk.com",
   "frame-ancestors 'none'",
-  "img-src 'self' data: blob:",
+  "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.com",
+  "img-src 'self' data: blob: https://img.clerk.com https://*.clerk.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live blob:`,
+  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live https://*.clerk.accounts.dev https://*.clerk.com blob:`,
   "worker-src 'self' blob:",
-  // Allow Vercel Live (preview feedback/toolbar) to avoid CSP console noise in preview/test
+  // Allow Vercel Live, Clerk, and other services
   "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://*.clerk.accounts.dev https://*.clerk.com",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
