@@ -1,6 +1,6 @@
 # CLAUDE.md - AI Assistant Guide for Bluecrew Codebase
 
-This document provides comprehensive guidance for AI assistants working on the Bluecrew codebase. Last updated: 2025-11-19
+This document provides comprehensive guidance for AI assistants working on the Bluecrew codebase. Last updated: 2025-11-23
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
@@ -32,10 +32,13 @@ This document provides comprehensive guidance for AI assistants working on the B
 - Requires STCW-2010 maritime certifications
 
 ### Core Features
+- **User Authentication**: Clerk-based login/registration with email verification
+- **User Portal** (`/min-side`): View applications, download personal data, request deletion (GDPR)
 - Candidate registration with CV/certificate uploads
 - Client needs registration (business leads)
-- Vipps identity verification (Norwegian BankID)
-- Salary calculator and career guides
+- Vipps identity verification (Norwegian BankID) - for enhanced verification
+- Salary calculator with 7 positions (matros, dekksoffiser, styrmann, kaptein, maskinoffiser, akvatekniker, kokk)
+- Career guides for maritime professions
 - Job postings (currently in testing, not public)
 - Contact forms and interest registration
 
@@ -54,7 +57,9 @@ This document provides comprehensive guidance for AI assistants working on the B
 - **Supabase**: PostgreSQL database + file storage (Row Level Security enabled)
 - **Upstash Redis**: Rate limiting (sliding window, 8 req/min per IP)
 - **Resend**: Transactional email with HTML templates
-- **Vipps**: OAuth 2.0 identity verification (Norwegian market)
+- **Clerk**: User authentication (email/password, magic links, Norwegian localization)
+- **Vipps**: OAuth 2.0 identity verification (Norwegian market) - for enhanced verification
+- **AdminCrew API**: External admin backend at `admincrew.no` for job postings and applications
 
 ### Validation & Security
 - **Custom Zod** (`app/lib/zod.ts`): Lightweight validation with Norwegian errors
@@ -105,8 +110,16 @@ This document provides comprehensive guidance for AI assistants working on the B
 │   │   ├── submit-client/        # Client lead submission
 │   │   ├── submit-interest/      # Quick interest form
 │   │   ├── contact/              # Contact form
+│   │   ├── csrf/                 # CSRF token generation
+│   │   ├── gdpr/delete-request/  # GDPR data deletion requests
 │   │   ├── vipps/                # Vipps OAuth flow
 │   │   └── health/               # Health check endpoints
+│   ├── logg-inn/                 # Login page (Clerk)
+│   │   └── [[...logg-inn]]/      # Catch-all for Clerk redirects
+│   ├── registrer/                # Registration page (Clerk)
+│   │   └── [[...registrer]]/     # Catch-all for Clerk redirects
+│   ├── min-side/                 # User portal (protected)
+│   │   └── page.tsx              # Dashboard with applications & GDPR
 │   ├── jobbsoker/                # Job seeker pages
 │   │   ├── registrer/skjema/     # Multi-step registration
 │   │   └── oppdrag/              # Available assignments
@@ -168,11 +181,13 @@ This document provides comprehensive guidance for AI assistants working on the B
    Required variables (see `.env.example` for full list):
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
-   - `UPSTASH_REDIS_REST_URL`
+   - `UPSTASH_REDIS_REST_URL` (no quotes around URLs!)
    - `UPSTASH_REDIS_REST_TOKEN`
    - `RESEND_API_KEY`
    - `CSRF_SECRET`
-   - `VIPPS_CLIENT_ID`, `VIPPS_CLIENT_SECRET`, etc.
+   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (required for auth)
+   - `CLERK_SECRET_KEY` (required for auth)
+   - `VIPPS_CLIENT_ID`, `VIPPS_CLIENT_SECRET`, etc. (for enhanced verification)
 
 3. **Run development server:**
    ```bash
@@ -636,6 +651,89 @@ export async function sendCandidateNotification(data: CandidateData) {
       // Attach CV and certificates
     ],
   });
+}
+```
+
+### Clerk Authentication Pattern
+
+**Root Layout Setup:**
+```typescript
+// app/layout.tsx
+import { ClerkProvider } from "@clerk/nextjs";
+import { nbNO } from "@clerk/localizations";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClerkProvider localization={nbNO}>
+      <html lang="no">
+        <body>{children}</body>
+      </html>
+    </ClerkProvider>
+  );
+}
+```
+
+**Protected Route (Middleware):**
+```typescript
+// middleware.ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+
+const isProtectedRoute = createRouteMatcher(["/min-side(.*)"]);
+
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedRoute(req)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const signInUrl = new URL("/logg-inn", req.url);
+      signInUrl.searchParams.set("redirect_url", req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+  return NextResponse.next();
+});
+```
+
+**Using Clerk in Client Components:**
+```typescript
+"use client";
+import { useUser, useSignIn, SignOutButton, UserButton } from "@clerk/nextjs";
+
+export function UserDashboard() {
+  const { user, isLoaded } = useUser();
+
+  if (!isLoaded) return <div>Loading...</div>;
+  if (!user) return <div>Not logged in</div>;
+
+  return (
+    <div>
+      <p>Welcome, {user.fullName}</p>
+      <UserButton />
+      <SignOutButton>
+        <button>Logg ut</button>
+      </SignOutButton>
+    </div>
+  );
+}
+```
+
+**Custom Sign In Page:**
+```typescript
+// app/logg-inn/[[...logg-inn]]/page.tsx
+"use client";
+import { useSignIn } from "@clerk/nextjs";
+
+export default function LoggInnPage() {
+  const { signIn, setActive } = useSignIn();
+
+  async function handleSubmit(email: string, password: string) {
+    const result = await signIn.create({ identifier: email, password });
+    if (result.status === "complete") {
+      await setActive({ session: result.createdSessionId });
+      // Redirect to /min-side
+    }
+  }
+  // Custom form UI...
 }
 ```
 
@@ -1104,7 +1202,15 @@ Set in Vercel dashboard:
 **Security:**
 - `CSRF_SECRET` (random 32+ character string)
 
-**Vipps:**
+**Clerk (Authentication):**
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (from Clerk dashboard)
+- `CLERK_SECRET_KEY` (from Clerk dashboard)
+- `NEXT_PUBLIC_CLERK_SIGN_IN_URL` (default: `/logg-inn`)
+- `NEXT_PUBLIC_CLERK_SIGN_UP_URL` (default: `/registrer`)
+- `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` (default: `/min-side`)
+- `NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL` (default: `/min-side`)
+
+**Vipps (Enhanced Identity Verification):**
 - `VIPPS_CLIENT_ID`
 - `VIPPS_CLIENT_SECRET`
 - `VIPPS_SUBSCRIPTION_KEY`
@@ -1209,11 +1315,29 @@ export const FYLKER_KOMMUNER: Record<string, string[]> = {
 
 ### Integrations
 
-**Vipps (Norwegian payment/identity):**
+**Clerk (User Authentication):**
+- Email/password authentication with Norwegian localization (`nbNO`)
+- Magic link / email code login option
+- Email verification required for new accounts
+- Routes:
+  - `/logg-inn` - Login page (custom UI)
+  - `/registrer` - Registration page (custom UI)
+  - `/min-side` - Protected user dashboard
+- Middleware protection for `/min-side/*` routes
+- CSP configured for Clerk domains and Cloudflare Turnstile (bot protection)
+
+**Vipps (Enhanced Identity Verification):**
 - OAuth 2.0 / OpenID Connect
 - BankID integration (highest trust level in Norway)
-- Used for identity verification
+- Used for enhanced identity verification (optional)
 - Routes: `/api/vipps/start`, `/api/vipps/callback`, `/api/vipps/session`
+
+**AdminCrew API (External Backend):**
+- Base URL: `https://admincrew.no`
+- Used for job postings and application management
+- Endpoints:
+  - `GET /api/job-postings?status=active` - Active job listings
+  - `GET /api/job-applications?user_id={id}` - User's applications
 
 **Brreg (Norwegian Company Registry):**
 - API: `https://data.brreg.no/enhetsregisteret/api/enheter/{orgNumber}`
@@ -1307,6 +1431,30 @@ echo $RESEND_TO_EMAILS
 // app/jobbsoker/registrer/skjema/page.tsx
 ```
 
+**Clerk authentication fails:**
+```bash
+# Check Clerk environment variables
+echo $NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+echo $CLERK_SECRET_KEY
+
+# Common issues:
+# - Missing publishableKey: Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+# - Build errors: Clerk requires keys even at build time
+# - CSP blocking: Check middleware.ts for Clerk domains
+# - Bot protection: Cloudflare Turnstile requires CSP for challenges.cloudflare.com
+```
+
+**Build fails with Clerk errors:**
+```bash
+# Error: @clerk/clerk-react: Missing publishableKey
+# Solution: Set NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY in environment
+# Note: This is required even during build (not just runtime)
+
+# For local builds without Clerk:
+# The build will fail if Clerk keys are not set
+# Get keys from: https://dashboard.clerk.com/last-active?path=api-keys
+```
+
 **Vipps OAuth fails:**
 ```bash
 # Check environment variables
@@ -1356,12 +1504,15 @@ logger.error("Error occurred", { error, stack });
 - [Next.js 15 Docs](https://nextjs.org/docs)
 - [React 19 Docs](https://react.dev)
 - [Supabase Docs](https://supabase.com/docs)
+- [Clerk Docs](https://clerk.com/docs) - Authentication
+- [Clerk Next.js SDK](https://clerk.com/docs/quickstarts/nextjs)
 - [Vanilla Extract Docs](https://vanilla-extract.style)
 - [Tailwind CSS Docs](https://tailwindcss.com/docs)
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Vipps Login API](https://developer.vippsmobilepay.com/docs/APIs/login-api/)
 
 ### Tools
+- [Clerk](https://clerk.com/) - User authentication
 - [Pa11y](https://pa11y.org/) - Accessibility testing
 - [Plausible](https://plausible.io/) - Privacy-friendly analytics
 - [Resend](https://resend.com/) - Email API
@@ -1378,6 +1529,17 @@ logger.error("Error occurred", { error, stack });
 ---
 
 ## Changelog
+
+**2025-11-23** - Major authentication update
+- Added Clerk authentication (email/password, magic links)
+- Custom Norwegian login (`/logg-inn`) and registration (`/registrer`) pages
+- New user portal (`/min-side`) with GDPR compliance features
+- Protected routes with middleware authentication
+- Added `Kokk/Forpleining` role to salary calculator
+- GDPR data deletion request endpoint (`/api/gdpr/delete-request`)
+- Updated CSP for Clerk and Cloudflare Turnstile
+- Removed Sentry (observability.ts is now a no-op placeholder)
+- Integration with AdminCrew API for job applications
 
 **2025-11-19** - Initial CLAUDE.md creation
 - Comprehensive codebase analysis
