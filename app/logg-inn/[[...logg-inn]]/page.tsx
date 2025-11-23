@@ -15,6 +15,8 @@ export default function LoggInnPage() {
       }}
     >
       <SignIn
+        routing="path"
+        path="/logg-inn"
         appearance={{
           elements: {
             rootBox: {
