@@ -157,7 +157,13 @@ export default function RootLayout({
   };
 
   return (
-    <ClerkProvider localization={nbNO}>
+    <ClerkProvider
+      localization={nbNO}
+      signInUrl="/logg-inn"
+      signUpUrl="/registrer"
+      signInFallbackRedirectUrl="/min-side"
+      signUpFallbackRedirectUrl="/min-side"
+    >
     <html lang="no">
       <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}

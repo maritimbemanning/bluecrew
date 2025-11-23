@@ -18,18 +18,18 @@ const isProtectedRoute = createRouteMatcher([
 const csp = [
   "default-src 'self'",
   "base-uri 'self'",
-  "form-action 'self' https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com",
+  "form-action 'self' https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com",
   "frame-ancestors 'none'",
-  // Clerk + Cloudflare Turnstile (bot protection/CAPTCHA)
-  "frame-src 'self' https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://challenges.cloudflare.com",
-  "img-src 'self' data: blob: https://img.clerk.com https://*.clerk.com https://*.clerk.dev https://*.clerk.accounts.dev",
+  // Clerk custom domain + Cloudflare Turnstile (bot protection/CAPTCHA)
+  "frame-src 'self' https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://challenges.cloudflare.com",
+  "img-src 'self' data: blob: https://accounts.bluecrew.no https://img.clerk.com https://*.clerk.com https://*.clerk.dev https://*.clerk.accounts.dev",
   "font-src 'self' https://fonts.gstatic.com data:",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com",
-  // Clerk + Cloudflare Turnstile scripts
-  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://challenges.cloudflare.com blob:`,
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com",
+  // Clerk custom domain + Cloudflare Turnstile scripts
+  `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://challenges.cloudflare.com blob:`,
   "worker-src 'self' blob:",
-  // Allow Vercel Live, Clerk, Cloudflare Turnstile, and other services
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com",
+  // Allow Vercel Live, Clerk custom domain, Cloudflare Turnstile, and other services
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk.accounts.dev https://clerk.dev https://clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
