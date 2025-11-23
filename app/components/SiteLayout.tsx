@@ -392,7 +392,7 @@ export function SiteLayout({
           {!isMobile && (
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
-                href="/stillinger"
+                href="/jobbsoker/registrer/skjema"
                 style={{
                   padding: "12px 28px",
                   background:
@@ -418,12 +418,12 @@ export function SiteLayout({
                   ).plausible;
                   if (typeof plausible === "function") {
                     plausible("CTA Click", {
-                      props: { location: "header", cta: "Ledige jobber" },
+                      props: { location: "header", cta: "Søk jobb" },
                     });
                   }
                 }}
               >
-                Ledige jobber
+                Søk jobb
               </Link>
               <Link
                 href="/min-side"
@@ -561,7 +561,7 @@ export function SiteLayout({
                       })}
                       <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                         <Link
-                          href="/stillinger"
+                          href="/jobbsoker/registrer/skjema"
                           style={{
                             ...sx.mobileNavLink,
                             background:
@@ -575,7 +575,7 @@ export function SiteLayout({
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
                         >
-                          Se ledige stillinger
+                          Søk jobb
                         </Link>
                       </li>
                       <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
@@ -682,7 +682,7 @@ export function SiteLayout({
                     ))}
                     <li style={{ ...sx.mobileNavItem, marginTop: 16 }}>
                       <Link
-                        href="/stillinger"
+                        href="/jobbsoker/registrer/skjema"
                         style={{
                           ...sx.mobileNavLink,
                           background:
@@ -696,7 +696,7 @@ export function SiteLayout({
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        Ledige jobber
+                        Søk jobb
                       </Link>
                     </li>
                     <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
