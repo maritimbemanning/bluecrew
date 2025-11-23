@@ -22,9 +22,55 @@ export default function RegistrerPage() {
   const [pendingVerification, setPendingVerification] = useState(false);
   const [code, setCode] = useState("");
 
+  // Show loading while Clerk initializes
+  if (!isLoaded) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <div style={{ fontSize: "1.5rem", marginBottom: "16px" }}>⏳</div>
+            <p style={{ color: "#64748b" }}>Laster inn...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error if Clerk failed to initialize
+  if (!signUp) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <div style={{ fontSize: "1.5rem", marginBottom: "16px", color: "#dc2626" }}>⚠️</div>
+            <p style={{ color: "#dc2626", fontWeight: 600, marginBottom: "12px" }}>
+              Kunne ikke laste registreringsskjema
+            </p>
+            <p style={{ color: "#64748b", fontSize: "0.9rem", marginBottom: "20px" }}>
+              Prøv å laste siden på nytt, eller kontakt oss på post@bluecrew.no
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: "12px 24px",
+                background: "#0369a1",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              Last siden på nytt
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!isLoaded || !signUp) return;
 
     setLoading(true);
     setError("");
