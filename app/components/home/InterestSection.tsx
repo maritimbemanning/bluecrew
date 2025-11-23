@@ -6,6 +6,10 @@ import { sx } from "@/app/lib/styles";
 
 type State = "idle" | "submitting" | "success" | "error";
 
+// Types for analytics on window
+type PlausibleFn = (event: string, options?: { props?: Record<string, string> }) => void;
+type GtagFn = (command: string, action: string, params: Record<string, unknown>) => void;
+
 export function InterestSection() {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -39,14 +43,16 @@ export function InterestSection() {
       setState("success");
       form.reset();
       try {
-        if (typeof window !== "undefined" && (window as any).plausible) {
-          (window as any).plausible("Interest Submitted", {
+        const plausible = (window as Window & { plausible?: PlausibleFn }).plausible;
+        if (typeof window !== "undefined" && plausible) {
+          plausible("Interest Submitted", {
             props: { form: "candidate_interest" },
           });
         }
         // Track to Google Ads (Candidate Lead Conversion)
-        if (typeof window !== "undefined" && (window as any).gtag) {
-          (window as any).gtag("event", "conversion", {
+        const gtag = (window as Window & { gtag?: GtagFn }).gtag;
+        if (typeof window !== "undefined" && gtag) {
+          gtag("event", "conversion", {
             send_to: "AW-17715214678/YYYYYY", // 👈 Erstatt YYYYYY med conversion label for kandidater
             value: 0.5,
             currency: "NOK",

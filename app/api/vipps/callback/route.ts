@@ -134,7 +134,10 @@ export async function GET(request: NextRequest) {
       logger.error("JWT verification error", jwtError);
 
       // If failure was due to issuer claim, try signature-only verify, then manual aud/iss checks
-      if (typeof jwtError === 'object' && jwtError !== null && 'code' in jwtError && (jwtError as any).code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && 'claim' in jwtError && (jwtError as any).claim === 'iss') {
+      const isJwtClaimError = (err: unknown): err is { code: string; claim: string } =>
+        typeof err === 'object' && err !== null && 'code' in err && 'claim' in err;
+
+      if (isJwtClaimError(jwtError) && jwtError.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && jwtError.claim === 'iss') {
         try {
           const { payload: payload2 } = await jwtVerify(tokens.id_token, JWKS, {});
           // Manual audience check
