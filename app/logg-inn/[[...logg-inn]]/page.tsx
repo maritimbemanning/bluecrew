@@ -1,34 +1,14 @@
-import { SignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "linear-gradient(155deg, #0a1d39 0%, #0f2648 55%, #051427 100%)",
-      }}
-    >
-      <SignIn
-        fallback={
-          <div style={{ color: "white", textAlign: "center" }}>
-            <p>Laster innlogging...</p>
-            <p style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>
-              Hvis dette tar lang tid, sjekk at Clerk er konfigurert riktig.
-            </p>
-          </div>
-        }
-        appearance={{
-          elements: {
-            rootBox: {
-              width: "100%",
-              maxWidth: "420px",
-            },
-          },
-        }}
-      />
-    </div>
-  );
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect_url?: string }>;
+}) {
+  // Clerk Account Portal handles sign-in
+  const params = searchParams as unknown as { redirect_url?: string };
+  const redirectUrl = params?.redirect_url
+    ? `?redirect_url=${encodeURIComponent(params.redirect_url)}`
+    : "";
+  redirect(`https://accounts.bluecrew.no/sign-in${redirectUrl}`);
 }
