@@ -12,6 +12,14 @@ export default function LoginPage() {
       }}
     >
       <SignIn
+        fallback={
+          <div style={{ color: "white", textAlign: "center" }}>
+            <p>Laster innlogging...</p>
+            <p style={{ fontSize: "12px", opacity: 0.7, marginTop: "8px" }}>
+              Hvis dette tar lang tid, sjekk at Clerk er konfigurert riktig.
+            </p>
+          </div>
+        }
         appearance={{
           elements: {
             rootBox: {
