@@ -6,6 +6,8 @@ import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
+import { ClerkProvider } from "@clerk/nextjs";
+import { nbNO } from "@clerk/localizations";
 
 const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
@@ -155,6 +157,7 @@ export default function RootLayout({
   };
 
   return (
+    <ClerkProvider localization={nbNO}>
     <html lang="no">
       <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
@@ -211,5 +214,6 @@ export default function RootLayout({
         <SpeedInsights />
       </body>
     </html>
+    </ClerkProvider>
   );
 }

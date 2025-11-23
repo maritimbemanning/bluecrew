@@ -1,7 +1,33 @@
 // middleware.ts
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+
+// Routes that require authentication
+const isProtectedRoute = createRouteMatcher([
+  "/min-side(.*)",
+]);
+
+// Public routes (no auth needed)
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/logg-inn(.*)",
+  "/registrer(.*)",
+  "/jobbsoker(.*)",
+  "/kunde(.*)",
+  "/karriere(.*)",
+  "/lonn(.*)",
+  "/stillinger(.*)",
+  "/om-oss(.*)",
+  "/kontakt(.*)",
+  "/personvern(.*)",
+  "/vilkar(.*)",
+  "/api/vipps(.*)",
+  "/api/submit-(.*)",
+  "/api/contact(.*)",
+  "/api/health(.*)",
+]);
 
 /**
  * Streng, men praktisk Content Security Policy (CSP)
@@ -20,7 +46,7 @@ const csp = [
   `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live blob:`,
   "worker-src 'self' blob:",
   // Allow Vercel Live (preview feedback/toolbar) to avoid CSP console noise in preview/test
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://*.clerk.accounts.dev https://*.clerk.com",
   // Slå på neste linje når alt eksternt innhold er via HTTPS (vanlig i prod)
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
@@ -66,21 +92,19 @@ function applySecurityHeaders(res: NextResponse) {
 }
 
 /**
- * Minimal middleware uten admin-gating.
- * Alle requests går videre, men får sikkerhets-headere.
+ * Clerk middleware with security headers and maintenance mode.
  */
-export function middleware(req: NextRequest) {
+export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl.clone();
   const { pathname } = url;
 
   // Hard guard: Never expose /admin routes from this public site
   if (pathname.startsWith("/admin")) {
-    // Return 404 to avoid leaking that an admin area exists
     const res = new NextResponse("Not Found", { status: 404 });
     return applySecurityHeaders(res);
   }
 
-  // Read maintenance flag from env (supports true/1/on). Evaluated at runtime in Edge.
+  // Read maintenance flag from env
   const maintenanceFlag = String(
     process.env.MAINTENANCE_MODE ?? process.env.NEXT_PUBLIC_MAINTENANCE_MODE ?? ""
   ).toLowerCase();
@@ -94,8 +118,6 @@ export function middleware(req: NextRequest) {
     /^\/robots\.txt$/,
     /^\/sitemap\.xml$/,
     /^\/api\/health(\/|$)/,
-    /^\/api\/sentry-example-api(\/|$)/,
-    // Public assets (served from /public)
     /^\/icons\//,
     /^\/hero\//,
     /^\/guides\//,
@@ -104,19 +126,14 @@ export function middleware(req: NextRequest) {
   const isAllowed = allow.some((r) => r.test(pathname));
 
   if (MAINTENANCE_MODE && !isAllowed) {
-    // For non-GET methods, respond with 503 to signal temporary unavailability to clients/robots
     if (req.method !== "GET" && req.method !== "HEAD") {
       const res = new NextResponse("Service Unavailable (maintenance)", {
         status: 503,
-        headers: {
-          "Retry-After": "120",
-          "Cache-Control": "no-store",
-        },
+        headers: { "Retry-After": "120", "Cache-Control": "no-store" },
       });
       return applySecurityHeaders(res);
     }
 
-    // For normal page requests, rewrite to the maintenance page
     url.pathname = "/maintenance";
     const res = NextResponse.rewrite(url);
     res.headers.set("Cache-Control", "no-store");
@@ -124,11 +141,26 @@ export function middleware(req: NextRequest) {
     return applySecurityHeaders(res);
   }
 
+  // Protect /min-side routes - redirect to login if not authenticated
+  if (isProtectedRoute(req)) {
+    const { userId } = await auth();
+    if (!userId) {
+      const signInUrl = new URL("/logg-inn", req.url);
+      signInUrl.searchParams.set("redirect_url", req.url);
+      return NextResponse.redirect(signInUrl);
+    }
+  }
+
   const res = NextResponse.next();
   return applySecurityHeaders(res);
-}
+});
 
-/** Kjør på hele nettstedet */
+/** Clerk middleware matcher */
 export const config = {
-  matcher: ["/:path*"],
+  matcher: [
+    // Skip Next.js internals and static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+  ],
 };
