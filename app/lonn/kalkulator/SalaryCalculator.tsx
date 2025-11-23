@@ -9,7 +9,8 @@ type Position =
   | "styrmann"
   | "kaptein"
   | "maskinoffiser"
-  | "akvatekniker";
+  | "akvatekniker"
+  | "kokk";
 type Experience = "0-2" | "2-5" | "5-10" | "10+";
 type WorkType = "havbruk" | "offshore" | "servicefartoy" | "kystfart";
 
@@ -99,6 +100,23 @@ const salaryData: SalaryData[] = [
     },
     certificationBonus: 80000, // Fagbrev-tillegg
   },
+  {
+    position: "kokk",
+    baseSalary: 420000,
+    experienceMultiplier: {
+      "0-2": 1.0,
+      "2-5": 1.22,
+      "5-10": 1.38,
+      "10+": 1.55,
+    },
+    workTypeBonus: {
+      havbruk: 25000,
+      offshore: 70000,
+      servicefartoy: 35000,
+      kystfart: 10000,
+    },
+    certificationBonus: 50000, // Fagbrev kokk
+  },
 ];
 
 const positionLabels: Record<Position, string> = {
@@ -108,6 +126,7 @@ const positionLabels: Record<Position, string> = {
   kaptein: "Kaptein",
   maskinoffiser: "Maskinoffiser",
   akvatekniker: "Akvatekniker",
+  kokk: "Kokk / Forpleining",
 };
 
 const workTypeLabels: Record<WorkType, string> = {
@@ -140,7 +159,7 @@ export function SalaryCalculator() {
     const expMultiplier = data.experienceMultiplier[experience];
     const workBonus = data.workTypeBonus[workType];
     const certBonus =
-      position === "akvatekniker" && hasCertification
+      (position === "akvatekniker" || position === "kokk") && hasCertification
         ? data.certificationBonus || 0
         : 0;
 
@@ -240,7 +259,7 @@ export function SalaryCalculator() {
           </select>
         </div>
 
-        {position === "akvatekniker" && (
+        {(position === "akvatekniker" || position === "kokk") && (
           <div className={styles.inputGroup}>
             <label className={styles.checkboxLabel}>
               <input
@@ -250,7 +269,7 @@ export function SalaryCalculator() {
                 className={styles.checkbox}
               />
               <span className={styles.labelIcon}>📜</span>
-              Fagbrev (+80 000 kr/år)
+              Fagbrev (+{position === "kokk" ? "50 000" : "80 000"} kr/år)
             </label>
           </div>
         )}
@@ -303,19 +322,20 @@ export function SalaryCalculator() {
                 kr
               </span>
             </div>
-            {position === "akvatekniker" && hasCertification && (
-              <div className={styles.breakdownItem}>
-                <span className={styles.breakdownLabel}>Fagbrev-tillegg:</span>
-                <span className={styles.breakdownValue}>
-                  +
-                  {formatSalary(
-                    salaryData.find((d) => d.position === position)
-                      ?.certificationBonus || 0
-                  )}{" "}
-                  kr
-                </span>
-              </div>
-            )}
+            {(position === "akvatekniker" || position === "kokk") &&
+              hasCertification && (
+                <div className={styles.breakdownItem}>
+                  <span className={styles.breakdownLabel}>Fagbrev-tillegg:</span>
+                  <span className={styles.breakdownValue}>
+                    +
+                    {formatSalary(
+                      salaryData.find((d) => d.position === position)
+                        ?.certificationBonus || 0
+                    )}{" "}
+                    kr
+                  </span>
+                </div>
+              )}
           </div>
 
           <div className={styles.disclaimer}>
