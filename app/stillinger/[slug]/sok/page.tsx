@@ -297,6 +297,7 @@ export default function JobApplicationPage() {
                 href={`/api/vipps/start?return=/stillinger/${slug}/sok`}
                 className={styles.vippsButton}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/icons/vipps-logo.jpeg" alt="Vipps" className={styles.vippsLogo} />
                 Verifiser med Vipps
               </Link>

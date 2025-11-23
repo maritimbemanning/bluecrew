@@ -72,6 +72,11 @@ export default function RegistrerPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!signUp) {
+      setError("Registrering ikke tilgjengelig");
+      return;
+    }
+
     setLoading(true);
     setError("");
 

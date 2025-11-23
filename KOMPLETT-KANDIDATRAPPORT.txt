@@ -1,0 +1,104 @@
+
+════════════════════════════════════════════════════════════
+KOMPLETT KANDIDATRAPPORT - BLUECREW
+════════════════════════════════════════════════════════════
+Generert: 20.11.2025, 16:53:00
+
+───────────────────────────────────────────────────────────
+TOTALOVERSIKT
+───────────────────────────────────────────────────────────
+Total antall kandidater: 306
+
+  • Interesse-registreringer: 242
+    (Raske interesseregistreringer uten CV)
+
+  • Fulle søknader med CV: 64
+    (Komplette søknader med CV og sertifikater)
+
+───────────────────────────────────────────────────────────
+KANDIDATER MED CV (64 stk)
+───────────────────────────────────────────────────────────
+
+Status fordeling:
+  pending: 50
+  avslått: 10
+  godkjent: 4
+
+Arbeidsområder (top 10):
+  Servicefartøy mannskap:Matros: 30
+  Logistikk og støtte:Offshore service: 20
+  Logistikk og støtte:Supply: 19
+  Fiskeri:Matros: 19
+  Servicefartøy mannskap:Skipper/Styrmann: 17
+  Havbruk:Operativ drift: 13
+  Servicefartøy mannskap:Kokekyndig: 12
+  Havbruk:Vedlikehold: 9
+  Fiskeri:Skipper/Styrmann: 4
+  Havbruk:Akvatekniker m/fagbrev: 4
+
+STCW-sertifikat:
+  Har eller vil skaffe: 62
+
+Tilgjengelighet:
+  Ønsker vikararbeid: 58
+
+CV-filer lagret: 62
+Sertifikatfiler lagret: 52
+
+───────────────────────────────────────────────────────────
+INTERESSE-REGISTRERINGER (242 stk)
+───────────────────────────────────────────────────────────
+
+Siste 7 dager: 54
+
+Roller (top 10):
+  Annet maritimt: 57
+  Matros: 53
+  Dekksarbeider: 39
+  Skipper / kyst: 27
+  Styrmann: 26
+  Maskinist: 18
+  Akvatekniker m/fagbrev: 8
+  Матрос: 4
+  Палубный рабочий: 3
+  Pracownik pokładowy: 2
+
+Status:
+  interesse: 214
+  avslått: 27
+  godkjent: 1
+
+Datakvalitet:
+  Med erfaring oppgitt: 215 (89%)
+  Med sertifikater oppgitt: 197 (81%)
+  Med tilleggsnotater: 181 (75%)
+
+───────────────────────────────────────────────────────────
+FILER GENERERT
+───────────────────────────────────────────────────────────
+✓ ALLE-KANDIDATER-KOMPLETT.csv
+  → Excel-fil med ALLE 306 kandidater
+  → Inkluderer CV-filstier for nedlasting
+
+✓ KOMPLETT-KANDIDATRAPPORT.txt
+  → Denne filen med fullstendig oversikt
+
+✓ candidates-with-cvs-export.json
+  → Rådata for kandidater med CV
+
+✓ candidates-export.json
+  → Rådata for interesse-registreringer
+
+───────────────────────────────────────────────────────────
+CV-NEDLASTING
+───────────────────────────────────────────────────────────
+CV-filer er lagret i Supabase Storage under bucket "candidates-private"
+
+For å laste ned en CV:
+1. Bruk cv_key fra CSV-filen (f.eks. "cv/abc123.pdf")
+2. Last ned via Supabase Dashboard eller API
+3. Alternativt: Kontakt utvikler for bulk-nedlasting
+
+NB: CV-filer krever service role autentisering (privat bucket)
+
+════════════════════════════════════════════════════════════

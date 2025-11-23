@@ -70,6 +70,11 @@ export default function LoggInnPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!signIn) {
+      setError("Autentisering ikke tilgjengelig");
+      return;
+    }
+
     setLoading(true);
     setError("");
 

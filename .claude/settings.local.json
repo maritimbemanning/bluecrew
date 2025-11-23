@@ -2,7 +2,14 @@
   "permissions": {
     "allow": [
       "Bash(cat:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(set RESEND_API_KEY=re_UetGDqjU_5odz3FHpqrFBnGun919C9ETk)",
+      "Bash(set RESEND_FROM_EMAIL=no-reply@send.bluecrew.no)",
+      "Bash(set RESEND_TO_EMAILS=isak@bluecrew.no,tf@bluecrew.no)",
+      "Bash(node test-email.js:*)",
+      "Bash(node -e \"process.env.RESEND_API_KEY=''re_UetGDqjU_5odz3FHpqrFBnGun919C9ETk''; process.env.RESEND_FROM_EMAIL=''no-reply@send.bluecrew.no''; process.env.RESEND_TO_EMAILS=''isak@bluecrew.no,tf@bluecrew.no''; const script = require(''fs'').readFileSync(''test-email.js'', ''utf8''); eval(script);\")",
+      "Bash(node:*)",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
