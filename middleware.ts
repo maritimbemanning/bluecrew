@@ -9,26 +9,6 @@ const isProtectedRoute = createRouteMatcher([
   "/min-side(.*)",
 ]);
 
-// Public routes (no auth needed)
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/logg-inn(.*)",
-  "/registrer(.*)",
-  "/jobbsoker(.*)",
-  "/kunde(.*)",
-  "/karriere(.*)",
-  "/lonn(.*)",
-  "/stillinger(.*)",
-  "/om-oss(.*)",
-  "/kontakt(.*)",
-  "/personvern(.*)",
-  "/vilkar(.*)",
-  "/api/vipps(.*)",
-  "/api/submit-(.*)",
-  "/api/contact(.*)",
-  "/api/health(.*)",
-]);
-
 /**
  * Streng, men praktisk Content Security Policy (CSP)
  * - Tillater Google Fonts og Plausible
