@@ -6,9 +6,13 @@ import crypto from "crypto";
 import { getVippsOpenIdConfig, getVippsJWKS } from "@/app/lib/server/vipps";
 import { logger } from "../../../lib/logger";
 
+// Strip quotes from env vars if present (some environments add them)
+const stripQuotes = (str: string | undefined): string =>
+  str?.replace(/^["']|["']$/g, '') ?? '';
+
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  url: stripQuotes(process.env.UPSTASH_REDIS_REST_URL),
+  token: stripQuotes(process.env.UPSTASH_REDIS_REST_TOKEN),
 });
 
 // Vipps OpenID base (used for fallback paths only; primary is discovery)
