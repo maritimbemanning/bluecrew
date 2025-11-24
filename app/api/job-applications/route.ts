@@ -130,6 +130,7 @@ export async function POST(req: Request) {
     }
 
     // Store in local database
+    let dbSaveSuccess = false;
     try {
       await insertSupabaseRow({
         table: "job_applications",
@@ -150,9 +151,10 @@ export async function POST(req: Request) {
           status: "new",
         },
       });
-      logger.debug("✅ Job application stored in local database");
+      dbSaveSuccess = true;
+      logger.info("✅ Job application stored in local database");
     } catch (error) {
-      logger.error("❌ Failed to store job application in local database", error);
+      logger.error("❌ Failed to store job application in local database", { error: String(error) });
     }
 
     // Sync to AdminCrew
@@ -259,13 +261,23 @@ Job ID: ${applicationData.job_id}
     }
 
     // Send notification email
-    await sendNotificationEmail({
-      subject: `Jobbsøknad: ${applicationData.job_title} - ${applicationData.name}`,
-      text: textContent,
-      html: htmlContent,
-      replyTo: applicationData.email,
-      attachments,
-    });
+    try {
+      const emailResult = await sendNotificationEmail({
+        subject: `Jobbsøknad: ${applicationData.job_title} - ${applicationData.name}`,
+        text: textContent,
+        html: htmlContent,
+        replyTo: applicationData.email,
+        attachments,
+      });
+      if (emailResult) {
+        logger.info("✅ Email notification sent", { emailId: (emailResult as { data?: { id?: string } }).data?.id });
+      } else {
+        logger.warn("⚠️ Email not sent - check RESEND_API_KEY configuration");
+      }
+    } catch (emailErr) {
+      logger.error("❌ Failed to send email notification", { error: String(emailErr) });
+      // Continue - application is stored, email failure shouldn't block submission
+    }
 
     logger.info("✅ Job application submitted successfully", {
       job_id: applicationData.job_id,
