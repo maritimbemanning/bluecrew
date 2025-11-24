@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import { nbNO } from "@clerk/localizations";
 import "./globals.css";
 import "../styles/global.css";
@@ -218,15 +211,6 @@ export default function RootLayout({
           <BreadcrumbsSchema />
         </head>
         <body>
-          <header style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "1rem", gap: "1rem" }}>
-            <SignedOut>
-              <SignInButton />
-              <SignUpButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header>
           {children}
           <CookieBanner />
           <PlausibleLoader />
