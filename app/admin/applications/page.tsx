@@ -73,7 +73,7 @@ export default async function AdminApplicationsPage() {
   const role = (user.publicMetadata as { role?: string })?.role;
 
   // Fallback: Check if user email is in admin list
-  const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no"];
+  const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
   const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
 
   const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
