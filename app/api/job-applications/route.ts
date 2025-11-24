@@ -129,7 +129,7 @@ export async function POST(req: Request) {
       }
     }
 
-    // Store in database (shared with AdminCrew)
+    // Store in local database
     try {
       await insertSupabaseRow({
         table: "job_applications",
@@ -146,14 +146,54 @@ export async function POST(req: Request) {
           vipps_name: applicationData.name,
           vipps_verified_at: applicationData.vipps_verified_at || null,
           source: "web",
-          user_agent: null, // Could add from request headers
+          user_agent: null,
           status: "new",
         },
       });
-      logger.debug("✅ Job application stored in database");
+      logger.debug("✅ Job application stored in local database");
     } catch (error) {
-      logger.error("❌ Failed to store job application in database", error);
-      // Continue - email notification is backup
+      logger.error("❌ Failed to store job application in local database", error);
+    }
+
+    // Sync to AdminCrew for admin management
+    try {
+      const adminCrewPayload = {
+        job_posting_id: applicationData.job_id,
+        name: applicationData.name,
+        email: applicationData.email,
+        phone: applicationData.phone,
+        cover_letter: applicationData.cover_letter || null,
+        vipps_verified: applicationData.vipps_verified,
+        vipps_sub: applicationData.vipps_sub || null,
+        vipps_verified_at: applicationData.vipps_verified_at || null,
+        source: "bluecrew.no",
+        status: "new",
+      };
+
+      const adminRes = await fetch(
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            // Add API key if AdminCrew requires authentication
+            ...(process.env.ADMINCREW_API_KEY && {
+              "X-API-Key": process.env.ADMINCREW_API_KEY,
+            }),
+          },
+          body: JSON.stringify(adminCrewPayload),
+        }
+      );
+
+      if (adminRes.ok) {
+        logger.debug("✅ Job application synced to AdminCrew");
+      } else {
+        const errorText = await adminRes.text();
+        logger.warn("⚠️ AdminCrew sync failed:", { status: adminRes.status, error: errorText });
+      }
+    } catch (error) {
+      logger.warn("⚠️ Failed to sync to AdminCrew (will retry via email)", error);
+      // Don't fail the request - email notification is backup
     }
 
     // Build email content
