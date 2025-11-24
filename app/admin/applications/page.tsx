@@ -6,7 +6,7 @@
  * Only accessible by users with "admin" role in Clerk
  */
 
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { selectSupabaseRows, createSupabaseSignedUrl } from "@/app/lib/server/supabase";
 import ApplicationsTable from "./ApplicationsTable";
@@ -62,25 +62,21 @@ async function getCvDownloadUrl(cvPath: string): Promise<string | null> {
 }
 
 export default async function AdminApplicationsPage() {
-  // Check authentication
-  const { userId, sessionClaims } = await auth();
+  // Check authentication - use currentUser() to get full user data including publicMetadata
+  const user = await currentUser();
 
-  if (!userId) {
+  if (!user) {
     redirect("/logg-inn?redirect_url=/admin/applications");
   }
 
-  // Check if user has admin role
-  // Clerk stores custom data in publicMetadata, which appears in sessionClaims.metadata
-  // or sessionClaims.publicMetadata depending on Clerk configuration
-  const metadata = sessionClaims?.metadata as { role?: string } | undefined;
-  const publicMetadata = sessionClaims?.publicMetadata as { role?: string } | undefined;
-  const role = metadata?.role || publicMetadata?.role;
+  // Check if user has admin role (from publicMetadata)
+  const role = (user.publicMetadata as { role?: string })?.role;
 
   // Fallback: Check if user email is in admin list
   const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no"];
-  const userEmail = sessionClaims?.email as string | undefined;
+  const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
 
-  const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail.toLowerCase()));
+  const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
 
   if (!isAdmin) {
     redirect("/");
