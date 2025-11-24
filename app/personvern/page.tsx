@@ -133,7 +133,7 @@ export default function PersonvernPage() {
             nettstedet bluecrew.no.
           </p>
           <div style={ui.badgeRow}>
-            <span style={ui.badge}>Oppdatert: 6. november 2025</span>
+            <span style={ui.badge}>Oppdatert: 24. november 2025</span>
             <span style={ui.badge}>Org.nr: 936 463 843</span>
             <span style={ui.badge}>Kontakt: isak@bluecrew.no</span>
           </div>
@@ -220,6 +220,7 @@ export default function PersonvernPage() {
                 <li><strong>Resend</strong> – e-postvarsling ved innsendinger.</li>
                 <li><strong>Upstash</strong> – Redis og rate-limiting.</li>
                 <li><strong>Plausible</strong> – webanalyse (kun ved samtykke).</li>
+                <li><strong>Sentry</strong> – feilovervåkning for teknisk drift (EU-datacenter, ingen persondata).</li>
               </ul>
               <p style={ui.p}>
                 Vi har databehandleravtaler (DPA) og bruker lovlige overføringsgrunnlag ved eventuell behandling utenfor
