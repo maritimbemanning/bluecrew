@@ -31,7 +31,7 @@
 - **Datatilsynets veiledere** om behandlingsgrunnlag og rettigheter
 
 **Sterke sider:**
-1. **Behandlingsansvarlig** klart angitt (Bluecrew AS, Org.nr: 936 321 194).
+1. **Behandlingsansvarlig** klart angitt (Bluecrew AS, Org.nr: 936 463 843).
 2. **Formål og rettslig grunnlag** godt dokumentert:
    - Kundehenvendelser: berettiget interesse (GDPR art. 6(1)(f))
    - Rekruttering: samtykke (art. 6(1)(a)) + berettiget interesse

@@ -1,7 +1,7 @@
 # TRANSFER IMPACT ASSESSMENT (TIA)
 
 **Dato:** 6. november 2025  
-**Behandlingsansvarlig:** Bluecrew AS (Org.nr: 936 321 194)  
+**Behandlingsansvarlig:** Bluecrew AS (Org.nr: 936 463 843)  
 **Formål:** Vurdering av personvernrisiko ved overføring av personopplysninger til tredjeland (USA)
 
 ---
@@ -280,6 +280,6 @@ Overføring av personopplysninger til Resend (USA) og Upstash (USA) vurderes som
 
 ---
 
-**Opprettholdt av:** Bluecrew AS (Org.nr: 936 321 194)  
+**Opprettholdt av:** Bluecrew AS (Org.nr: 936 463 843)  
 **Kontakt:** isak@bluecrew.no  
 **Neste revisjon:** 1. februar 2026

@@ -119,7 +119,7 @@ export default function TermsPage() {
           </p>
           <div style={ui.badgeRow}>
             <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
-            <span style={ui.badge}>Bluecrew AS · Org.nr: 936 321 194</span>
+            <span style={ui.badge}>Bluecrew AS · Org.nr: 936 463 843</span>
           </div>
         </div>
       </header>

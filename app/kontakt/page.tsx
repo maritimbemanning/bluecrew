@@ -49,7 +49,7 @@ export default function Page() {
             <div>
               <h2 style={sx.contactTitle}>Juridisk informasjon</h2>
               <p style={sx.contactLine}>Bluecrew AS</p>
-              <p style={sx.contactLine}>Org.nr: 936 321 194</p>
+              <p style={sx.contactLine}>Org.nr: 936 463 843</p>
               <p style={sx.contactLine}>Persondata behandles i henhold til GDPR.</p>
             </div>
           </div>
