@@ -3,10 +3,12 @@
  * Route: POST /api/gdpr/delete-request
  *
  * Handles user requests to delete their personal data.
+ * SECURITY: Requires Clerk authentication to prevent unauthorized deletion requests.
  * Sends notification email to admin for processing.
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { sendNotificationEmail } from "@/app/lib/server/email";
 import { enforceRateLimit } from "@/app/lib/server/rate-limit";
 import { logger } from "@/app/lib/logger";
@@ -15,9 +17,18 @@ export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limit
+    // SECURITY: Require authentication
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "Du må være innlogget for å sende en slettforespørsel" },
+        { status: 401 }
+      );
+    }
+
+    // Rate limit (per user, not just IP)
     const ip = request.headers.get("x-forwarded-for") || "unknown";
-    const rateLimit = await enforceRateLimit(`gdpr-delete:${ip}`);
+    const rateLimit = await enforceRateLimit(`gdpr-delete:${user.id}:${ip}`);
 
     if (!rateLimit.allowed) {
       return NextResponse.json(
@@ -28,6 +39,18 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const { vipps_sub, name, phone, email } = body;
+
+    // SECURITY: Verify user owns this email or log discrepancy
+    const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
+    const requestedEmail = email?.toLowerCase();
+    if (requestedEmail && userEmail && requestedEmail !== userEmail) {
+      logger.warn("GDPR request email mismatch", {
+        userId: user.id,
+        userEmail,
+        requestedEmail,
+      });
+      // Allow but flag for admin review
+    }
 
     if (!vipps_sub || !name) {
       return NextResponse.json(
@@ -83,6 +106,11 @@ export async function POST(request: NextRequest) {
                 <div class="value" style="font-family: monospace; font-size: 14px;">${vipps_sub}</div>
               </div>
 
+              <div class="field">
+                <div class="label">Clerk User ID</div>
+                <div class="value" style="font-family: monospace; font-size: 14px;">${user.id}</div>
+              </div>
+
               <div class="warning">
                 <strong>⚠️ Påkrevd handling</strong><br>
                 I henhold til GDPR må denne forespørselen behandles innen 30 dager.
@@ -114,6 +142,7 @@ Navn: ${name}
 Telefon: ${phone || "Ikke oppgitt"}
 E-post: ${email || "Ikke oppgitt"}
 Vipps ID: ${vipps_sub}
+Clerk User ID: ${user.id}
 
 Denne forespørselen må behandles innen 30 dager i henhold til GDPR Art. 17.
 

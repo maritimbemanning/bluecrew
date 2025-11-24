@@ -102,9 +102,9 @@ export async function GET(request: NextRequest) {
         audience: process.env.VIPPS_CLIENT_ID,
       });
 
-      // Optionally validate issuer (can be disabled via env for emergency unblocking)
-  // Default: do NOT enforce issuer unless explicitly enabled
-  const enforceIssuer = String(process.env.VIPPS_ENFORCE_ISSUER ?? "false").toLowerCase() === "true";
+      // SECURITY: Validate issuer by default (can be disabled via env for emergency unblocking)
+      // Default: enforce issuer unless explicitly disabled
+      const enforceIssuer = String(process.env.VIPPS_ENFORCE_ISSUER ?? "true").toLowerCase() !== "false";
       if (enforceIssuer) {
         const expectedIssuer = normalizeIssuer(process.env.VIPPS_ISSUER || cfg.issuer);
         const tokenIssuer = typeof payload.iss === "string" ? normalizeIssuer(payload.iss) : "";
@@ -150,8 +150,8 @@ export async function GET(request: NextRequest) {
           if (!aud2 || !aud2.includes(expectedAud)) {
             throw new Error('audience_mismatch');
           }
-          // Manual issuer enforcement (toggleable)
-          const enforceIssuer = String(process.env.VIPPS_ENFORCE_ISSUER ?? "false").toLowerCase() === "true";
+          // Manual issuer enforcement (toggleable) - enforce by default
+          const enforceIssuer = String(process.env.VIPPS_ENFORCE_ISSUER ?? "true").toLowerCase() !== "false";
           if (enforceIssuer) {
             const expectedIssuer = normalizeIssuer(process.env.VIPPS_ISSUER || cfg.issuer);
             const tokenIssuer = typeof payload2.iss === "string" ? normalizeIssuer(payload2.iss) : "";
@@ -169,9 +169,9 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Optional fallback using UserInfo endpoint if enabled
-  // Default: allow userinfo fallback to unblock customers unless explicitly disabled
-  const allowUserInfoFallback = String(process.env.VIPPS_ALLOW_USERINFO_FALLBACK ?? "true").toLowerCase() === "true";
+      // SECURITY: UserInfo fallback disabled by default (can be enabled for emergency unblocking)
+      // Default: do NOT allow userinfo fallback unless explicitly enabled
+      const allowUserInfoFallback = String(process.env.VIPPS_ALLOW_USERINFO_FALLBACK ?? "false").toLowerCase() === "true";
       if (!allowUserInfoFallback || !tokens.access_token) {
         return NextResponse.redirect(
           new URL("/jobbsoker/registrer?vipps_error=invalid_token", request.url)
@@ -275,8 +275,20 @@ export async function GET(request: NextRequest) {
     cookieStore.delete("vipps_return");
 
     // Determine redirect destination
-    // If return URL is set and is a valid internal path, use it
-    const redirectPath = returnUrl && returnUrl.startsWith("/")
+    // SECURITY: Validate return URL is a safe internal path (no open redirect)
+    const ALLOWED_RETURN_PREFIXES = [
+      "/jobbsoker",
+      "/stillinger",
+      "/min-side",
+      "/kunde",
+    ];
+    const isValidReturnUrl = returnUrl &&
+      returnUrl.startsWith("/") &&
+      !returnUrl.startsWith("//") && // Prevent protocol-relative URLs
+      !returnUrl.includes("://") && // Prevent embedded URLs
+      ALLOWED_RETURN_PREFIXES.some(prefix => returnUrl.startsWith(prefix));
+
+    const redirectPath = isValidReturnUrl
       ? returnUrl
       : "/jobbsoker/registrer/skjema?verified=true";
 

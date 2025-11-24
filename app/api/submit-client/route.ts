@@ -74,7 +74,8 @@ export async function POST(req: Request) {
 
     const html = buildClientHtml(data);
 
-    await Promise.all([
+    // Use Promise.allSettled to ensure email sends even if DB fails
+    const results = await Promise.allSettled([
       insertSupabaseRow({
         table: "leads",
         payload: {
@@ -82,6 +83,7 @@ export async function POST(req: Request) {
           contact: data.contact,
           email: data.c_email,
           phone: data.c_phone || null,
+          org_number: data.org_number || null, // FIX: Store org number
           need_type: data.need_type,
           work_location: data.work_location,
           need_duration: data.need_duration || null,
@@ -92,25 +94,31 @@ export async function POST(req: Request) {
           submitted_at: new Date().toISOString(),
           source_ip: getClientIp(req),
         },
-      }).catch((error) => {
-        logger.error("⚠️ Supabase-feil (client):", error);
       }),
       sendNotificationEmail({
         subject: `Bluecrew kunde: ${data.company || "(uten selskap)"}`,
         text: lines.join("\n"),
         html,
         replyTo: data.c_email,
-      }).catch((error) => {
-        logger.error("❌ Sendefeil (client):", error);
       }),
       sendClientConfirmation({
         name: data.contact,
         email: data.c_email,
         company: data.company,
-      }).catch((error) => {
-        logger.error("⚠️ Sendte ikke kvittering (client):", error);
       }),
     ]);
+
+    // Log any failures (but don't fail the request - email serves as backup)
+    const [dbResult, emailResult, receiptResult] = results;
+    if (dbResult.status === "rejected") {
+      logger.error("⚠️ Supabase-feil (client):", dbResult.reason);
+    }
+    if (emailResult.status === "rejected") {
+      logger.error("❌ Sendefeil (client):", emailResult.reason);
+    }
+    if (receiptResult.status === "rejected") {
+      logger.error("⚠️ Sendte ikke kvittering (client):", receiptResult.reason);
+    }
 
     const acceptsJson = (req.headers.get("accept") || "").includes(
       "application/json"

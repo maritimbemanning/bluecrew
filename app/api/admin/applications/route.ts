@@ -6,6 +6,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { selectSupabaseRows, createSupabaseSignedUrl } from "@/app/lib/server/supabase";
+import { isAdminUser } from "@/app/lib/admin";
 
 export const runtime = "nodejs";
 
@@ -25,8 +26,6 @@ type JobApplication = {
   vipps_sub: string | null;
 };
 
-const ADMIN_EMAILS = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
-
 export async function GET() {
   try {
     // Check authentication
@@ -39,7 +38,7 @@ export async function GET() {
     // Check admin access
     const role = (user.publicMetadata as { role?: string })?.role;
     const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
-    const isAdmin = role === "admin" || (userEmail && ADMIN_EMAILS.includes(userEmail));
+    const isAdmin = isAdminUser(userEmail, role);
 
     if (!isAdmin) {
       return NextResponse.json({ error: "Ingen tilgang" }, { status: 403 });

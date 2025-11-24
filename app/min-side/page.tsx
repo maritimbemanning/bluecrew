@@ -34,6 +34,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
+import { ADMIN_EMAILS } from "@/app/lib/admin";
 
 type JobApplication = {
   id: string;
@@ -87,8 +88,6 @@ type AdminCandidate = {
   certsUrl?: string | null;
   vipps_verified: boolean;
 };
-
-const ADMIN_EMAILS = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
 
 const statusLabels: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   new: { label: "Mottatt", color: "#3b82f6", icon: <Clock size={14} /> },
