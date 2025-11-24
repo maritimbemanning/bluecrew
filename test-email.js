@@ -3,7 +3,7 @@ const { Resend } = require('resend');
 
 const resendKey = process.env.RESEND_API_KEY;
 const fromEmail = process.env.RESEND_FROM_EMAIL || 'no-reply@send.bluecrew.no';
-const toEmails = (process.env.RESEND_TO_EMAILS || 'isak@bluecrew.no,SanderBerg@bluecrew.no')
+const toEmails = (process.env.RESEND_TO_EMAILS || 'isak@bluecrew.no,tf@bluecrew.no')
   .split(',')
   .map(s => s.trim())
   .filter(Boolean);
