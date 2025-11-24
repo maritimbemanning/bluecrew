@@ -7,7 +7,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
 export const metadata: Metadata = {
   title: "Lønnsoversikt Maritim 2025 | Veiledende Lønninger for Sjøfolk",
   description:
-    "Veiledende lønnsintervaller for 7 maritime stillinger i Norge (matros, styrmann, kaptein, maskinoffiser, dekksoffiser, akvatekniker, kokk/forpleining). Basert på SSB, NHO Sjøfart og tariffavtaler. Oppdatert november 2025.",
+    "Veiledende lønnsintervaller for 6 maritime stillinger i Norge (matros, styrmann, kaptein, maskinoffiser, dekksoffiser, kokk/forpleining). Basert på SSB, NHO Sjøfart og tariffavtaler. Oppdatert november 2025.",
   keywords: [
     "maritim lønn oversikt",
     "sjømann lønn veiledning",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Lønnsoversikt Maritim 2025 | Veiledende Lønninger",
     description:
-      "Veiledende lønnsintervaller for 7 maritime stillinger. Matros, styrmann, kaptein, maskinoffiser, dekksoffiser, akvatekniker og kokk. Basert på offentlige kilder.",
+      "Veiledende lønnsintervaller for 6 maritime stillinger. Matros, styrmann, kaptein, maskinoffiser, dekksoffiser og kokk. Basert på offentlige kilder.",
     url: `${siteUrl}/lonn/kalkulator`,
     type: "website",
     images: [
@@ -154,7 +154,7 @@ export default function LonnKalkulatorPage() {
               margin: "0 auto",
             }}
           >
-            Veiledende lønnsintervaller for 7 maritime stillinger i Norge.
+            Veiledende lønnsintervaller for 6 maritime stillinger i Norge.
             Basert på offentlige kilder (SSB, NHO Sjøfart, tariffavtaler).
           </p>
         </header>
