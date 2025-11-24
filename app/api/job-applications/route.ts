@@ -12,6 +12,7 @@ import { sendNotificationEmail } from "../../lib/server/email";
 import { uploadSupabaseObject, insertSupabaseRow } from "../../lib/server/supabase";
 import { logger } from "../../lib/logger";
 import { createHash } from "node:crypto";
+import { getClientIp, escapeHtml as escHtml } from "../../lib/server/utils";
 
 export const runtime = "nodejs";
 
@@ -297,19 +298,3 @@ Job ID: ${applicationData.job_id}
   }
 }
 
-function escHtml(s: string = "") {
-  return s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function getClientIp(req: Request) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return req.headers.get("x-real-ip") || "unknown";
-}

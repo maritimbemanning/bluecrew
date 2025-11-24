@@ -19,7 +19,16 @@ export async function GET(request: NextRequest) {
   const nonce = crypto.randomBytes(16).toString("hex");
 
   // Get optional return URL for post-verification redirect
-  const returnUrl = request.nextUrl.searchParams.get("return");
+  // SECURITY: Validate return URL is a safe internal path
+  const rawReturnUrl = request.nextUrl.searchParams.get("return");
+  const ALLOWED_RETURN_PREFIXES = ["/jobbsoker", "/stillinger", "/min-side", "/kunde"];
+  const returnUrl = rawReturnUrl &&
+    rawReturnUrl.startsWith("/") &&
+    !rawReturnUrl.startsWith("//") &&
+    !rawReturnUrl.includes("://") &&
+    ALLOWED_RETURN_PREFIXES.some(prefix => rawReturnUrl.startsWith(prefix))
+      ? rawReturnUrl
+      : null;
 
   logger.success(" Generated state and nonce", { state, nonce });
 

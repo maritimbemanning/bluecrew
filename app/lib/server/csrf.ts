@@ -8,7 +8,24 @@ import { createHmac, randomBytes } from "crypto";
 
 const CSRF_TOKEN_LENGTH = 32;
 const CSRF_COOKIE_NAME = "csrf_token";
-const CSRF_SECRET = process.env.CSRF_SECRET || process.env.NEXTAUTH_SECRET || "fallback-secret-change-in-production";
+
+// Lazy-loaded secret to avoid build-time errors
+let _cachedSecret: string | null = null;
+
+function getCsrfSecret(): string {
+  if (_cachedSecret) return _cachedSecret;
+
+  const secret = process.env.CSRF_SECRET || process.env.NEXTAUTH_SECRET;
+
+  // SECURITY: CSRF_SECRET must be set in production - no fallback allowed
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("CRITICAL: CSRF_SECRET environment variable must be set in production");
+  }
+
+  // Use a runtime-generated fallback for development only (not predictable)
+  _cachedSecret = secret || `dev-${Date.now()}-${Math.random()}`;
+  return _cachedSecret;
+}
 
 /**
  * Generates a CSRF token and stores it in a cookie
@@ -19,7 +36,7 @@ export async function generateCsrfToken(): Promise<string> {
   const cookieStore = await cookies();
   
   // Create HMAC signature of the token
-  const signature = createHmac("sha256", CSRF_SECRET)
+  const signature = createHmac("sha256", getCsrfSecret())
     .update(token)
     .digest("hex");
   
@@ -63,7 +80,7 @@ export async function validateCsrfToken(submittedToken: string | null | undefine
   }
   
   // Verify the signature
-  const expectedSignature = createHmac("sha256", CSRF_SECRET)
+  const expectedSignature = createHmac("sha256", getCsrfSecret())
     .update(storedToken)
     .digest("hex");
   

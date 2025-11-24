@@ -17,6 +17,7 @@ import {
 } from "../../lib/server/candidate-files";
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
+import { getClientIp, esc } from "../../lib/server/utils";
 
 export const runtime = "nodejs";
 
@@ -220,7 +221,8 @@ export async function POST(req: Request) {
       location,
     });
 
-    await Promise.all([
+    // Use Promise.allSettled to ensure email sends even if DB fails
+    const results = await Promise.allSettled([
       insertSupabaseRow({
         table: "candidates",
         payload: {
@@ -235,14 +237,13 @@ export async function POST(req: Request) {
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
+          other_notes: data.other_notes || null, // FIX: Store other notes
           cv_key: cvPath,
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
           status: "pending", // Venter godkjenning i Import Management (admin)
         },
-      }).catch((error) => {
-        logger.error("⚠️ Supabase-feil (candidate):", error);
       }),
       sendNotificationEmail({
         subject: `Bluecrew jobbsøker: ${data.name || "(uten navn)"}`,
@@ -250,16 +251,24 @@ export async function POST(req: Request) {
         html,
         replyTo: data.email,
         attachments,
-      }).catch((error) => {
-        logger.error("❌ Sendefeil (candidate):", error);
       }),
       sendCandidateReceipt({
         name: data.name,
         email: data.email,
-      }).catch((error) => {
-        logger.error("⚠️ Sendte ikke kvittering (candidate):", error);
       }),
     ]);
+
+    // Log any failures (but don't fail the request - email serves as backup)
+    const [dbResult, emailResult, receiptResult] = results;
+    if (dbResult.status === "rejected") {
+      logger.error("⚠️ Supabase-feil (candidate):", dbResult.reason);
+    }
+    if (emailResult.status === "rejected") {
+      logger.error("❌ Sendefeil (candidate):", emailResult.reason);
+    }
+    if (receiptResult.status === "rejected") {
+      logger.error("⚠️ Sendte ikke kvittering (candidate):", receiptResult.reason);
+    }
 
     const acceptsJson = (req.headers.get("accept") || "").includes(
       "application/json"
@@ -332,22 +341,6 @@ function buildHtmlSummary(data: {
       }
     </div>
   `;
-}
-
-function esc(s: string = "") {
-  return s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
-
-function getClientIp(req: Request) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return req.headers.get("x-real-ip") || "unknown";
 }
 
 function getClientKey(req: Request, prefix: string) {

@@ -9,6 +9,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { selectSupabaseRows, createSupabaseSignedUrl } from "@/app/lib/server/supabase";
+import { isAdminUser } from "@/app/lib/admin";
 import ApplicationsTable from "./ApplicationsTable";
 
 export const metadata = {
@@ -69,16 +70,11 @@ export default async function AdminApplicationsPage() {
     redirect("/logg-inn?redirect_url=/admin/applications");
   }
 
-  // Check if user has admin role (from publicMetadata)
+  // Check if user has admin role (from publicMetadata or email)
   const role = (user.publicMetadata as { role?: string })?.role;
-
-  // Fallback: Check if user email is in admin list
-  const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
   const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
 
-  const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
-
-  if (!isAdmin) {
+  if (!isAdminUser(userEmail, role)) {
     redirect("/");
   }
 
