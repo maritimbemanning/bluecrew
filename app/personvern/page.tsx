@@ -220,7 +220,17 @@ export default function PersonvernPage() {
                 <li><strong>Resend</strong> – e-postvarsling ved innsendinger.</li>
                 <li><strong>Upstash</strong> – Redis og rate-limiting.</li>
                 <li><strong>Plausible</strong> – webanalyse (kun ved samtykke).</li>
-                <li><strong>Sentry</strong> – feilovervåkning for teknisk drift (EU-datacenter, ingen persondata).</li>
+                <li>
+                  <strong>Sentry</strong> – feilovervåkning for teknisk drift (EU-datacenter, ingen persondata).
+                  <ul style={{...ui.ul, marginTop: '0.5rem', marginLeft: '1.5rem'}}>
+                    <li>EU-datacenter (Tyskland) – all data lagres i EØS</li>
+                    <li>IP-anonymisering aktivert – vi lagrer ikke full IP-adresse</li>
+                    <li>Ingen personopplysninger sendes (navn, e-post, telefon filtreres bort)</li>
+                    <li>Session replay deaktivert – ingen opptak av brukerinteraksjon</li>
+                    <li>Kun tekniske feilmeldinger og stack traces for debugging</li>
+                    <li>Automatisk sletting etter 90 dager</li>
+                  </ul>
+                </li>
               </ul>
               <p style={ui.p}>
                 Vi har databehandleravtaler (DPA) og bruker lovlige overføringsgrunnlag ved eventuell behandling utenfor

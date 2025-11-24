@@ -130,7 +130,6 @@ export async function POST(req: Request) {
     }
 
     // Store in local database
-    let dbSaveSuccess = false;
     try {
       await insertSupabaseRow({
         table: "job_applications",
@@ -151,7 +150,6 @@ export async function POST(req: Request) {
           status: "new",
         },
       });
-      dbSaveSuccess = true;
       logger.info("✅ Job application stored in local database");
     } catch (error) {
       logger.error("❌ Failed to store job application in local database", { error: String(error) });
