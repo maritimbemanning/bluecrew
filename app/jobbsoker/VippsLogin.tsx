@@ -369,17 +369,34 @@ export function VippsLoginPage() {
         <Image
           src="/icons/vipps-logo.jpeg"
           alt="Vipps"
-          width={120}
-          height={48}
+          width={100}
+          height={40}
           style={{ borderRadius: 8 }}
         />
       </div>
 
+      <h2 style={compactUi.title}>Verifiser identiteten din</h2>
+
       <p style={compactUi.text}>
-        Identitetsverifisering er lovpålagt for bemanningsbransjen.
-        Ved å fortsette godtar du vår{" "}
-        <a href="/personvern" style={compactUi.link}>personvernerklæring</a>.
+        Identitetsverifisering med BankID er lovpålagt for bemanningsbransjen.
       </p>
+
+      {/* Trust badges */}
+      <div style={compactUi.trustBadges}>
+        <span style={compactUi.trustBadge}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          BankID-sikret
+        </span>
+        <span style={compactUi.trustBadge}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          30 sek
+        </span>
+      </div>
 
       <button
         onClick={handleVippsLogin}
@@ -397,7 +414,8 @@ export function VippsLoginPage() {
       )}
 
       <p style={compactUi.footer}>
-        Tar ca. 30 sekunder
+        Ved å fortsette godtar du vår{" "}
+        <a href="/personvern" style={compactUi.link}>personvernerklæring</a>
       </p>
     </div>
   );
@@ -406,50 +424,74 @@ export function VippsLoginPage() {
 const compactUi = {
   card: {
     background: "#fff",
-    borderRadius: 12,
-    padding: "32px 24px",
-    maxWidth: 360,
+    borderRadius: 20,
+    padding: "40px 32px",
+    maxWidth: 400,
     margin: "0 auto",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    boxShadow: "0 20px 50px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.8)",
     textAlign: "center",
   } as CSSProperties,
   logoWrap: {
-    marginBottom: 20,
+    marginBottom: 24,
+    display: "flex",
+    justifyContent: "center",
   } as CSSProperties,
   logo: {
     height: 48,
     width: "auto",
     borderRadius: 8,
   } as CSSProperties,
+  title: {
+    fontSize: 22,
+    fontWeight: 700,
+    color: "#0f172a",
+    margin: "0 0 12px",
+  } as CSSProperties,
   text: {
     fontSize: 15,
-    color: "#475569",
-    lineHeight: 1.5,
+    color: "#64748b",
+    lineHeight: 1.6,
     margin: "0 0 24px",
+  } as CSSProperties,
+  trustBadges: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 20,
+    marginBottom: 24,
+  } as CSSProperties,
+  trustBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    fontSize: 13,
+    color: "#64748b",
+    fontWeight: 500,
   } as CSSProperties,
   button: {
     width: "100%",
-    padding: "14px 24px",
-    fontSize: 16,
-    fontWeight: 600,
+    padding: "16px 28px",
+    fontSize: 17,
+    fontWeight: 700,
     background: "#ff5100",
     color: "#fff",
     border: "none",
-    borderRadius: 8,
+    borderRadius: 12,
     cursor: "pointer",
-    transition: "background 0.15s",
+    transition: "transform 0.15s, box-shadow 0.15s",
+    boxShadow: "0 8px 24px rgba(255, 81, 0, 0.3)",
   } as CSSProperties,
   error: {
     marginTop: 16,
-    padding: "10px 12px",
+    padding: "12px 16px",
     background: "#fef2f2",
     border: "1px solid #fecaca",
-    borderRadius: 6,
+    borderRadius: 10,
     color: "#dc2626",
     fontSize: 14,
+    fontWeight: 500,
   } as CSSProperties,
   footer: {
-    marginTop: 16,
+    marginTop: 20,
     fontSize: 13,
     color: "#94a3b8",
   } as CSSProperties,

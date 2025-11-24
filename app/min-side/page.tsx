@@ -162,7 +162,23 @@ export default function MinSidePage() {
           <div style={styles.headerRight}>
             <UserButton
               appearance={{
-                elements: { avatarBox: { width: 44, height: 44 } },
+                elements: {
+                  avatarBox: { width: 44, height: 44 },
+                  // Hide passkeys and other unnecessary sections
+                  profileSection__passkeys: { display: "none" },
+                  profileSection__connectedAccounts: { display: "none" },
+                  profileSection__enterpriseAccounts: { display: "none" },
+                  profileSection__web3Wallets: { display: "none" },
+                  // Style the modal to match site design
+                  card: {
+                    borderRadius: "16px",
+                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+                  },
+                  formButtonPrimary: {
+                    background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+                    borderRadius: "10px",
+                  },
+                },
               }}
             />
             <SignOutButton>
