@@ -56,6 +56,15 @@ function applySecurityHeaders(res: NextResponse) {
 export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl.clone();
   const { pathname } = url;
+  const host = req.headers.get("host") || "";
+
+  // Redirect www to non-www (301 permanent redirect for SEO)
+  if (host.startsWith("www.")) {
+    const newHost = host.replace(/^www\./, "");
+    const redirectUrl = new URL(req.url);
+    redirectUrl.host = newHost;
+    return NextResponse.redirect(redirectUrl, 301);
+  }
 
   // Block /admin routes
   if (pathname.startsWith("/admin")) {
