@@ -8,27 +8,27 @@ import { ContactSection } from "./components/home/ContactSection";
 import { InterestSection } from "./components/home/InterestSection";
 
 export const metadata: Metadata = {
-  title: "Maritim bemanning til fiskeri, servicefartøy og offshore",
+  title: "Maritim bemanning til havbruk, fiskeri og offshore",
   description:
-    "Trenger du maritimt mannskap? Bluecrew leverer STCW-sertifiserte kapteiner, styrmenn og matroser til fiskeri, kystfart og offshore. Kontakt oss i dag!",
+    "Trenger du maritimt mannskap? Bluecrew leverer STCW-sertifiserte kapteiner, styrmenn og matroser til havbruk, fiskeri og offshore. Kontakt oss i dag!",
   keywords: [
     "maritim bemanning",
-    "servicefartøy bemanning",
+    "havbruk bemanning",
     "fiskeri bemanning",
-    "fiskebåt mannskap",
+    "brønnbåt mannskap",
     "offshore bemanning Norge",
     "STCW mannskap",
     "dekksoffiser",
     "maskinoffiser",
     "maritime stillinger",
     "fartøy bemanning Norge",
-    "kystfart mannskap",
+    "servicefartøy bemanning",
     "service vessel manning",
   ],
   openGraph: {
     title: "Bluecrew AS - Maritim bemanning i Norge",
     description:
-      "Trenger du maritimt mannskap? Bluecrew leverer STCW-sertifiserte kapteiner, styrmenn og matroser til fiskeri, kystfart og offshore.",
+      "Trenger du maritimt mannskap? Bluecrew leverer STCW-sertifiserte kapteiner, styrmenn og matroser til havbruk, fiskeri og offshore.",
     type: "website",
     url: "https://bluecrew.no",
   },

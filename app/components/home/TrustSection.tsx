@@ -22,7 +22,7 @@ export function TrustSection() {
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>Teamet vårt har ekte sjøerfaring</h3>
             <p className={styles.cardText}>
-              Du snakker med folk som forstår forskjellen på papirer og praktisk dyktighet. Vårt team har selv jobbet innen fiskeri, kystfart og offshore – vi vet hva som kreves når været snur og operasjonene må gå som planlagt.
+              Du snakker med folk som forstår forskjellen på papirer og praktisk dyktighet. Vårt team har selv jobbet innen havbruk, fiskeri og offshore – vi vet hva som kreves når været snur og operasjonene må gå som planlagt.
             </p>
           </div>
 

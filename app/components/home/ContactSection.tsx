@@ -11,7 +11,7 @@ export function ContactSection(){
           <div className={styles.intro}>
             <h2 className={styles.heading}>Kontakt oss</h2>
             <p className={styles.lead}>
-              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Som godkjent bemanningsforetak leverer vi sertifisert mannskap til fiskeri, kystfart og offshore over hele Norge. Vi svarer raskt og tilpasser leveransen til din operasjon.
+              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Som godkjent bemanningsforetak leverer vi sertifisert mannskap til havbruk, fiskeri og offshore over hele Norge. Vi svarer raskt og tilpasser leveransen til din operasjon.
             </p>
             <ul className={styles.list}>
               <li className={styles.listItem}>Skreddersydde team med STCW-sertifiserte sjøfolk</li>

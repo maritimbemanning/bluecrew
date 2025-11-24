@@ -5,13 +5,13 @@ import * as styles from './ServiceCards.css';
 export function ServiceCards(){
   const services = [
     {
-      title: 'Fiskeri',
-      description: 'Mannskap til fiskebåter, trålere og kystfiskefartøy. Erfarne fiskere og dekksmannskap med STCW-sertifikater og praktisk erfaring fra norske farvann og Barentshavet.',
+      title: 'Havbruk',
+      description: 'Brønnbåt, servicefartøy og vedlikehold. Vi leverer erfarne matroser, skippere og maskinister med god kjennskap til norsk havbruksnæring.',
       link: '/kunde/bemanning',
     },
     {
-      title: 'Kystfart & Ferger',
-      description: 'Mannskap til ferger, hurtigbåter og fraktfartøy. Sertifiserte navigatører og dekksmannskap med erfaring fra rutetrafikk og kystoperasjoner langs hele norskekysten.',
+      title: 'Fiskeri',
+      description: 'Mannskap til fiskebåter, trålere og kystfiskefartøy. Erfarne fiskere og dekksmannskap med STCW-sertifikater og praktisk erfaring fra norske farvann og Barentshavet.',
       link: '/kunde/bemanning',
     },
     {
@@ -27,7 +27,7 @@ export function ServiceCards(){
         <div className={styles.header}>
           <h2 className={styles.heading}>Våre spesialområder</h2>
           <p className={styles.lead}>
-            Vi leverer kvalifisert mannskap til den maritime næringen – fra enkeltmannskap til komplette crew. Enten du driver med fiskeri, kystfart eller offshore, finner vi de rette folkene med riktig kompetanse og sertifisering.
+            Vi leverer kvalifisert mannskap til den maritime næringen – fra enkeltmannskap til komplette crew. Enten du driver med havbruk, fiskeri eller offshore, finner vi de rette folkene med riktig kompetanse og sertifisering.
           </p>
         </div>
 
