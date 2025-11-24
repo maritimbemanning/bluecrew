@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const baseConfig: NextConfig = {
   images: {
@@ -25,18 +26,40 @@ const baseConfig: NextConfig = {
   },
 };
 
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+  // Suppress source map upload logs in CI
+  silent: true,
+
+  // Upload source maps for better error tracking
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+
+  // Automatically tree-shake Sentry logger statements to reduce bundle size
+  disableLogger: true,
+
+  // Hide source maps from users in production
+  hideSourceMaps: true,
+
+  // Tunnel Sentry events through your domain to avoid ad blockers
+  // tunnelRoute: "/monitoring",
+
+  // Disable Sentry during builds if no auth token
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+};
+
 export default async function loadConfig(): Promise<NextConfig> {
   try {
     const { createVanillaExtractPlugin } = await import("@vanilla-extract/next-plugin");
     const withVanillaExtract = createVanillaExtractPlugin();
     const configWithVanilla = withVanillaExtract(baseConfig);
 
-    // Return config without Sentry wrapper
-    return configWithVanilla;
+    // Wrap with Sentry
+    return withSentryConfig(configWithVanilla, sentryWebpackPluginOptions);
   } catch {
     console.warn("@vanilla-extract/next-plugin not found — running without vanilla-extract integration.");
 
-    // Return base config
-    return baseConfig;
+    // Wrap base config with Sentry
+    return withSentryConfig(baseConfig, sentryWebpackPluginOptions);
   }
 }
