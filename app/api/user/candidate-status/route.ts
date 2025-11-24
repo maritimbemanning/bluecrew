@@ -5,7 +5,7 @@
 
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { getSupabaseServiceClient } from "@/app/lib/server/supabase";
+import { supabaseServer } from "@/app/lib/server/supabase";
 
 export const runtime = "nodejs";
 
@@ -28,7 +28,7 @@ export async function GET() {
     }
 
     // Check if user's email exists in candidates table
-    const supabase = getSupabaseServiceClient();
+    const supabase = supabaseServer();
     const { data: candidate, error } = await supabase
       .from("candidates")
       .select("id, name, submitted_at, status")

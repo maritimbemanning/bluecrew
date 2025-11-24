@@ -9,6 +9,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
 interface VippsSession {
@@ -365,10 +366,12 @@ export function VippsLoginPage() {
     <div style={compactUi.card}>
       {/* Vipps logo */}
       <div style={compactUi.logoWrap}>
-        <img
+        <Image
           src="/icons/vipps-logo.jpeg"
           alt="Vipps"
-          style={compactUi.logo}
+          width={120}
+          height={48}
+          style={{ borderRadius: 8 }}
         />
       </div>
 
