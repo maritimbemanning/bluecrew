@@ -429,14 +429,13 @@ export function SiteLayout({
                 href="/min-side"
                 style={{
                   padding: "12px 20px",
-                  background: "#FF5B24",
+                  background: "rgba(255,255,255,0.1)",
                   color: "#fff",
                   borderRadius: 12,
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: 14,
                   textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  boxShadow: "0 4px 12px rgba(255, 91, 36, 0.3)",
+                  border: "1px solid rgba(255,255,255,0.3)",
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
@@ -444,13 +443,10 @@ export function SiteLayout({
                 }}
                 title="Min side"
               >
-                <img
-                  src="/icons/vipps-logo.jpeg"
-                  alt="Vipps"
-                  width="20"
-                  height="20"
-                  style={{ borderRadius: 4 }}
-                />
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
                 Min side
               </Link>
             </div>
@@ -580,12 +576,12 @@ export function SiteLayout({
                       </li>
                       <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                         <Link
-                          href="/api/vipps/start"
+                          href="/min-side"
                           style={{
                             ...sx.mobileNavLink,
-                            background: "#FF5B24",
+                            background: "rgba(255,255,255,0.1)",
                             color: "#fff",
-                            fontWeight: 700,
+                            fontWeight: 600,
                             padding: "14px 20px",
                             borderRadius: 12,
                             textAlign: "center",
@@ -593,18 +589,16 @@ export function SiteLayout({
                             alignItems: "center",
                             justifyContent: "center",
                             gap: 8,
+                            border: "1px solid rgba(255,255,255,0.3)",
                           }}
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
                         >
-                          <img
-                            src="/icons/vipps-logo.jpeg"
-                            alt="Vipps"
-                            width="24"
-                            height="24"
-                            style={{ borderRadius: 4 }}
-                          />
-                          Verifiser med Vipps
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                          </svg>
+                          Min side
                         </Link>
                       </li>
                     </ul>
@@ -704,9 +698,9 @@ export function SiteLayout({
                         href="/min-side"
                         style={{
                           ...sx.mobileNavLink,
-                          background: "#FF5B24",
+                          background: "rgba(255,255,255,0.1)",
                           color: "#fff",
-                          fontWeight: 700,
+                          fontWeight: 600,
                           padding: "14px 20px",
                           borderRadius: 12,
                           textAlign: "center",
@@ -714,17 +708,15 @@ export function SiteLayout({
                           alignItems: "center",
                           justifyContent: "center",
                           gap: 8,
+                          border: "1px solid rgba(255,255,255,0.3)",
                         }}
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        <img
-                          src="/icons/vipps-logo.jpeg"
-                          alt="Vipps"
-                          width="24"
-                          height="24"
-                          style={{ borderRadius: 4 }}
-                        />
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                          <circle cx="12" cy="7" r="4"/>
+                        </svg>
                         Min side
                       </Link>
                     </li>
