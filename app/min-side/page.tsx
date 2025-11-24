@@ -70,12 +70,9 @@ export default function MinSidePage() {
   useEffect(() => {
     if (user?.id) {
       loadCandidateStatus();
-      const email = user.primaryEmailAddress?.emailAddress;
-      if (email) {
-        loadApplications(email);
-      }
+      loadApplications();
     }
-  }, [user?.id, user?.primaryEmailAddress?.emailAddress]);
+  }, [user?.id]);
 
   async function loadCandidateStatus() {
     try {
@@ -91,12 +88,11 @@ export default function MinSidePage() {
     }
   }
 
-  async function loadApplications(email: string) {
+  async function loadApplications() {
     setLoadingApplications(true);
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications?email=${encodeURIComponent(email)}`
-      );
+      // Fetch from local API (uses authenticated user's email)
+      const res = await fetch("/api/user/applications");
       if (res.ok) {
         const data = await res.json();
         setApplications(data.applications || []);
