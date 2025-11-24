@@ -917,9 +917,9 @@ export function SiteLayout({
               <h2 style={sx.footerHeading}>Retningslinjer & adresse</h2>
               <ul style={sx.footerList}>
                 <li style={sx.footerListItem}>
-                  <Link href="/api/vipps/start" style={sx.footerLink}>
+                  <a href="/api/vipps/start" style={sx.footerLink}>
                     Verifiser med Vipps
-                  </Link>
+                  </a>
                 </li>
                 <li style={sx.footerListItem}>
                   <Link href="/personvern" style={sx.footerLink}>
