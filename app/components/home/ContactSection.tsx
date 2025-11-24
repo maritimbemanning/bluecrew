@@ -11,12 +11,12 @@ export function ContactSection(){
           <div className={styles.intro}>
             <h2 className={styles.heading}>Kontakt oss</h2>
             <p className={styles.lead}>
-              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Vi svarer raskt og tilpasser leveransen til din operasjon.
+              Skal du bemanne et fartøy eller trenger du en partner for kommende prosjekt? Som godkjent bemanningsforetak leverer vi sertifisert mannskap til havbruk, fiskeri og offshore over hele Norge. Vi svarer raskt og tilpasser leveransen til din operasjon.
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>Skreddersydde team for hele den maritime sektoren</li>
+              <li className={styles.listItem}>Skreddersydde team med STCW-sertifiserte sjøfolk</li>
               <li className={styles.listItem}>Oppstart på kort varsel når situasjonen krever det</li>
-              <li className={styles.listItem}>Rådgivning fra folk som kjenner norskekysten</li>
+              <li className={styles.listItem}>Rådgivning fra erfarne sjøfolk som kjenner norskekysten</li>
             </ul>
             <Link href="/kontakt" className={styles.cta}>
               Planlegg bemanningen sammen med oss →

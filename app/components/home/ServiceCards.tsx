@@ -5,18 +5,18 @@ import * as styles from './ServiceCards.css';
 export function ServiceCards(){
   const services = [
     {
-      title: 'Servicefartøy',
-      description: 'Dykking, spyling, service og offshore support. Kompetent mannskap til dynamiske operasjoner.',
-      link: '/kunde/bemanning',
-    },
-    {
       title: 'Havbruk',
-      description: 'Brønnbåt, drift, vedlikehold og transport. Erfaring fra norsk oppdrettsnæring.',
+      description: 'Brønnbåt, oppdrettsanlegg, drift og transport. Vi leverer erfarne akvatekniker, matroser og skippere med inngående kjennskap til norsk oppdrettsnæring og lakseproduksjon.',
       link: '/kunde/bemanning',
     },
     {
-      title: 'Kystfart',
-      description: 'Mannskap til ferger, supplyskip og kystoperasjoner. Sertifisert og havtrent.',
+      title: 'Fiskeri',
+      description: 'Mannskap til fiskebåter, trålere og kystfiskefartøy. Erfarne fiskere og dekksmannskap med STCW-sertifikater og praktisk erfaring fra norske farvann.',
+      link: '/kunde/bemanning',
+    },
+    {
+      title: 'Offshore & Servicefartøy',
+      description: 'Dykking, ankerhåndtering, PSV og offshore support. Kvalifisert mannskap med DP-sertifikater og erfaring fra krevende operasjoner i Nordsjøen og langs kysten.',
       link: '/kunde/bemanning',
     },
   ];
@@ -27,7 +27,7 @@ export function ServiceCards(){
         <div className={styles.header}>
           <h2 className={styles.heading}>Våre spesialområder</h2>
           <p className={styles.lead}>
-            Vi leverer kvalifisert mannskap til den maritime næringen – fra enkeltmannskap til komplette crew.
+            Vi leverer kvalifisert mannskap til den maritime næringen – fra enkeltmannskap til komplette crew. Enten du driver med havbruk, fiskeri eller offshore, finner vi de rette folkene med riktig kompetanse og sertifisering.
           </p>
         </div>
 
