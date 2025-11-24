@@ -70,7 +70,11 @@ export default async function AdminApplicationsPage() {
   }
 
   // Check if user has admin role
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  // Clerk stores custom data in publicMetadata, which appears in sessionClaims.metadata
+  // or sessionClaims.publicMetadata depending on Clerk configuration
+  const metadata = sessionClaims?.metadata as { role?: string } | undefined;
+  const publicMetadata = sessionClaims?.publicMetadata as { role?: string } | undefined;
+  const role = metadata?.role || publicMetadata?.role;
 
   // Fallback: Check if user email is in admin list
   const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no"];
