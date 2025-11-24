@@ -8,6 +8,11 @@ export default function LoggInnPage() {
   const [showTimeout, setShowTimeout] = useState(false);
 
   useEffect(() => {
+    // Debug: Log Clerk environment
+    console.log("[Clerk Debug] Publishable Key exists:", !!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY);
+    console.log("[Clerk Debug] Proxy URL:", process.env.NEXT_PUBLIC_CLERK_PROXY_URL);
+    console.log("[Clerk Debug] Current domain:", window.location.hostname);
+
     // Show error message if Clerk doesn't load within 10 seconds
     const timer = setTimeout(() => {
       setShowTimeout(true);
