@@ -73,7 +73,7 @@ export default function MinSidePage() {
     if (isLoaded && user) {
       // Check if user has admin role
       const role = user.publicMetadata?.role as string | undefined;
-      const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no"];
+      const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
       const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
 
       const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
