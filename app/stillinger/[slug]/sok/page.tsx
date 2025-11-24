@@ -119,28 +119,6 @@ export default function JobApplicationPage() {
     }
   };
 
-  // Upload file to Supabase Storage
-  const uploadFile = async (file: File, type: "cv" | "certificates") => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("type", type);
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/candidates/cv`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to upload ${type}`);
-    }
-
-    const data = await response.json();
-    return data.key; // Returns storage path
-  };
-
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,46 +127,38 @@ export default function JobApplicationPage() {
 
     try {
       if (!vippsSession || !job) {
-        throw new Error("Missing required data");
+        throw new Error("Mangler påkrevd data");
       }
 
-      // Upload CV
-      let cvKey = null;
+      // Build form data with all fields
+      const formData = new FormData();
+      formData.append("job_id", job.id);
+      formData.append("job_title", job.title);
+      formData.append("job_company", job.company_name || "Bluecrew AS");
+      formData.append("job_location", job.location || job.fylke);
+      formData.append("name", vippsSession.name);
+      formData.append("email", email);
+      formData.append("phone", vippsSession.phone);
+      formData.append("cover_letter", coverLetter);
+      formData.append("vipps_verified", "true");
+      formData.append("vipps_sub", vippsSession.sub);
+      formData.append("vipps_verified_at", vippsSession.verifiedAt);
+
+      // Attach CV if provided
       if (cvFile) {
-        cvKey = await uploadFile(cvFile, "cv");
+        formData.append("cv", cvFile);
       }
 
-      // Submit application
-      const applicationData = {
-        job_posting_id: job.id,
-        name: vippsSession.name,
-        email: email, // User can edit this
-        phone: vippsSession.phone,
-        cover_letter: coverLetter,
-        cv_key: cvKey,
-        vipps_verified: true,
-        vipps_sub: vippsSession.sub,
-        vipps_phone: vippsSession.phone,
-        vipps_name: vippsSession.name,
-        vipps_verified_at: vippsSession.verifiedAt,
-        source: "web",
-        ip_address: null, // Could add client IP if needed
-        user_agent: navigator.userAgent,
-      };
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(applicationData),
-        }
-      );
+      // Submit to local API (handles storage and email notification)
+      const response = await fetch("/api/job-applications", {
+        method: "POST",
+        body: formData,
+      });
 
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Failed to submit application");
+        throw new Error(result.error || "Kunne ikke sende søknad");
       }
 
       setSubmitted(true);
@@ -319,14 +289,15 @@ export default function JobApplicationPage() {
                 For å sikre en trygg søknadsprosess bruker vi Vipps/BankID for identitetsverifisering.
                 Dette tar kun 30 sekunder.
               </p>
-              <Link
+              {/* Use regular anchor to trigger full page navigation (API route redirects to Vipps) */}
+              <a
                 href={`/api/vipps/start?return=/stillinger/${slug}/sok`}
                 className={styles.vippsButton}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/icons/vipps-logo.jpeg" alt="Vipps" className={styles.vippsLogo} />
                 Verifiser med Vipps
-              </Link>
+              </a>
               <div className={styles.trustFooter}>
                 <span className={styles.trustItem}>
                   <Shield size={16} className={styles.trustIcon} />
