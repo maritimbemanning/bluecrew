@@ -7,7 +7,7 @@ export function TrustSection() {
         <div className={styles.header}>
           <h2 className={styles.title}>Hvorfor Bluecrew?</h2>
           <p className={styles.lead}>
-            Vi har base i Nord-Norge, men opererer over hele kysten. Vi kjenner havbruksanleggene og fartøyene, og leverer akkurat det mannskapet du trenger.
+            Vi har base i Nord-Norge, men opererer over hele kysten. Vi kjenner fiskeflåten og fartøyene, og leverer akkurat det mannskapet du trenger.
           </p>
         </div>
 
@@ -22,7 +22,7 @@ export function TrustSection() {
           <div className={styles.card}>
             <h3 className={styles.cardTitle}>Teamet vårt har ekte sjøerfaring</h3>
             <p className={styles.cardText}>
-              Du snakker med folk som forstår forskjellen på papirer og praktisk dyktighet. Vårt team har selv jobbet innen havbruk, fiskeri og offshore – vi vet hva som kreves når været snur og operasjonene må gå som planlagt.
+              Du snakker med folk som forstår forskjellen på papirer og praktisk dyktighet. Vårt team har selv jobbet innen fiskeri, kystfart og offshore – vi vet hva som kreves når været snur og operasjonene må gå som planlagt.
             </p>
           </div>
 
