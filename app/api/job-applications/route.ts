@@ -9,7 +9,7 @@
 import { NextResponse } from "next/server";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendNotificationEmail } from "../../lib/server/email";
-import { uploadSupabaseObject } from "../../lib/server/supabase";
+import { uploadSupabaseObject, insertSupabaseRow } from "../../lib/server/supabase";
 import { logger } from "../../lib/logger";
 import { createHash } from "node:crypto";
 
@@ -122,11 +122,38 @@ export async function POST(req: Request) {
           body: cvBuffer,
           contentType: "application/pdf",
         });
-        logger.debug("✅ CV uploaded to Supabase:", cvPath);
+        logger.debug("✅ CV uploaded to Supabase", { cvPath });
       } catch (error) {
-        logger.error("❌ Failed to upload CV to Supabase:", error);
+        logger.error("❌ Failed to upload CV to Supabase", error);
         // Continue - CV will be sent as email attachment
       }
+    }
+
+    // Store in database (shared with AdminCrew)
+    try {
+      await insertSupabaseRow({
+        table: "job_applications",
+        payload: {
+          job_posting_id: applicationData.job_id,
+          name: applicationData.name,
+          email: applicationData.email,
+          phone: applicationData.phone,
+          cover_letter: applicationData.cover_letter || null,
+          cv_key: cvPath,
+          vipps_verified: applicationData.vipps_verified,
+          vipps_sub: applicationData.vipps_sub || null,
+          vipps_phone: applicationData.phone,
+          vipps_name: applicationData.name,
+          vipps_verified_at: applicationData.vipps_verified_at || null,
+          source: "web",
+          user_agent: null, // Could add from request headers
+          status: "new",
+        },
+      });
+      logger.debug("✅ Job application stored in database");
+    } catch (error) {
+      logger.error("❌ Failed to store job application in database", error);
+      // Continue - email notification is backup
     }
 
     // Build email content
@@ -222,8 +249,7 @@ Job ID: ${applicationData.job_id}
     });
 
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    logger.error("❌ Error processing job application:", err);
+    logger.error("❌ Error processing job application", err);
     return NextResponse.json(
       { error: "Noe gikk galt. Prøv igjen senere." },
       { status: 500 }
