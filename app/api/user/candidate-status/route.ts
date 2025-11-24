@@ -5,7 +5,6 @@
 
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { supabaseServer } from "@/app/lib/server/supabase";
 
 export const runtime = "nodejs";
 
@@ -27,30 +26,52 @@ export async function GET() {
       });
     }
 
-    // Check if user's email exists in candidates table
-    const supabase = supabaseServer();
-    const { data: candidate, error } = await supabase
-      .from("candidates")
-      .select("id, name, submitted_at, status")
-      .eq("email", email)
-      .order("submitted_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    // Check if user's email exists in candidates table using REST API
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (error) {
-      console.error("Supabase error:", error);
+    if (!supabaseUrl || !supabaseKey) {
+      console.error("Missing Supabase configuration");
+      return NextResponse.json({
+        registered: false,
+        reason: "config_error",
+      });
+    }
+
+    const url = new URL(`${supabaseUrl}/rest/v1/candidates`);
+    url.searchParams.set("select", "id,name,submitted_at,status");
+    url.searchParams.set("email", `eq.${email}`);
+    url.searchParams.set("order", "submitted_at.desc");
+    url.searchParams.set("limit", "1");
+
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.error("Supabase error:", await response.text());
       return NextResponse.json({
         registered: false,
         reason: "db_error",
       });
     }
 
-    if (!candidate) {
+    const candidates = await response.json();
+
+    if (!candidates || candidates.length === 0) {
       return NextResponse.json({
         registered: false,
         reason: "not_found",
       });
     }
+
+    const candidate = candidates[0];
 
     return NextResponse.json({
       registered: true,
