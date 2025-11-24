@@ -12,6 +12,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SiteLayout from "@/app/components/SiteLayout";
 import {
   User,
@@ -59,12 +60,30 @@ const statusLabels: Record<string, { label: string; color: string; icon: React.R
 };
 
 export default function MinSidePage() {
+  const router = useRouter();
   const { user, isLoaded } = useUser();
   const [candidateStatus, setCandidateStatus] = useState<CandidateStatus | null>(null);
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loadingCandidate, setLoadingCandidate] = useState(true);
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [applicationsExpanded, setApplicationsExpanded] = useState(false);
+
+  // Redirect admins to admin dashboard
+  useEffect(() => {
+    if (isLoaded && user) {
+      // Check if user has admin role
+      const role = user.publicMetadata?.role as string | undefined;
+      const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no"];
+      const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
+
+      const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
+
+      if (isAdmin) {
+        router.push("/admin/applications");
+        return;
+      }
+    }
+  }, [isLoaded, user, router]);
 
   // Load candidate status and applications
   useEffect(() => {
