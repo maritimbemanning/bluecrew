@@ -6,13 +6,6 @@ export const WORK: Record<string, string[]> = {
   Annet: ["Annet"],
 };
 
-export const STCW_MODULES = [
-  "Sjøoverlevelse (PST)",
-  "Brannvern (FPFF)",
-  "Førstehjelp (EFA)",
-  "PSSR",
-];
-
 export const HERO_POINTS = [
   {
     icon: "",

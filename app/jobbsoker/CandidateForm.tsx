@@ -1,7 +1,6 @@
 "use client";
-// Cache-bust: 2025-11-01-17:05
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -17,28 +16,60 @@ import { VippsVerifiedBadge } from "./VippsLogin";
 import { useCsrfToken } from "../hooks/useCsrfToken";
 
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
+const TOTAL_STEPS = 4;
 
 type FieldErrors = Record<string, string>;
+type FileErrors = { cv?: string; certs?: string };
 
-type FileErrors = {
-  cv?: string;
-  certs?: string;
-};
+// Step definitions
+const STEPS = [
+  { id: 1, title: "Kontaktinfo", shortTitle: "Kontakt" },
+  { id: 2, title: "Arbeidsønsker", shortTitle: "Arbeid" },
+  { id: 3, title: "Kompetanse", shortTitle: "Erfaring" },
+  { id: 4, title: "Dokumenter", shortTitle: "Last opp" },
+] as const;
 
 const ui = {
   wrap: {
-    maxWidth: 920,
+    maxWidth: 720,
     margin: "0 auto",
-    padding: "40px clamp(20px, 5vw, 32px) 80px",
+    padding: "32px clamp(16px, 5vw, 24px) 80px",
   },
   formShell: {
     background: "#ffffff",
     borderRadius: 20,
-    padding: "40px clamp(24px, 6vw, 48px)",
+    padding: "32px clamp(20px, 5vw, 40px)",
     border: "1px solid #e2e8f0",
     boxShadow: "0 10px 40px rgba(15, 23, 42, 0.08)",
     display: "grid",
-    gap: 32,
+    gap: 24,
+  },
+  stepIndicator: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 8,
+  },
+  stepDot: {
+    width: 40,
+    height: 40,
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: 700,
+    fontSize: 14,
+    transition: "all 0.2s ease",
+  },
+  stepLine: {
+    flex: 1,
+    height: 3,
+    background: "#e2e8f0",
+    borderRadius: 2,
+  },
+  stepLineActive: {
+    background: "#0ea5e9",
   },
   section: {
     display: "grid",
@@ -50,7 +81,7 @@ const ui = {
   },
   sectionTitle: {
     margin: 0,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 800,
     color: "#0b1f3a",
   },
@@ -62,13 +93,8 @@ const ui = {
   },
   fieldGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
     gap: 16,
-  },
-  divider: {
-    height: 1,
-    background:
-      "linear-gradient(90deg, transparent, #e2e8f0 10%, #e2e8f0 90%, transparent)",
   },
   filesGrid: {
     display: "grid",
@@ -91,50 +117,60 @@ const ui = {
     display: "grid",
     gap: 12,
   },
-  sidebar: {
-    background: "#0f172a",
-    borderRadius: 26,
-    padding: 28,
-    border: "1px solid rgba(148, 197, 255, 0.28)",
-    color: "#e2e8f0",
-    display: "grid",
-    gap: 18,
-    boxShadow: "0 24px 60px rgba(8, 16, 32, 0.45)",
-  },
-  sidebarTitle: {
-    margin: 0,
-    fontSize: 18,
-    fontWeight: 800,
-  },
-  sidebarList: {
-    margin: 0,
-    paddingLeft: 18,
-    display: "grid",
-    gap: 10,
-    color: "rgba(226, 232, 240, 0.9)",
-    fontSize: 14.5,
-    lineHeight: 1.7,
-  },
-  sidebarFooter: {
-    marginTop: 8,
-    fontSize: 13,
-    color: "rgba(226, 232, 240, 0.7)",
-    lineHeight: 1.7,
-  },
-  submitRow: {
+  navRow: {
     display: "flex",
     justifyContent: "space-between",
     gap: 16,
-    flexWrap: "wrap",
-    alignItems: "center",
+    marginTop: 8,
+    paddingTop: 24,
+    borderTop: "1px solid #e2e8f0",
   },
-  submitNote: {
-    fontSize: 13,
-    color: "#475569",
+  btnPrev: {
+    padding: "14px 28px",
+    background: "#f1f5f9",
+    color: "#334155",
+    border: "1px solid #e2e8f0",
+    borderRadius: 12,
+    fontWeight: 600,
+    fontSize: 15,
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  },
+  btnNext: {
+    padding: "14px 32px",
+    background: "#0ea5e9",
+    color: "#ffffff",
+    border: "none",
+    borderRadius: 12,
+    fontWeight: 700,
+    fontSize: 15,
+    cursor: "pointer",
+    boxShadow: "0 4px 12px rgba(14, 165, 233, 0.3)",
+    transition: "all 0.2s ease",
+  },
+  btnSubmit: {
+    padding: "16px 36px",
+    background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+    color: "#ffffff",
+    border: "none",
+    borderRadius: 12,
+    fontWeight: 700,
+    fontSize: 16,
+    cursor: "pointer",
+    boxShadow: "0 4px 16px rgba(5, 150, 105, 0.35)",
+    transition: "all 0.2s ease",
+  },
+  infoBox: {
+    background: "#eff6ff",
+    border: "1px solid #bfdbfe",
+    color: "#1d4ed8",
+    padding: 12,
+    borderRadius: 14,
+    fontWeight: 600,
+    fontSize: 14,
   },
   successCard: {
-    background:
-      "linear-gradient(140deg, #ecfdf5 0%, #d1fae5 60%, #dcfce7 100%)",
+    background: "linear-gradient(140deg, #ecfdf5 0%, #d1fae5 60%, #dcfce7 100%)",
     borderRadius: 26,
     border: "1px solid #a7f3d0",
     padding: "30px clamp(20px, 6vw, 32px)",
@@ -165,35 +201,59 @@ const ui = {
     display: "grid",
     gap: 4,
   },
-  modalBackdrop: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(15, 23, 42, 0.65)",
-    display: "grid",
-    placeItems: "center",
-    padding: "24px clamp(16px, 5vw, 36px)",
-    zIndex: 100,
-  },
-  modalPanel: {
-    background: "#fff",
-    borderRadius: 24,
-    padding: "32px clamp(18px, 5vw, 38px)",
-    boxShadow: "0 32px 80px rgba(15, 23, 42, 0.35)",
-    display: "grid",
-    gap: 18,
-    maxWidth: 420,
-    width: "100%",
-  },
-  infoBox: {
-    gridColumn: "1 / -1",
-    background: "#eff6ff",
-    border: "1px solid #bfdbfe",
-    color: "#1d4ed8",
-    padding: 12,
-    borderRadius: 14,
-    fontWeight: 600,
-  },
 } satisfies Record<string, CSSProperties>;
+
+// Step Indicator Component
+function StepIndicator({ currentStep }: { currentStep: number }) {
+  return (
+    <div style={ui.stepIndicator}>
+      {STEPS.map((step, index) => (
+        <div key={step.id} style={{ display: "flex", alignItems: "center", flex: index < STEPS.length - 1 ? 1 : "none" }}>
+          <div
+            style={{
+              ...ui.stepDot,
+              background: currentStep >= step.id ? "#0ea5e9" : "#e2e8f0",
+              color: currentStep >= step.id ? "#ffffff" : "#94a3b8",
+            }}
+            title={step.title}
+          >
+            {currentStep > step.id ? "✓" : step.id}
+          </div>
+          {index < STEPS.length - 1 && (
+            <div
+              style={{
+                ...ui.stepLine,
+                ...(currentStep > step.id ? ui.stepLineActive : {}),
+              }}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// Step labels below dots
+function StepLabels({ currentStep }: { currentStep: number }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
+      {STEPS.map((step) => (
+        <div
+          key={step.id}
+          style={{
+            fontSize: 12,
+            fontWeight: currentStep === step.id ? 700 : 500,
+            color: currentStep >= step.id ? "#0ea5e9" : "#94a3b8",
+            textAlign: "center",
+            width: 60,
+          }}
+        >
+          {step.shortTitle}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 type VippsSession = {
   verified: boolean;
@@ -216,18 +276,17 @@ export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
   const isVerified = searchParams.get("verified") === "true";
-  const requireVipps =
-    (process.env.NEXT_PUBLIC_REQUIRE_VIPPS ?? "true").toLowerCase() !== "false";
+  const formRef = useRef<HTMLFormElement>(null);
   const { csrfToken } = useCsrfToken();
+
+  // Multi-step state
+  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
     const plausible = (
       window as typeof window & {
-        plausible?: (
-          event: string,
-          options?: { props?: Record<string, unknown> }
-        ) => void;
+        plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
       }
     ).plausible;
     if (typeof plausible === "function") {
@@ -237,9 +296,7 @@ export default function CandidateContent() {
 
   const [vippsSession, setVippsSession] = useState<VippsSession | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
-  const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(
-    null
-  );
+  const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const checkVippsSession = useCallback(async () => {
@@ -256,32 +313,21 @@ export default function CandidateContent() {
         setVippsSession(data.session as VippsSession);
         setStatusMessage(
           isVerified
-            ? "Vipps-verifisering fullført. Kontroller opplysningene før innsending."
-            : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
+            ? "Vipps-verifisering fullført. Fyll ut skjemaet for å fullføre registreringen."
+            : null
         );
       } else {
-        if (requireVipps) {
-          // Require a valid session for compliance – redirect back to Vipps step
-          router.push("/jobbsoker/registrer");
-          return;
-        } else {
-          // Soft mode: allow form without Vipps temporarily
-          setStatusMessage(
-            "Midleridig løsning: Du kan sende inn uten Vipps-verifisering."
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Failed to check Vipps session", error);
-      if (requireVipps) {
-        // On error, enforce Vipps step again
         router.push("/jobbsoker/registrer");
         return;
       }
+    } catch (error) {
+      console.error("Failed to check Vipps session", error);
+      router.push("/jobbsoker/registrer");
+      return;
     } finally {
       setCheckingSession(false);
     }
-  }, [router, isVerified, requireVipps]);
+  }, [router, isVerified]);
 
   useEffect(() => {
     checkVippsSession();
@@ -294,7 +340,6 @@ export default function CandidateContent() {
       if (saved) {
         const parsed: StoredCandidateDraft = JSON.parse(saved);
         setDraftValues(parsed);
-        setStatusMessage("Skjemautkast funnet. Fullfør skjemaet og send inn.");
       }
     } catch (error) {
       console.error("Failed to restore candidate draft", error);
@@ -337,51 +382,43 @@ export default function CandidateContent() {
     setOpenMain((prev) => ({ ...prev, [main]: !prev[main] }));
   }, []);
 
-  const handleSubmit = useCallback(
-    async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
+  // Step validation
+  const validateStep = useCallback((step: number): boolean => {
+    if (!formRef.current) return false;
+    const formData = new FormData(formRef.current);
+    const nextErrors: FieldErrors = {};
 
-      const formData = new FormData(event.currentTarget);
-      const { values } = extractCandidateForm(formData);
-      const parsed = candidateSchema.safeParse(values);
+    if (step === 1) {
+      // Validate contact info
+      const name = String(formData.get("name") || "").trim();
+      const email = String(formData.get("email") || "").trim();
+      const phone = String(formData.get("phone") || "").trim();
 
-      const nextErrors: FieldErrors = {};
-      const nextFileErrors: FileErrors = {};
+      if (!name || name.length < 2) nextErrors.name = "Oppgi fullt navn";
+      if (!email || !email.includes("@")) nextErrors.email = "Oppgi gyldig e-post";
+      if (!phone || phone.length < 6) nextErrors.phone = "Oppgi telefonnummer";
+    }
 
-      if (!parsed.success) {
-        console.log("Validation errors:", parsed.error.issues);
-        for (const issue of parsed.error.issues) {
-          const key = issue.path[0];
-          if (typeof key === "string" && !nextErrors[key]) {
-            nextErrors[key] = issue.message;
-          }
-        }
-      }
+    if (step === 2) {
+      // Validate work preferences
+      const wantsTemporary = formData.get("wants_temporary");
+      const workMain = formData.getAll("work_main");
 
-      // Honeypot
-      if (values.honey) {
-        setFieldErrors({});
-        setFormError(null);
-        return;
-      }
+      if (!wantsTemporary) nextErrors.wants_temporary = "Velg ja eller nei";
+      if (workMain.length === 0) nextErrors.work_main = "Velg minst ett arbeidsområde";
+    }
 
-      // Client-side file validation
+    // Step 3 (skills) has no required fields
+
+    if (step === 4) {
+      // Validate files and consent
       const cvFile = formData.get("cv") as File | null;
       const certsFile = formData.get("certs") as File | null;
+      const stcwConfirm = formData.get("stcw_confirm");
+      const gdpr = formData.get("gdpr");
+      const nextFileErrors: FileErrors = {};
 
-      console.log("📎 File validation:", {
-        cv: {
-          exists: !!cvFile,
-          size: cvFile?.size || 0,
-          name: cvFile?.name || "N/A",
-        },
-        certs: {
-          exists: !!certsFile,
-          size: certsFile?.size || 0,
-          name: certsFile?.name || "N/A",
-        },
-      });
-
+      // CV is required
       if (!cvFile || cvFile.size === 0) {
         nextFileErrors.cv = "CV (PDF) er påkrevd";
       } else if (cvFile.size > 10 * 1024 * 1024) {
@@ -390,50 +427,97 @@ export default function CandidateContent() {
         nextFileErrors.cv = "CV må være en PDF-fil";
       }
 
-      if (!certsFile || certsFile.size === 0) {
-        nextFileErrors.certs = "Sertifikater/Helseattest er påkrevd";
-      } else if (certsFile.size > 10 * 1024 * 1024) {
-        nextFileErrors.certs = "Fil må være under 10 MB";
-      } else {
-        const allowed = [".pdf", ".zip", ".doc", ".docx"];
-        const name = certsFile.name.toLowerCase();
-        if (!allowed.some((ext) => name.endsWith(ext))) {
-          nextFileErrors.certs = "Fil må være PDF, ZIP eller DOC/DOCX";
+      // Certificates are optional - only validate if provided
+      if (certsFile && certsFile.size > 0) {
+        if (certsFile.size > 10 * 1024 * 1024) {
+          nextFileErrors.certs = "Fil må være under 10 MB";
+        } else {
+          const allowed = [".pdf", ".zip", ".doc", ".docx"];
+          const name = certsFile.name.toLowerCase();
+          if (!allowed.some((ext) => name.endsWith(ext))) {
+            nextFileErrors.certs = "Fil må være PDF, ZIP eller Word";
+          }
         }
       }
 
-      if (
-        Object.keys(nextErrors).length > 0 ||
-        Object.keys(nextFileErrors).length > 0
-      ) {
-        console.log("Form errors:", nextErrors);
-        console.log("File errors:", nextFileErrors);
-        setFieldErrors(nextErrors);
+      if (!stcwConfirm) nextErrors.stcw_confirm = "Bekreft STCW og helseattest";
+      if (!gdpr) nextErrors.gdpr = "Samtykke til personvern er påkrevd";
+
+      if (Object.keys(nextFileErrors).length > 0) {
         setFileErrors(nextFileErrors);
+      }
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
+      return false;
+    }
+
+    return true;
+  }, []);
+
+  const handleNext = useCallback(() => {
+    if (validateStep(currentStep)) {
+      setFieldErrors({});
+      setFileErrors({});
+      setFormError(null);
+      setCurrentStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentStep, validateStep]);
+
+  const handlePrev = useCallback(() => {
+    setFieldErrors({});
+    setFileErrors({});
+    setFormError(null);
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      // Final validation
+      if (!validateStep(4)) {
         setFormError("Kontroller feltene markert i rødt.");
-        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
 
-      // CRITICAL: Check Vipps verification BEFORE submitting to API (unless soft mode)
-      if (requireVipps && !vippsSession) {
-        // User should have been redirected already, but just in case
-        console.error("❌ Vipps verification missing when required");
+      const formData = new FormData(event.currentTarget);
+      const { values } = extractCandidateForm(formData);
+      const parsed = candidateSchema.safeParse(values);
+
+      if (!parsed.success) {
+        const nextErrors: FieldErrors = {};
+        for (const issue of parsed.error.issues) {
+          const key = issue.path[0];
+          if (typeof key === "string" && !nextErrors[key]) {
+            nextErrors[key] = issue.message;
+          }
+        }
+        setFieldErrors(nextErrors);
+        setFormError("Kontroller feltene markert i rødt.");
+        return;
+      }
+
+      // Honeypot check
+      if (values.honey) {
+        return;
+      }
+
+      // Vipps verification check
+      if (!vippsSession) {
         setFormError("Du må verifisere identiteten din med Vipps først.");
-        window.scrollTo({ top: 0, behavior: "smooth" });
         router.push("/jobbsoker/registrer");
         return;
       }
 
-      // Vipps verified—submit to API
       setFieldErrors({});
       setFileErrors({});
       setFormError(null);
       setIsSubmitting(true);
 
-      console.log("🚀 Submitting form to API...");
-
-      // Add CSRF token to form data
       if (csrfToken) {
         formData.set("csrf_token", csrfToken);
       }
@@ -446,62 +530,44 @@ export default function CandidateContent() {
 
         if (!response.ok) {
           const message = await response.text();
-          console.error("❌ API error:", message);
           throw new Error(message || "Innsending feilet");
         }
 
-        console.log("✅ Form submitted successfully");
-
-        // Clear draft after successful submit
         try {
           if (typeof window !== "undefined") {
             window.sessionStorage.removeItem(FORM_STORAGE_KEY);
           }
-        } catch (error) {
-          console.warn("Kunne ikke fjerne skjemautkast", error);
+        } catch {
+          // Ignore storage errors
         }
 
         window.location.href = "/jobbsoker/registrer/skjema?sent=worker";
       } catch (error) {
-        console.error("❌ Submission error:", error);
-        setFormError(
-          error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen."
-        );
+        setFormError(error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen.");
         setIsSubmitting(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [vippsSession, requireVipps, router, csrfToken]
+    [vippsSession, router, csrfToken, validateStep]
   );
 
+  // Success state
   if (submitted) {
     return (
       <div style={ui.successCard} role="status">
-        <h2 style={ui.successTitle}>Søknaden er mottatt</h2>
+        <h2 style={ui.successTitle}>Søknaden er mottatt!</h2>
         <p style={ui.successBody}>
-          Takk for at du registrerte deg hos Bluecrew. Vi verifiserer profilen
-          din og matcher deg med relevante oppdrag.
+          Takk for at du registrerte deg hos Bluecrew. Vi verifiserer profilen din og matcher deg med relevante oppdrag.
         </p>
         <div>
           <strong style={{ color: "#047857" }}>Hva skjer nå?</strong>
           <ul style={ui.successList}>
-            <li>
-              Vi går gjennom CV, sertifikater og referanser innen{" "}
-              <strong>24–48 timer</strong>.
-            </li>
-            <li>
-              Du får e-post når profilen din er aktivert og klar for matching.
-            </li>
-            <li>
-              Oppdrag formidles via telefon eller e-post – hold
-              kontaktinformasjonen din oppdatert.
-            </li>
+            <li>Vi går gjennom CV og sertifikater innen <strong>24–48 timer</strong>.</li>
+            <li>Du får e-post når profilen din er aktivert.</li>
+            <li>Oppdrag formidles via telefon eller e-post.</li>
           </ul>
         </div>
         <p style={ui.successBody}>
-          Spørsmål eller oppdateringer? Send e-post til{" "}
-          <strong>isak@bluecrew.no</strong> eller ring{" "}
-          <strong>923 28 850</strong>.
+          Spørsmål? Send e-post til <strong>isak@bluecrew.no</strong> eller ring <strong>923 28 850</strong>.
         </p>
         <Link
           href="/"
@@ -516,7 +582,6 @@ export default function CandidateContent() {
             borderRadius: "12px",
             fontWeight: "700",
             fontSize: "1rem",
-            transition: "all 0.2s ease",
             marginTop: "16px",
             boxShadow: "0 4px 12px rgba(14, 165, 233, 0.3)",
           }}
@@ -527,14 +592,13 @@ export default function CandidateContent() {
     );
   }
 
+  // Loading state
   if (checkingSession) {
     return (
       <div style={ui.wrap}>
         <div style={{ textAlign: "center", padding: 40 }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>
-            Verifiserer Vipps-sesjon...
-          </h2>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>Verifiserer Vipps-sesjon...</h2>
         </div>
       </div>
     );
@@ -543,6 +607,7 @@ export default function CandidateContent() {
   return (
     <div style={ui.wrap}>
       <form
+        ref={formRef}
         action="/api/submit-candidate"
         method="POST"
         encType="multipart/form-data"
@@ -550,388 +615,296 @@ export default function CandidateContent() {
         onSubmit={handleSubmit}
         style={ui.formShell}
       >
-        {formError ? (
+        {/* Step Progress */}
+        <div>
+          <StepIndicator currentStep={currentStep} />
+          <StepLabels currentStep={currentStep} />
+        </div>
+
+        {formError && (
           <div style={sx.formError} role="alert">
             {formError}
           </div>
-        ) : null}
+        )}
 
-        {vippsSession ? <VippsVerifiedBadge session={vippsSession} /> : null}
+        {vippsSession && currentStep === 1 && <VippsVerifiedBadge session={vippsSession} />}
 
-        {statusMessage ? (
+        {statusMessage && currentStep === 1 && (
           <div style={ui.infoBox} role="status">
             {statusMessage}
           </div>
-        ) : null}
+        )}
 
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Kontaktinformasjon</h2>
-            <p style={ui.sectionLead}>
-              Oppgi navn, kontaktinformasjon og bostedsadresse.
-            </p>
-          </div>
-          <div style={ui.fieldGrid}>
-            <Input
-              label="Fullt navn"
-              name="name"
-              required
-              defaultValue={(vippsSession?.name || draftValues?.name) ?? ""}
-              error={fieldErrors.name}
-              onChange={() => clearFieldError("name")}
-            />
-            <Input
-              label="E-post"
-              name="email"
-              type="email"
-              required
-              defaultValue={
-                ((vippsSession as unknown as { email?: string })?.email ||
-                  draftValues?.email) ??
-                ""
-              }
-              error={fieldErrors.email}
-              onChange={() => clearFieldError("email")}
-            />
-            <Input
-              label="Telefon"
-              name="phone"
-              required
-              defaultValue={(vippsSession?.phone || draftValues?.phone) ?? ""}
-              error={fieldErrors.phone}
-              onChange={() => clearFieldError("phone")}
-            />
-          </div>
-          <div style={ui.fieldGrid}>
-            <div>
-              <label style={sx.label}>
-                <span>Fylke</span>
-                <select
-                  name="fylke"
-                  style={sx.input}
-                  onChange={() => clearFieldError("fylke")}
-                >
-                  <option value="">Velg fylke</option>
-                  <option value="Agder">Agder</option>
-                  <option value="Innlandet">Innlandet</option>
-                  <option value="Møre og Romsdal">Møre og Romsdal</option>
-                  <option value="Nordland">Nordland</option>
-                  <option value="Oslo">Oslo</option>
-                  <option value="Rogaland">Rogaland</option>
-                  <option value="Troms">Troms</option>
-                  <option value="Finnmark">Finnmark</option>
-                  <option value="Trøndelag">Trøndelag</option>
-                  <option value="Vestfold og Telemark">
-                    Vestfold og Telemark
-                  </option>
-                  <option value="Vestland">Vestland</option>
-                  <option value="Viken">Viken</option>
-                  <option value="Svalbard">Svalbard</option>
-                </select>
-              </label>
-              {fieldErrors.fylke ? (
-                <div style={sx.errText} role="alert">
-                  {fieldErrors.fylke}
-                </div>
-              ) : null}
+        {/* STEP 1: Contact Info */}
+        {currentStep === 1 && (
+          <div style={ui.section}>
+            <div style={ui.sectionHeader}>
+              <h2 style={ui.sectionTitle}>Kontaktinformasjon</h2>
+              <p style={ui.sectionLead}>Oppgi navn, kontaktinformasjon og bosted.</p>
             </div>
-            <div>
-              <label style={sx.label}>
-                <span>Kommune</span>
-                <input
-                  type="text"
-                  name="kommune"
-                  placeholder="F.eks. Bergen, Tromsø, Stavanger"
-                  style={sx.input}
-                  onChange={() => clearFieldError("kommune")}
-                />
-              </label>
-              {fieldErrors.region ? (
-                <div style={sx.errText} role="alert">
-                  {fieldErrors.region}
-                </div>
-              ) : null}
+            <div style={ui.fieldGrid}>
+              <Input
+                label="Fullt navn"
+                name="name"
+                required
+                defaultValue={(vippsSession?.name || draftValues?.name) ?? ""}
+                error={fieldErrors.name}
+                onChange={() => clearFieldError("name")}
+              />
+              <Input
+                label="E-post"
+                name="email"
+                type="email"
+                required
+                defaultValue={((vippsSession as unknown as { email?: string })?.email || draftValues?.email) ?? ""}
+                error={fieldErrors.email}
+                onChange={() => clearFieldError("email")}
+              />
+              <Input
+                label="Telefon"
+                name="phone"
+                required
+                defaultValue={(vippsSession?.phone || draftValues?.phone) ?? ""}
+                error={fieldErrors.phone}
+                onChange={() => clearFieldError("phone")}
+              />
             </div>
-          </div>
-        </div>
-
-        <div style={ui.divider} />
-
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Arbeidsønsker</h2>
-            <p style={ui.sectionLead}>
-              Oppgi når du er tilgjengelig, om du er åpen for midlertidige
-              oppdrag, og huk av relevante fagområder.
-            </p>
-          </div>
-          <div style={ui.fieldGrid}>
-            <Input
-              label="Tilgjengelig fra"
-              name="available_from"
-              type="date"
-              defaultValue={draftValues?.available_from ?? ""}
-              error={fieldErrors.available_from}
-              onChange={() => clearFieldError("available_from")}
-            />
-          </div>
-
-          <div>
-            <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
-              Er du åpen for midlertidige oppdrag?
-            </div>
-            <div style={sx.inlineRadios}>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="wants_temporary"
-                  value="ja"
-                  onChange={() => clearFieldError("wants_temporary")}
-                  required
-                />
-                Ja
-              </label>
-              <label style={sx.radioLabel}>
-                <input
-                  type="radio"
-                  name="wants_temporary"
-                  value="nei"
-                  onChange={() => clearFieldError("wants_temporary")}
-                />
-                Nei
-              </label>
-            </div>
-            {fieldErrors.wants_temporary ? (
-              <div style={sx.errText} role="alert">
-                {fieldErrors.wants_temporary}
+            <div style={ui.fieldGrid}>
+              <div>
+                <label style={sx.label}>
+                  <span>Fylke</span>
+                  <select name="fylke" style={sx.input} onChange={() => clearFieldError("fylke")}>
+                    <option value="">Velg fylke</option>
+                    <option value="Agder">Agder</option>
+                    <option value="Innlandet">Innlandet</option>
+                    <option value="Møre og Romsdal">Møre og Romsdal</option>
+                    <option value="Nordland">Nordland</option>
+                    <option value="Oslo">Oslo</option>
+                    <option value="Rogaland">Rogaland</option>
+                    <option value="Troms">Troms</option>
+                    <option value="Finnmark">Finnmark</option>
+                    <option value="Trøndelag">Trøndelag</option>
+                    <option value="Vestfold og Telemark">Vestfold og Telemark</option>
+                    <option value="Vestland">Vestland</option>
+                    <option value="Viken">Viken</option>
+                    <option value="Svalbard">Svalbard</option>
+                  </select>
+                </label>
               </div>
-            ) : null}
-          </div>
-
-          <div style={{ marginTop: 12 }}>
-            <div
-              style={{
-                fontWeight: 700,
-                marginBottom: 12,
-                color: "#0b1f3a",
-                fontSize: 16,
-              }}
-            >
-              Ønsket arbeid
+              <div>
+                <label style={sx.label}>
+                  <span>Kommune</span>
+                  <input
+                    type="text"
+                    name="kommune"
+                    placeholder="F.eks. Bergen, Tromsø"
+                    style={sx.input}
+                    onChange={() => clearFieldError("kommune")}
+                  />
+                </label>
+              </div>
             </div>
-            <p style={{ fontSize: 14, color: "#64748b", marginBottom: 12 }}>
-              Huk av relevante fagområder. Åpne flere kategorier ved behov.
-            </p>
           </div>
-          <div style={{ display: "grid", gap: 12 }}>
-            {workEntries.map(([main, subs]) => {
-              const open = !!openMain[main];
-              return (
-                <div key={main} style={ui.workPanel}>
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={open}
-                      onChange={() => toggleMain(main)}
-                    />
-                    <span style={{ fontWeight: 700, color: "#0b1f3a" }}>
-                      {main}
-                    </span>
-                  </label>
-                  {open ? (
-                    <div>
-                      <div style={sx.tags}>
-                        {(subs as string[]).map((sub) =>
-                          sub === "Annet" ? (
-                            <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-                              <label style={sx.label}>
-                                <span>Annet (kort beskrivelse)</span>
+        )}
+
+        {/* STEP 2: Work Preferences */}
+        {currentStep === 2 && (
+          <div style={ui.section}>
+            <div style={ui.sectionHeader}>
+              <h2 style={ui.sectionTitle}>Arbeidsønsker</h2>
+              <p style={ui.sectionLead}>Oppgi tilgjengelighet og ønskede arbeidsområder.</p>
+            </div>
+
+            <div style={ui.fieldGrid}>
+              <Input
+                label="Tilgjengelig fra"
+                name="available_from"
+                type="date"
+                defaultValue={draftValues?.available_from ?? ""}
+                error={fieldErrors.available_from}
+                onChange={() => clearFieldError("available_from")}
+              />
+            </div>
+
+            <div>
+              <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
+                Er du åpen for midlertidige oppdrag? *
+              </div>
+              <div style={sx.inlineRadios}>
+                <label style={sx.radioLabel}>
+                  <input type="radio" name="wants_temporary" value="ja" onChange={() => clearFieldError("wants_temporary")} required />
+                  Ja
+                </label>
+                <label style={sx.radioLabel}>
+                  <input type="radio" name="wants_temporary" value="nei" onChange={() => clearFieldError("wants_temporary")} />
+                  Nei
+                </label>
+              </div>
+              {fieldErrors.wants_temporary && (
+                <div style={sx.errText} role="alert">{fieldErrors.wants_temporary}</div>
+              )}
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <div style={{ fontWeight: 700, marginBottom: 12, color: "#0b1f3a", fontSize: 16 }}>
+                Ønsket arbeid *
+              </div>
+              <p style={{ fontSize: 14, color: "#64748b", marginBottom: 12 }}>
+                Huk av relevante fagområder.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gap: 12 }}>
+              {workEntries.map(([main, subs]) => {
+                const open = !!openMain[main];
+                return (
+                  <div key={main} style={ui.workPanel}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+                      <input type="checkbox" checked={open} onChange={() => toggleMain(main)} />
+                      <span style={{ fontWeight: 700, color: "#0b1f3a" }}>{main}</span>
+                    </label>
+                    {open && (
+                      <div>
+                        <div style={sx.tags}>
+                          {(subs as string[]).map((sub) =>
+                            sub === "Annet" ? (
+                              <div key={sub} style={{ flex: 1, minWidth: 200 }}>
+                                <label style={sx.label}>
+                                  <span>Annet</span>
+                                  <input
+                                    name={`other_${main}`}
+                                    placeholder="Beskriv kort"
+                                    value={otherText[main] || ""}
+                                    onChange={(e) => setOtherText((prev) => ({ ...prev, [main]: e.target.value }))}
+                                    style={sx.input}
+                                  />
+                                </label>
+                              </div>
+                            ) : (
+                              <label key={sub} style={sx.tagItem}>
                                 <input
-                                  name={`other_${main}`}
-                                  placeholder="Skriv kort om ønsket arbeid"
-                                  value={otherText[main] || ""}
-                                  onChange={(e) =>
-                                    setOtherText((prev) => ({
-                                      ...prev,
-                                      [main]: e.target.value,
-                                    }))
-                                  }
-                                  style={sx.input}
+                                  type="checkbox"
+                                  name="work_main"
+                                  value={`${main}:${sub}`}
+                                  onChange={() => clearFieldError("work_main")}
                                 />
+                                <span>{sub}</span>
                               </label>
-                            </div>
-                          ) : (
-                            <label key={sub} style={sx.tagItem}>
-                              <input
-                                type="checkbox"
-                                name="work_main"
-                                value={`${main}:${sub}`}
-                                onChange={() => clearFieldError("work_main")}
-                              />
-                              <span>{sub}</span>
-                            </label>
-                          )
-                        )}
+                            )
+                          )}
+                        </div>
                       </div>
-                      <small style={{ color: "#64748b" }}>
-                        Fyll inn «Annet» dersom spesifikke stillinger mangler
-                      </small>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-          {fieldErrors.work_main ? (
-            <div style={sx.errText} role="alert">
-              {fieldErrors.work_main}
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          ) : null}
-        </div>
-
-        <div style={ui.divider} />
-
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Kompetanse og erfaring</h2>
-            <p style={ui.sectionLead}>
-              Beskriv relevant erfaring, sertifikater og spesialkompetanse.
-            </p>
+            {fieldErrors.work_main && (
+              <div style={sx.errText} role="alert">{fieldErrors.work_main}</div>
+            )}
           </div>
-          <Textarea
-            label="Kompetanse og erfaring"
-            name="skills"
-            rows={6}
-            full
-            description="Eksempel: 5 års erfaring som matros på brønnbåt, STCW grunnkurs, ROV-sertifikat... Oppgi maritime sertifikater, utdanning og relevant arbeidserfaring."
-            error={fieldErrors.skills}
-            onBlur={() => clearFieldError("skills")}
-          />
-          <Textarea
-            label="Andre kommentarer eller preferanser (valgfritt)"
-            name="other_comp"
-            rows={4}
-            full
-            description="Eksempel: Foretrekker oppdrag i Nord-Norge, kan starte med kort varsel... Skriv gjerne om preferanser, tilgjengelighet eller andre notater."
-            error={fieldErrors.other_comp}
-            onBlur={() => clearFieldError("other_comp")}
-          />
-        </div>
+        )}
 
-        <div style={ui.divider} />
-
-        <div style={ui.section}>
-          <div style={ui.sectionHeader}>
-            <h2 style={ui.sectionTitle}>Dokumenter og samtykke</h2>
-            <p style={ui.sectionLead}>
-              Last opp CV og eventuelle sertifikater. Vi sender deg bekreftelse
-              på e-post.
-            </p>
-          </div>
-
-          <div style={ui.filesGrid}>
-            <FileInput
-              label="CV (PDF, maks 10 MB)"
-              name="cv"
-              accept=".pdf"
-              required
-              error={fileErrors.cv}
-              onChange={() => clearFileError("cv")}
+        {/* STEP 3: Skills */}
+        {currentStep === 3 && (
+          <div style={ui.section}>
+            <div style={ui.sectionHeader}>
+              <h2 style={ui.sectionTitle}>Kompetanse og erfaring</h2>
+              <p style={ui.sectionLead}>Beskriv relevant erfaring og sertifikater.</p>
+            </div>
+            <Textarea
+              label="Kompetanse og erfaring"
+              name="skills"
+              rows={6}
+              full
+              description="Eksempel: 5 års erfaring som matros på brønnbåt, STCW grunnkurs, ROV-sertifikat..."
+              error={fieldErrors.skills}
+              onBlur={() => clearFieldError("skills")}
             />
-            <FileInput
-              label="Sertifikater/Helseattest (flere filer tillatt, PDF/ZIP, maks 10 MB per fil)"
-              name="certs"
-              accept=".pdf,.zip"
-              multiple
-              required
-              error={fileErrors.certs}
-              onChange={() => clearFileError("certs")}
+            <Textarea
+              label="Andre kommentarer (valgfritt)"
+              name="other_comp"
+              rows={4}
+              full
+              description="Preferanser, tilgjengelighet eller andre notater."
+              error={fieldErrors.other_comp}
+              onBlur={() => clearFieldError("other_comp")}
             />
           </div>
+        )}
 
-          <div style={ui.consentBox}>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                fontSize: 14.5,
-                color: "#0b1f3a",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                type="checkbox"
-                id="stcw_confirm"
-                name="stcw_confirm"
-                required
-                aria-invalid={!!fieldErrors.stcw_confirm}
-                onChange={() => clearFieldError("stcw_confirm")}
-                style={{ marginTop: 3, flexShrink: 0 }}
-              />
-              <span>
-                Jeg bekrefter at jeg har eller vil skaffe{" "}
-                <strong>STCW grunnleggende sikkerhetskurs</strong> og
-                <strong> gyldig helseattest</strong> før oppdrag.
-              </span>
-            </label>
-            {fieldErrors.stcw_confirm ? (
-              <div style={sx.errText} role="alert">
-                {fieldErrors.stcw_confirm}
-              </div>
-            ) : null}
+        {/* STEP 4: Documents & Consent */}
+        {currentStep === 4 && (
+          <div style={ui.section}>
+            <div style={ui.sectionHeader}>
+              <h2 style={ui.sectionTitle}>Dokumenter og samtykke</h2>
+              <p style={ui.sectionLead}>Last opp CV og sertifikater for å fullføre registreringen.</p>
+            </div>
 
-            <label
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 10,
-                fontSize: 14.5,
-                color: "#0b1f3a",
-                cursor: "pointer",
-              }}
-            >
-              <input
-                id="gdpr"
-                type="checkbox"
-                name="gdpr"
-                value="yes"
+            <div style={ui.filesGrid}>
+              <FileInput
+                label="CV (PDF, maks 10 MB) *"
+                name="cv"
+                accept=".pdf"
                 required
-                aria-invalid={!!fieldErrors.gdpr}
-                onChange={() => clearFieldError("gdpr")}
-                style={{ marginTop: 3, flexShrink: 0 }}
+                error={fileErrors.cv}
+                onChange={() => clearFileError("cv")}
               />
-              <span>
-                Jeg samtykker til at Bluecrew AS lagrer og behandler
-                personopplysninger, CV og sertifikater for å matche meg mot
-                oppdrag. Data lagres i <strong>12–24 måneder</strong>. {""}
-                <Link
-                  href="/personvern"
-                  style={{
-                    color: "#0369a1",
-                    textDecoration: "underline",
-                    fontWeight: 600,
-                  }}
-                >
-                  Les personvernerklæringen
-                </Link>
-                .
-              </span>
-            </label>
-            {fieldErrors.gdpr ? (
-              <div style={sx.errText} role="alert">
-                {fieldErrors.gdpr}
-              </div>
-            ) : null}
+              <FileInput
+                label="Sertifikater/Helseattest (valgfritt)"
+                name="certs"
+                accept=".pdf,.zip,.doc,.docx"
+                multiple
+                error={fileErrors.certs}
+                onChange={() => clearFileError("certs")}
+              />
+            </div>
+            <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+              Har du ikke sertifikatene klare? Du kan laste dem opp senere via Min Side.
+            </p>
+
+            <div style={ui.consentBox}>
+              <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, color: "#0b1f3a", cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  name="stcw_confirm"
+                  required
+                  aria-invalid={!!fieldErrors.stcw_confirm}
+                  onChange={() => clearFieldError("stcw_confirm")}
+                  style={{ marginTop: 3, flexShrink: 0 }}
+                />
+                <span>
+                  Jeg bekrefter at jeg har eller vil skaffe <strong>STCW grunnleggende sikkerhetskurs</strong> og <strong>gyldig helseattest</strong> før oppdrag.
+                </span>
+              </label>
+              {fieldErrors.stcw_confirm && (
+                <div style={sx.errText} role="alert">{fieldErrors.stcw_confirm}</div>
+              )}
+
+              <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, color: "#0b1f3a", cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  name="gdpr"
+                  value="yes"
+                  required
+                  aria-invalid={!!fieldErrors.gdpr}
+                  onChange={() => clearFieldError("gdpr")}
+                  style={{ marginTop: 3, flexShrink: 0 }}
+                />
+                <span>
+                  Jeg samtykker til at Bluecrew AS lagrer personopplysninger, CV og sertifikater i <strong>12–24 måneder</strong>.{" "}
+                  <Link href="/personvern" style={{ color: "#0369a1", textDecoration: "underline", fontWeight: 600 }}>
+                    Les personvernerklæringen
+                  </Link>
+                  .
+                </span>
+              </label>
+              {fieldErrors.gdpr && (
+                <div style={sx.errText} role="alert">{fieldErrors.gdpr}</div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Honeypot */}
         <div aria-hidden="true" style={sx.honeypot}>
@@ -941,27 +914,33 @@ export default function CandidateContent() {
           </label>
         </div>
 
-        <div style={ui.submitRow}>
-          <button
-            type="submit"
-            style={{
-              ...sx.btnMain,
-              opacity: isSubmitting ? 0.7 : 1,
-              cursor: isSubmitting ? "wait" : (sx.btnMain.cursor as string),
-            }}
-            disabled={isSubmitting}
-          >
-            Send inn jobbsøkerprofil
-          </button>
-          <div style={ui.submitNote}>
-            Vi tar kontakt når profilen er verifisert. Spørsmål? Ring{" "}
-            <strong>923 28 850</strong>.
-          </div>
+        {/* Navigation */}
+        <div style={ui.navRow}>
+          {currentStep > 1 ? (
+            <button type="button" onClick={handlePrev} style={ui.btnPrev}>
+              ← Forrige
+            </button>
+          ) : (
+            <div />
+          )}
+
+          {currentStep < TOTAL_STEPS ? (
+            <button type="button" onClick={handleNext} style={ui.btnNext}>
+              Neste →
+            </button>
+          ) : (
+            <button
+              type="submit"
+              style={{ ...ui.btnSubmit, opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "wait" : "pointer" }}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Sender..." : "Send inn søknad"}
+            </button>
+          )}
         </div>
       </form>
     </div>
   );
 }
 
-// Export as named export for use in /jobbsoker/registrer/skjema
 export { CandidateContent as CandidateForm };
