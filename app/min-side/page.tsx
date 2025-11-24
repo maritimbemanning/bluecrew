@@ -2,10 +2,10 @@
  * USER PORTAL - MIN SIDE
  * Route: bluecrew.no/min-side
  *
- * Allows users to:
- * - View their submitted job applications
- * - Download their personal data (GDPR Art. 20)
- * - Request deletion of their data (GDPR Art. 17)
+ * Clean dashboard showing:
+ * - Candidate registration status
+ * - Job applications
+ * - Quick actions
  */
 
 "use client";
@@ -16,12 +16,14 @@ import SiteLayout from "@/app/components/SiteLayout";
 import {
   User,
   FileText,
-  Download,
-  Trash2,
+  ChevronDown,
+  ChevronUp,
   Loader2,
   CheckCircle,
   Clock,
   XCircle,
+  Briefcase,
+  Shield,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
 
@@ -36,30 +38,56 @@ type JobApplication = {
   created_at: string;
 };
 
+type CandidateStatus = {
+  registered: boolean;
+  candidate?: {
+    id: string;
+    name: string;
+    submittedAt: string;
+    status: string;
+  };
+};
+
 const statusLabels: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
-  new: { label: "Mottatt", color: "#3b82f6", icon: <Clock size={16} /> },
-  reviewed: { label: "Under vurdering", color: "#f59e0b", icon: <Clock size={16} /> },
-  contacted: { label: "Kontaktet", color: "#10b981", icon: <CheckCircle size={16} /> },
-  interview: { label: "Til intervju", color: "#8b5cf6", icon: <CheckCircle size={16} /> },
-  hired: { label: "Ansatt", color: "#10b981", icon: <CheckCircle size={16} /> },
-  rejected: { label: "Avslått", color: "#ef4444", icon: <XCircle size={16} /> },
+  new: { label: "Mottatt", color: "#3b82f6", icon: <Clock size={14} /> },
+  reviewed: { label: "Under vurdering", color: "#f59e0b", icon: <Clock size={14} /> },
+  contacted: { label: "Kontaktet", color: "#10b981", icon: <CheckCircle size={14} /> },
+  interview: { label: "Til intervju", color: "#8b5cf6", icon: <CheckCircle size={14} /> },
+  hired: { label: "Ansatt", color: "#10b981", icon: <CheckCircle size={14} /> },
+  rejected: { label: "Avslått", color: "#ef4444", icon: <XCircle size={14} /> },
+  pending: { label: "Venter godkjenning", color: "#f59e0b", icon: <Clock size={14} /> },
 };
 
 export default function MinSidePage() {
   const { user, isLoaded } = useUser();
+  const [candidateStatus, setCandidateStatus] = useState<CandidateStatus | null>(null);
   const [applications, setApplications] = useState<JobApplication[]>([]);
+  const [loadingCandidate, setLoadingCandidate] = useState(true);
   const [loadingApplications, setLoadingApplications] = useState(false);
-  const [deleteRequested, setDeleteRequested] = useState(false);
-  const [exportLoading, setExportLoading] = useState(false);
+  const [applicationsExpanded, setApplicationsExpanded] = useState(false);
 
-  // Load user's applications when user is available
+  // Load candidate status and applications
   useEffect(() => {
     if (user?.id) {
+      loadCandidateStatus();
       loadApplications(user.id);
     }
   }, [user?.id]);
 
-  // Load user's applications
+  async function loadCandidateStatus() {
+    try {
+      const res = await fetch("/api/user/candidate-status");
+      if (res.ok) {
+        const data = await res.json();
+        setCandidateStatus(data);
+      }
+    } catch (err) {
+      console.error("Failed to load candidate status:", err);
+    } finally {
+      setLoadingCandidate(false);
+    }
+  }
+
   async function loadApplications(userId: string) {
     setLoadingApplications(true);
     try {
@@ -77,78 +105,10 @@ export default function MinSidePage() {
     }
   }
 
-  // Export user data
-  async function handleExport() {
-    if (!user) return;
-
-    setExportLoading(true);
-    try {
-      const userData = {
-        exportedAt: new Date().toISOString(),
-        identity: {
-          name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-          email: user.primaryEmailAddress?.emailAddress || null,
-          phone: user.primaryPhoneNumber?.phoneNumber || null,
-          createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : null,
-        },
-        applications: applications.map(app => ({
-          jobTitle: app.job_posting?.title || "Ukjent stilling",
-          company: app.job_posting?.company_name || "Bluecrew AS",
-          status: statusLabels[app.status]?.label || app.status,
-          submittedAt: app.created_at,
-        })),
-      };
-
-      const blob = new Blob([JSON.stringify(userData, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `bluecrew-mine-data-${new Date().toISOString().split("T")[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Export failed:", err);
-    } finally {
-      setExportLoading(false);
-    }
-  }
-
-  // Request deletion
-  async function handleDeleteRequest() {
-    if (!user) return;
-
-    const confirmed = window.confirm(
-      "Er du sikker på at du vil be om sletting av alle dine data? " +
-      "Dette inkluderer alle søknader og personopplysninger. " +
-      "Handlingen kan ikke angres."
-    );
-
-    if (!confirmed) return;
-
-    try {
-      // Send deletion request email
-      await fetch("/api/gdpr/delete-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clerk_user_id: user.id,
-          name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-          email: user.primaryEmailAddress?.emailAddress,
-          phone: user.primaryPhoneNumber?.phoneNumber,
-        }),
-      });
-
-      setDeleteRequested(true);
-    } catch (err) {
-      console.error("Delete request failed:", err);
-      alert("Kunne ikke sende forespørsel. Prøv igjen eller kontakt oss på post@bluecrew.no");
-    }
-  }
-
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("nb-NO", {
       day: "numeric",
-      month: "long",
+      month: "short",
       year: "numeric",
     });
   };
@@ -157,47 +117,24 @@ export default function MinSidePage() {
   if (!isLoaded) {
     return (
       <SiteLayout active="">
-        <div style={{
-          minHeight: "60vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}>
+        <div style={styles.loadingContainer}>
           <Loader2 size={32} style={{ animation: "spin 1s linear infinite" }} />
         </div>
       </SiteLayout>
     );
   }
 
-  // Not logged in - redirect handled by middleware, but show fallback
+  // Not logged in
   if (!user) {
     return (
       <SiteLayout active="">
-        <section style={{
-          padding: "80px 20px",
-          maxWidth: 600,
-          margin: "0 auto",
-          textAlign: "center",
-        }}>
-          <User size={64} style={{ color: "#0369a1", marginBottom: 24 }} />
-          <h1 style={{ fontSize: "2rem", marginBottom: 16 }}>Min side</h1>
-          <p style={{ color: "#64748b", marginBottom: 32, lineHeight: 1.6 }}>
-            Logg inn for å se dine søknader og administrere dine personopplysninger.
+        <section style={styles.notLoggedIn}>
+          <User size={48} style={{ color: "#0369a1", marginBottom: 16 }} />
+          <h1 style={{ fontSize: "1.5rem", marginBottom: 12 }}>Min side</h1>
+          <p style={{ color: "#64748b", marginBottom: 24 }}>
+            Logg inn for å se din profil.
           </p>
-          <Link
-            href="/logg-inn?redirect_url=/min-side"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "14px 28px",
-              background: "#0369a1",
-              color: "#fff",
-              borderRadius: 12,
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
+          <Link href="/logg-inn?redirect_url=/min-side" style={styles.primaryButton}>
             Logg inn
           </Link>
         </section>
@@ -205,230 +142,153 @@ export default function MinSidePage() {
     );
   }
 
-  // Get user display info
-  const userName = user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Bruker";
-  const userEmail = user.primaryEmailAddress?.emailAddress;
-  const userPhone = user.primaryPhoneNumber?.phoneNumber;
+  const userName = user.firstName || user.fullName?.split(" ")[0] || "der";
+  const isRegistered = candidateStatus?.registered;
 
-  // Logged in - show dashboard
   return (
     <SiteLayout active="">
-      <section style={{
-        padding: "60px 20px",
-        maxWidth: 800,
-        margin: "0 auto",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <h1 style={{ fontSize: "2rem", margin: 0 }}>Min side</h1>
-          <SignOutButton>
-            <button style={{
-              padding: "8px 16px",
-              background: "#f1f5f9",
-              border: "1px solid #e2e8f0",
-              borderRadius: 8,
-              cursor: "pointer",
-              fontSize: "0.9rem",
-              color: "#64748b",
-            }}>
-              Logg ut
-            </button>
-          </SignOutButton>
-        </div>
-
-        {/* User info */}
-        <div style={{
-          background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
-          color: "#fff",
-          padding: 24,
-          borderRadius: 16,
-          marginBottom: 32,
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-        }}>
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: { width: 56, height: 56 },
-              },
-            }}
-          />
+      <section style={styles.container}>
+        {/* Header */}
+        <div style={styles.header}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>{userName}</div>
-            {userEmail && <div style={{ opacity: 0.9 }}>{userEmail}</div>}
-            {userPhone && <div style={{ opacity: 0.9 }}>{userPhone}</div>}
+            <h1 style={styles.greeting}>Hei, {userName}!</h1>
+            <p style={styles.subtext}>
+              {isRegistered ? "Velkommen tilbake" : "Kom i gang med å registrere deg"}
+            </p>
           </div>
-          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
-            <CheckCircle size={18} />
-            <span style={{ fontSize: "0.85rem" }}>Verifisert</span>
+          <div style={styles.headerRight}>
+            <UserButton
+              appearance={{
+                elements: { avatarBox: { width: 44, height: 44 } },
+              }}
+            />
+            <SignOutButton>
+              <button style={styles.logoutButton}>Logg ut</button>
+            </SignOutButton>
           </div>
         </div>
 
-        {/* Applications */}
-        <div style={{ marginBottom: 40 }}>
-          <h2 style={{ fontSize: "1.25rem", marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
-            <FileText size={20} />
-            Mine søknader
-          </h2>
-
-          {loadingApplications ? (
-            <div style={{ padding: 40, textAlign: "center", color: "#64748b" }}>
-              <Loader2 size={24} style={{ animation: "spin 1s linear infinite" }} />
-            </div>
-          ) : applications.length === 0 ? (
-            <div style={{
-              padding: 40,
-              textAlign: "center",
-              background: "#f8fafc",
-              borderRadius: 12,
-              color: "#64748b",
-            }}>
-              <FileText size={32} style={{ marginBottom: 12, opacity: 0.5 }} />
-              <p>Du har ingen søknader ennå.</p>
-              <Link
-                href="/jobbsoker/registrer/skjema"
-                style={{
-                  display: "inline-block",
-                  marginTop: 16,
-                  color: "#0369a1",
-                  fontWeight: 600,
-                }}
-              >
-                Registrer deg som jobbsøker →
-              </Link>
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {applications.map((app) => {
-                const status = statusLabels[app.status] || statusLabels.new;
-                return (
-                  <div
-                    key={app.id}
-                    style={{
-                      padding: 20,
-                      background: "#fff",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 12,
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div>
-                      <div style={{ fontWeight: 600 }}>
-                        {app.job_posting?.title || "Stilling"}
-                      </div>
-                      <div style={{ fontSize: "0.9rem", color: "#64748b" }}>
-                        {app.job_posting?.company_name || "Bluecrew AS"} • Sendt {formatDate(app.created_at)}
-                      </div>
-                    </div>
-                    <div style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: "6px 12px",
-                      background: `${status.color}15`,
-                      color: status.color,
-                      borderRadius: 20,
-                      fontSize: "0.85rem",
-                      fontWeight: 600,
-                    }}>
-                      {status.icon}
-                      {status.label}
-                    </div>
+        {/* Status cards */}
+        <div style={styles.cardGrid}>
+          {/* Registration status */}
+          <div style={{
+            ...styles.card,
+            borderColor: isRegistered ? "#86efac" : "#fde68a",
+          }}>
+            {loadingCandidate ? (
+              <Loader2 size={20} style={{ animation: "spin 1s linear infinite" }} />
+            ) : isRegistered ? (
+              <>
+                <div style={styles.cardIcon}>
+                  <CheckCircle size={24} color="#16a34a" />
+                </div>
+                <div>
+                  <div style={styles.cardTitle}>Registrert jobbsøker</div>
+                  <div style={styles.cardSubtext}>
+                    {candidateStatus.candidate?.submittedAt
+                      ? formatDate(candidateStatus.candidate.submittedAt)
+                      : ""}
                   </div>
-                );
-              })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div style={styles.cardIcon}>
+                  <Clock size={24} color="#d97706" />
+                </div>
+                <div>
+                  <div style={styles.cardTitle}>Ikke registrert</div>
+                  <div style={styles.cardSubtext}>Registrer deg som jobbsøker</div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Applications count */}
+          <div style={{ ...styles.card, borderColor: "#bfdbfe" }}>
+            <div style={styles.cardIcon}>
+              <FileText size={24} color="#0369a1" />
+            </div>
+            <div>
+              <div style={styles.cardTitle}>
+                {loadingApplications ? "..." : applications.length} søknad{applications.length !== 1 ? "er" : ""}
+              </div>
+              <div style={styles.cardSubtext}>Sendt inn</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main CTA */}
+        {!isRegistered ? (
+          <Link href="/jobbsoker/registrer" style={styles.ctaButton}>
+            <Briefcase size={20} />
+            Registrer deg som jobbsøker
+          </Link>
+        ) : (
+          <Link href="/stillinger" style={styles.ctaButtonSecondary}>
+            <Briefcase size={20} />
+            Se ledige stillinger
+          </Link>
+        )}
+
+        {/* Applications dropdown */}
+        <div style={styles.applicationsSection}>
+          <button
+            onClick={() => setApplicationsExpanded(!applicationsExpanded)}
+            style={styles.dropdownHeader}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <FileText size={18} />
+              Mine søknader ({applications.length})
+            </span>
+            {applicationsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+          </button>
+
+          {applicationsExpanded && (
+            <div style={styles.dropdownContent}>
+              {loadingApplications ? (
+                <div style={styles.emptyState}>
+                  <Loader2 size={20} style={{ animation: "spin 1s linear infinite" }} />
+                </div>
+              ) : applications.length === 0 ? (
+                <div style={styles.emptyState}>
+                  <p style={{ margin: 0, color: "#64748b" }}>Ingen søknader ennå</p>
+                </div>
+              ) : (
+                applications.map((app) => {
+                  const status = statusLabels[app.status] || statusLabels.new;
+                  return (
+                    <div key={app.id} style={styles.applicationItem}>
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 14 }}>
+                          {app.job_posting?.title || "Jobbsøker-registrering"}
+                        </div>
+                        <div style={{ fontSize: 13, color: "#64748b" }}>
+                          {formatDate(app.created_at)}
+                        </div>
+                      </div>
+                      <div style={{
+                        ...styles.statusBadge,
+                        background: `${status.color}15`,
+                        color: status.color,
+                      }}>
+                        {status.icon}
+                        {status.label}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           )}
         </div>
 
-        {/* GDPR Actions */}
-        <div style={{
-          padding: 24,
-          background: "#f8fafc",
-          borderRadius: 16,
-        }}>
-          <h2 style={{ fontSize: "1.25rem", marginBottom: 16 }}>Dine rettigheter (GDPR)</h2>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {/* Export data */}
-            <button
-              onClick={handleExport}
-              disabled={exportLoading}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: 16,
-                background: "#fff",
-                border: "1px solid #e2e8f0",
-                borderRadius: 12,
-                cursor: "pointer",
-                textAlign: "left",
-                width: "100%",
-              }}
-            >
-              <Download size={20} style={{ color: "#0369a1" }} />
-              <div>
-                <div style={{ fontWeight: 600 }}>Last ned mine data</div>
-                <div style={{ fontSize: "0.85rem", color: "#64748b" }}>
-                  Eksporter alle dine personopplysninger (JSON)
-                </div>
-              </div>
-              {exportLoading && <Loader2 size={18} style={{ marginLeft: "auto", animation: "spin 1s linear infinite" }} />}
-            </button>
-
-            {/* Delete request */}
-            {deleteRequested ? (
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: 16,
-                background: "#dcfce7",
-                border: "1px solid #86efac",
-                borderRadius: 12,
-              }}>
-                <CheckCircle size={20} style={{ color: "#16a34a" }} />
-                <div>
-                  <div style={{ fontWeight: 600, color: "#16a34a" }}>Forespørsel sendt</div>
-                  <div style={{ fontSize: "0.85rem", color: "#15803d" }}>
-                    Vi behandler din forespørsel innen 30 dager.
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <button
-                onClick={handleDeleteRequest}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: 16,
-                  background: "#fff",
-                  border: "1px solid #fecaca",
-                  borderRadius: 12,
-                  cursor: "pointer",
-                  textAlign: "left",
-                  width: "100%",
-                }}
-              >
-                <Trash2 size={20} style={{ color: "#dc2626" }} />
-                <div>
-                  <div style={{ fontWeight: 600 }}>Be om sletting</div>
-                  <div style={{ fontSize: "0.85rem", color: "#64748b" }}>
-                    Slett alle mine data permanent
-                  </div>
-                </div>
-              </button>
-            )}
-          </div>
-
-          <p style={{ marginTop: 16, fontSize: "0.85rem", color: "#64748b" }}>
-            Les mer om hvordan vi behandler dine data i vår{" "}
-            <Link href="/personvern" style={{ color: "#0369a1" }}>personvernerklæring</Link>.
-          </p>
+        {/* Footer with GDPR link */}
+        <div style={styles.footer}>
+          <Link href="/min-side/personvern" style={styles.footerLink}>
+            <Shield size={14} />
+            Personvern & datarettigheter
+          </Link>
         </div>
       </section>
 
@@ -441,3 +301,176 @@ export default function MinSidePage() {
     </SiteLayout>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  loadingContainer: {
+    minHeight: "60vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  notLoggedIn: {
+    padding: "80px 20px",
+    maxWidth: 400,
+    margin: "0 auto",
+    textAlign: "center",
+  },
+  container: {
+    padding: "40px 20px 60px",
+    maxWidth: 600,
+    margin: "0 auto",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 32,
+  },
+  greeting: {
+    fontSize: "1.75rem",
+    fontWeight: 700,
+    margin: 0,
+  },
+  subtext: {
+    color: "#64748b",
+    margin: "4px 0 0",
+    fontSize: 15,
+  },
+  headerRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  },
+  logoutButton: {
+    padding: "8px 14px",
+    background: "#f1f5f9",
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    color: "#64748b",
+  },
+  cardGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: 12,
+    marginBottom: 24,
+  },
+  card: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: 16,
+    background: "#fff",
+    border: "2px solid #e2e8f0",
+    borderRadius: 12,
+  },
+  cardIcon: {
+    flexShrink: 0,
+  },
+  cardTitle: {
+    fontWeight: 600,
+    fontSize: 15,
+  },
+  cardSubtext: {
+    fontSize: 13,
+    color: "#64748b",
+  },
+  ctaButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    width: "100%",
+    padding: "16px 24px",
+    background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+    color: "#fff",
+    borderRadius: 12,
+    fontWeight: 600,
+    fontSize: 16,
+    textDecoration: "none",
+    marginBottom: 24,
+  },
+  ctaButtonSecondary: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    width: "100%",
+    padding: "16px 24px",
+    background: "#fff",
+    color: "#0369a1",
+    border: "2px solid #0369a1",
+    borderRadius: 12,
+    fontWeight: 600,
+    fontSize: 16,
+    textDecoration: "none",
+    marginBottom: 24,
+  },
+  primaryButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "14px 28px",
+    background: "#0369a1",
+    color: "#fff",
+    borderRadius: 12,
+    fontWeight: 600,
+    textDecoration: "none",
+  },
+  applicationsSection: {
+    background: "#f8fafc",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  dropdownHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    padding: 16,
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    fontWeight: 600,
+    fontSize: 15,
+    color: "#1e293b",
+  },
+  dropdownContent: {
+    borderTop: "1px solid #e2e8f0",
+  },
+  emptyState: {
+    padding: 24,
+    textAlign: "center",
+  },
+  applicationItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "14px 16px",
+    borderBottom: "1px solid #e2e8f0",
+  },
+  statusBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    padding: "4px 10px",
+    borderRadius: 20,
+    fontSize: 12,
+    fontWeight: 600,
+  },
+  footer: {
+    marginTop: 32,
+    paddingTop: 20,
+    borderTop: "1px solid #e2e8f0",
+    textAlign: "center",
+  },
+  footerLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    color: "#64748b",
+    fontSize: 14,
+    textDecoration: "none",
+  },
+};
