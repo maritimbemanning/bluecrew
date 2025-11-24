@@ -392,6 +392,37 @@ export function SiteLayout({
           {!isMobile && (
             <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
               <Link
+                href="/lonn/kalkulator"
+                style={{
+                  padding: "12px 20px",
+                  background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                  color: "#fff",
+                  borderRadius: 12,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+                title="Lønnskalkulator"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="4" y="2" width="16" height="20" rx="2"/>
+                  <line x1="8" y1="6" x2="16" y2="6"/>
+                  <line x1="8" y1="10" x2="10" y2="10"/>
+                  <line x1="12" y1="10" x2="14" y2="10"/>
+                  <line x1="8" y1="14" x2="10" y2="14"/>
+                  <line x1="12" y1="14" x2="14" y2="14"/>
+                  <line x1="8" y1="18" x2="10" y2="18"/>
+                  <line x1="12" y1="18" x2="16" y2="18"/>
+                </svg>
+                Kalkulator
+              </Link>
+              <Link
                 href="/jobbsoker/registrer/skjema"
                 style={{
                   padding: "12px 28px",
@@ -429,13 +460,14 @@ export function SiteLayout({
                 href="/min-side"
                 style={{
                   padding: "12px 20px",
-                  background: "rgba(255,255,255,0.1)",
+                  background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
                   color: "#fff",
                   borderRadius: 12,
                   fontWeight: 600,
                   fontSize: 14,
                   textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.3)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  boxShadow: "0 4px 12px rgba(3, 105, 161, 0.3)",
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
@@ -576,10 +608,42 @@ export function SiteLayout({
                       </li>
                       <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                         <Link
+                          href="/lonn/kalkulator"
+                          style={{
+                            ...sx.mobileNavLink,
+                            background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                            color: "#fff",
+                            fontWeight: 700,
+                            padding: "14px 20px",
+                            borderRadius: 12,
+                            textAlign: "center",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: 8,
+                          }}
+                          className="mobileLink"
+                          onClick={() => closeMobileMenu()}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="4" y="2" width="16" height="20" rx="2"/>
+                            <line x1="8" y1="6" x2="16" y2="6"/>
+                            <line x1="8" y1="10" x2="10" y2="10"/>
+                            <line x1="12" y1="10" x2="14" y2="10"/>
+                            <line x1="8" y1="14" x2="10" y2="14"/>
+                            <line x1="12" y1="14" x2="14" y2="14"/>
+                            <line x1="8" y1="18" x2="10" y2="18"/>
+                            <line x1="12" y1="18" x2="16" y2="18"/>
+                          </svg>
+                          Kalkulator
+                        </Link>
+                      </li>
+                      <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                        <Link
                           href="/min-side"
                           style={{
                             ...sx.mobileNavLink,
-                            background: "rgba(255,255,255,0.1)",
+                            background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
                             color: "#fff",
                             fontWeight: 600,
                             padding: "14px 20px",
@@ -589,7 +653,6 @@ export function SiteLayout({
                             alignItems: "center",
                             justifyContent: "center",
                             gap: 8,
-                            border: "1px solid rgba(255,255,255,0.3)",
                           }}
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
@@ -695,10 +758,42 @@ export function SiteLayout({
                     </li>
                     <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                       <Link
+                        href="/lonn/kalkulator"
+                        style={{
+                          ...sx.mobileNavLink,
+                          background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+                          color: "#fff",
+                          fontWeight: 700,
+                          padding: "14px 20px",
+                          borderRadius: 12,
+                          textAlign: "center",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 8,
+                        }}
+                        className="mobileLink"
+                        onClick={() => closeMobileMenu()}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="4" y="2" width="16" height="20" rx="2"/>
+                          <line x1="8" y1="6" x2="16" y2="6"/>
+                          <line x1="8" y1="10" x2="10" y2="10"/>
+                          <line x1="12" y1="10" x2="14" y2="10"/>
+                          <line x1="8" y1="14" x2="10" y2="14"/>
+                          <line x1="12" y1="14" x2="14" y2="14"/>
+                          <line x1="8" y1="18" x2="10" y2="18"/>
+                          <line x1="12" y1="18" x2="16" y2="18"/>
+                        </svg>
+                        Kalkulator
+                      </Link>
+                    </li>
+                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
+                      <Link
                         href="/min-side"
                         style={{
                           ...sx.mobileNavLink,
-                          background: "rgba(255,255,255,0.1)",
+                          background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
                           color: "#fff",
                           fontWeight: 600,
                           padding: "14px 20px",
@@ -708,7 +803,6 @@ export function SiteLayout({
                           alignItems: "center",
                           justifyContent: "center",
                           gap: 8,
-                          border: "1px solid rgba(255,255,255,0.3)",
                         }}
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
