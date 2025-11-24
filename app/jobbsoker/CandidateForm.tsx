@@ -418,6 +418,7 @@ export default function CandidateContent() {
       const gdpr = formData.get("gdpr");
       const nextFileErrors: FileErrors = {};
 
+      // CV is required
       if (!cvFile || cvFile.size === 0) {
         nextFileErrors.cv = "CV (PDF) er påkrevd";
       } else if (cvFile.size > 10 * 1024 * 1024) {
@@ -426,15 +427,16 @@ export default function CandidateContent() {
         nextFileErrors.cv = "CV må være en PDF-fil";
       }
 
-      if (!certsFile || certsFile.size === 0) {
-        nextFileErrors.certs = "Sertifikater er påkrevd";
-      } else if (certsFile.size > 10 * 1024 * 1024) {
-        nextFileErrors.certs = "Fil må være under 10 MB";
-      } else {
-        const allowed = [".pdf", ".zip", ".doc", ".docx"];
-        const name = certsFile.name.toLowerCase();
-        if (!allowed.some((ext) => name.endsWith(ext))) {
-          nextFileErrors.certs = "Fil må være PDF, ZIP eller Word";
+      // Certificates are optional - only validate if provided
+      if (certsFile && certsFile.size > 0) {
+        if (certsFile.size > 10 * 1024 * 1024) {
+          nextFileErrors.certs = "Fil må være under 10 MB";
+        } else {
+          const allowed = [".pdf", ".zip", ".doc", ".docx"];
+          const name = certsFile.name.toLowerCase();
+          if (!allowed.some((ext) => name.endsWith(ext))) {
+            nextFileErrors.certs = "Fil må være PDF, ZIP eller Word";
+          }
         }
       }
 
@@ -849,15 +851,17 @@ export default function CandidateContent() {
                 onChange={() => clearFileError("cv")}
               />
               <FileInput
-                label="Sertifikater/Helseattest (PDF, ZIP eller Word) *"
+                label="Sertifikater/Helseattest (valgfritt)"
                 name="certs"
                 accept=".pdf,.zip,.doc,.docx"
                 multiple
-                required
                 error={fileErrors.certs}
                 onChange={() => clearFileError("certs")}
               />
             </div>
+            <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
+              Har du ikke sertifikatene klare? Du kan laste dem opp senere via Min Side.
+            </p>
 
             <div style={ui.consentBox}>
               <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, color: "#0b1f3a", cursor: "pointer" }}>
