@@ -95,15 +95,8 @@ export default function JobDetailPage() {
 
       setJob(foundJob);
 
-      // Increment view count (fire and forget)
-      fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-postings?id=${foundJob.id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ view_count: foundJob.view_count + 1 }),
-        }
-      ).catch(() => {});
+      // Note: View count tracking should be handled by AdminCrew API
+      // Removed PATCH request that was causing issues
     } catch (error) {
       console.error("Error loading job:", error);
       setNotFound(true);
