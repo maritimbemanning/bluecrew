@@ -21,7 +21,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com",
   `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live https://www.googletagmanager.com https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://challenges.cloudflare.com blob:`,
   "worker-src 'self' blob:",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com https://admincrew.no",
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
