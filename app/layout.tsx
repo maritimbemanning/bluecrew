@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
@@ -155,8 +156,9 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="no">
-      <head>
+    <ClerkProvider>
+      <html lang="no">
+        <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
         <title>Bluecrew AS – Maritim bemanning i Norge</title>
         {/* Explicit favicon links to help Google pick up site icon in SERP */}
@@ -209,7 +211,8 @@ export default function RootLayout({
         <CookieBanner />
         <PlausibleLoader />
         <SpeedInsights />
-      </body>
-    </html>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

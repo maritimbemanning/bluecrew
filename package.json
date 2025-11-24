@@ -12,6 +12,8 @@
     "a11y:dev": "pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/run-pa11y.ps1"
   },
   "dependencies": {
+    "@clerk/localizations": "^3.28.3",
+    "@clerk/nextjs": "^6.35.4",
     "@react-email/render": "^1.4.0",
     "@supabase/supabase-js": "^2.75.1",
     "@upstash/ratelimit": "^2.0.6",
