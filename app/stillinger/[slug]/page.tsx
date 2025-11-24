@@ -82,8 +82,10 @@ export default function JobDetailPage() {
         throw new Error("Failed to fetch job");
       }
 
-      const jobs = await response.json();
-      const foundJob = jobs.find((j: JobPosting) => j.slug === slug);
+      const json = await response.json();
+      // AdminCrew returns { data: [...], pagination: {...} }
+      const jobs = json.data || json;
+      const foundJob = Array.isArray(jobs) ? jobs.find((j: JobPosting) => j.slug === slug) : null;
 
       if (!foundJob) {
         setNotFound(true);
