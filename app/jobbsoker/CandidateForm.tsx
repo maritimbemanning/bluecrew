@@ -216,8 +216,8 @@ export default function CandidateContent() {
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "worker";
   const isVerified = searchParams.get("verified") === "true";
-  const requireVipps =
-    (process.env.NEXT_PUBLIC_REQUIRE_VIPPS ?? "true").toLowerCase() !== "false";
+  // Vipps BankID verification is always required for candidate registration
+  const requireVipps = true;
   const { csrfToken } = useCsrfToken();
 
   useEffect(() => {
@@ -260,28 +260,19 @@ export default function CandidateContent() {
             : "Vipps-verifisering aktiv. Fullfør skjemaet for å sende inn."
         );
       } else {
-        if (requireVipps) {
-          // Require a valid session for compliance – redirect back to Vipps step
-          router.push("/jobbsoker/registrer");
-          return;
-        } else {
-          // Soft mode: allow form without Vipps temporarily
-          setStatusMessage(
-            "Midleridig løsning: Du kan sende inn uten Vipps-verifisering."
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Failed to check Vipps session", error);
-      if (requireVipps) {
-        // On error, enforce Vipps step again
+        // No valid Vipps session - redirect back to verification step
         router.push("/jobbsoker/registrer");
         return;
       }
+    } catch (error) {
+      console.error("Failed to check Vipps session", error);
+      // On error, redirect to Vipps verification step
+      router.push("/jobbsoker/registrer");
+      return;
     } finally {
       setCheckingSession(false);
     }
-  }, [router, isVerified, requireVipps]);
+  }, [router, isVerified]);
 
   useEffect(() => {
     checkVippsSession();
@@ -415,10 +406,9 @@ export default function CandidateContent() {
         return;
       }
 
-      // CRITICAL: Check Vipps verification BEFORE submitting to API (unless soft mode)
-      if (requireVipps && !vippsSession) {
-        // User should have been redirected already, but just in case
-        console.error("❌ Vipps verification missing when required");
+      // CRITICAL: Vipps BankID verification is mandatory for all candidates
+      if (!vippsSession) {
+        console.error("❌ Vipps verification missing");
         setFormError("Du må verifisere identiteten din med Vipps først.");
         window.scrollTo({ top: 0, behavior: "smooth" });
         router.push("/jobbsoker/registrer");
@@ -471,7 +461,7 @@ export default function CandidateContent() {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [vippsSession, requireVipps, router, csrfToken]
+    [vippsSession, router, csrfToken]
   );
 
   if (submitted) {
