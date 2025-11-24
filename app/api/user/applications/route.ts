@@ -7,10 +7,20 @@
 
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { getSupabaseServiceClient } from "@/app/lib/server/supabase";
+import { supabaseServer } from "@/app/lib/server/supabase";
 import { logger } from "@/app/lib/logger";
 
 export const runtime = "nodejs";
+
+interface JobApplication {
+  id: string;
+  job_posting_id: string | null;
+  name: string;
+  email: string;
+  status: string;
+  created_at: string;
+  cover_letter: string | null;
+}
 
 export async function GET() {
   try {
@@ -35,20 +45,13 @@ export async function GET() {
     }
 
     // Fetch applications from Supabase
-    const supabase = getSupabaseServiceClient();
+    const supabase = supabaseServer();
     const { data: applications, error } = await supabase
       .from("job_applications")
-      .select(`
-        id,
-        job_posting_id,
-        name,
-        email,
-        status,
-        created_at,
-        cover_letter
-      `)
+      .select("id, job_posting_id, name, email, status, created_at, cover_letter")
       .eq("email", email.toLowerCase())
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .returns<JobApplication[]>();
 
     if (error) {
       logger.error("Failed to fetch applications:", error);
