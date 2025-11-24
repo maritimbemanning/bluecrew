@@ -70,9 +70,12 @@ export default function MinSidePage() {
   useEffect(() => {
     if (user?.id) {
       loadCandidateStatus();
-      loadApplications(user.id);
+      const email = user.primaryEmailAddress?.emailAddress;
+      if (email) {
+        loadApplications(email);
+      }
     }
-  }, [user?.id]);
+  }, [user?.id, user?.primaryEmailAddress?.emailAddress]);
 
   async function loadCandidateStatus() {
     try {
@@ -88,11 +91,11 @@ export default function MinSidePage() {
     }
   }
 
-  async function loadApplications(userId: string) {
+  async function loadApplications(email: string) {
     setLoadingApplications(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications?user_id=${userId}`
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications?email=${encodeURIComponent(email)}`
       );
       if (res.ok) {
         const data = await res.json();
