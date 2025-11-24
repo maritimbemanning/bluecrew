@@ -387,11 +387,24 @@ export default function JobApplicationPage() {
                     <p className={styles.fileUploadText}>
                       {cvFile ? "Bytt fil" : "Klikk for å velge fil"}
                     </p>
-                    <p className={styles.fileUploadHint}>PDF, maks 10 MB</p>
+                    <p className={styles.fileUploadHint}>PDF, maks 4 MB</p>
                     <input
                       type="file"
                       accept=".pdf"
-                      onChange={(e) => setCvFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          // Validate file size (4MB = 4 * 1024 * 1024 bytes)
+                          const maxSize = 4 * 1024 * 1024;
+                          if (file.size > maxSize) {
+                            setError("CV-filen er for stor. Maksimal størrelse er 4 MB.");
+                            e.target.value = "";
+                            return;
+                          }
+                          setCvFile(file);
+                          setError(null);
+                        }
+                      }}
                       className={styles.fileUploadInput}
                     />
                     {cvFile && (

@@ -98,9 +98,9 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
-      if (cvFile.size > 10 * 1024 * 1024) {
+      if (cvFile.size > 4 * 1024 * 1024) {
         return NextResponse.json(
-          { error: "CV-filen er for stor (maks 10 MB)" },
+          { error: "CV-filen er for stor (maks 4 MB)" },
           { status: 400 }
         );
       }
