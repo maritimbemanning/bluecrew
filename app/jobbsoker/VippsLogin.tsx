@@ -352,83 +352,100 @@ export function VippsLoginPage() {
 
   if (checkingSession) {
     return (
-      <div style={ui.container}>
-        <div style={ui.icon}>⏳</div>
-        <h2 style={ui.title}>Sjekker sesjon...</h2>
+      <div style={compactUi.card}>
+        <div style={{ textAlign: "center", padding: "20px 0" }}>
+          <div style={{ fontSize: 24, marginBottom: 8 }}>⏳</div>
+          <p style={{ margin: 0, color: "#64748b" }}>Sjekker sesjon...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div style={ui.container}>
-      <div style={ui.icon}>🔐</div>
-
-      <h2 style={ui.title}>Verifiser identitet med Vipps</h2>
-
-      <p style={ui.description}>
-        For å sikre at alle kandidater er ekte personer og oppfyller lovkrav, må
-        du verifisere identiteten din med Vipps før du registrerer deg.
-      </p>
-
-      <div style={ui.whyBox}>
-        <div style={ui.whyTitle}>Hvorfor trenger vi dette?</div>
-        <ul style={ui.whyList}>
-          <li>✅ Lovpålagt identitetsverifisering (bemanningsbransjen)</li>
-          <li>✅ Stopper fake profiler og svindel</li>
-          <li>✅ Raskere saksbehandling</li>
-          <li>✅ Sikker digital signering av kontrakter senere</li>
-        </ul>
+    <div style={compactUi.card}>
+      {/* Vipps logo */}
+      <div style={compactUi.logoWrap}>
+        <img
+          src="/icons/vipps-logo.jpeg"
+          alt="Vipps"
+          style={compactUi.logo}
+        />
       </div>
+
+      <p style={compactUi.text}>
+        Bekreft identiteten din med Vipps for å registrere deg som jobbsøker.
+      </p>
 
       <button
         onClick={handleVippsLogin}
         disabled={loading}
         style={{
-          ...ui.button,
-          ...(loading ? ui.buttonDisabled : {}),
-        }}
-        onMouseEnter={(e) => {
-          if (!loading) {
-            e.currentTarget.style.background = "rgba(255,81,0,0.12)";
-          }
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "transparent";
+          ...compactUi.button,
+          ...(loading ? { opacity: 0.7, cursor: "wait" } : {}),
         }}
       >
-        {loading ? (
-          <>
-            <span>Starter Vipps…</span>
-          </>
-        ) : (
-          <>
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <circle cx="12" cy="12" r="10" fill="#ff5100" />
-              <rect x="7" y="11" width="10" height="2" rx="1" fill="#ffffff" />
-            </svg>
-            <span>Verifiser med Vipps</span>
-          </>
-        )}
+        {loading ? "Kobler til Vipps…" : "Logg inn med Vipps"}
       </button>
 
-      {error && <div style={ui.error}>⚠️ {error}</div>}
+      {error && (
+        <p style={compactUi.error}>{error}</p>
+      )}
 
-      <p
-        style={{
-          marginTop: 24,
-          fontSize: 13,
-          textAlign: "center",
-          color: "rgba(226, 232, 240, 0.6)",
-        }}
-      >
-        Tar kun 30 sekunder • Du blir sendt til Vipps og tilbake
+      <p style={compactUi.footer}>
+        Tar ca. 30 sekunder
       </p>
     </div>
   );
+}
+
+const compactUi = {
+  card: {
+    background: "#fff",
+    borderRadius: 12,
+    padding: "32px 24px",
+    maxWidth: 360,
+    margin: "0 auto",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+    textAlign: "center",
+  } as CSSProperties,
+  logoWrap: {
+    marginBottom: 20,
+  } as CSSProperties,
+  logo: {
+    height: 48,
+    width: "auto",
+    borderRadius: 8,
+  } as CSSProperties,
+  text: {
+    fontSize: 15,
+    color: "#475569",
+    lineHeight: 1.5,
+    margin: "0 0 24px",
+  } as CSSProperties,
+  button: {
+    width: "100%",
+    padding: "14px 24px",
+    fontSize: 16,
+    fontWeight: 600,
+    background: "#ff5100",
+    color: "#fff",
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    transition: "background 0.15s",
+  } as CSSProperties,
+  error: {
+    marginTop: 16,
+    padding: "10px 12px",
+    background: "#fef2f2",
+    border: "1px solid #fecaca",
+    borderRadius: 6,
+    color: "#dc2626",
+    fontSize: 14,
+  } as CSSProperties,
+  footer: {
+    marginTop: 16,
+    fontSize: 13,
+    color: "#94a3b8",
+  } as CSSProperties,
 }
