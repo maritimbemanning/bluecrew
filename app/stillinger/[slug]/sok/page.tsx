@@ -256,6 +256,30 @@ export default function JobApplicationPage() {
     );
   }
 
+  // Job not found or failed to load
+  if (!job) {
+    return (
+      <SiteLayout active="stillinger">
+        <div className={styles.container}>
+          <div className={styles.formSection} style={{ marginTop: "120px" }}>
+            <div className={styles.notVerifiedCard}>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: 700, color: "#0f172a", marginBottom: "12px" }}>
+                Stillingen ble ikke funnet
+              </h2>
+              <p style={{ color: "#64748b", maxWidth: "400px", margin: "0 auto 24px", lineHeight: 1.6 }}>
+                Denne stillingen eksisterer ikke lenger eller er ikke tilgjengelig.
+              </p>
+              <Link href="/stillinger" className={styles.successButtonPrimary}>
+                <ArrowLeft size={18} />
+                Tilbake til stillinger
+              </Link>
+            </div>
+          </div>
+        </div>
+      </SiteLayout>
+    );
+  }
+
   // Vipps verification step
   if (!vippsSession) {
     return (
