@@ -155,6 +155,37 @@ export async function POST(req: Request) {
       logger.error("❌ Failed to store job application in local database", error);
     }
 
+    // Sync to AdminCrew
+    try {
+      const adminRes = await fetch(
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            job_posting_id: applicationData.job_id,
+            name: applicationData.name,
+            email: applicationData.email,
+            phone: applicationData.phone,
+            cover_letter: applicationData.cover_letter || null,
+            cv_key: cvPath,
+            vipps_verified: applicationData.vipps_verified,
+            vipps_sub: applicationData.vipps_sub || null,
+            vipps_phone: applicationData.phone,
+            vipps_name: applicationData.name,
+            vipps_verified_at: applicationData.vipps_verified_at || null,
+          }),
+        }
+      );
+      if (adminRes.ok) {
+        logger.debug("✅ Job application synced to AdminCrew");
+      } else {
+        logger.warn("⚠️ AdminCrew sync failed", { status: adminRes.status });
+      }
+    } catch (err) {
+      logger.warn("⚠️ AdminCrew sync error", { error: String(err) });
+    }
+
     // Build email content
     const submittedAt = new Date().toLocaleString("nb-NO", {
       timeZone: "Europe/Oslo",
