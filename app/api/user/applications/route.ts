@@ -7,7 +7,6 @@
 
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { supabaseServer } from "@/app/lib/server/supabase";
 import { logger } from "@/app/lib/logger";
 
 export const runtime = "nodejs";
@@ -20,6 +19,35 @@ interface JobApplication {
   status: string;
   created_at: string;
   cover_letter: string | null;
+}
+
+async function fetchApplicationsByEmail(email: string): Promise<JobApplication[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) {
+    throw new Error("Missing Supabase config");
+  }
+
+  const params = new URLSearchParams({
+    select: "id,job_posting_id,name,email,status,created_at,cover_letter",
+    email: `eq.${email.toLowerCase()}`,
+    order: "created_at.desc",
+  });
+
+  const res = await fetch(`${url}/rest/v1/job_applications?${params}`, {
+    headers: {
+      apikey: key,
+      Authorization: `Bearer ${key}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Supabase error: ${res.status}`);
+  }
+
+  return res.json();
 }
 
 export async function GET() {
@@ -45,16 +73,11 @@ export async function GET() {
     }
 
     // Fetch applications from Supabase
-    const supabase = supabaseServer();
-    const { data: applications, error } = await supabase
-      .from("job_applications")
-      .select("id, job_posting_id, name, email, status, created_at, cover_letter")
-      .eq("email", email.toLowerCase())
-      .order("created_at", { ascending: false })
-      .returns<JobApplication[]>();
-
-    if (error) {
-      logger.error("Failed to fetch applications:", error);
+    let applications: JobApplication[] = [];
+    try {
+      applications = await fetchApplicationsByEmail(email);
+    } catch (err) {
+      logger.error("Failed to fetch applications:", err);
       return NextResponse.json(
         { error: "Kunne ikke hente søknader" },
         { status: 500 }
