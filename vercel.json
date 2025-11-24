@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "app/api/job-applications/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "app/api/submit-candidate/route.ts": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  }
+}
