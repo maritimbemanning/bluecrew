@@ -1,18 +1,18 @@
 /**
- * USER PORTAL - MIN SIDE
+ * USER PORTAL - MIN SIDE (Unified Dashboard)
  * Route: bluecrew.no/min-side
  *
- * Clean dashboard showing:
+ * Unified dashboard showing:
  * - Candidate registration status
  * - Job applications
  * - Quick actions
+ * - Admin section (for admin users)
  */
 
 "use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import SiteLayout from "@/app/components/SiteLayout";
 import {
   User,
@@ -25,6 +25,13 @@ import {
   XCircle,
   Briefcase,
   Shield,
+  Users,
+  Download,
+  Search,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
 
@@ -49,6 +56,40 @@ type CandidateStatus = {
   };
 };
 
+// Admin types
+type AdminApplication = {
+  id: string;
+  created_at: string;
+  name: string;
+  email: string;
+  phone: string;
+  job_title: string;
+  job_company: string | null;
+  job_location: string;
+  cover_letter: string | null;
+  cv_path: string | null;
+  cvUrl?: string | null;
+  vipps_verified: boolean;
+};
+
+type AdminCandidate = {
+  id: string;
+  submitted_at: string;
+  name: string;
+  email: string;
+  phone: string;
+  fylke: string | null;
+  kommune: string | null;
+  work_main: string[];
+  wants_temporary: string;
+  status: string;
+  cvUrl?: string | null;
+  certsUrl?: string | null;
+  vipps_verified: boolean;
+};
+
+const ADMIN_EMAILS = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
+
 const statusLabels: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   new: { label: "Mottatt", color: "#3b82f6", icon: <Clock size={14} /> },
   reviewed: { label: "Under vurdering", color: "#f59e0b", icon: <Clock size={14} /> },
@@ -60,7 +101,6 @@ const statusLabels: Record<string, { label: string; color: string; icon: React.R
 };
 
 export default function MinSidePage() {
-  const router = useRouter();
   const { user, isLoaded } = useUser();
   const [candidateStatus, setCandidateStatus] = useState<CandidateStatus | null>(null);
   const [applications, setApplications] = useState<JobApplication[]>([]);
@@ -68,22 +108,27 @@ export default function MinSidePage() {
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [applicationsExpanded, setApplicationsExpanded] = useState(false);
 
-  // Redirect admins to admin dashboard
+  // Admin state
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminTab, setAdminTab] = useState<"applications" | "candidates">("applications");
+  const [adminApplications, setAdminApplications] = useState<AdminApplication[]>([]);
+  const [adminCandidates, setAdminCandidates] = useState<AdminCandidate[]>([]);
+  const [loadingAdminData, setLoadingAdminData] = useState(false);
+  const [adminSearch, setAdminSearch] = useState("");
+
+  // Check if user is admin
   useEffect(() => {
     if (isLoaded && user) {
-      // Check if user has admin role
       const role = user.publicMetadata?.role as string | undefined;
-      const adminEmails = ["isak@bluecrew.no", "tf@bluecrew.no", "isak.didriksson@gmail.com"];
       const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
+      const adminStatus = role === "admin" || Boolean(userEmail && ADMIN_EMAILS.includes(userEmail));
+      setIsAdmin(adminStatus);
 
-      const isAdmin = role === "admin" || (userEmail && adminEmails.includes(userEmail));
-
-      if (isAdmin) {
-        router.push("/admin/applications");
-        return;
+      if (adminStatus) {
+        loadAdminData();
       }
     }
-  }, [isLoaded, user, router]);
+  }, [isLoaded, user]);
 
   // Load candidate status and applications
   useEffect(() => {
@@ -122,6 +167,45 @@ export default function MinSidePage() {
       setLoadingApplications(false);
     }
   }
+
+  async function loadAdminData() {
+    setLoadingAdminData(true);
+    try {
+      const [appsRes, candsRes] = await Promise.all([
+        fetch("/api/admin/applications"),
+        fetch("/api/admin/candidates"),
+      ]);
+
+      if (appsRes.ok) {
+        const data = await appsRes.json();
+        setAdminApplications(data.applications || []);
+      }
+
+      if (candsRes.ok) {
+        const data = await candsRes.json();
+        setAdminCandidates(data.candidates || []);
+      }
+    } catch (err) {
+      console.error("Failed to load admin data:", err);
+    } finally {
+      setLoadingAdminData(false);
+    }
+  }
+
+  // Filter admin data by search
+  const filteredAdminApplications = adminApplications.filter((app) =>
+    adminSearch === "" ||
+    app.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
+    app.email.toLowerCase().includes(adminSearch.toLowerCase()) ||
+    app.job_title.toLowerCase().includes(adminSearch.toLowerCase())
+  );
+
+  const filteredAdminCandidates = adminCandidates.filter((cand) =>
+    adminSearch === "" ||
+    cand.name.toLowerCase().includes(adminSearch.toLowerCase()) ||
+    cand.email.toLowerCase().includes(adminSearch.toLowerCase()) ||
+    (cand.fylke && cand.fylke.toLowerCase().includes(adminSearch.toLowerCase()))
+  );
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("nb-NO", {
@@ -317,6 +401,174 @@ export default function MinSidePage() {
           )}
         </div>
 
+        {/* ADMIN SECTION */}
+        {isAdmin && (
+          <div style={styles.adminSection}>
+            <div style={styles.adminHeader}>
+              <Shield size={20} color="#0369a1" />
+              <h2 style={styles.adminTitle}>Admin</h2>
+            </div>
+
+            {/* Admin tabs */}
+            <div style={styles.adminTabs}>
+              <button
+                onClick={() => setAdminTab("applications")}
+                style={{
+                  ...styles.adminTab,
+                  ...(adminTab === "applications" ? styles.adminTabActive : {}),
+                }}
+              >
+                <FileText size={16} />
+                Søknader ({adminApplications.length})
+              </button>
+              <button
+                onClick={() => setAdminTab("candidates")}
+                style={{
+                  ...styles.adminTab,
+                  ...(adminTab === "candidates" ? styles.adminTabActive : {}),
+                }}
+              >
+                <Users size={16} />
+                Kandidater ({adminCandidates.length})
+              </button>
+            </div>
+
+            {/* Search */}
+            <div style={styles.adminSearch}>
+              <Search size={18} color="#64748b" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+              <input
+                type="text"
+                placeholder="Søk etter navn, e-post..."
+                value={adminSearch}
+                onChange={(e) => setAdminSearch(e.target.value)}
+                style={styles.adminSearchInput}
+              />
+            </div>
+
+            {/* Admin content */}
+            {loadingAdminData ? (
+              <div style={styles.emptyState}>
+                <Loader2 size={24} style={{ animation: "spin 1s linear infinite" }} />
+                <p style={{ margin: "8px 0 0", color: "#64748b" }}>Laster admin-data...</p>
+              </div>
+            ) : adminTab === "applications" ? (
+              <div style={styles.adminList}>
+                {filteredAdminApplications.length === 0 ? (
+                  <div style={styles.emptyState}>
+                    <p style={{ margin: 0, color: "#64748b" }}>Ingen søknader funnet</p>
+                  </div>
+                ) : (
+                  filteredAdminApplications.map((app) => (
+                    <div key={app.id} style={styles.adminItem}>
+                      <div style={styles.adminItemHeader}>
+                        <div>
+                          <div style={styles.adminItemName}>{app.name}</div>
+                          <div style={styles.adminItemMeta}>
+                            <span>{app.job_title}</span>
+                            {app.vipps_verified && (
+                              <span style={styles.verifiedBadge}>Vipps-verifisert</span>
+                            )}
+                          </div>
+                        </div>
+                        <div style={styles.adminItemDate}>
+                          <Calendar size={12} />
+                          {formatDate(app.created_at)}
+                        </div>
+                      </div>
+                      <div style={styles.adminItemContact}>
+                        <a href={`mailto:${app.email}`} style={styles.adminLink}>
+                          <Mail size={14} /> {app.email}
+                        </a>
+                        <a href={`tel:${app.phone}`} style={styles.adminLink}>
+                          <Phone size={14} /> {app.phone}
+                        </a>
+                        {app.job_location && (
+                          <span style={styles.adminMeta}>
+                            <MapPin size={14} /> {app.job_location}
+                          </span>
+                        )}
+                      </div>
+                      {app.cvUrl && (
+                        <a
+                          href={app.cvUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={styles.downloadButton}
+                        >
+                          <Download size={14} /> Last ned CV
+                        </a>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            ) : (
+              <div style={styles.adminList}>
+                {filteredAdminCandidates.length === 0 ? (
+                  <div style={styles.emptyState}>
+                    <p style={{ margin: 0, color: "#64748b" }}>Ingen kandidater funnet</p>
+                  </div>
+                ) : (
+                  filteredAdminCandidates.map((cand) => (
+                    <div key={cand.id} style={styles.adminItem}>
+                      <div style={styles.adminItemHeader}>
+                        <div>
+                          <div style={styles.adminItemName}>{cand.name}</div>
+                          <div style={styles.adminItemMeta}>
+                            {cand.work_main?.join(", ") || "Ingen arbeidsområder"}
+                            {cand.vipps_verified && (
+                              <span style={styles.verifiedBadge}>Vipps-verifisert</span>
+                            )}
+                          </div>
+                        </div>
+                        <div style={styles.adminItemDate}>
+                          <Calendar size={12} />
+                          {formatDate(cand.submitted_at)}
+                        </div>
+                      </div>
+                      <div style={styles.adminItemContact}>
+                        <a href={`mailto:${cand.email}`} style={styles.adminLink}>
+                          <Mail size={14} /> {cand.email}
+                        </a>
+                        <a href={`tel:${cand.phone}`} style={styles.adminLink}>
+                          <Phone size={14} /> {cand.phone}
+                        </a>
+                        {cand.fylke && (
+                          <span style={styles.adminMeta}>
+                            <MapPin size={14} /> {cand.fylke}{cand.kommune ? `, ${cand.kommune}` : ""}
+                          </span>
+                        )}
+                      </div>
+                      <div style={styles.adminItemActions}>
+                        {cand.cvUrl && (
+                          <a
+                            href={cand.cvUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={styles.downloadButton}
+                          >
+                            <Download size={14} /> CV
+                          </a>
+                        )}
+                        {cand.certsUrl && (
+                          <a
+                            href={cand.certsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ ...styles.downloadButton, background: "#f1f5f9", color: "#475569" }}
+                          >
+                            <Download size={14} /> Sertifikater
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Footer with GDPR link */}
         <div style={styles.footer}>
           <Link href="/min-side/personvern" style={styles.footerLink}>
@@ -506,5 +758,149 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#64748b",
     fontSize: 14,
     textDecoration: "none",
+  },
+  // Admin styles
+  adminSection: {
+    marginTop: 32,
+    padding: 20,
+    background: "#fff",
+    border: "2px solid #0369a1",
+    borderRadius: 16,
+  },
+  adminHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 20,
+  },
+  adminTitle: {
+    fontSize: "1.25rem",
+    fontWeight: 700,
+    margin: 0,
+    color: "#0f172a",
+  },
+  adminTabs: {
+    display: "flex",
+    gap: 8,
+    marginBottom: 16,
+  },
+  adminTab: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "10px 16px",
+    background: "#f8fafc",
+    border: "1px solid #e2e8f0",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    color: "#64748b",
+    transition: "all 0.2s",
+  },
+  adminTabActive: {
+    background: "#0369a1",
+    borderColor: "#0369a1",
+    color: "#fff",
+  },
+  adminSearch: {
+    position: "relative" as const,
+    marginBottom: 16,
+  },
+  adminSearchInput: {
+    width: "100%",
+    padding: "12px 12px 12px 44px",
+    border: "1px solid #e2e8f0",
+    borderRadius: 8,
+    fontSize: 14,
+    outline: "none",
+  },
+  adminList: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: 12,
+    maxHeight: 500,
+    overflowY: "auto" as const,
+  },
+  adminItem: {
+    padding: 16,
+    background: "#f8fafc",
+    borderRadius: 10,
+    border: "1px solid #e2e8f0",
+  },
+  adminItemHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  adminItemName: {
+    fontWeight: 600,
+    fontSize: 15,
+    color: "#0f172a",
+  },
+  adminItemMeta: {
+    fontSize: 13,
+    color: "#64748b",
+    marginTop: 2,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    flexWrap: "wrap" as const,
+  },
+  adminItemDate: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    fontSize: 12,
+    color: "#94a3b8",
+  },
+  adminItemContact: {
+    display: "flex",
+    flexWrap: "wrap" as const,
+    gap: 12,
+    marginBottom: 10,
+  },
+  adminLink: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    color: "#0369a1",
+    fontSize: 13,
+    textDecoration: "none",
+  },
+  adminMeta: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    color: "#64748b",
+    fontSize: 13,
+  },
+  adminItemActions: {
+    display: "flex",
+    gap: 8,
+    marginTop: 8,
+  },
+  downloadButton: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "8px 14px",
+    background: "#0ea5e9",
+    color: "#fff",
+    borderRadius: 6,
+    fontSize: 13,
+    fontWeight: 500,
+    textDecoration: "none",
+  },
+  verifiedBadge: {
+    display: "inline-block",
+    padding: "2px 8px",
+    background: "#dcfce7",
+    color: "#166534",
+    fontSize: 11,
+    fontWeight: 600,
+    borderRadius: 4,
+    marginLeft: 8,
   },
 };
