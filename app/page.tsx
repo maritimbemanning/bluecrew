@@ -8,13 +8,13 @@ import { ContactSection } from "./components/home/ContactSection";
 import { InterestSection } from "./components/home/InterestSection";
 
 export const metadata: Metadata = {
-  title: "Maritim bemanning til havbruk, servicefartøy og offshore",
+  title: "Maritim bemanning til havbruk, fiskeri og offshore",
   description:
     "Trenger du maritimt mannskap? Bluecrew leverer STCW-sertifiserte kapteiner, styrmenn og matroser til havbruk, fiskeri og offshore. Kontakt oss i dag!",
   keywords: [
     "maritim bemanning",
-    "servicefartøy bemanning",
     "havbruk bemanning",
+    "fiskeri bemanning",
     "brønnbåt mannskap",
     "offshore bemanning Norge",
     "STCW mannskap",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "maskinoffiser",
     "maritime stillinger",
     "fartøy bemanning Norge",
-    "aquaculture crew",
+    "servicefartøy bemanning",
     "service vessel manning",
   ],
   openGraph: {

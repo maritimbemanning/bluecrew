@@ -173,6 +173,8 @@ export default function RootLayout({
           <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
           <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
           <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
+          <link rel="apple-touch-icon" href="/logo.png" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
             strategy="afterInteractive"

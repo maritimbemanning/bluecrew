@@ -1,7 +1,7 @@
 # Transfer Impact Assessment (TIA) for Bluecrew AS
 
 **Dato:** 29. oktober 2025  
-**Ansvarlig:** Bluecrew AS, Org.nr 936 321 194  
+**Ansvarlig:** Bluecrew AS, Org.nr 936 463 843  
 **Formål:** Dokumentere vurdering av dataoverføringer til tredjeland i henhold til GDPR art. 46 og Datatilsynets veiledning om Schrems II (C-311/18)
 
 ---
