@@ -1,36 +1,42 @@
 import React from 'react';
+import Link from 'next/link';
 import * as styles from './FloatingPhone.css';
 
 export function FloatingPhone() {
   return (
-    <a 
-      href="mailto:post@bluecrew.no" 
+    <Link
+      href="/lonn/kalkulator"
       className={styles.floatingPhone}
-      aria-label="Send e-post til Bluecrew: post@bluecrew.no"
+      aria-label="Åpne lønnskalkulator"
       onClick={() => {
         const plausible = (window as typeof window & { plausible?: (e: string, o?: { props?: Record<string, unknown> }) => void }).plausible;
         if (typeof plausible === 'function') {
-          plausible('Email Click', { props: { location: 'floating' } });
+          plausible('Calculator Click', { props: { location: 'floating' } });
         }
       }}
     >
-      <svg 
+      <svg
         className={styles.icon}
-        fill="none" 
-        stroke="currentColor" 
-        viewBox="0 0 24 24" 
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2} 
-          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" 
-        />
+        <rect x="4" y="2" width="16" height="20" rx="2"/>
+        <line x1="8" y1="6" x2="16" y2="6"/>
+        <line x1="8" y1="10" x2="10" y2="10"/>
+        <line x1="12" y1="10" x2="14" y2="10"/>
+        <line x1="8" y1="14" x2="10" y2="14"/>
+        <line x1="12" y1="14" x2="14" y2="14"/>
+        <line x1="8" y1="18" x2="10" y2="18"/>
+        <line x1="12" y1="18" x2="16" y2="18"/>
       </svg>
-      <span className={styles.phoneNumber}>post@bluecrew.no</span>
-    </a>
+      <span className={styles.phoneNumber}>Kalkulator</span>
+    </Link>
   );
 }
 
