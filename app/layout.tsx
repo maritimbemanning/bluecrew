@@ -159,10 +159,6 @@ export default function RootLayout({
   return (
     <ClerkProvider
       localization={nbNO}
-      signInUrl="/logg-inn"
-      signUpUrl="/registrer"
-      signInFallbackRedirectUrl="/min-side"
-      signUpFallbackRedirectUrl="/min-side"
     >
     <html lang="no">
       <head>
