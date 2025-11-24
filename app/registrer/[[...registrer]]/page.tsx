@@ -2,8 +2,19 @@
 
 import { SignUp, ClerkLoaded, ClerkLoading } from "@clerk/nextjs";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function RegistrerPage() {
+  const [showTimeout, setShowTimeout] = useState(false);
+
+  useEffect(() => {
+    // Show error message if Clerk doesn't load within 10 seconds
+    const timer = setTimeout(() => {
+      setShowTimeout(true);
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
       style={{
@@ -40,18 +51,47 @@ export default function RegistrerPage() {
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.4)",
           }}
         >
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              border: "3px solid #e2e8f0",
-              borderTopColor: "#0369a1",
-              borderRadius: "50%",
-              animation: "spin 1s linear infinite",
-              margin: "0 auto 16px",
-            }}
-          />
-          <p style={{ color: "#64748b", margin: 0 }}>Laster inn...</p>
+          {showTimeout ? (
+            <>
+              <div style={{ color: "#dc2626", marginBottom: 16, fontSize: "2rem" }}>!</div>
+              <p style={{ color: "#1e293b", fontWeight: 600, marginBottom: 8 }}>
+                Kunne ikke laste registrering
+              </p>
+              <p style={{ color: "#64748b", margin: 0, fontSize: "0.875rem" }}>
+                Prøv å laste siden på nytt, eller kontakt support hvis problemet vedvarer.
+              </p>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  marginTop: 20,
+                  padding: "12px 24px",
+                  background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 10,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Last inn på nytt
+              </button>
+            </>
+          ) : (
+            <>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  border: "3px solid #e2e8f0",
+                  borderTopColor: "#0369a1",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                  margin: "0 auto 16px",
+                }}
+              />
+              <p style={{ color: "#64748b", margin: 0 }}>Laster inn...</p>
+            </>
+          )}
         </div>
       </ClerkLoading>
 
