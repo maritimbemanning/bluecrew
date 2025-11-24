@@ -4,6 +4,7 @@ import { supabaseServer } from "@/app/lib/server/supabase";
 import { sendInterestReceipt, sendNotificationEmail } from "@/app/lib/server/email";
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
+import { getClientIp } from "../../lib/server/utils";
 
 export const runtime = "nodejs";
 
@@ -13,15 +14,6 @@ function parseBody(text: string) {
   } catch {
     return Object.fromEntries(new URLSearchParams(text));
   }
-}
-
-function getClientIp(req: Request) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return req.headers.get("x-real-ip") || "unknown";
 }
 
 export async function POST(req: Request) {

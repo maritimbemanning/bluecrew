@@ -17,6 +17,7 @@ import {
 } from "../../lib/server/candidate-files";
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
+import { getClientIp, esc } from "../../lib/server/utils";
 
 export const runtime = "nodejs";
 
@@ -340,22 +341,6 @@ function buildHtmlSummary(data: {
       }
     </div>
   `;
-}
-
-function esc(s: string = "") {
-  return s
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
-}
-
-function getClientIp(req: Request) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return req.headers.get("x-real-ip") || "unknown";
 }
 
 function getClientKey(req: Request, prefix: string) {

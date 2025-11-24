@@ -8,15 +8,7 @@ import {
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { logger } from "../../lib/logger";
-
-function getClientIp(req: Request) {
-  const forwarded = req.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return req.headers.get("x-real-ip") || "unknown";
-}
+import { getClientIp } from "../../lib/server/utils";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
