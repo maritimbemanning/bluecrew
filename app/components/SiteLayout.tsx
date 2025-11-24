@@ -15,6 +15,7 @@ import { CONTACT_POINTS, SOCIAL_LINKS } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { FloatingPhone } from "./FloatingPhone";
 import { clearConsent } from "../lib/consent";
+import { useUser } from "@clerk/nextjs";
 
 type NavChild = { href: string; label: string; description?: string };
 type NavItem = {
@@ -79,6 +80,7 @@ export function SiteLayout({
   children: ReactNode;
   active?: string;
 }) {
+  const { isSignedIn, isLoaded } = useUser();
   const [openKey, setOpenKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -455,29 +457,34 @@ export function SiteLayout({
                 Søk jobb
               </Link>
               <Link
-                href="/min-side"
+                href={isSignedIn ? "/min-side" : "/logg-inn"}
                 style={{
                   padding: "12px 20px",
-                  background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+                  background: isSignedIn
+                    ? "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)"
+                    : "linear-gradient(135deg, #475569 0%, #64748b 100%)",
                   color: "#fff",
                   borderRadius: 12,
                   fontWeight: 600,
                   fontSize: 14,
                   textDecoration: "none",
                   border: "1px solid rgba(255,255,255,0.2)",
-                  boxShadow: "0 4px 12px rgba(3, 105, 161, 0.3)",
+                  boxShadow: isSignedIn
+                    ? "0 4px 12px rgba(3, 105, 161, 0.3)"
+                    : "0 4px 12px rgba(71, 85, 105, 0.3)",
                   transition: "all 0.2s ease",
                   display: "flex",
                   alignItems: "center",
                   gap: 8,
+                  opacity: isLoaded ? 1 : 0.7,
                 }}
-                title="Min side"
+                title={isSignedIn ? "Min side" : "Logg inn"}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
-                Min side
+                {isSignedIn ? "Min side" : "Logg inn"}
               </Link>
             </div>
           )}
@@ -634,10 +641,12 @@ export function SiteLayout({
                           </svg>
                         </Link>
                         <Link
-                          href="/min-side"
+                          href={isSignedIn ? "/min-side" : "/logg-inn"}
                           style={{
                             ...sx.mobileNavLink,
-                            background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+                            background: isSignedIn
+                              ? "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)"
+                              : "linear-gradient(135deg, #475569 0%, #64748b 100%)",
                             color: "#fff",
                             fontWeight: 600,
                             padding: "14px 20px",
@@ -656,7 +665,7 @@ export function SiteLayout({
                             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                             <circle cx="12" cy="7" r="4"/>
                           </svg>
-                          Min side
+                          {isSignedIn ? "Min side" : "Logg inn"}
                         </Link>
                       </li>
                     </ul>
@@ -781,10 +790,12 @@ export function SiteLayout({
                         </svg>
                       </Link>
                       <Link
-                        href="/min-side"
+                        href={isSignedIn ? "/min-side" : "/logg-inn"}
                         style={{
                           ...sx.mobileNavLink,
-                          background: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)",
+                          background: isSignedIn
+                            ? "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)"
+                            : "linear-gradient(135deg, #475569 0%, #64748b 100%)",
                           color: "#fff",
                           fontWeight: 600,
                           padding: "14px 20px",
@@ -803,7 +814,7 @@ export function SiteLayout({
                           <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
                           <circle cx="12" cy="7" r="4"/>
                         </svg>
-                        Min side
+                        {isSignedIn ? "Min side" : "Logg inn"}
                       </Link>
                     </li>
                   </ul>
