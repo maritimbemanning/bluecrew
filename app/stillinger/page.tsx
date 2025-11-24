@@ -46,8 +46,10 @@ export default function StillingerPage() {
       );
 
       if (!response.ok) throw new Error("Failed to fetch jobs");
-      const data = await response.json();
-      setJobs(Array.isArray(data) ? data : []);
+      const json = await response.json();
+      // AdminCrew returns { data: [...], pagination: {...} }
+      const jobsData = json.data || json;
+      setJobs(Array.isArray(jobsData) ? jobsData : []);
     } catch (error) {
       console.error("Error loading jobs:", error);
       setJobs([]);
