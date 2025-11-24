@@ -836,9 +836,9 @@ export default function CandidateContent() {
               onChange={() => clearFileError("cv")}
             />
             <FileInput
-              label="Sertifikater/Helseattest (flere filer tillatt, PDF/ZIP, maks 10 MB per fil)"
+              label="Sertifikater/Helseattest (PDF, ZIP eller Word, maks 10 MB)"
               name="certs"
-              accept=".pdf,.zip"
+              accept=".pdf,.zip,.doc,.docx"
               multiple
               required
               error={fileErrors.certs}
