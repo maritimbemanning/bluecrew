@@ -5,7 +5,10 @@ import { NextResponse } from "next/server";
 const isDevelopment = process.env.NODE_ENV === "development";
 
 // Routes that require authentication
-const isProtectedRoute = createRouteMatcher(["/min-side(.*)"]);
+const isProtectedRoute = createRouteMatcher([
+  "/min-side(.*)",
+  "/admin(.*)",
+]);
 
 /**
  * Content Security Policy (CSP)
@@ -66,11 +69,8 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(redirectUrl, 301);
   }
 
-  // Block /admin routes
-  if (pathname.startsWith("/admin")) {
-    const res = new NextResponse("Not Found", { status: 404 });
-    return applySecurityHeaders(res);
-  }
+  // Note: /admin routes are now handled via Clerk authentication
+  // Removed hard block - auth check below will handle protection
 
   // Maintenance mode
   const maintenanceFlag = String(
