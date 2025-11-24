@@ -22,16 +22,8 @@ import {
   CheckCircle,
   Clock,
   XCircle,
-  Shield,
 } from "lucide-react";
-
-type VippsSession = {
-  sub: string;
-  name: string;
-  phone: string;
-  email?: string;
-  verifiedAt: string;
-};
+import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
 
 type JobApplication = {
   id: string;
@@ -54,41 +46,25 @@ const statusLabels: Record<string, { label: string; color: string; icon: React.R
 };
 
 export default function MinSidePage() {
-  const [session, setSession] = useState<VippsSession | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, isLoaded } = useUser();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loadingApplications, setLoadingApplications] = useState(false);
   const [deleteRequested, setDeleteRequested] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
 
-  // Check Vipps session
+  // Load user's applications when user is available
   useEffect(() => {
-    async function checkSession() {
-      try {
-        const res = await fetch("/api/vipps/session");
-        const data = await res.json();
-
-        if (data.verified && data.session) {
-          setSession(data.session);
-          // Load applications
-          loadApplications(data.session.sub);
-        }
-      } catch (err) {
-        console.error("Failed to check session:", err);
-      } finally {
-        setLoading(false);
-      }
+    if (user?.id) {
+      loadApplications(user.id);
     }
-
-    checkSession();
-  }, []);
+  }, [user?.id]);
 
   // Load user's applications
-  async function loadApplications(vippsSub: string) {
+  async function loadApplications(userId: string) {
     setLoadingApplications(true);
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications?vipps_sub=${vippsSub}`
+        `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-applications?user_id=${userId}`
       );
       if (res.ok) {
         const data = await res.json();
@@ -103,17 +79,17 @@ export default function MinSidePage() {
 
   // Export user data
   async function handleExport() {
-    if (!session) return;
+    if (!user) return;
 
     setExportLoading(true);
     try {
       const userData = {
         exportedAt: new Date().toISOString(),
         identity: {
-          name: session.name,
-          phone: session.phone,
-          email: session.email || null,
-          verifiedAt: session.verifiedAt,
+          name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+          email: user.primaryEmailAddress?.emailAddress || null,
+          phone: user.primaryPhoneNumber?.phoneNumber || null,
+          createdAt: user.createdAt ? new Date(user.createdAt).toISOString() : null,
         },
         applications: applications.map(app => ({
           jobTitle: app.job_posting?.title || "Ukjent stilling",
@@ -139,7 +115,7 @@ export default function MinSidePage() {
 
   // Request deletion
   async function handleDeleteRequest() {
-    if (!session) return;
+    if (!user) return;
 
     const confirmed = window.confirm(
       "Er du sikker på at du vil be om sletting av alle dine data? " +
@@ -155,10 +131,10 @@ export default function MinSidePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          vipps_sub: session.sub,
-          name: session.name,
-          phone: session.phone,
-          email: session.email,
+          clerk_user_id: user.id,
+          name: user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+          email: user.primaryEmailAddress?.emailAddress,
+          phone: user.primaryPhoneNumber?.phoneNumber,
         }),
       });
 
@@ -178,7 +154,7 @@ export default function MinSidePage() {
   };
 
   // Loading state
-  if (loading) {
+  if (!isLoaded) {
     return (
       <SiteLayout active="">
         <div style={{
@@ -193,8 +169,8 @@ export default function MinSidePage() {
     );
   }
 
-  // Not logged in
-  if (!session) {
+  // Not logged in - redirect handled by middleware, but show fallback
+  if (!user) {
     return (
       <SiteLayout active="">
         <section style={{
@@ -203,38 +179,36 @@ export default function MinSidePage() {
           margin: "0 auto",
           textAlign: "center",
         }}>
-          <Shield size={64} style={{ color: "#0369a1", marginBottom: 24 }} />
+          <User size={64} style={{ color: "#0369a1", marginBottom: 24 }} />
           <h1 style={{ fontSize: "2rem", marginBottom: 16 }}>Min side</h1>
           <p style={{ color: "#64748b", marginBottom: 32, lineHeight: 1.6 }}>
-            Logg inn med Vipps for å se dine søknader og administrere dine personopplysninger.
+            Logg inn for å se dine søknader og administrere dine personopplysninger.
           </p>
           <Link
-            href="/api/vipps/start?return=/min-side"
+            href="/logg-inn?redirect_url=/min-side"
             style={{
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
               padding: "14px 28px",
-              background: "#FF5B24",
+              background: "#0369a1",
               color: "#fff",
               borderRadius: 12,
               fontWeight: 700,
               textDecoration: "none",
             }}
           >
-            <img
-              src="/icons/vipps-logo.jpeg"
-              alt="Vipps"
-              width={24}
-              height={24}
-              style={{ borderRadius: 4 }}
-            />
-            Logg inn med Vipps
+            Logg inn
           </Link>
         </section>
       </SiteLayout>
     );
   }
+
+  // Get user display info
+  const userName = user.fullName || `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Bruker";
+  const userEmail = user.primaryEmailAddress?.emailAddress;
+  const userPhone = user.primaryPhoneNumber?.phoneNumber;
 
   // Logged in - show dashboard
   return (
@@ -244,7 +218,22 @@ export default function MinSidePage() {
         maxWidth: 800,
         margin: "0 auto",
       }}>
-        <h1 style={{ fontSize: "2rem", marginBottom: 8 }}>Min side</h1>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <h1 style={{ fontSize: "2rem", margin: 0 }}>Min side</h1>
+          <SignOutButton>
+            <button style={{
+              padding: "8px 16px",
+              background: "#f1f5f9",
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              color: "#64748b",
+            }}>
+              Logg ut
+            </button>
+          </SignOutButton>
+        </div>
 
         {/* User info */}
         <div style={{
@@ -257,27 +246,21 @@ export default function MinSidePage() {
           alignItems: "center",
           gap: 16,
         }}>
-          <div style={{
-            width: 56,
-            height: 56,
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.2)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            <User size={28} />
-          </div>
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: { width: 56, height: 56 },
+              },
+            }}
+          />
           <div>
-            <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>{session.name}</div>
-            <div style={{ opacity: 0.9 }}>{session.phone}</div>
-            {session.email && (
-              <div style={{ opacity: 0.9 }}>{session.email}</div>
-            )}
+            <div style={{ fontWeight: 700, fontSize: "1.1rem" }}>{userName}</div>
+            {userEmail && <div style={{ opacity: 0.9 }}>{userEmail}</div>}
+            {userPhone && <div style={{ opacity: 0.9 }}>{userPhone}</div>}
           </div>
           <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
             <CheckCircle size={18} />
-            <span style={{ fontSize: "0.85rem" }}>BankID-verifisert</span>
+            <span style={{ fontSize: "0.85rem" }}>Verifisert</span>
           </div>
         </div>
 
@@ -303,7 +286,7 @@ export default function MinSidePage() {
               <FileText size={32} style={{ marginBottom: 12, opacity: 0.5 }} />
               <p>Du har ingen søknader ennå.</p>
               <Link
-                href="/stillinger"
+                href="/jobbsoker/registrer/skjema"
                 style={{
                   display: "inline-block",
                   marginTop: 16,
@@ -311,7 +294,7 @@ export default function MinSidePage() {
                   fontWeight: 600,
                 }}
               >
-                Se ledige jobber →
+                Registrer deg som jobbsøker →
               </Link>
             </div>
           ) : (

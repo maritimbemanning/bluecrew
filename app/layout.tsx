@@ -7,6 +7,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { nbNO } from "@clerk/localizations";
 import "./globals.css";
 import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
@@ -19,7 +20,7 @@ const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
   "Bemanning av kvalifisert maritimt mannskap. STCW‑sertifiserte kapteiner, styrmenn, matroser og maskinoffiserer til havbruk, servicefartøy og offshore.";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
-const logoPath = "/logo.png"; // exists in /public
+const logoPath = "/logo.png";
 const logoUrl = `${siteUrl}${logoPath}`;
 
 export const metadata: Metadata = {
@@ -163,70 +164,73 @@ export default function RootLayout({
   };
 
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      localization={nbNO}
+      signInUrl="/logg-inn"
+      signUpUrl="/registrer"
+      signInFallbackRedirectUrl="/min-side"
+      signUpFallbackRedirectUrl="/min-side"
+    >
       <html lang="no">
         <head>
-        {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
-        <title>Bluecrew AS – Maritim bemanning i Norge</title>
-        {/* Explicit favicon links to help Google pick up site icon in SERP */}
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
-        <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
-        <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
-        {/* Google Ads Conversion Tracking */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
-          strategy="afterInteractive"
-        />
-        <Script
-          id="google-ads-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-17731534362');
-            `,
-          }}
-        />
-        <Script
-          id="organization-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
-        <Script
-          id="local-business-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(localBusinessSchema),
-          }}
-        />
-        <Script
-          id="website-schema"
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
-        />
-        <BreadcrumbsSchema />
-      </head>
-      <body>
-        <header style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "1rem", gap: "1rem" }}>
-          <SignedOut>
-            <SignInButton />
-            <SignUpButton />
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </header>
-        {children}
-        <CookieBanner />
-        <PlausibleLoader />
-        <SpeedInsights />
+          <title>Bluecrew AS – Maritim bemanning i Norge</title>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
+          <link rel="icon" href="/icon.png" sizes="32x32" type="image/png" />
+          <link rel="icon" href="/icon.png" sizes="48x48" type="image/png" />
+          <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
+            strategy="afterInteractive"
+          />
+          <Script
+            id="google-ads-init"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'AW-17731534362');
+              `,
+            }}
+          />
+          <Script
+            id="organization-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(organizationSchema),
+            }}
+          />
+          <Script
+            id="local-business-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(localBusinessSchema),
+            }}
+          />
+          <Script
+            id="website-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
+          />
+          <BreadcrumbsSchema />
+        </head>
+        <body>
+          <header style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", padding: "1rem", gap: "1rem" }}>
+            <SignedOut>
+              <SignInButton />
+              <SignUpButton />
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </header>
+          {children}
+          <CookieBanner />
+          <PlausibleLoader />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>

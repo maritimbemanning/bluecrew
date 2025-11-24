@@ -42,3 +42,4 @@ coverage/
 
 # Local admin doc (avoid accidental commit at repo root)
 /ADMIN-PROJECT-CONTEXT.md
+*.tsbuildinfo

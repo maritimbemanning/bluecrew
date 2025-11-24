@@ -1,0 +1,43 @@
+
+OPPSUMMERING - KANDIDATER
+==========================
+Generert: 20.11.2025, 15:53:59
+
+TOTALT: 242 kandidater
+
+SISTE 7 DAGER: 54 nye
+
+FORDELING PER ROLLE:
+  Annet maritimt: 57
+  Matros: 53
+  Dekksarbeider: 39
+  Skipper / kyst: 27
+  Styrmann: 26
+  Maskinist: 18
+  Akvatekniker m/fagbrev: 8
+  Матрос: 4
+  Палубный рабочий: 3
+  Pracownik pokładowy: 2
+  Andere maritieme: 1
+  Mate: 1
+  Marynarz: 1
+  Другие морские: 1
+  Моряк: 1
+
+FORDELING PER FYLKE:
+
+
+FORDELING PER STATUS:
+  interesse: 214
+  avslått: 27
+  godkjent: 1
+
+DATAKVALITET:
+  Med erfaring oppgitt: 215 (89%)
+  Med sertifikater oppgitt: 197 (81%)
+  Med tilleggsnotater: 181 (75%)
+
+FILER GENERERT:
+  - kandidater-alle.csv (åpnes i Excel)
+  - kandidater-oppsummering.txt (denne filen)
+  - candidates-export.json (rådata)

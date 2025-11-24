@@ -6,9 +6,13 @@ import crypto from "crypto";
 import { getVippsOpenIdConfig, getVippsJWKS } from "@/app/lib/server/vipps";
 import { logger } from "../../../lib/logger";
 
+// Strip quotes from env vars if present (some environments add them)
+const stripQuotes = (str: string | undefined): string =>
+  str?.replace(/^["']|["']$/g, '') ?? '';
+
 const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  url: stripQuotes(process.env.UPSTASH_REDIS_REST_URL),
+  token: stripQuotes(process.env.UPSTASH_REDIS_REST_TOKEN),
 });
 
 // Vipps OpenID base (used for fallback paths only; primary is discovery)
@@ -134,7 +138,10 @@ export async function GET(request: NextRequest) {
       logger.error("JWT verification error", jwtError);
 
       // If failure was due to issuer claim, try signature-only verify, then manual aud/iss checks
-      if (typeof jwtError === 'object' && jwtError !== null && 'code' in jwtError && (jwtError as any).code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && 'claim' in jwtError && (jwtError as any).claim === 'iss') {
+      const isJwtClaimError = (err: unknown): err is { code: string; claim: string } =>
+        typeof err === 'object' && err !== null && 'code' in err && 'claim' in err;
+
+      if (isJwtClaimError(jwtError) && jwtError.code === 'ERR_JWT_CLAIM_VALIDATION_FAILED' && jwtError.claim === 'iss') {
         try {
           const { payload: payload2 } = await jwtVerify(tokens.id_token, JWKS, {});
           // Manual audience check
