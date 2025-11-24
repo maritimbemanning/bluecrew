@@ -373,7 +373,9 @@ export function VippsLoginPage() {
       </div>
 
       <p style={compactUi.text}>
-        Bekreft identiteten din med Vipps for å registrere deg som jobbsøker.
+        Identitetsverifisering er lovpålagt for bemanningsbransjen.
+        Ved å fortsette godtar du vår{" "}
+        <a href="/personvern" style={compactUi.link}>personvernerklæring</a>.
       </p>
 
       <button
@@ -447,5 +449,9 @@ const compactUi = {
     marginTop: 16,
     fontSize: 13,
     color: "#94a3b8",
+  } as CSSProperties,
+  link: {
+    color: "#0369a1",
+    textDecoration: "underline",
   } as CSSProperties,
 }
