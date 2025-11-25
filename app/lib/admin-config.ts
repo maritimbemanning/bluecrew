@@ -5,9 +5,9 @@
 
 /**
  * Admin Organization Slug
- * Create this organization in Clerk Dashboard
+ * From Clerk Dashboard: Organizations → Bluecrew Admin
  */
-export const ADMIN_ORG_SLUG = "bluecrew-admin";
+export const ADMIN_ORG_SLUG = "bluecrew-admin-1764030919";
 
 /**
  * List of admin email addresses
