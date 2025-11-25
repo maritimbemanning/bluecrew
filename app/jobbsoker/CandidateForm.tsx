@@ -446,6 +446,13 @@ export default function CandidateContent() {
       if (Object.keys(nextFileErrors).length > 0) {
         setFileErrors(nextFileErrors);
       }
+
+      // Return false if there are file errors OR field errors for step 4
+      if (Object.keys(nextFileErrors).length > 0 || Object.keys(nextErrors).length > 0) {
+        setFieldErrors(nextErrors);
+        return false;
+      }
+      return true;
     }
 
     if (Object.keys(nextErrors).length > 0) {
