@@ -18,6 +18,7 @@ import {
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
 import { getClientIp, esc } from "../../lib/server/utils";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export const runtime = "nodejs";
 
@@ -48,7 +49,9 @@ export async function POST(req: Request) {
       });
     }
 
-    logger.debug("📝 Processing candidate submission...");
+    // 🎯 CLERK PRO: Get current user if logged in
+    const { userId: clerkUserId } = await auth();
+    logger.debug("📝 Processing candidate submission...", { clerkUserId: clerkUserId || "anonymous" });
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
 
@@ -237,12 +240,13 @@ export async function POST(req: Request) {
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
-          other_notes: data.other_notes || null, // FIX: Store other notes
+          other_notes: data.other_notes || null,
           cv_key: cvPath,
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
-          status: "pending", // Venter godkjenning i Import Management (admin)
+          status: "pending",
+          clerk_user_id: clerkUserId || null, // 🎯 CLERK PRO: Link to Clerk user
         },
       }),
       sendNotificationEmail({
@@ -268,6 +272,26 @@ export async function POST(req: Request) {
     }
     if (receiptResult.status === "rejected") {
       logger.error("⚠️ Sendte ikke kvittering (candidate):", receiptResult.reason);
+    }
+
+    // 🎯 CLERK PRO: Update user metadata with candidate registration status
+    if (clerkUserId && dbResult.status === "fulfilled") {
+      try {
+        const client = await clerkClient();
+        await client.users.updateUserMetadata(clerkUserId, {
+          publicMetadata: {
+            candidate_registered: true,
+            candidate_registered_at: submittedAt,
+            candidate_status: "pending",
+            candidate_work_areas: data.work_main ?? [],
+            candidate_fylke: data.fylke || null,
+            candidate_kommune: data.kommune || null,
+          },
+        });
+        logger.success("✅ Candidate status stored in Clerk metadata", { clerkUserId });
+      } catch (clerkError) {
+        logger.error("⚠️ Failed to update Clerk metadata:", clerkError);
+      }
     }
 
     const acceptsJson = (req.headers.get("accept") || "").includes(

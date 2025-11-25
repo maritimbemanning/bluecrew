@@ -34,7 +34,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
-import { ADMIN_EMAILS } from "@/app/lib/admin";
+import { ADMIN_EMAILS } from "@/app/lib/admin-config";
 
 type JobApplication = {
   id: string;

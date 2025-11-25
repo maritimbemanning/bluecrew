@@ -5,6 +5,7 @@ import { Redis } from "@upstash/redis";
 import crypto from "crypto";
 import { getVippsOpenIdConfig, getVippsJWKS } from "@/app/lib/server/vipps";
 import { logger } from "../../../lib/logger";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 // Strip quotes from env vars if present (some environments add them)
 const stripQuotes = (str: string | undefined): string =>
@@ -240,12 +241,36 @@ export async function GET(request: NextRequest) {
     // Store in Redis with 1 hour expiry using set() with EX option
     try {
       await redis.set(`vipps:${sessionId}`, sessionData, { ex: 3600 });
-  logger.success(" Redis storage successful");
+      logger.success(" Redis storage successful");
     } catch (redisError) {
       logger.error(" Redis storage failed:", redisError);
       return NextResponse.redirect(
         new URL("/jobbsoker/registrer?vipps_error=session_storage_failed", request.url)
       );
+    }
+
+    // 🎯 CLERK PRO: Store Vipps verification in user metadata (persistent)
+    try {
+      const { userId } = await auth();
+      if (userId) {
+        const client = await clerkClient();
+        await client.users.updateUserMetadata(userId, {
+          publicMetadata: {
+            vipps_verified: true,
+            vipps_verified_at: sessionData.verified_at,
+            vipps_sub: sessionData.sub,
+            vipps_name: sessionData.name,
+            vipps_phone: sessionData.phone_number,
+            vipps_birthdate: sessionData.birthdate,
+          },
+        });
+        logger.success("✅ Vipps verification stored in Clerk metadata", { userId });
+      } else {
+        logger.debug("ℹ️ No Clerk user logged in - Vipps data only in Redis session");
+      }
+    } catch (clerkError) {
+      // Don't fail the flow if Clerk update fails - Redis is fallback
+      logger.error("⚠️ Failed to store Vipps data in Clerk:", clerkError);
     }
 
     // Ensure cookies work across apex and www in production
