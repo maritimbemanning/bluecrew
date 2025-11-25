@@ -1,6 +1,6 @@
 # CLAUDE.md - AI Assistant Guide for Bluecrew Codebase
 
-This document provides comprehensive guidance for AI assistants working on the Bluecrew codebase. Last updated: 2025-11-23
+This document provides comprehensive guidance for AI assistants working on the Bluecrew codebase. Last updated: 2025-11-25
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
@@ -57,8 +57,8 @@ This document provides comprehensive guidance for AI assistants working on the B
 - **Supabase**: PostgreSQL database + file storage (Row Level Security enabled)
 - **Upstash Redis**: Rate limiting (sliding window, 8 req/min per IP)
 - **Resend**: Transactional email with HTML templates
-- **Clerk**: User authentication (email/password, magic links, Norwegian localization)
-- **Vipps**: OAuth 2.0 identity verification (Norwegian market) - for enhanced verification
+- **Clerk Pro**: User authentication with Organizations, publicMetadata, webhooks
+- **Vipps**: OAuth 2.0 identity verification (Norwegian BankID) - stored in Clerk metadata
 - **AdminCrew API**: External admin backend at `admincrew.no` for job postings and applications
 
 ### Validation & Security
@@ -100,6 +100,8 @@ This document provides comprehensive guidance for AI assistants working on the B
 │   │   │   ├── csrf.ts           # CSRF token management
 │   │   │   ├── vipps.ts          # Vipps OAuth helpers
 │   │   │   └── candidate-files.ts # File upload handling
+│   │   ├── admin.ts              # Admin functions (server-only)
+│   │   ├── admin-config.ts       # Admin config (client-safe)
 │   │   ├── validation.ts         # Form schemas (Zod)
 │   │   ├── zod.ts                # Custom Zod implementation
 │   │   ├── constants.ts          # App constants (counties, FAQs)
@@ -113,6 +115,7 @@ This document provides comprehensive guidance for AI assistants working on the B
 │   │   ├── csrf/                 # CSRF token generation
 │   │   ├── gdpr/delete-request/  # GDPR data deletion requests
 │   │   ├── vipps/                # Vipps OAuth flow
+│   │   ├── webhooks/clerk/       # Clerk user lifecycle webhooks
 │   │   └── health/               # Health check endpoints
 │   ├── logg-inn/                 # Login page (Clerk)
 │   │   └── [[...logg-inn]]/      # Catch-all for Clerk redirects
@@ -187,6 +190,7 @@ This document provides comprehensive guidance for AI assistants working on the B
    - `CSRF_SECRET`
    - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (required for auth)
    - `CLERK_SECRET_KEY` (required for auth)
+   - `CLERK_WEBHOOK_SECRET` (for user lifecycle webhooks)
    - `VIPPS_CLIENT_ID`, `VIPPS_CLIENT_SECRET`, etc. (for enhanced verification)
 
 3. **Run development server:**
@@ -737,6 +741,152 @@ export default function LoggInnPage() {
 }
 ```
 
+### Clerk Pro Features (Organizations, Metadata, Webhooks)
+
+**publicMetadata Storage:**
+Clerk Pro stores user data persistently in `publicMetadata`:
+```typescript
+// Store Vipps verification in Clerk metadata
+import { auth, clerkClient } from "@clerk/nextjs/server";
+
+const { userId } = await auth();
+if (userId) {
+  const client = await clerkClient();
+  await client.users.updateUserMetadata(userId, {
+    publicMetadata: {
+      vipps_verified: true,
+      vipps_verified_at: new Date().toISOString(),
+      candidate_registered: true,
+      candidate_status: "pending",
+      role: "admin", // Optional: admin role
+    },
+  });
+}
+```
+
+**Reading Metadata in Client Components:**
+```typescript
+"use client";
+import { useUser } from "@clerk/nextjs";
+
+export function UserProfile() {
+  const { user } = useUser();
+
+  const metadata = user?.publicMetadata as {
+    vipps_verified?: boolean;
+    candidate_status?: string;
+    role?: string;
+  } | undefined;
+
+  return (
+    <div>
+      {metadata?.vipps_verified && <span>ID-verifisert</span>}
+      {metadata?.candidate_status && <span>Status: {metadata.candidate_status}</span>}
+    </div>
+  );
+}
+```
+
+**Admin Access via Organizations:**
+```typescript
+// app/lib/admin-config.ts (client-safe)
+export const ADMIN_ORG_SLUG = "bluecrew-admin-1764030919";
+export const ADMIN_EMAILS: readonly string[] = [
+  "isak@bluecrew.no",
+  "tf@bluecrew.no",
+  "isak.didriksson@gmail.com",
+];
+
+export function isAdminUser(userEmail: string | null, role: string | null): boolean {
+  if (role === "admin") return true;
+  if (!userEmail) return false;
+  return ADMIN_EMAILS.includes(userEmail.toLowerCase());
+}
+```
+
+```typescript
+// app/lib/admin.ts (server-only)
+import "server-only";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+
+export async function checkAdminAccess(): Promise<{
+  isAdmin: boolean;
+  userId: string | null;
+  method: "organization" | "role" | "email" | null;
+}> {
+  const { userId, orgSlug } = await auth();
+  if (!userId) return { isAdmin: false, userId: null, method: null };
+
+  // 1. Check Clerk Organization membership
+  if (orgSlug === ADMIN_ORG_SLUG) {
+    return { isAdmin: true, userId, method: "organization" };
+  }
+
+  // 2. Check publicMetadata.role
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+  if (user.publicMetadata?.role === "admin") {
+    return { isAdmin: true, userId, method: "role" };
+  }
+
+  // 3. Check email list
+  const email = user.primaryEmailAddress?.emailAddress;
+  if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
+    return { isAdmin: true, userId, method: "email" };
+  }
+
+  return { isAdmin: false, userId, method: null };
+}
+```
+
+**Clerk Webhook for User Sync:**
+```typescript
+// app/api/webhooks/clerk/route.ts
+import { Webhook } from "svix";
+import { WebhookEvent } from "@clerk/nextjs/server";
+
+export async function POST(req: Request) {
+  // Verify signature with Svix
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+  const evt = wh.verify(body, {
+    "svix-id": headers.get("svix-id")!,
+    "svix-timestamp": headers.get("svix-timestamp")!,
+    "svix-signature": headers.get("svix-signature")!,
+  }) as WebhookEvent;
+
+  switch (evt.type) {
+    case "user.created":
+      // Sync to clerk_users table
+      break;
+    case "user.updated":
+      // Update local cache
+      break;
+    case "user.deleted":
+      // GDPR: Anonymize user data
+      break;
+  }
+}
+```
+
+**Database Table (clerk_users):**
+```sql
+-- supabase/migrations/20251124_create_clerk_users.sql
+CREATE TABLE IF NOT EXISTS clerk_users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    clerk_user_id TEXT UNIQUE NOT NULL,
+    email TEXT,
+    first_name TEXT,
+    last_name TEXT,
+    full_name TEXT,
+    is_admin BOOLEAN DEFAULT FALSE,
+    vipps_verified BOOLEAN DEFAULT FALSE,
+    candidate_registered BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ -- Soft delete for GDPR
+);
+```
+
 ### Metadata Pattern (SEO)
 
 ```typescript
@@ -1202,9 +1352,10 @@ Set in Vercel dashboard:
 **Security:**
 - `CSRF_SECRET` (random 32+ character string)
 
-**Clerk (Authentication):**
+**Clerk Pro (Authentication & User Management):**
 - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` (from Clerk dashboard)
 - `CLERK_SECRET_KEY` (from Clerk dashboard)
+- `CLERK_WEBHOOK_SECRET` (from Clerk dashboard → Webhooks)
 - `NEXT_PUBLIC_CLERK_SIGN_IN_URL` (default: `/logg-inn`)
 - `NEXT_PUBLIC_CLERK_SIGN_UP_URL` (default: `/registrer`)
 - `NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL` (default: `/min-side`)
@@ -1529,6 +1680,15 @@ logger.error("Error occurred", { error, stack });
 ---
 
 ## Changelog
+
+**2025-11-25** - Clerk Pro full integration
+- Clerk Organizations for admin access control (`bluecrew-admin` org)
+- User metadata storage (Vipps verification, candidate status)
+- Clerk webhook endpoint for user lifecycle sync (`/api/webhooks/clerk`)
+- Database table `clerk_users` for local user cache
+- Enhanced `/min-side` dashboard with Vipps verification badge
+- Split admin modules: `admin-config.ts` (client) and `admin.ts` (server)
+- GDPR-compliant user data anonymization on deletion
 
 **2025-11-23** - Major authentication update
 - Added Clerk authentication (email/password, magic links)
