@@ -32,6 +32,7 @@ import {
   Phone,
   MapPin,
   Calendar,
+  BadgeCheck,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
 import { ADMIN_EMAILS } from "@/app/lib/admin-config";
@@ -246,6 +247,21 @@ export default function MinSidePage() {
   const userName = user.firstName || user.fullName?.split(" ")[0] || "der";
   const isRegistered = candidateStatus?.registered;
 
+  // 🎯 CLERK PRO: Extract user metadata
+  const clerkMetadata = user.publicMetadata as {
+    vipps_verified?: boolean;
+    vipps_verified_at?: string;
+    vipps_name?: string;
+    candidate_registered?: boolean;
+    candidate_registered_at?: string;
+    candidate_status?: string;
+    role?: string;
+  } | undefined;
+
+  const isVippsVerified = clerkMetadata?.vipps_verified === true;
+  const vippsVerifiedAt = clerkMetadata?.vipps_verified_at;
+  const candidateStatusFromClerk = clerkMetadata?.candidate_status;
+
   return (
     <SiteLayout active="">
       <section style={styles.container}>
@@ -285,6 +301,19 @@ export default function MinSidePage() {
           </div>
         </div>
 
+        {/* Vipps Verification Badge (if verified) */}
+        {isVippsVerified && (
+          <div style={styles.vippsBadge}>
+            <BadgeCheck size={20} color="#16a34a" />
+            <span>Vipps-verifisert identitet</span>
+            {vippsVerifiedAt && (
+              <span style={styles.vippsBadgeDate}>
+                {formatDate(vippsVerifiedAt)}
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Status cards */}
         <div style={styles.cardGrid}>
           {/* Registration status */}
@@ -302,7 +331,17 @@ export default function MinSidePage() {
                 <div>
                   <div style={styles.cardTitle}>Registrert jobbsøker</div>
                   <div style={styles.cardSubtext}>
-                    {candidateStatus.candidate?.submittedAt
+                    {candidateStatusFromClerk && (
+                      <span style={{
+                        ...styles.clerkStatusBadge,
+                        background: statusLabels[candidateStatusFromClerk]?.color + "15" || "#f1f5f9",
+                        color: statusLabels[candidateStatusFromClerk]?.color || "#64748b",
+                      }}>
+                        {statusLabels[candidateStatusFromClerk]?.icon}
+                        {statusLabels[candidateStatusFromClerk]?.label || candidateStatusFromClerk}
+                      </span>
+                    )}
+                    {!candidateStatusFromClerk && candidateStatus.candidate?.submittedAt
                       ? formatDate(candidateStatus.candidate.submittedAt)
                       : ""}
                   </div>
@@ -321,17 +360,43 @@ export default function MinSidePage() {
             )}
           </div>
 
-          {/* Applications count */}
-          <div style={{ ...styles.card, borderColor: "#bfdbfe" }}>
+          {/* Vipps verification status */}
+          <div style={{
+            ...styles.card,
+            borderColor: isVippsVerified ? "#86efac" : "#e2e8f0",
+          }}>
             <div style={styles.cardIcon}>
-              <FileText size={24} color="#0369a1" />
+              {isVippsVerified ? (
+                <BadgeCheck size={24} color="#16a34a" />
+              ) : (
+                <Shield size={24} color="#94a3b8" />
+              )}
             </div>
             <div>
               <div style={styles.cardTitle}>
-                {loadingApplications ? "..." : applications.length} søknad{applications.length !== 1 ? "er" : ""}
+                {isVippsVerified ? "ID-verifisert" : "Ikke verifisert"}
               </div>
-              <div style={styles.cardSubtext}>Sendt inn</div>
+              <div style={styles.cardSubtext}>
+                {isVippsVerified ? "Vipps BankID" : (
+                  <Link href="/api/vipps/start" style={{ color: "#0369a1", textDecoration: "underline" }}>
+                    Verifiser med Vipps
+                  </Link>
+                )}
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Applications count */}
+        <div style={{ ...styles.card, borderColor: "#bfdbfe", marginBottom: 24 }}>
+          <div style={styles.cardIcon}>
+            <FileText size={24} color="#0369a1" />
+          </div>
+          <div>
+            <div style={styles.cardTitle}>
+              {loadingApplications ? "..." : applications.length} søknad{applications.length !== 1 ? "er" : ""}
+            </div>
+            <div style={styles.cardSubtext}>Sendt inn</div>
           </div>
         </div>
 
@@ -901,5 +966,34 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     borderRadius: 4,
     marginLeft: 8,
+  },
+  // 🎯 CLERK PRO: Vipps verification badge styles
+  vippsBadge: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "12px 16px",
+    background: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)",
+    border: "1px solid #86efac",
+    borderRadius: 12,
+    marginBottom: 16,
+    fontSize: 14,
+    fontWeight: 600,
+    color: "#166534",
+  },
+  vippsBadgeDate: {
+    marginLeft: "auto",
+    fontSize: 12,
+    fontWeight: 400,
+    color: "#15803d",
+  },
+  clerkStatusBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 4,
+    padding: "3px 8px",
+    borderRadius: 6,
+    fontSize: 12,
+    fontWeight: 600,
   },
 };
