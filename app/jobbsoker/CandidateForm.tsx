@@ -502,6 +502,12 @@ export default function CandidateContent() {
         const nextErrors: FieldErrors = {};
         console.error("Validation errors:", parsed.error.issues);
         console.log("Form values:", values);
+        console.log("Specific values check:");
+        console.log("- wants_temporary:", values.wants_temporary, typeof values.wants_temporary);
+        console.log("- work_main:", values.work_main);
+        console.log("- stcw_confirm:", values.stcw_confirm);
+        console.log("- gdpr:", values.gdpr);
+
         for (const issue of parsed.error.issues) {
           const key = issue.path[0];
           if (typeof key === "string" && !nextErrors[key]) {
@@ -512,6 +518,9 @@ export default function CandidateContent() {
         setFormError("Kontroller feltene markert i rødt.");
         // Show specific error in console for debugging
         console.error("Field errors:", nextErrors);
+
+        // Show alert for debugging in production
+        alert(`Validation error: ${JSON.stringify(nextErrors)}`);
         return;
       }
 

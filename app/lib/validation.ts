@@ -34,8 +34,8 @@ export const candidateSchema = z
     other_comp: z.string().trim().optional(),
     work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
     other_notes: z.record(z.string().trim()).optional(),
-    wants_temporary: z.enum(
-      ["ja", "nei"],
+    wants_temporary: z.string().refine(
+      (val) => val === "ja" || val === "nei",
       "Velg om du er åpen for midlertidige oppdrag"
     ),
     stcw_confirm: z
