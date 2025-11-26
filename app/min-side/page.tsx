@@ -445,6 +445,16 @@ export default function MinSidePage() {
             </div>
             <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
           </Link>
+          <Link href="/min-side/oppdrag" style={styles.portalLink}>
+            <div style={{ ...styles.portalLinkIcon, background: "#fef3c7" }}>
+              <Calendar size={20} color="#d97706" />
+            </div>
+            <div style={styles.portalLinkContent}>
+              <div style={styles.portalLinkTitle}>Mine oppdrag</div>
+              <div style={styles.portalLinkDesc}>Kalender og arbeidsoppdrag</div>
+            </div>
+            <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
+          </Link>
         </div>
 
         {/* Applications dropdown */}
