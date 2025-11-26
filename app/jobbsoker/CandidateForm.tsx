@@ -548,12 +548,15 @@ export default function CandidateContent() {
         return;
       }
 
-      // Vipps verification check
+      // Vipps verification check - TEMPORARILY DISABLED FOR PRODUCTION FIX
+      // TODO: Re-enable when Vipps/Redis is properly configured
+      /*
       if (!vippsSession) {
         setFormError("Du må verifisere identiteten din med Vipps først.");
         router.push("/jobbsoker/registrer");
         return;
       }
+      */
 
       setFieldErrors({});
       setFileErrors({});
