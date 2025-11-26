@@ -8,6 +8,7 @@ import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
+import MarketingScripts from "./components/MarketingScripts";
 
 const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
@@ -166,7 +167,20 @@ export default function RootLayout({
     >
       <html lang="no">
         <head>
-          <title>Bluecrew AS – Maritim bemanning i Norge</title>
+          {/* Title is set via metadata export - do not hardcode here */}
+          {/* Preload critical images for faster LCP */}
+          <link
+            rel="preload"
+            href="/hero/maritime-hero.jpeg"
+            as="image"
+            type="image/jpeg"
+          />
+          <link
+            rel="preload"
+            href="/hero/skipper-matros-lonn.webp"
+            as="image"
+            type="image/webp"
+          />
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
@@ -175,51 +189,7 @@ export default function RootLayout({
           <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
           <link rel="apple-touch-icon" href="/logo.png" />
           <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
-          {/* Meta Pixel */}
-          <Script
-            id="meta-pixel"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                !function(f,b,e,v,n,t,s)
-                {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-                n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-                if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-                n.queue=[];t=b.createElement(e);t.async=!0;
-                t.src=v;s=b.getElementsByTagName(e)[0];
-                s.parentNode.insertBefore(t,s)}(window, document,'script',
-                'https://connect.facebook.net/en_US/fbevents.js');
-                fbq('init', '1367183524887510');
-                fbq('track', 'PageView');
-              `,
-            }}
-          />
-          <noscript>
-            <img
-              height="1"
-              width="1"
-              style={{ display: "none" }}
-              src="https://www.facebook.com/tr?id=1367183524887510&ev=PageView&noscript=1"
-              alt=""
-            />
-          </noscript>
-          {/* Google Ads */}
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
-            strategy="afterInteractive"
-          />
-          <Script
-            id="google-ads-init"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'AW-17731534362');
-              `,
-            }}
-          />
+          {/* Marketing scripts (Meta Pixel, Google Ads) loaded via MarketingScripts component with consent */}
           <Script
             id="organization-schema"
             type="application/ld+json"
@@ -245,6 +215,7 @@ export default function RootLayout({
           {children}
           <CookieBanner />
           <PlausibleLoader />
+          <MarketingScripts />
           <SpeedInsights />
         </body>
       </html>

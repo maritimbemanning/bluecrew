@@ -197,6 +197,10 @@ export default function CookiesPage() {
                 <li>
                   <strong>Statistikk</strong>: hjelper oss å forstå bruken av nettsiden (Plausible). Kun med samtykke.
                 </li>
+                <li>
+                  <strong>Markedsføring</strong>: brukes til å vise relevante annonser og måle effekten av
+                  annonsekampanjer (Meta Pixel, Google Ads). Kun med samtykke.
+                </li>
               </ul>
 
               <div style={ui.actions}>
@@ -204,10 +208,19 @@ export default function CookiesPage() {
                   type="button"
                   style={ui.btnPrimary}
                   onClick={() =>
+                    applyPrefs({ necessary: true, analytics: true, marketing: true })
+                  }
+                >
+                  Godta alle
+                </button>
+                <button
+                  type="button"
+                  style={ui.btnGhost}
+                  onClick={() =>
                     applyPrefs({ necessary: true, analytics: true, marketing: false })
                   }
                 >
-                  Godta statistikk
+                  Kun statistikk
                 </button>
                 <button
                   type="button"
@@ -219,7 +232,7 @@ export default function CookiesPage() {
                   Kun nødvendige
                 </button>
                 <button type="button" style={ui.btnGhost} onClick={resetConsent}>
-                  Tilbakestill og vis banner
+                  Tilbakestill
                 </button>
               </div>
             </section>
@@ -256,6 +269,30 @@ export default function CookiesPage() {
                       </td>
                       <td style={ui.td}>Se leverandør</td>
                       <td style={ui.td}>Statistikk</td>
+                    </tr>
+                    <tr>
+                      <td style={ui.td}>_fbp, fr (kun ved samtykke)</td>
+                      <td style={ui.td}>Meta (Facebook)</td>
+                      <td style={ui.td}>
+                        Sporing av annonseeffekt og målrettet annonsering. Se{" "}
+                        <Link href="https://www.facebook.com/privacy/policy/" style={ui.a} target="_blank">
+                          Metas personvernerklæring
+                        </Link>.
+                      </td>
+                      <td style={ui.td}>90 dager</td>
+                      <td style={ui.td}>Markedsføring</td>
+                    </tr>
+                    <tr>
+                      <td style={ui.td}>_gcl_*, _ga* (kun ved samtykke)</td>
+                      <td style={ui.td}>Google</td>
+                      <td style={ui.td}>
+                        Google Ads konverteringssporing. Se{" "}
+                        <Link href="https://policies.google.com/privacy" style={ui.a} target="_blank">
+                          Googles personvernerklæring
+                        </Link>.
+                      </td>
+                      <td style={ui.td}>90 dager</td>
+                      <td style={ui.td}>Markedsføring</td>
                     </tr>
                   </tbody>
                 </table>
