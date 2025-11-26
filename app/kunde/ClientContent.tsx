@@ -162,6 +162,16 @@ export default function ClientContent() {
         currency: "NOK",
       });
     }
+
+    // Meta Pixel Lead Tracking
+    const fbq = (
+      window as typeof window & {
+        fbq?: (...args: unknown[]) => void;
+      }
+    ).fbq;
+    if (typeof fbq === "function") {
+      fbq("track", "Lead");
+    }
   }, [submitted]);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});

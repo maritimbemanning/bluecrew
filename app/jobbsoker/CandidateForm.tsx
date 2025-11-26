@@ -568,6 +568,11 @@ export default function CandidateContent() {
       });
     }
 
+    // Meta Pixel Lead Tracking
+    if (typeof window !== "undefined" && (window as typeof window & { fbq?: (...args: unknown[]) => void }).fbq) {
+      (window as typeof window & { fbq: (...args: unknown[]) => void }).fbq('track', 'Lead');
+    }
+
     return (
       <div style={ui.successCard} role="status">
         <h2 style={ui.successTitle}>Søknaden er mottatt!</h2>
