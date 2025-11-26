@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { candidateSchema, extractCandidateForm } from "../../lib/validation";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import {
   sendCandidateReceipt,
@@ -10,10 +9,8 @@ import {
   uploadSupabaseObject,
 } from "../../lib/server/supabase";
 import {
-  buildCertificatePath,
   buildCvPath,
   createCandidateStorageBase,
-  extractExtension,
 } from "../../lib/server/candidate-files";
 import { requireCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
@@ -37,9 +34,7 @@ export async function POST(req: Request) {
       logger.error("CSRF validation failed:", error);
       return new Response(
         "Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.",
-        {
-          status: 403,
-        }
+        { status: 403 }
       );
     }
 
@@ -52,206 +47,123 @@ export async function POST(req: Request) {
       });
     }
 
-    // 🎯 CLERK PRO: Get current user if logged in
+    // Get Clerk user if logged in
     const { userId: clerkUserId } = await auth();
-    logger.debug("📝 Processing candidate submission...", {
-      clerkUserId: clerkUserId || "anonymous",
-    });
+
     const formData = await req.formData();
-    const { values, files } = extractCandidateForm(formData);
 
-    logger.debug("📋 Form values:", {
-      name: values.name,
-      email: values.email,
-      fylke: values.fylke,
-      kommune: values.kommune,
-      workAreasCount: values.work_main?.length || 0,
-      hasCV: !!files.cv,
-      hasCerts: !!files.certs,
-      cvSize: files.cv?.size || 0,
-      certsSize: files.certs?.size || 0,
-    });
+    // Extract form fields
+    const name = (formData.get("name") as string || "").trim();
+    const email = (formData.get("email") as string || "").trim();
+    const phone = (formData.get("phone") as string || "").trim();
+    const fylke = (formData.get("fylke") as string || "").trim();
+    const skills = (formData.get("skills") as string || "").trim();
+    const stcwConfirm = formData.get("stcw_confirm") !== null;
+    const gdpr = formData.get("gdpr") !== null;
+    const honey = (formData.get("honey") as string || "").trim();
+    const cvFile = formData.get("cv") as File | null;
 
-    if (values.honey) {
+    logger.debug("📝 Candidate submission:", { name, email, fylke });
+
+    // Honeypot check
+    if (honey) {
       return new Response(null, { status: 204 });
     }
 
-    const parsed = candidateSchema.safeParse(values);
-    if (!parsed.success) {
-      const message =
-        parsed.error.issues.map((issue) => issue.message).join("; ") ||
-        "Ugyldige felter";
-      return new Response(`FEIL: ${message}`, { status: 400 });
-    }
+    // Validation
+    const errors: string[] = [];
+    if (!name || name.length < 2) errors.push("Oppgi fullt navn");
+    if (!email || !email.includes("@")) errors.push("Oppgi gyldig e-post");
+    if (!phone || phone.length < 6) errors.push("Oppgi telefonnummer");
+    if (!fylke) errors.push("Velg fylke");
+    if (!skills || skills.length < 10) errors.push("Beskriv din erfaring");
+    if (!stcwConfirm) errors.push("Bekreft STCW og helseattest");
+    if (!gdpr) errors.push("Samtykke til personvern er påkrevd");
 
-    const data = parsed.data;
-
-    // Validate CV file
-    const cvFile = files.cv;
+    // CV validation
     if (!cvFile || typeof cvFile === "string") {
-      return new Response("FEIL: CV (PDF) er påkrevd", { status: 400 });
-    }
-    if (cvFile.size === 0) {
-      return new Response("FEIL: CV-filen er tom", { status: 400 });
-    }
-    const cvName = (cvFile.name || "CV.pdf").toLowerCase();
-    if (!cvName.endsWith(".pdf")) {
-      return new Response("FEIL: CV må være PDF", { status: 400 });
-    }
-    if (cvFile.size > 10 * 1024 * 1024) {
-      return new Response("FEIL: CV for stor (maks 10 MB)", { status: 400 });
+      errors.push("CV (PDF) er påkrevd");
+    } else if (cvFile.size === 0) {
+      errors.push("CV-filen er tom");
+    } else if (!cvFile.name.toLowerCase().endsWith(".pdf")) {
+      errors.push("CV må være PDF");
+    } else if (cvFile.size > 10 * 1024 * 1024) {
+      errors.push("CV for stor (maks 10 MB)");
     }
 
-    // Validate certificate file (OPTIONAL - can be uploaded later via Min Side)
-    const certsFile = files.certs;
-    let hasCertificates = false;
-
-    if (certsFile && typeof certsFile !== "string" && certsFile.size > 0) {
-      logger.debug("🔍 Certificate file provided:", {
-        size: certsFile.size,
-        name: certsFile.name || "NO_NAME",
-      });
-
-      const allowed = [".pdf", ".zip", ".doc", ".docx"];
-      const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
-
-      if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
-        logger.error(
-          "❌ Certificate file has invalid extension:",
-          lowerCertsName
-        );
-        return new Response(
-          "FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX",
-          { status: 400 }
-        );
-      }
-      if (certsFile.size > 10 * 1024 * 1024) {
-        logger.error("❌ Certificate file too large:", certsFile.size);
-        return new Response("FEIL: Sertifikater for store (maks 10 MB)", {
-          status: 400,
-        });
-      }
-
-      hasCertificates = true;
-      logger.debug("✅ Certificate validation passed");
-    } else {
-      logger.debug("ℹ️ No certificates provided - can be uploaded later");
+    if (errors.length > 0) {
+      return new Response(`FEIL: ${errors.join("; ")}`, { status: 400 });
     }
 
     const submittedAt = new Date().toISOString();
-    const storageBase = createCandidateStorageBase(data.email, submittedAt);
-    const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
+    const storageBase = createCandidateStorageBase(email, submittedAt);
+    const cvBuffer = Buffer.from(await cvFile!.arrayBuffer());
     const cvPath = buildCvPath(storageBase);
 
+    // Upload CV to Supabase Storage
     try {
       await uploadSupabaseObject({
         bucket: "candidates-private",
         object: cvPath,
         body: cvBuffer,
-        contentType: cvFile.type || "application/pdf",
+        contentType: cvFile!.type || "application/pdf",
       });
     } catch (error) {
-      logger.error("❌ Klarte ikke å lagre CV i Supabase:", error);
-      logger.error("CV path:", cvPath);
-      logger.error("Bucket:", "candidates-private");
-      logger.error(
-        "Error details:",
-        error instanceof Error ? error.message : String(error)
-      );
-      // Continue with submission even if storage fails; CV will be in email attachment
+      logger.error("❌ CV upload failed:", error);
+      // Continue - CV will be in email attachment
     }
 
-    const attachments: {
-      filename: string;
-      content: string;
-      contentType?: string;
-    }[] = [
+    // Build email content
+    const lines = [
+      "NY JOBBSØKER",
+      `Navn: ${name}`,
+      `E-post: ${email}`,
+      `Telefon: ${phone}`,
+      `Fylke: ${fylke}`,
+      "",
+      "Erfaring og kompetanse:",
+      skills,
+      "",
+      `STCW bekreftet: ${stcwConfirm ? "Ja" : "Nei"}`,
+    ];
+
+    const html = `
+      <div style="font-family:system-ui,sans-serif;line-height:1.6">
+        <h2 style="margin:0 0 16px">Ny jobbsøker</h2>
+        <table style="border-collapse:collapse">
+          <tr><td style="padding:4px 12px"><b>Navn</b></td><td>${esc(name)}</td></tr>
+          <tr><td style="padding:4px 12px"><b>E-post</b></td><td>${esc(email)}</td></tr>
+          <tr><td style="padding:4px 12px"><b>Telefon</b></td><td>${esc(phone)}</td></tr>
+          <tr><td style="padding:4px 12px"><b>Fylke</b></td><td>${esc(fylke)}</td></tr>
+          <tr><td style="padding:4px 12px"><b>STCW</b></td><td>${stcwConfirm ? "Bekreftet" : "Nei"}</td></tr>
+        </table>
+        <div style="margin-top:16px">
+          <h3 style="margin:0 0 8px;font-size:16px">Erfaring og kompetanse</h3>
+          <p style="margin:0;white-space:pre-wrap">${esc(skills)}</p>
+        </div>
+      </div>
+    `;
+
+    const attachments = [
       {
-        filename: cvFile.name || "CV.pdf",
+        filename: cvFile!.name || "CV.pdf",
         content: cvBuffer.toString("base64"),
-        contentType: cvFile.type || "application/pdf",
+        contentType: cvFile!.type || "application/pdf",
       },
     ];
 
-    // Sertifikater er valgfritt - håndter opplasting hvis gitt
-    let certificatePath: string | null = null;
-
-    if (hasCertificates && certsFile && typeof certsFile !== "string") {
-      const ext = extractExtension(certsFile.name || "") || ".pdf";
-      const certificateBuffer = Buffer.from(await certsFile.arrayBuffer());
-      certificatePath = buildCertificatePath(storageBase, ext);
-
-      try {
-        await uploadSupabaseObject({
-          bucket: "candidates-private",
-          object: certificatePath,
-          body: certificateBuffer,
-          contentType: certsFile.type || "application/octet-stream",
-        });
-      } catch (error) {
-        logger.error("❌ Klarte ikke å lagre sertifikater i Supabase:", error);
-        logger.error("Certificate path:", certificatePath);
-        // Continue with submission even if certificate storage fails
-      }
-
-      attachments.push({
-        filename: certsFile.name || `sertifikater${ext}`,
-        content: certificateBuffer.toString("base64"),
-        contentType: certsFile.type || "application/octet-stream",
-      });
-    }
-
-    const location = data.kommune
-      ? `${data.kommune}${data.fylke ? `, ${data.fylke}` : ""}`
-      : "-";
-
-    const lines: string[] = [
-      "NY JOBBSØKER",
-      `Navn: ${data.name}`,
-      `E-post: ${data.email}`,
-      `Telefon: ${data.phone}`,
-      `Sted: ${location}`,
-      `Tilgjengelig fra: ${data.available_from || "-"}`,
-      "",
-      "Ønsket arbeid:",
-      ...(data.work_main?.length
-        ? data.work_main.map((w) => `- ${w}`)
-        : ["- (ikke valgt)"]),
-      "",
-      `Åpen for midlertidige oppdrag: ${data.wants_temporary || "-"}`,
-      "",
-      `STCW bekreftet: ${data.stcw_confirm ? "Ja" : "Nei"}`,
-      "",
-      "Kompetanse og erfaring:",
-      data.skills || "-",
-      "",
-      "Andre kommentarer:",
-      data.other_comp || "-",
-    ];
-
-    const html = buildHtmlSummary({
-      ...data,
-      location,
-    });
-
-    // Use Promise.allSettled to ensure email sends even if DB fails
+    // Save to DB and send emails
     const results = await Promise.allSettled([
       insertSupabaseRow({
         table: "candidates",
         payload: {
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          fylke: data.fylke || null,
-          kommune: data.kommune || null,
-          available_from: data.available_from || null,
-          wants_temporary: data.wants_temporary,
-          stcw_confirm: data.stcw_confirm,
-          work_main: data.work_main ?? [],
-          skills: data.skills || null,
-          other_comp: data.other_comp || null,
+          name,
+          email,
+          phone,
+          fylke,
+          skills,
+          stcw_confirm: stcwConfirm,
           cv_key: cvPath,
-          certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
           status: "pending",
@@ -259,40 +171,28 @@ export async function POST(req: Request) {
         },
       }),
       sendNotificationEmail({
-        subject: `Bluecrew jobbsøker: ${data.name || "(uten navn)"}`,
+        subject: `Bluecrew jobbsøker: ${name}`,
         text: lines.join("\n"),
         html,
-        replyTo: data.email,
+        replyTo: email,
         attachments,
       }),
-      sendCandidateReceipt({
-        name: data.name,
-        email: data.email,
-      }),
+      sendCandidateReceipt({ name, email }),
     ]);
 
-    // Log any failures (but don't fail the request - email serves as backup)
+    // Log failures
     const [dbResult, emailResult, receiptResult] = results;
     if (dbResult.status === "rejected") {
-      logger.error("⚠️ Supabase-feil (candidate):", dbResult.reason);
-      logger.error("📊 Payload forsøkt sendt:", {
-        fylke: data.fylke,
-        kommune: data.kommune,
-        name: data.name,
-        email: data.email,
-      });
+      logger.error("⚠️ Supabase insert failed:", dbResult.reason);
     }
     if (emailResult.status === "rejected") {
-      logger.error("❌ Sendefeil (candidate):", emailResult.reason);
+      logger.error("❌ Notification email failed:", emailResult.reason);
     }
     if (receiptResult.status === "rejected") {
-      logger.error(
-        "⚠️ Sendte ikke kvittering (candidate):",
-        receiptResult.reason
-      );
+      logger.error("⚠️ Receipt email failed:", receiptResult.reason);
     }
 
-    // 🎯 CLERK PRO: Update user metadata with candidate registration status
+    // Update Clerk metadata
     if (clerkUserId && dbResult.status === "fulfilled") {
       try {
         const client = await clerkClient();
@@ -301,90 +201,29 @@ export async function POST(req: Request) {
             candidate_registered: true,
             candidate_registered_at: submittedAt,
             candidate_status: "pending",
-            candidate_work_areas: data.work_main ?? [],
-            candidate_fylke: data.fylke || null,
-            candidate_kommune: data.kommune || null,
+            candidate_fylke: fylke,
           },
         });
-        logger.success("✅ Candidate status stored in Clerk metadata", {
-          clerkUserId,
-        });
       } catch (clerkError) {
-        logger.error("⚠️ Failed to update Clerk metadata:", clerkError);
+        logger.error("⚠️ Clerk metadata update failed:", clerkError);
       }
     }
 
-    const acceptsJson = (req.headers.get("accept") || "").includes(
-      "application/json"
-    );
+    // Response
+    const acceptsJson = (req.headers.get("accept") || "").includes("application/json");
     if (acceptsJson) {
       return NextResponse.json({ ok: true });
     }
 
-    const back = new URL("/jobbsoker/registrer?sent=worker", req.url);
-    return NextResponse.redirect(back, { status: 303 });
-  } catch (err: unknown) {
+    return NextResponse.redirect(
+      new URL("/jobbsoker/registrer/skjema?sent=worker", req.url),
+      { status: 303 }
+    );
+  } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    logger.error("❌ Uventet feil (candidate):", err);
+    logger.error("❌ Unexpected error:", err);
     return new Response("FEIL: " + msg, { status: 500 });
   }
-}
-
-function buildHtmlSummary(data: {
-  name?: string;
-  email?: string;
-  phone?: string;
-  street_address?: string | null;
-  postal_code?: string | null;
-  postal_city?: string | null;
-  available_from?: string | null;
-  wants_temporary?: string | null;
-  stcw_confirm?: boolean;
-  work_main?: string[] | null;
-  skills?: string | null;
-  other_comp?: string | null;
-  location: string;
-}) {
-  const workList = (data.work_main ?? [])
-    .map((entry) => {
-      const [main, sub] = entry.split(":");
-      const subLabel = sub ? ` – ${esc(sub)}` : "";
-      return `<li>${esc(main)}${subLabel}</li>`;
-    })
-    .join("");
-
-  return `
-    <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-      <h2 style="margin:0 0 8px">Ny jobbsøker</h2>
-      <table style="border-collapse:collapse">
-        <tr><td style=\"padding:4px 8px\"><b>Navn</b></td><td style=\"padding:4px 8px\">${esc(data.name || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>E-post</b></td><td style=\"padding:4px 8px\">${esc(data.email || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Telefon</b></td><td style=\"padding:4px 8px\">${esc(data.phone || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Adresse</b></td><td style=\"padding:4px 8px\">${esc(data.location)}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Tilgjengelig fra</b></td><td style=\"padding:4px 8px\">${esc(data.available_from || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>Midlertidige oppdrag</b></td><td style=\"padding:4px 8px\">${esc(data.wants_temporary || "-")}</td></tr>
-        <tr><td style=\"padding:4px 8px\"><b>STCW bekreftet</b></td><td style=\"padding:4px 8px\">${data.stcw_confirm ? "Ja" : "Nei"}</td></tr>
-      </table>
-      <div style="margin-top:16px">
-        <h3 style="margin:0 0 6px;font-size:16px">Ønsket arbeid</h3>
-        ${workList ? `<ul style=\"margin:0 0 12px;padding-left:18px\">${workList}</ul>` : "<p>Ingen valg</p>"}
-      </div>
-      ${
-        data.skills
-          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Kompetanse</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.skills
-            )}</p></div>`
-          : ""
-      }
-      ${
-        data.other_comp
-          ? `<div style=\"margin-top:12px\"><h3 style=\"margin:0 0 6px;font-size:16px\">Andre kommentarer</h3><p style=\"margin:0;white-space:pre-wrap\">${esc(
-              data.other_comp
-            )}</p></div>`
-          : ""
-      }
-    </div>
-  `;
 }
 
 function getClientKey(req: Request, prefix: string) {
