@@ -522,7 +522,7 @@ export default function CandidateContent() {
 
       // Validate ALL steps before submission
       const allStepsValid = [1, 2, 3, 4].every((step) => validateStep(step));
-      
+
       if (!allStepsValid) {
         setFormError("Kontroller feltene markert i rødt.");
         return;
@@ -763,10 +763,11 @@ export default function CandidateContent() {
             <div style={ui.fieldGrid}>
               <div>
                 <label style={sx.label}>
-                  <span>Fylke</span>
+                  <span>Fylke *</span>
                   <select
                     name="fylke"
                     style={sx.input}
+                    required
                     onChange={() => clearFieldError("fylke")}
                   >
                     <option value="">Velg fylke</option>
@@ -787,18 +788,29 @@ export default function CandidateContent() {
                     <option value="Svalbard">Svalbard</option>
                   </select>
                 </label>
+                {fieldErrors.fylke && (
+                  <div style={sx.errText} role="alert">
+                    {fieldErrors.fylke}
+                  </div>
+                )}
               </div>
               <div>
                 <label style={sx.label}>
-                  <span>Kommune</span>
+                  <span>Kommune *</span>
                   <input
                     type="text"
                     name="kommune"
                     placeholder="F.eks. Bergen, Tromsø"
                     style={sx.input}
+                    required
                     onChange={() => clearFieldError("kommune")}
                   />
                 </label>
+                {fieldErrors.kommune && (
+                  <div style={sx.errText} role="alert">
+                    {fieldErrors.kommune}
+                  </div>
+                )}
               </div>
             </div>
           </div>
