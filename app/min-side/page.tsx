@@ -425,6 +425,16 @@ export default function MinSidePage() {
             </div>
             <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
           </Link>
+          <Link href="/min-side/dokumenter" style={styles.portalLink}>
+            <div style={styles.portalLinkIcon}>
+              <Shield size={20} color="#7c3aed" />
+            </div>
+            <div style={styles.portalLinkContent}>
+              <div style={styles.portalLinkTitle}>Mine dokumenter</div>
+              <div style={styles.portalLinkDesc}>CV, sertifikater og helseattest</div>
+            </div>
+            <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
+          </Link>
         </div>
 
         {/* Applications dropdown */}
