@@ -9,7 +9,8 @@
       "Bash(node test-email.js:*)",
       "Bash(node -e \"process.env.RESEND_API_KEY=''re_UetGDqjU_5odz3FHpqrFBnGun919C9ETk''; process.env.RESEND_FROM_EMAIL=''no-reply@send.bluecrew.no''; process.env.RESEND_TO_EMAILS=''isak@bluecrew.no,tf@bluecrew.no''; const script = require(''fs'').readFileSync(''test-email.js'', ''utf8''); eval(script);\")",
       "Bash(node:*)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "WebFetch(domain:clerk.com)"
     ],
     "deny": [],
     "ask": []
