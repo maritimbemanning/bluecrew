@@ -4,8 +4,8 @@ export type CandidateFormValues = {
   name: string;
   email: string;
   phone: string;
-  fylke?: string;
-  kommune?: string;
+  fylke: string;
+  kommune: string;
   available_from?: string;
   skills?: string;
   other_comp?: string;
@@ -27,17 +27,19 @@ export const candidateSchema = z
     name: z.string().trim().min(2, "Oppgi fullt navn"),
     email: z.string().trim().email("Oppgi gyldig e-post"),
     phone: z.string().trim().min(6, "Oppgi telefon"),
-    fylke: z.string().trim().optional().or(z.literal("")),
-    kommune: z.string().trim().optional().or(z.literal("")),
-    available_from: z.string().trim().optional().or(z.literal("")),
-    skills: z.string().trim().optional().or(z.literal("")),
-    other_comp: z.string().trim().optional().or(z.literal("")),
+    fylke: z.string().trim().min(1, "Velg fylke"),
+    kommune: z.string().trim().min(1, "Oppgi kommune"),
+    available_from: z.union([z.string().trim(), z.literal("")]).optional(),
+    skills: z.union([z.string().trim(), z.literal("")]).optional(),
+    other_comp: z.union([z.string().trim(), z.literal("")]).optional(),
     work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
     other_notes: z.record(z.string().trim()).optional(),
-    wants_temporary: z.string().refine(
-      (val) => val === "ja" || val === "nei",
-      "Velg om du er åpen for midlertidige oppdrag"
-    ),
+    wants_temporary: z
+      .string()
+      .refine(
+        (val) => val === "ja" || val === "nei",
+        "Velg om du er åpen for midlertidige oppdrag"
+      ),
     stcw_confirm: z
       .boolean()
       .refine(
@@ -126,8 +128,8 @@ export function extractCandidateForm(fd: FormData): {
     name: getString("name"),
     email: getString("email"),
     phone: getString("phone"),
-    fylke: getString("fylke") || "",
-    kommune: getString("kommune") || "",
+    fylke: getString("fylke"),
+    kommune: getString("kommune"),
     available_from: getString("available_from") || "",
     skills: getString("skills") || "",
     other_comp: getString("other_comp") || "",
