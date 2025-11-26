@@ -6,9 +6,9 @@ export type CandidateFormValues = {
   phone: string;
   fylke: string;
   kommune: string;
-  available_from?: string;
-  skills?: string;
-  other_comp?: string;
+  available_from: string;
+  skills: string;
+  other_comp: string;
   work_main: string[];
   other_notes?: Record<string, string>;
   wants_temporary: string;
