@@ -36,11 +36,11 @@ type Document = {
   status: "valid" | "expiring_soon" | "expired";
 };
 
-const DOC_CONFIG: Record<DocumentType, { label: string; icon: React.ReactNode; color: string }> = {
-  cv: { label: "CV", icon: <FileText size={20} />, color: "#0369a1" },
-  certificate: { label: "Sertifikat", icon: <Award size={20} />, color: "#7c3aed" },
-  health: { label: "Helseattest", icon: <Heart size={20} />, color: "#dc2626" },
-  other: { label: "Annet", icon: <File size={20} />, color: "#64748b" },
+const DOC_CONFIG: Record<DocumentType, { label: string; Icon: typeof FileText; color: string }> = {
+  cv: { label: "CV", Icon: FileText, color: "#0369a1" },
+  certificate: { label: "Sertifikat", Icon: Award, color: "#7c3aed" },
+  health: { label: "Helseattest", Icon: Heart, color: "#dc2626" },
+  other: { label: "Annet", Icon: File, color: "#64748b" },
 };
 
 function getDocumentStatus(expiresAt: string | null): "valid" | "expiring_soon" | "expired" {
@@ -64,6 +64,7 @@ function getDaysUntilExpiry(expiresAt: string): number {
 function DocumentCard({ doc, onDelete }: { doc: Document; onDelete: (id: string) => void }) {
   const config = DOC_CONFIG[doc.type];
   const daysLeft = doc.expires_at ? getDaysUntilExpiry(doc.expires_at) : null;
+  const IconComponent = config.Icon;
 
   return (
     <div style={{
@@ -72,7 +73,7 @@ function DocumentCard({ doc, onDelete }: { doc: Document; onDelete: (id: string)
     }}>
       <div style={styles.docHeader}>
         <div style={{ ...styles.docIcon, background: `${config.color}15` }}>
-          {React.cloneElement(config.icon as React.ReactElement, { color: config.color })}
+          <IconComponent size={20} color={config.color} />
         </div>
         <div style={styles.docInfo}>
           <div style={styles.docName}>{doc.name}</div>
