@@ -343,18 +343,13 @@ export default function CandidateContent() {
             : null
         );
       } else {
-        // TEMPORARILY ALLOW FORM WITHOUT VIPPS - PRODUCTION FIX
-        console.warn(
-          "Vipps session not found - allowing form submission temporarily"
-        );
-        setStatusMessage("ℹ️ Vipps-verifisering er midlertidig deaktivert");
-        // DO NOT REDIRECT - Let users fill out the form
+        router.push("/jobbsoker/registrer");
+        return;
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      // TEMPORARILY ALLOW FORM WITHOUT VIPPS - PRODUCTION FIX
-      setStatusMessage("ℹ️ Vipps-verifisering er midlertidig deaktivert");
-      // DO NOT REDIRECT - Let users fill out the form
+      router.push("/jobbsoker/registrer");
+      return;
     } finally {
       setCheckingSession(false);
     }
@@ -537,18 +532,6 @@ export default function CandidateContent() {
 
       if (!parsed.success) {
         const nextErrors: FieldErrors = {};
-        console.error("Validation errors:", parsed.error.issues);
-        console.log("Form values:", values);
-        console.log("Specific values check:");
-        console.log(
-          "- wants_temporary:",
-          values.wants_temporary,
-          typeof values.wants_temporary
-        );
-        console.log("- work_main:", values.work_main);
-        console.log("- stcw_confirm:", values.stcw_confirm);
-        console.log("- gdpr:", values.gdpr);
-
         for (const issue of parsed.error.issues) {
           const key = issue.path[0];
           if (typeof key === "string" && !nextErrors[key]) {
@@ -557,8 +540,6 @@ export default function CandidateContent() {
         }
         setFieldErrors(nextErrors);
         setFormError("Kontroller feltene markert i rødt.");
-        // Show specific error in console for debugging
-        console.error("Field errors:", nextErrors);
         return;
       }
 
@@ -567,15 +548,12 @@ export default function CandidateContent() {
         return;
       }
 
-      // Vipps verification check - TEMPORARILY DISABLED FOR PRODUCTION FIX
-      // TODO: Re-enable when Vipps/Redis is properly configured
-      /*
+      // Vipps verification check
       if (!vippsSession) {
         setFormError("Du må verifisere identiteten din med Vipps først.");
         router.push("/jobbsoker/registrer");
         return;
       }
-      */
 
       setFieldErrors({});
       setFileErrors({});
