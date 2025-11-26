@@ -117,12 +117,11 @@ export default function MinSidePage() {
   const [loadingAdminData, setLoadingAdminData] = useState(false);
   const [adminSearch, setAdminSearch] = useState("");
 
-  // Check if user is admin
+  // Check if user is admin - ONLY via hardcoded email whitelist for security
   useEffect(() => {
     if (isLoaded && user) {
-      const role = user.publicMetadata?.role as string | undefined;
       const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
-      const adminStatus = role === "admin" || Boolean(userEmail && ADMIN_EMAILS.includes(userEmail));
+      const adminStatus = Boolean(userEmail && ADMIN_EMAILS.includes(userEmail));
       setIsAdmin(adminStatus);
 
       if (adminStatus) {

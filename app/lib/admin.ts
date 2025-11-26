@@ -1,6 +1,9 @@
 /**
  * Admin Functions (Server-only)
- * Contains async functions that require server imports
+ *
+ * SECURITY: Admin access is ONLY granted via hardcoded email whitelist.
+ * Organization membership and metadata roles are NOT checked.
+ * This prevents unauthorized access via Clerk dashboard manipulation.
  */
 
 import "server-only";
@@ -9,14 +12,11 @@ import { auth, clerkClient } from "@clerk/nextjs/server";
 // Re-export client-safe config
 export { ADMIN_EMAILS, ADMIN_ORG_SLUG, isAdminUser } from "./admin-config";
 
-import { ADMIN_EMAILS, ADMIN_ORG_SLUG } from "./admin-config";
+import { ADMIN_EMAILS } from "./admin-config";
 
 /**
  * Check if current user has admin access (async version)
- * Checks in order:
- * 1. Clerk Organization membership (Clerk Pro)
- * 2. publicMetadata.role === "admin"
- * 3. Email in ADMIN_EMAILS list
+ * SECURITY: ONLY checks email whitelist - no other methods!
  *
  * @returns { isAdmin: boolean, userId: string | null, email: string | null }
  */
@@ -24,49 +24,32 @@ export async function checkAdminAccess(): Promise<{
   isAdmin: boolean;
   userId: string | null;
   email: string | null;
-  method: "organization" | "role" | "email" | null;
 }> {
   try {
-    const { userId, orgSlug } = await auth();
+    const { userId } = await auth();
 
     if (!userId) {
-      return { isAdmin: false, userId: null, email: null, method: null };
+      return { isAdmin: false, userId: null, email: null };
     }
 
-    // 1. Check if user is in admin organization
-    if (orgSlug === ADMIN_ORG_SLUG) {
-      const client = await clerkClient();
-      const user = await client.users.getUser(userId);
-      const email = user.primaryEmailAddress?.emailAddress || null;
-      return { isAdmin: true, userId, email, method: "organization" };
-    }
-
-    // 2. Get user and check metadata/email
+    // Get user email
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
     const email = user.primaryEmailAddress?.emailAddress || null;
-    const role = (user.publicMetadata as Record<string, unknown>)?.role as string | undefined;
 
-    // Check role metadata
-    if (role === "admin") {
-      return { isAdmin: true, userId, email, method: "role" };
-    }
+    // SECURITY: Only check email whitelist
+    const isAdmin = Boolean(email && ADMIN_EMAILS.includes(email.toLowerCase()));
 
-    // Check email list
-    if (email && ADMIN_EMAILS.includes(email.toLowerCase())) {
-      return { isAdmin: true, userId, email, method: "email" };
-    }
-
-    return { isAdmin: false, userId, email, method: null };
+    return { isAdmin, userId, email };
   } catch (error) {
     console.error("Error checking admin access:", error);
-    return { isAdmin: false, userId: null, email: null, method: null };
+    return { isAdmin: false, userId: null, email: null };
   }
 }
 
 /**
  * Check if a specific user ID has admin access
- * Useful for API routes where you already have the userId
+ * SECURITY: ONLY checks email whitelist
  *
  * @param userId - Clerk user ID
  * @returns true if user has admin access
@@ -76,50 +59,14 @@ export async function isUserAdmin(userId: string): Promise<boolean> {
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
     const email = user.primaryEmailAddress?.emailAddress || null;
-    const role = (user.publicMetadata as Record<string, unknown>)?.role as string | undefined;
 
-    // Check role metadata
-    if (role === "admin") return true;
-
-    // Check email list
-    if (email && ADMIN_EMAILS.includes(email.toLowerCase())) return true;
-
-    // Check organization memberships
-    const orgMemberships = await client.users.getOrganizationMembershipList({
-      userId,
-    });
-
-    return orgMemberships.data.some(
-      (membership) => membership.organization.slug === ADMIN_ORG_SLUG
-    );
+    // SECURITY: Only check email whitelist
+    return Boolean(email && ADMIN_EMAILS.includes(email.toLowerCase()));
   } catch (error) {
     console.error("Error checking if user is admin:", error);
     return false;
   }
 }
 
-/**
- * Set admin role for a user
- * Updates publicMetadata.role to "admin"
- *
- * @param userId - Clerk user ID
- */
-export async function setUserAsAdmin(userId: string): Promise<void> {
-  const client = await clerkClient();
-  await client.users.updateUserMetadata(userId, {
-    publicMetadata: { role: "admin" },
-  });
-}
-
-/**
- * Remove admin role from a user
- * Removes role from publicMetadata
- *
- * @param userId - Clerk user ID
- */
-export async function removeUserAdmin(userId: string): Promise<void> {
-  const client = await clerkClient();
-  await client.users.updateUserMetadata(userId, {
-    publicMetadata: { role: null },
-  });
-}
+// NOTE: setUserAsAdmin and removeUserAdmin functions removed for security.
+// Admin access is managed ONLY via the ADMIN_EMAILS list in admin-config.ts
