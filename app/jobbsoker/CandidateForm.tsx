@@ -500,6 +500,8 @@ export default function CandidateContent() {
 
       if (!parsed.success) {
         const nextErrors: FieldErrors = {};
+        console.error("Validation errors:", parsed.error.issues);
+        console.log("Form values:", values);
         for (const issue of parsed.error.issues) {
           const key = issue.path[0];
           if (typeof key === "string" && !nextErrors[key]) {
@@ -508,6 +510,8 @@ export default function CandidateContent() {
         }
         setFieldErrors(nextErrors);
         setFormError("Kontroller feltene markert i rødt.");
+        // Show specific error in console for debugging
+        console.error("Field errors:", nextErrors);
         return;
       }
 
@@ -913,6 +917,7 @@ export default function CandidateContent() {
                   type="checkbox"
                   name="gdpr"
                   value="yes"
+                  defaultChecked={false}
                   required
                   aria-invalid={!!fieldErrors.gdpr}
                   onChange={() => clearFieldError("gdpr")}
