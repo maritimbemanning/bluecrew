@@ -1,6 +1,13 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -170,7 +177,8 @@ const ui = {
     fontSize: 14,
   },
   successCard: {
-    background: "linear-gradient(140deg, #ecfdf5 0%, #d1fae5 60%, #dcfce7 100%)",
+    background:
+      "linear-gradient(140deg, #ecfdf5 0%, #d1fae5 60%, #dcfce7 100%)",
     borderRadius: 26,
     border: "1px solid #a7f3d0",
     padding: "30px clamp(20px, 6vw, 32px)",
@@ -208,7 +216,14 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
     <div style={ui.stepIndicator}>
       {STEPS.map((step, index) => (
-        <div key={step.id} style={{ display: "flex", alignItems: "center", flex: index < STEPS.length - 1 ? 1 : "none" }}>
+        <div
+          key={step.id}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flex: index < STEPS.length - 1 ? 1 : "none",
+          }}
+        >
           <div
             style={{
               ...ui.stepDot,
@@ -236,7 +251,13 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
 // Step labels below dots
 function StepLabels({ currentStep }: { currentStep: number }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: 24,
+      }}
+    >
       {STEPS.map((step) => (
         <div
           key={step.id}
@@ -286,7 +307,10 @@ export default function CandidateContent() {
     if (!submitted || typeof window === "undefined") return;
     const plausible = (
       window as typeof window & {
-        plausible?: (event: string, options?: { props?: Record<string, unknown> }) => void;
+        plausible?: (
+          event: string,
+          options?: { props?: Record<string, unknown> }
+        ) => void;
       }
     ).plausible;
     if (typeof plausible === "function") {
@@ -296,7 +320,9 @@ export default function CandidateContent() {
 
   const [vippsSession, setVippsSession] = useState<VippsSession | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
-  const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(null);
+  const [draftValues, setDraftValues] = useState<StoredCandidateDraft | null>(
+    null
+  );
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const checkVippsSession = useCallback(async () => {
@@ -318,7 +344,9 @@ export default function CandidateContent() {
         );
       } else {
         // TEMPORARILY ALLOW FORM WITHOUT VIPPS - PRODUCTION FIX
-        console.warn("Vipps session not found - allowing form submission temporarily");
+        console.warn(
+          "Vipps session not found - allowing form submission temporarily"
+        );
         setStatusMessage("ℹ️ Vipps-verifisering er midlertidig deaktivert");
         // DO NOT REDIRECT - Let users fill out the form
       }
@@ -400,7 +428,8 @@ export default function CandidateContent() {
       const kommune = String(formData.get("kommune") || "").trim();
 
       if (!name || name.length < 2) nextErrors.name = "Oppgi fullt navn";
-      if (!email || !email.includes("@")) nextErrors.email = "Oppgi gyldig e-post";
+      if (!email || !email.includes("@"))
+        nextErrors.email = "Oppgi gyldig e-post";
       if (!phone || phone.length < 6) nextErrors.phone = "Oppgi telefonnummer";
       if (!fylke) nextErrors.fylke = "Velg fylke";
       if (!kommune) nextErrors.kommune = "Oppgi kommune";
@@ -412,7 +441,8 @@ export default function CandidateContent() {
       const workMain = formData.getAll("work_main");
 
       if (!wantsTemporary) nextErrors.wants_temporary = "Velg ja eller nei";
-      if (workMain.length === 0) nextErrors.work_main = "Velg minst ett arbeidsområde";
+      if (workMain.length === 0)
+        nextErrors.work_main = "Velg minst ett arbeidsområde";
     }
 
     // Step 3 (skills) has no required fields
@@ -455,7 +485,10 @@ export default function CandidateContent() {
       }
 
       // Return false if there are file errors OR field errors for step 4
-      if (Object.keys(nextFileErrors).length > 0 || Object.keys(nextErrors).length > 0) {
+      if (
+        Object.keys(nextFileErrors).length > 0 ||
+        Object.keys(nextErrors).length > 0
+      ) {
         setFieldErrors(nextErrors);
         return false;
       }
@@ -507,7 +540,11 @@ export default function CandidateContent() {
         console.error("Validation errors:", parsed.error.issues);
         console.log("Form values:", values);
         console.log("Specific values check:");
-        console.log("- wants_temporary:", values.wants_temporary, typeof values.wants_temporary);
+        console.log(
+          "- wants_temporary:",
+          values.wants_temporary,
+          typeof values.wants_temporary
+        );
         console.log("- work_main:", values.work_main);
         console.log("- stcw_confirm:", values.stcw_confirm);
         console.log("- gdpr:", values.gdpr);
@@ -570,7 +607,9 @@ export default function CandidateContent() {
 
         window.location.href = "/jobbsoker/registrer/skjema?sent=worker";
       } catch (error) {
-        setFormError(error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen.");
+        setFormError(
+          error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen."
+        );
         setIsSubmitting(false);
       }
     },
@@ -580,35 +619,53 @@ export default function CandidateContent() {
   // Success state
   if (submitted) {
     // Google Ads Conversion Tracking
-    if (typeof window !== "undefined" && (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag) {
-      (window as typeof window & { gtag: (...args: unknown[]) => void }).gtag('event', 'conversion', {
-        'send_to': 'AW-17731534362/F93uCMSS9MYbEJr8hodC',
-        'value': 1.0,
-        'currency': 'NOK'
-      });
+    if (
+      typeof window !== "undefined" &&
+      (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag
+    ) {
+      (window as typeof window & { gtag: (...args: unknown[]) => void }).gtag(
+        "event",
+        "conversion",
+        {
+          send_to: "AW-17731534362/F93uCMSS9MYbEJr8hodC",
+          value: 1.0,
+          currency: "NOK",
+        }
+      );
     }
 
     // Meta Pixel Lead Tracking
-    if (typeof window !== "undefined" && (window as typeof window & { fbq?: (...args: unknown[]) => void }).fbq) {
-      (window as typeof window & { fbq: (...args: unknown[]) => void }).fbq('track', 'Lead');
+    if (
+      typeof window !== "undefined" &&
+      (window as typeof window & { fbq?: (...args: unknown[]) => void }).fbq
+    ) {
+      (window as typeof window & { fbq: (...args: unknown[]) => void }).fbq(
+        "track",
+        "Lead"
+      );
     }
 
     return (
       <div style={ui.successCard} role="status">
         <h2 style={ui.successTitle}>Søknaden er mottatt!</h2>
         <p style={ui.successBody}>
-          Takk for at du registrerte deg hos Bluecrew. Vi verifiserer profilen din og matcher deg med relevante oppdrag.
+          Takk for at du registrerte deg hos Bluecrew. Vi verifiserer profilen
+          din og matcher deg med relevante oppdrag.
         </p>
         <div>
           <strong style={{ color: "#047857" }}>Hva skjer nå?</strong>
           <ul style={ui.successList}>
-            <li>Vi går gjennom CV og sertifikater innen <strong>24–48 timer</strong>.</li>
+            <li>
+              Vi går gjennom CV og sertifikater innen{" "}
+              <strong>24–48 timer</strong>.
+            </li>
             <li>Du får e-post når profilen din er aktivert.</li>
             <li>Oppdrag formidles via telefon eller e-post.</li>
           </ul>
         </div>
         <p style={ui.successBody}>
-          Spørsmål? Send e-post til <strong>isak@bluecrew.no</strong> eller ring <strong>923 28 850</strong>.
+          Spørsmål? Send e-post til <strong>isak@bluecrew.no</strong> eller ring{" "}
+          <strong>923 28 850</strong>.
         </p>
         <Link
           href="/"
@@ -639,7 +696,9 @@ export default function CandidateContent() {
       <div style={ui.wrap}>
         <div style={{ textAlign: "center", padding: 40 }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>Verifiserer Vipps-sesjon...</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: "#0f172a" }}>
+            Verifiserer Vipps-sesjon...
+          </h2>
         </div>
       </div>
     );
@@ -668,7 +727,9 @@ export default function CandidateContent() {
           </div>
         )}
 
-        {vippsSession && currentStep === 1 && <VippsVerifiedBadge session={vippsSession} />}
+        {vippsSession && currentStep === 1 && (
+          <VippsVerifiedBadge session={vippsSession} />
+        )}
 
         {statusMessage && currentStep === 1 && (
           <div style={ui.infoBox} role="status">
@@ -681,7 +742,9 @@ export default function CandidateContent() {
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Kontaktinformasjon</h2>
-              <p style={ui.sectionLead}>Oppgi navn, kontaktinformasjon og bosted.</p>
+              <p style={ui.sectionLead}>
+                Oppgi navn, kontaktinformasjon og bosted.
+              </p>
             </div>
             <div style={ui.fieldGrid}>
               <Input
@@ -697,7 +760,11 @@ export default function CandidateContent() {
                 name="email"
                 type="email"
                 required
-                defaultValue={((vippsSession as unknown as { email?: string })?.email || draftValues?.email) ?? ""}
+                defaultValue={
+                  ((vippsSession as unknown as { email?: string })?.email ||
+                    draftValues?.email) ??
+                  ""
+                }
                 error={fieldErrors.email}
                 onChange={() => clearFieldError("email")}
               />
@@ -714,7 +781,11 @@ export default function CandidateContent() {
               <div>
                 <label style={sx.label}>
                   <span>Fylke</span>
-                  <select name="fylke" style={sx.input} onChange={() => clearFieldError("fylke")}>
+                  <select
+                    name="fylke"
+                    style={sx.input}
+                    onChange={() => clearFieldError("fylke")}
+                  >
                     <option value="">Velg fylke</option>
                     <option value="Agder">Agder</option>
                     <option value="Innlandet">Innlandet</option>
@@ -725,7 +796,9 @@ export default function CandidateContent() {
                     <option value="Troms">Troms</option>
                     <option value="Finnmark">Finnmark</option>
                     <option value="Trøndelag">Trøndelag</option>
-                    <option value="Vestfold og Telemark">Vestfold og Telemark</option>
+                    <option value="Vestfold og Telemark">
+                      Vestfold og Telemark
+                    </option>
                     <option value="Vestland">Vestland</option>
                     <option value="Viken">Viken</option>
                     <option value="Svalbard">Svalbard</option>
@@ -753,7 +826,9 @@ export default function CandidateContent() {
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Arbeidsønsker</h2>
-              <p style={ui.sectionLead}>Oppgi tilgjengelighet og ønskede arbeidsområder.</p>
+              <p style={ui.sectionLead}>
+                Oppgi tilgjengelighet og ønskede arbeidsområder.
+              </p>
             </div>
 
             <div style={ui.fieldGrid}>
@@ -768,26 +843,48 @@ export default function CandidateContent() {
             </div>
 
             <div>
-              <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
+              <div
+                style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}
+              >
                 Er du åpen for midlertidige oppdrag? *
               </div>
               <div style={sx.inlineRadios}>
                 <label style={sx.radioLabel}>
-                  <input type="radio" name="wants_temporary" value="ja" onChange={() => clearFieldError("wants_temporary")} required />
+                  <input
+                    type="radio"
+                    name="wants_temporary"
+                    value="ja"
+                    onChange={() => clearFieldError("wants_temporary")}
+                    required
+                  />
                   Ja
                 </label>
                 <label style={sx.radioLabel}>
-                  <input type="radio" name="wants_temporary" value="nei" onChange={() => clearFieldError("wants_temporary")} />
+                  <input
+                    type="radio"
+                    name="wants_temporary"
+                    value="nei"
+                    onChange={() => clearFieldError("wants_temporary")}
+                  />
                   Nei
                 </label>
               </div>
               {fieldErrors.wants_temporary && (
-                <div style={sx.errText} role="alert">{fieldErrors.wants_temporary}</div>
+                <div style={sx.errText} role="alert">
+                  {fieldErrors.wants_temporary}
+                </div>
               )}
             </div>
 
             <div style={{ marginTop: 12 }}>
-              <div style={{ fontWeight: 700, marginBottom: 12, color: "#0b1f3a", fontSize: 16 }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  marginBottom: 12,
+                  color: "#0b1f3a",
+                  fontSize: 16,
+                }}
+              >
                 Ønsket arbeid *
               </div>
               <p style={{ fontSize: 14, color: "#64748b", marginBottom: 12 }}>
@@ -800,9 +897,22 @@ export default function CandidateContent() {
                 const open = !!openMain[main];
                 return (
                   <div key={main} style={ui.workPanel}>
-                    <label style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
-                      <input type="checkbox" checked={open} onChange={() => toggleMain(main)} />
-                      <span style={{ fontWeight: 700, color: "#0b1f3a" }}>{main}</span>
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={open}
+                        onChange={() => toggleMain(main)}
+                      />
+                      <span style={{ fontWeight: 700, color: "#0b1f3a" }}>
+                        {main}
+                      </span>
                     </label>
                     {open && (
                       <div>
@@ -816,7 +926,12 @@ export default function CandidateContent() {
                                     name={`other_${main}`}
                                     placeholder="Beskriv kort"
                                     value={otherText[main] || ""}
-                                    onChange={(e) => setOtherText((prev) => ({ ...prev, [main]: e.target.value }))}
+                                    onChange={(e) =>
+                                      setOtherText((prev) => ({
+                                        ...prev,
+                                        [main]: e.target.value,
+                                      }))
+                                    }
                                     style={sx.input}
                                   />
                                 </label>
@@ -841,7 +956,9 @@ export default function CandidateContent() {
               })}
             </div>
             {fieldErrors.work_main && (
-              <div style={sx.errText} role="alert">{fieldErrors.work_main}</div>
+              <div style={sx.errText} role="alert">
+                {fieldErrors.work_main}
+              </div>
             )}
           </div>
         )}
@@ -851,7 +968,9 @@ export default function CandidateContent() {
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Kompetanse og erfaring</h2>
-              <p style={ui.sectionLead}>Beskriv relevant erfaring og sertifikater.</p>
+              <p style={ui.sectionLead}>
+                Beskriv relevant erfaring og sertifikater.
+              </p>
             </div>
             <Textarea
               label="Kompetanse og erfaring"
@@ -879,7 +998,9 @@ export default function CandidateContent() {
           <div style={ui.section}>
             <div style={ui.sectionHeader}>
               <h2 style={ui.sectionTitle}>Dokumenter og samtykke</h2>
-              <p style={ui.sectionLead}>Last opp CV og sertifikater for å fullføre registreringen.</p>
+              <p style={ui.sectionLead}>
+                Last opp CV og sertifikater for å fullføre registreringen.
+              </p>
             </div>
 
             <div style={ui.filesGrid}>
@@ -901,11 +1022,21 @@ export default function CandidateContent() {
               />
             </div>
             <p style={{ fontSize: 13, color: "#64748b", margin: 0 }}>
-              Har du ikke sertifikatene klare? Du kan laste dem opp senere via Min Side.
+              Har du ikke sertifikatene klare? Du kan laste dem opp senere via
+              Min Side.
             </p>
 
             <div style={ui.consentBox}>
-              <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, color: "#0b1f3a", cursor: "pointer" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  fontSize: 14.5,
+                  color: "#0b1f3a",
+                  cursor: "pointer",
+                }}
+              >
                 <input
                   type="checkbox"
                   name="stcw_confirm"
@@ -915,14 +1046,27 @@ export default function CandidateContent() {
                   style={{ marginTop: 3, flexShrink: 0 }}
                 />
                 <span>
-                  Jeg bekrefter at jeg har eller vil skaffe <strong>STCW grunnleggende sikkerhetskurs</strong> og <strong>gyldig helseattest</strong> før oppdrag.
+                  Jeg bekrefter at jeg har eller vil skaffe{" "}
+                  <strong>STCW grunnleggende sikkerhetskurs</strong> og{" "}
+                  <strong>gyldig helseattest</strong> før oppdrag.
                 </span>
               </label>
               {fieldErrors.stcw_confirm && (
-                <div style={sx.errText} role="alert">{fieldErrors.stcw_confirm}</div>
+                <div style={sx.errText} role="alert">
+                  {fieldErrors.stcw_confirm}
+                </div>
               )}
 
-              <label style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 14.5, color: "#0b1f3a", cursor: "pointer" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 10,
+                  fontSize: 14.5,
+                  color: "#0b1f3a",
+                  cursor: "pointer",
+                }}
+              >
                 <input
                   type="checkbox"
                   name="gdpr"
@@ -932,15 +1076,25 @@ export default function CandidateContent() {
                   style={{ marginTop: 3, flexShrink: 0 }}
                 />
                 <span>
-                  Jeg samtykker til at Bluecrew AS lagrer personopplysninger, CV og sertifikater i <strong>12–24 måneder</strong>.{" "}
-                  <Link href="/personvern" style={{ color: "#0369a1", textDecoration: "underline", fontWeight: 600 }}>
+                  Jeg samtykker til at Bluecrew AS lagrer personopplysninger, CV
+                  og sertifikater i <strong>12–24 måneder</strong>.{" "}
+                  <Link
+                    href="/personvern"
+                    style={{
+                      color: "#0369a1",
+                      textDecoration: "underline",
+                      fontWeight: 600,
+                    }}
+                  >
                     Les personvernerklæringen
                   </Link>
                   .
                 </span>
               </label>
               {fieldErrors.gdpr && (
-                <div style={sx.errText} role="alert">{fieldErrors.gdpr}</div>
+                <div style={sx.errText} role="alert">
+                  {fieldErrors.gdpr}
+                </div>
               )}
             </div>
           </div>
@@ -971,7 +1125,11 @@ export default function CandidateContent() {
           ) : (
             <button
               type="submit"
-              style={{ ...ui.btnSubmit, opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "wait" : "pointer" }}
+              style={{
+                ...ui.btnSubmit,
+                opacity: isSubmitting ? 0.7 : 1,
+                cursor: isSubmitting ? "wait" : "pointer",
+              }}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Sender..." : "Send inn søknad"}
