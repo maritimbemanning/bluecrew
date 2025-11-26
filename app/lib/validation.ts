@@ -134,8 +134,9 @@ export function extractCandidateForm(fd: FormData): {
     work_main: workChoices,
     other_notes: Object.keys(otherNotes).length ? otherNotes : undefined,
     wants_temporary: getString("wants_temporary"),
-    stcw_confirm: fd.get("stcw_confirm") === "on",
-    gdpr: fd.get("gdpr") === "yes" || fd.get("gdpr") === "on",
+    // Checkboxes: checked = value exists, unchecked = null
+    stcw_confirm: fd.get("stcw_confirm") !== null,
+    gdpr: fd.get("gdpr") !== null,
     honey: getString("honey"),
   };
 

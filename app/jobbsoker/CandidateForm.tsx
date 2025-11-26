@@ -417,8 +417,8 @@ export default function CandidateContent() {
       // Validate files and consent
       const cvFile = formData.get("cv") as File | null;
       const certsFile = formData.get("certs") as File | null;
-      const stcwConfirm = formData.get("stcw_confirm");
-      const gdpr = formData.get("gdpr");
+      const stcwConfirm = formData.get("stcw_confirm") !== null;
+      const gdpr = formData.get("gdpr") !== null;
       const nextFileErrors: FileErrors = {};
 
       // CV is required
@@ -916,8 +916,6 @@ export default function CandidateContent() {
                 <input
                   type="checkbox"
                   name="gdpr"
-                  value="yes"
-                  defaultChecked={false}
                   required
                   aria-invalid={!!fieldErrors.gdpr}
                   onChange={() => clearFieldError("gdpr")}
