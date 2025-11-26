@@ -276,6 +276,12 @@ export async function POST(req: Request) {
     const [dbResult, emailResult, receiptResult] = results;
     if (dbResult.status === "rejected") {
       logger.error("⚠️ Supabase-feil (candidate):", dbResult.reason);
+      logger.error("📊 Payload forsøkt sendt:", {
+        fylke: data.fylke,
+        kommune: data.kommune,
+        name: data.name,
+        email: data.email,
+      });
     }
     if (emailResult.status === "rejected") {
       logger.error("❌ Sendefeil (candidate):", emailResult.reason);
