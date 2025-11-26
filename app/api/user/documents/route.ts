@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 import { logger } from "@/app/lib/logger";
+import { validateFileUpload, getClientIp } from "@/app/lib/server/utils";
+import { enforceRateLimit } from "@/app/lib/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -63,6 +65,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Rate limiting
+    const rateKey = `user-docs:${getClientIp(req)}`;
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { error: "For mange forespørsler. Prøv igjen senere." },
+        { status: 429, headers: { "Retry-After": String(rate.resetSeconds || 60) } }
+      );
+    }
+
     const formData = await req.formData();
     const type = formData.get("type") as string;
     const name = formData.get("name") as string;
@@ -73,13 +85,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Mangler obligatoriske felt" }, { status: 400 });
     }
 
-    // Validate file
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json({ error: "Fil for stor (maks 10 MB)" }, { status: 400 });
+    // Validate type field
+    const validTypes = ["cv", "certificate", "health", "other"];
+    if (!validTypes.includes(type)) {
+      return NextResponse.json({ error: "Ugyldig dokumenttype" }, { status: 400 });
     }
 
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
-      return NextResponse.json({ error: "Kun PDF-filer er tillatt" }, { status: 400 });
+    // Validate name length
+    if (name.length > 100) {
+      return NextResponse.json({ error: "Navn kan ikke være lengre enn 100 tegn" }, { status: 400 });
+    }
+
+    // Robust file validation with magic bytes check
+    const fileValidation = await validateFileUpload(file, {
+      required: true,
+      maxSizeMB: 10,
+      allowedTypes: ["pdf"],
+    });
+
+    if (!fileValidation.isValid) {
+      return NextResponse.json({ error: fileValidation.error }, { status: 400 });
     }
 
     // Generate storage path
