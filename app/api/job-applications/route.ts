@@ -259,7 +259,7 @@ Job ID: ${applicationData.job_id}
       });
     }
 
-    // Send notification email
+    // Send notification email to Bluecrew team
     try {
       const emailResult = await sendNotificationEmail({
         subject: `Jobbsøknad: ${applicationData.job_title} - ${applicationData.name}`,
@@ -276,6 +276,23 @@ Job ID: ${applicationData.job_id}
     } catch (emailErr) {
       logger.error("❌ Failed to send email notification", { error: String(emailErr) });
       // Continue - application is stored, email failure shouldn't block submission
+    }
+
+    // Send confirmation email to applicant
+    try {
+      const { sendApplicationStatusUpdate } = await import("../../lib/server/email");
+      const confirmResult = await sendApplicationStatusUpdate({
+        name: applicationData.name,
+        email: applicationData.email,
+        jobTitle: applicationData.job_title,
+        status: 'reviewed',
+      });
+      if (confirmResult) {
+        logger.info("✅ Confirmation email sent to applicant", { email: applicationData.email });
+      }
+    } catch (confirmErr) {
+      logger.error("❌ Failed to send confirmation email to applicant", { error: String(confirmErr) });
+      // Continue - don't block on confirmation email failure
     }
 
     logger.info("✅ Job application submitted successfully", {
