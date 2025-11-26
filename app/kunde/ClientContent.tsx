@@ -134,6 +134,34 @@ export default function ClientContent() {
   const submitted = searchParams.get("sent") === "client";
   const { csrfToken } = useCsrfToken();
 
+  // Track page view for Google Ads and Meta Pixel on /kunde
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Google Ads page view
+    const gtag = (
+      window as typeof window & {
+        gtag?: (...args: unknown[]) => void;
+      }
+    ).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", "page_view", {
+        page_title: "Kunde - Registrer behov",
+        page_location: window.location.href,
+      });
+    }
+
+    // Meta Pixel page view (already tracked globally, but explicit for /kunde)
+    const fbq = (
+      window as typeof window & {
+        fbq?: (...args: unknown[]) => void;
+      }
+    ).fbq;
+    if (typeof fbq === "function") {
+      fbq("track", "ViewContent", { content_name: "Kunde skjema" });
+    }
+  }, []);
+
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
 
