@@ -1,6 +1,6 @@
 /**
  * API: Check if current Clerk user has a candidate profile
- * Returns candidate registration status based on email match
+ * Returns candidate registration status based on clerk_user_id OR email match
  */
 
 import { NextResponse } from "next/server";
@@ -19,14 +19,6 @@ export async function GET() {
     const user = await currentUser();
     const email = user?.primaryEmailAddress?.emailAddress;
 
-    if (!email) {
-      return NextResponse.json({
-        registered: false,
-        reason: "no_email",
-      });
-    }
-
-    // Check if user's email exists in candidates table using REST API
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -38,13 +30,14 @@ export async function GET() {
       });
     }
 
-    const url = new URL(`${supabaseUrl}/rest/v1/candidates`);
-    url.searchParams.set("select", "id,name,submitted_at,status");
-    url.searchParams.set("email", `eq.${email}`);
-    url.searchParams.set("order", "submitted_at.desc");
-    url.searchParams.set("limit", "1");
+    // First, try to find by clerk_user_id (most reliable)
+    const urlByClerkId = new URL(`${supabaseUrl}/rest/v1/candidates`);
+    urlByClerkId.searchParams.set("select", "id,name,submitted_at,status,email");
+    urlByClerkId.searchParams.set("clerk_user_id", `eq.${userId}`);
+    urlByClerkId.searchParams.set("order", "submitted_at.desc");
+    urlByClerkId.searchParams.set("limit", "1");
 
-    const response = await fetch(url.toString(), {
+    const responseByClerkId = await fetch(urlByClerkId.toString(), {
       method: "GET",
       headers: {
         apikey: supabaseKey,
@@ -54,33 +47,61 @@ export async function GET() {
       cache: "no-store",
     });
 
-    if (!response.ok) {
-      console.error("Supabase error:", await response.text());
-      return NextResponse.json({
-        registered: false,
-        reason: "db_error",
-      });
+    if (responseByClerkId.ok) {
+      const candidatesByClerkId = await responseByClerkId.json();
+      if (candidatesByClerkId && candidatesByClerkId.length > 0) {
+        const candidate = candidatesByClerkId[0];
+        return NextResponse.json({
+          registered: true,
+          candidate: {
+            id: candidate.id,
+            name: candidate.name,
+            submittedAt: candidate.submitted_at,
+            status: candidate.status,
+          },
+        });
+      }
     }
 
-    const candidates = await response.json();
+    // Fallback: try to find by email
+    if (email) {
+      const urlByEmail = new URL(`${supabaseUrl}/rest/v1/candidates`);
+      urlByEmail.searchParams.set("select", "id,name,submitted_at,status,email");
+      urlByEmail.searchParams.set("email", `eq.${email}`);
+      urlByEmail.searchParams.set("order", "submitted_at.desc");
+      urlByEmail.searchParams.set("limit", "1");
 
-    if (!candidates || candidates.length === 0) {
-      return NextResponse.json({
-        registered: false,
-        reason: "not_found",
+      const responseByEmail = await fetch(urlByEmail.toString(), {
+        method: "GET",
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          Accept: "application/json",
+        },
+        cache: "no-store",
       });
+
+      if (responseByEmail.ok) {
+        const candidatesByEmail = await responseByEmail.json();
+        if (candidatesByEmail && candidatesByEmail.length > 0) {
+          const candidate = candidatesByEmail[0];
+          return NextResponse.json({
+            registered: true,
+            candidate: {
+              id: candidate.id,
+              name: candidate.name,
+              submittedAt: candidate.submitted_at,
+              status: candidate.status,
+            },
+          });
+        }
+      }
     }
 
-    const candidate = candidates[0];
-
+    // No candidate found
     return NextResponse.json({
-      registered: true,
-      candidate: {
-        id: candidate.id,
-        name: candidate.name,
-        submittedAt: candidate.submitted_at,
-        status: candidate.status,
-      },
+      registered: false,
+      reason: "not_found",
     });
   } catch (error) {
     console.error("Candidate status error:", error);

@@ -2,14 +2,19 @@
  * USER APPLICATIONS API
  * Route: /api/user/applications
  *
- * Fetches job applications for the authenticated user from AdminCrew
+ * Fetches job applications for the authenticated user from Supabase
  */
 
 import { NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { logger } from "@/app/lib/logger";
+import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@supabase/supabase-js";
 
 export const runtime = "nodejs";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function GET() {
   try {
@@ -22,42 +27,42 @@ export async function GET() {
       );
     }
 
-    // Get user email
-    const user = await currentUser();
-    const email = user?.primaryEmailAddress?.emailAddress;
+    // Try to fetch job applications from Supabase
+    const { data: applications, error } = await supabase
+      .from("job_applications")
+      .select(`
+        id,
+        status,
+        created_at,
+        updated_at,
+        job_posting:job_postings (
+          id,
+          title,
+          company_name,
+          location
+        )
+      `)
+      .eq("clerk_user_id", userId)
+      .order("created_at", { ascending: false });
 
-    if (!email) {
-      return NextResponse.json(
-        { error: "Ingen e-post funnet" },
-        { status: 400 }
-      );
+    if (error) {
+      // Table doesn't exist yet - return empty array
+      if (error.code === "42P01") {
+        return NextResponse.json({ applications: [] });
+      }
+      // Column doesn't exist - try by email fallback (not implemented for now)
+      if (error.code === "42703") {
+        return NextResponse.json({ applications: [] });
+      }
+      console.error("Job applications fetch error:", error);
+      return NextResponse.json({ applications: [] });
     }
-
-    // Fetch applications from AdminCrew
-    const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no";
-    const res = await fetch(
-      `${adminUrl}/api/job-applications?email=${encodeURIComponent(email)}`,
-      { cache: "no-store" }
-    );
-
-    if (!res.ok) {
-      logger.error("Failed to fetch applications from AdminCrew", { status: res.status });
-      return NextResponse.json(
-        { error: "Kunne ikke hente søknader" },
-        { status: 500 }
-      );
-    }
-
-    const data = await res.json();
 
     return NextResponse.json({
-      applications: data.applications || [],
+      applications: applications || [],
     });
   } catch (err) {
-    logger.error("Error fetching user applications", { error: String(err) });
-    return NextResponse.json(
-      { error: "Noe gikk galt" },
-      { status: 500 }
-    );
+    console.error("Error fetching user applications:", err);
+    return NextResponse.json({ applications: [] });
   }
 }

@@ -387,14 +387,16 @@ export default function MinSidePage() {
           </div>
         </div>
 
-        {/* Applications count */}
+        {/* Applications count - includes candidate registration */}
         <div style={{ ...styles.card, borderColor: "#bfdbfe", marginBottom: 24 }}>
           <div style={styles.cardIcon}>
             <FileText size={24} color="#0369a1" />
           </div>
           <div>
             <div style={styles.cardTitle}>
-              {loadingApplications ? "..." : applications.length} søknad{applications.length !== 1 ? "er" : ""}
+              {loadingApplications || loadingCandidate ? "..." : (
+                applications.length + (isRegistered ? 1 : 0)
+              )} søknad{(applications.length + (isRegistered ? 1 : 0)) !== 1 ? "er" : ""}
             </div>
             <div style={styles.cardSubtext}>Sendt inn</div>
           </div>
