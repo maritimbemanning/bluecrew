@@ -12,7 +12,7 @@ import {
   buildCvPath,
   createCandidateStorageBase,
 } from "../../lib/server/candidate-files";
-import { requireCsrfToken } from "../../lib/server/csrf";
+import { validateCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
 import { getClientIp, esc } from "../../lib/server/utils";
 import { auth, clerkClient } from "@clerk/nextjs/server";
@@ -27,11 +27,14 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    // CSRF Protection
-    try {
-      await requireCsrfToken(req);
-    } catch (error) {
-      logger.error("CSRF validation failed:", error);
+    // Read formData FIRST (body can only be read once!)
+    const formData = await req.formData();
+
+    // CSRF Protection - validate from formData
+    const csrfToken = formData.get("csrf_token") as string | null;
+    const csrfValid = await validateCsrfToken(csrfToken);
+    if (!csrfValid) {
+      logger.error("CSRF validation failed: invalid token");
       return new Response(
         "Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.",
         { status: 403 }
@@ -49,8 +52,6 @@ export async function POST(req: Request) {
 
     // Get Clerk user if logged in
     const { userId: clerkUserId } = await auth();
-
-    const formData = await req.formData();
 
     // Extract form fields
     const name = (formData.get("name") as string || "").trim();
