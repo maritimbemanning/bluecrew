@@ -18,7 +18,7 @@ type SendEmailArgs = {
 };
 
 const resendKey = process.env.RESEND_API_KEY;
-const fromEmail = process.env.RESEND_FROM_EMAIL || "jobb@bluecrew.no";
+const fromEmail = process.env.RESEND_FROM_EMAIL || "post@bluecrew.no";
 const toList = (process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,tf@bluecrew.no")
   .split(",")
   .map((s) => s.trim())
@@ -371,7 +371,7 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
-    replyTo: 'jobb@bluecrew.no',
+    replyTo: 'post@bluecrew.no',
   });
 }
 
@@ -484,6 +484,6 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
-    replyTo: 'jobb@bluecrew.no',
+    replyTo: 'post@bluecrew.no',
   });
 }
