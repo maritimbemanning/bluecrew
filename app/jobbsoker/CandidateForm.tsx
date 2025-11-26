@@ -520,8 +520,10 @@ export default function CandidateContent() {
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      // Final validation
-      if (!validateStep(4)) {
+      // Validate ALL steps before submission
+      const allStepsValid = [1, 2, 3, 4].every((step) => validateStep(step));
+      
+      if (!allStepsValid) {
         setFormError("Kontroller feltene markert i rødt.");
         return;
       }
