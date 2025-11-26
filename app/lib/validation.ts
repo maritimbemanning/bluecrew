@@ -29,9 +29,9 @@ export const candidateSchema = z
     phone: z.string().trim().min(6, "Oppgi telefon"),
     fylke: z.string().trim().min(1, "Velg fylke"),
     kommune: z.string().trim().min(1, "Oppgi kommune"),
-    available_from: z.union([z.string().trim(), z.literal("")]).optional(),
-    skills: z.union([z.string().trim(), z.literal("")]).optional(),
-    other_comp: z.union([z.string().trim(), z.literal("")]).optional(),
+    available_from: z.string().trim().optional(),
+    skills: z.string().trim().optional(),
+    other_comp: z.string().trim().optional(),
     work_main: z.array(z.string()).min(1, "Velg minst ett arbeidsområde"),
     other_notes: z.record(z.string().trim()).optional(),
     wants_temporary: z
