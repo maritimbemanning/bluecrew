@@ -559,6 +559,20 @@ export default function CandidateContent() {
 
   // Success state
   if (submitted) {
+    // Google Ads Conversion Tracking
+    if (typeof window !== "undefined" && (window as typeof window & { gtag?: (...args: unknown[]) => void }).gtag) {
+      (window as typeof window & { gtag: (...args: unknown[]) => void }).gtag('event', 'conversion', {
+        'send_to': 'AW-17731534362/F93uCMSS9MYbEJr8hodC',
+        'value': 1.0,
+        'currency': 'NOK'
+      });
+    }
+
+    // Meta Pixel Lead Tracking
+    if (typeof window !== "undefined" && (window as typeof window & { fbq?: (...args: unknown[]) => void }).fbq) {
+      (window as typeof window & { fbq: (...args: unknown[]) => void }).fbq('track', 'Lead');
+    }
+
     return (
       <div style={ui.successCard} role="status">
         <h2 style={ui.successTitle}>Søknaden er mottatt!</h2>

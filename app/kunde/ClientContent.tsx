@@ -149,21 +149,29 @@ export default function ClientContent() {
       plausible("Lead Submitted", { props: { form: "client" } });
     }
 
-    // Google Ads conversion tracking - disabled until conversion label is configured
-    // TODO: Add conversion label from Google Ads dashboard to enable tracking
-    // const gtag = (
-    //   window as typeof window & {
-    //     gtag?: (...args: unknown[]) => void;
-    //   }
-    // ).gtag;
-    // if (typeof gtag === "function") {
-    //   gtag("event", "conversion", {
-    //     send_to: "AW-17715214678/YOUR_CONVERSION_LABEL",
-    //     value: 1.0,
-    //     currency: "NOK",
-    //     transaction_id: `client_${Date.now()}`,
-    //   });
-    // }
+    // Google Ads conversion tracking
+    const gtag = (
+      window as typeof window & {
+        gtag?: (...args: unknown[]) => void;
+      }
+    ).gtag;
+    if (typeof gtag === "function") {
+      gtag("event", "conversion", {
+        send_to: "AW-17731534362/F93uCMSS9MYbEJr8hodC",
+        value: 1.0,
+        currency: "NOK",
+      });
+    }
+
+    // Meta Pixel Lead Tracking
+    const fbq = (
+      window as typeof window & {
+        fbq?: (...args: unknown[]) => void;
+      }
+    ).fbq;
+    if (typeof fbq === "function") {
+      fbq("track", "Lead");
+    }
   }, [submitted]);
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
