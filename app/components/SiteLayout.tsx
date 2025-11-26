@@ -258,6 +258,42 @@ export function SiteLayout({
 
   return (
     <div style={sx.page}>
+      {/* Skip link for keyboard/screen reader navigation (WCAG 2.4.1) */}
+      <a
+        href="#main-content"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: "auto",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          zIndex: 9999,
+        }}
+        onFocus={(e) => {
+          e.currentTarget.style.left = "16px";
+          e.currentTarget.style.top = "16px";
+          e.currentTarget.style.width = "auto";
+          e.currentTarget.style.height = "auto";
+          e.currentTarget.style.overflow = "visible";
+          e.currentTarget.style.padding = "12px 24px";
+          e.currentTarget.style.background = "#0ea5e9";
+          e.currentTarget.style.color = "white";
+          e.currentTarget.style.borderRadius = "8px";
+          e.currentTarget.style.fontWeight = "600";
+          e.currentTarget.style.textDecoration = "none";
+          e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.left = "-9999px";
+          e.currentTarget.style.width = "1px";
+          e.currentTarget.style.height = "1px";
+          e.currentTarget.style.overflow = "hidden";
+          e.currentTarget.style.padding = "0";
+        }}
+      >
+        Hopp til hovedinnhold
+      </a>
       <header style={sx.topbar} aria-hidden={mobileMenuOpen}>
         <div style={{ ...sx.wrap, ...(isMobile ? sx.wrapMobile : {}) }}>
           <Link
@@ -824,7 +860,7 @@ export function SiteLayout({
         </div>
       </header>
 
-      <main style={sx.main} aria-hidden={mobileMenuOpen}>
+      <main id="main-content" style={sx.main} aria-hidden={mobileMenuOpen}>
         {children}
       </main>
 
