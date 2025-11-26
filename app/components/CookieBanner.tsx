@@ -156,7 +156,7 @@ export default function CookieBanner() {
   }, []);
 
   function acceptAll() {
-    const next: ConsentPrefs = { necessary: true, analytics: true, marketing: false };
+    const next: ConsentPrefs = { necessary: true, analytics: true, marketing: true };
     setConsent(next);
     setPrefs(next);
     setVisible(false);
@@ -172,7 +172,7 @@ export default function CookieBanner() {
   }
 
   function saveCustom() {
-    const next: ConsentPrefs = { necessary: true, analytics: prefs.analytics, marketing: false };
+    const next: ConsentPrefs = { necessary: true, analytics: prefs.analytics, marketing: prefs.marketing };
     setConsent(next);
     setPrefs(next);
     setCustomize(false);
@@ -199,8 +199,8 @@ export default function CookieBanner() {
                 <div style={ui.title}>Vi bruker informasjonskapsler</div>
               </div>
               <p style={{ ...ui.text, marginTop: 8 }}>
-                Vi bruker nødvendige cookies for at nettstedet skal fungere, og statistikk-cookies (Plausible) for å
-                forbedre tjenesten. Les mer i{" "}
+                Vi bruker nødvendige cookies for at nettstedet skal fungere, statistikk-cookies (Plausible) for å
+                forbedre tjenesten, og markedsføring-cookies for annonser. Les mer i{" "}
                 <Link href="/personvern" style={ui.link}>personvernerklæringen</Link> og{" "}
                 <Link href="/cookies" style={ui.link}>cookie-siden</Link>.
               </p>
@@ -217,6 +217,14 @@ export default function CookieBanner() {
                       onChange={(e) => setPrefs((p) => ({ ...p, analytics: e.target.checked }))}
                     />
                     Statistikk (Plausible)
+                  </label>
+                  <label style={ui.toggle}>
+                    <input
+                      type="checkbox"
+                      checked={prefs.marketing}
+                      onChange={(e) => setPrefs((p) => ({ ...p, marketing: e.target.checked }))}
+                    />
+                    Markedsføring (Meta Pixel, Google Ads)
                   </label>
                 </div>
               )}
