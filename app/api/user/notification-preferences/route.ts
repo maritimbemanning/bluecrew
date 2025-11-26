@@ -1,11 +1,25 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
-import { createClient } from "@supabase/supabase-js";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+type NotificationPreferences = {
+  push_enabled: boolean;
+  email_enabled: boolean;
+  new_jobs: boolean;
+  application_updates: boolean;
+  messages: boolean;
+  document_expiry: boolean;
+  assignment_reminders: boolean;
+};
+
+const DEFAULT_PREFS: NotificationPreferences = {
+  push_enabled: false,
+  email_enabled: true,
+  new_jobs: true,
+  application_updates: true,
+  messages: true,
+  document_expiry: true,
+  assignment_reminders: true,
+};
 
 export async function GET() {
   try {
@@ -15,20 +29,14 @@ export async function GET() {
       return NextResponse.json({ error: "Ikke autorisert" }, { status: 401 });
     }
 
-    // Get user's notification preferences
-    const { data, error } = await supabase
-      .from("notification_preferences")
-      .select("*")
-      .eq("clerk_user_id", userId)
-      .single();
+    // Get from Clerk publicMetadata
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const metadata = user.publicMetadata as { notifications?: NotificationPreferences } | undefined;
 
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 = no rows found, which is OK
-      console.error("Error fetching preferences:", error);
-      return NextResponse.json({ error: "Kunne ikke hente innstillinger" }, { status: 500 });
-    }
-
-    return NextResponse.json({ preferences: data || null });
+    return NextResponse.json({
+      preferences: metadata?.notifications || DEFAULT_PREFS
+    });
   } catch (error) {
     console.error("Notification preferences GET error:", error);
     return NextResponse.json({ error: "Serverfeil" }, { status: 500 });
@@ -50,31 +58,27 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Mangler preferanser" }, { status: 400 });
     }
 
-    // Upsert preferences
-    const { error } = await supabase
-      .from("notification_preferences")
-      .upsert({
-        clerk_user_id: userId,
-        push_enabled: preferences.push_enabled ?? false,
-        email_enabled: preferences.email_enabled ?? true,
-        new_jobs: preferences.new_jobs ?? true,
-        application_updates: preferences.application_updates ?? true,
-        messages: preferences.messages ?? true,
-        document_expiry: preferences.document_expiry ?? true,
-        assignment_reminders: preferences.assignment_reminders ?? true,
-        updated_at: new Date().toISOString(),
-      }, {
-        onConflict: "clerk_user_id",
-      });
+    // Get current metadata
+    const client = await clerkClient();
+    const user = await client.users.getUser(userId);
+    const currentMetadata = user.publicMetadata || {};
 
-    if (error) {
-      // If table doesn't exist, just return success (preferences saved client-side)
-      if (error.code === "42P01") {
-        return NextResponse.json({ success: true, note: "Table not yet created" });
-      }
-      console.error("Error saving preferences:", error);
-      return NextResponse.json({ error: "Kunne ikke lagre innstillinger" }, { status: 500 });
-    }
+    // Update Clerk publicMetadata with notifications
+    await client.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        ...currentMetadata,
+        notifications: {
+          push_enabled: preferences.push_enabled ?? false,
+          email_enabled: preferences.email_enabled ?? true,
+          new_jobs: preferences.new_jobs ?? true,
+          application_updates: preferences.application_updates ?? true,
+          messages: preferences.messages ?? true,
+          document_expiry: preferences.document_expiry ?? true,
+          assignment_reminders: preferences.assignment_reminders ?? true,
+          updated_at: new Date().toISOString(),
+        },
+      },
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
