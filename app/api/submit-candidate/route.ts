@@ -35,9 +35,12 @@ export async function POST(req: Request) {
       await requireCsrfToken(req);
     } catch (error) {
       logger.error("CSRF validation failed:", error);
-      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
-        status: 403,
-      });
+      return new Response(
+        "Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.",
+        {
+          status: 403,
+        }
+      );
     }
 
     const rateKey = getClientKey(req, "candidate");
@@ -51,13 +54,17 @@ export async function POST(req: Request) {
 
     // 🎯 CLERK PRO: Get current user if logged in
     const { userId: clerkUserId } = await auth();
-    logger.debug("📝 Processing candidate submission...", { clerkUserId: clerkUserId || "anonymous" });
+    logger.debug("📝 Processing candidate submission...", {
+      clerkUserId: clerkUserId || "anonymous",
+    });
     const formData = await req.formData();
     const { values, files } = extractCandidateForm(formData);
 
     logger.debug("📋 Form values:", {
       name: values.name,
       email: values.email,
+      fylke: values.fylke,
+      kommune: values.kommune,
       workAreasCount: values.work_main?.length || 0,
       hasCV: !!files.cv,
       hasCerts: !!files.certs,
@@ -109,7 +116,10 @@ export async function POST(req: Request) {
       const lowerCertsName = (certsFile.name || "sertifikater").toLowerCase();
 
       if (!allowed.some((ext) => lowerCertsName.endsWith(ext))) {
-        logger.error("❌ Certificate file has invalid extension:", lowerCertsName);
+        logger.error(
+          "❌ Certificate file has invalid extension:",
+          lowerCertsName
+        );
         return new Response(
           "FEIL: Sertifikater må være PDF, ZIP eller DOC/DOCX",
           { status: 400 }
@@ -271,7 +281,10 @@ export async function POST(req: Request) {
       logger.error("❌ Sendefeil (candidate):", emailResult.reason);
     }
     if (receiptResult.status === "rejected") {
-      logger.error("⚠️ Sendte ikke kvittering (candidate):", receiptResult.reason);
+      logger.error(
+        "⚠️ Sendte ikke kvittering (candidate):",
+        receiptResult.reason
+      );
     }
 
     // 🎯 CLERK PRO: Update user metadata with candidate registration status
@@ -288,7 +301,9 @@ export async function POST(req: Request) {
             candidate_kommune: data.kommune || null,
           },
         });
-        logger.success("✅ Candidate status stored in Clerk metadata", { clerkUserId });
+        logger.success("✅ Candidate status stored in Clerk metadata", {
+          clerkUserId,
+        });
       } catch (clerkError) {
         logger.error("⚠️ Failed to update Clerk metadata:", clerkError);
       }
