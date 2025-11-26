@@ -167,7 +167,7 @@ export default function RootLayout({
     >
       <html lang="no">
         <head>
-          <title>Bluecrew AS – Maritim bemanning i Norge</title>
+          {/* Title is set via metadata export - do not hardcode here */}
           {/* Preload critical images for faster LCP */}
           <link
             rel="preload"
