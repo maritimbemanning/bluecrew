@@ -33,6 +33,7 @@ import {
   MapPin,
   Calendar,
   BadgeCheck,
+  Bell,
 } from "lucide-react";
 import { useUser, SignOutButton, UserButton } from "@clerk/nextjs";
 import { ADMIN_EMAILS } from "@/app/lib/admin-config";
@@ -452,6 +453,16 @@ export default function MinSidePage() {
             <div style={styles.portalLinkContent}>
               <div style={styles.portalLinkTitle}>Mine oppdrag</div>
               <div style={styles.portalLinkDesc}>Kalender og arbeidsoppdrag</div>
+            </div>
+            <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
+          </Link>
+          <Link href="/min-side/varsler" style={styles.portalLink}>
+            <div style={{ ...styles.portalLinkIcon, background: "#fef2f2" }}>
+              <Bell size={20} color="#dc2626" />
+            </div>
+            <div style={styles.portalLinkContent}>
+              <div style={styles.portalLinkTitle}>Varslinger</div>
+              <div style={styles.portalLinkDesc}>Push og e-postvarsler</div>
             </div>
             <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
           </Link>
