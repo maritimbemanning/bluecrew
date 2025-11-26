@@ -518,9 +518,6 @@ export default function CandidateContent() {
         setFormError("Kontroller feltene markert i rødt.");
         // Show specific error in console for debugging
         console.error("Field errors:", nextErrors);
-
-        // Show alert for debugging in production
-        alert(`Validation error: ${JSON.stringify(nextErrors)}`);
         return;
       }
 
