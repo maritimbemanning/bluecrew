@@ -317,24 +317,16 @@ export default function CandidateContent() {
             : null
         );
       } else {
-        // Skip redirect in development
-        const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
-        if (!isDevelopment) {
-          router.push("/jobbsoker/registrer");
-          return;
-        }
-        // In development, show warning but allow form
-        setStatusMessage("⚠️ UTVIKLINGSMODUS: Vipps-verifisering er deaktivert");
+        // TEMPORARILY ALLOW FORM WITHOUT VIPPS - PRODUCTION FIX
+        console.warn("Vipps session not found - allowing form submission temporarily");
+        setStatusMessage("ℹ️ Vipps-verifisering er midlertidig deaktivert");
+        // DO NOT REDIRECT - Let users fill out the form
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      // Skip redirect in development
-      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
-      if (!isDevelopment) {
-        router.push("/jobbsoker/registrer");
-        return;
-      }
-      setStatusMessage("⚠️ UTVIKLINGSMODUS: Vipps-verifisering er deaktivert");
+      // TEMPORARILY ALLOW FORM WITHOUT VIPPS - PRODUCTION FIX
+      setStatusMessage("ℹ️ Vipps-verifisering er midlertidig deaktivert");
+      // DO NOT REDIRECT - Let users fill out the form
     } finally {
       setCheckingSession(false);
     }
@@ -524,13 +516,15 @@ export default function CandidateContent() {
         return;
       }
 
-      // Vipps verification check - skip in development
-      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
-      if (!vippsSession && !isDevelopment) {
+      // Vipps verification check - TEMPORARILY DISABLED FOR PRODUCTION FIX
+      // TODO: Re-enable when Vipps/Redis is properly configured
+      /*
+      if (!vippsSession) {
         setFormError("Du må verifisere identiteten din med Vipps først.");
         router.push("/jobbsoker/registrer");
         return;
       }
+      */
 
       setFieldErrors({});
       setFileErrors({});
