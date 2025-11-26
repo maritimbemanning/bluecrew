@@ -14,7 +14,13 @@ import {
 } from "../../lib/server/candidate-files";
 import { validateCsrfToken } from "../../lib/server/csrf";
 import { logger } from "../../lib/logger";
-import { getClientIp, esc } from "../../lib/server/utils";
+import {
+  getClientIp,
+  esc,
+  validateFileUpload,
+  normalizeEmail,
+  isValidNorwegianPhone,
+} from "../../lib/server/utils";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export const runtime = "nodejs";
@@ -55,7 +61,8 @@ export async function POST(req: Request) {
 
     // Extract form fields
     const name = (formData.get("name") as string || "").trim();
-    const email = (formData.get("email") as string || "").trim();
+    const rawEmail = (formData.get("email") as string || "").trim();
+    const email = normalizeEmail(rawEmail); // Normalize to lowercase
     const phone = (formData.get("phone") as string || "").trim();
     const fylke = (formData.get("fylke") as string || "").trim();
     const skills = (formData.get("skills") as string || "").trim();
@@ -75,21 +82,24 @@ export async function POST(req: Request) {
     const errors: string[] = [];
     if (!name || name.length < 2) errors.push("Oppgi fullt navn");
     if (!email || !email.includes("@")) errors.push("Oppgi gyldig e-post");
-    if (!phone || phone.length < 6) errors.push("Oppgi telefonnummer");
+    if (!phone) {
+      errors.push("Oppgi telefonnummer");
+    } else if (!isValidNorwegianPhone(phone)) {
+      errors.push("Oppgi gyldig norsk telefonnummer (8 siffer)");
+    }
     if (!fylke) errors.push("Velg fylke");
     if (!skills || skills.length < 10) errors.push("Beskriv din erfaring");
     if (!stcwConfirm) errors.push("Bekreft STCW og helseattest");
     if (!gdpr) errors.push("Samtykke til personvern er påkrevd");
 
-    // CV validation
-    if (!cvFile || typeof cvFile === "string") {
-      errors.push("CV (PDF) er påkrevd");
-    } else if (cvFile.size === 0) {
-      errors.push("CV-filen er tom");
-    } else if (!cvFile.name.toLowerCase().endsWith(".pdf")) {
-      errors.push("CV må være PDF");
-    } else if (cvFile.size > 10 * 1024 * 1024) {
-      errors.push("CV for stor (maks 10 MB)");
+    // CV validation with magic bytes check
+    const cvValidation = await validateFileUpload(cvFile, {
+      required: true,
+      maxSizeMB: 10,
+      allowedTypes: ["pdf"],
+    });
+    if (!cvValidation.isValid) {
+      errors.push(cvValidation.error || "CV-validering feilet");
     }
 
     if (errors.length > 0) {
