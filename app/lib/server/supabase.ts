@@ -319,3 +319,29 @@ export async function listSupabaseObjects(options: {
     .map((item) => (typeof item?.name === "string" ? item.name : null))
     .filter((name): name is string => !!name);
 }
+
+export async function updateSupabaseRow(options: {
+  table: string;
+  id: string;
+  data: Record<string, unknown>;
+}): Promise<void> {
+  const { url, serviceRoleKey } = getConfig();
+  const requestUrl = new URL(`${url}/rest/v1/${options.table}`);
+  requestUrl.searchParams.set("id", `eq.${options.id}`);
+
+  const response = await fetchWithTimeout(requestUrl, {
+    method: "PATCH",
+    headers: {
+      ...buildHeaders(serviceRoleKey),
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(options.data),
+    timeoutMs: 10000,
+    retries: 1,
+  });
+
+  if (!response.ok) {
+    const message = await extractErrorMessage(response);
+    throw new Error(message);
+  }
+}
