@@ -167,6 +167,19 @@ export default function RootLayout({
       <html lang="no">
         <head>
           <title>Bluecrew AS – Maritim bemanning i Norge</title>
+          {/* Preload critical images for faster LCP */}
+          <link
+            rel="preload"
+            href="/hero/maritime-hero.jpeg"
+            as="image"
+            type="image/jpeg"
+          />
+          <link
+            rel="preload"
+            href="/hero/skipper-matros-lonn.webp"
+            as="image"
+            type="image/webp"
+          />
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="icon" href="/icon.png" sizes="16x16" type="image/png" />
@@ -175,10 +188,10 @@ export default function RootLayout({
           <link rel="icon" href="/icon.png" sizes="192x192" type="image/png" />
           <link rel="apple-touch-icon" href="/logo.png" />
           <link rel="apple-touch-icon" sizes="180x180" href="/logo.png" />
-          {/* Meta Pixel */}
+          {/* Meta Pixel - lazyOnload for performance */}
           <Script
             id="meta-pixel"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 !function(f,b,e,v,n,t,s)
@@ -203,14 +216,14 @@ export default function RootLayout({
               alt=""
             />
           </noscript>
-          {/* Google Ads */}
+          {/* Google Ads - lazyOnload for performance */}
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
           <Script
             id="google-ads-init"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
