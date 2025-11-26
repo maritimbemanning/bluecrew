@@ -1,11 +1,12 @@
 /**
- * API: Fetch all registered candidates (Admin only)
- * Returns candidates list with signed file URLs
+ * API: Fetch and manage registered candidates (Admin only)
+ * GET - Returns candidates list with signed file URLs
+ * PATCH - Update candidate status
  */
 
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
-import { selectSupabaseRows, createSupabaseSignedUrl } from "@/app/lib/server/supabase";
+import { selectSupabaseRows, createSupabaseSignedUrl, updateSupabaseRow } from "@/app/lib/server/supabase";
 import { isAdminUser } from "@/app/lib/admin";
 
 export const runtime = "nodejs";
@@ -92,5 +93,66 @@ export async function GET() {
   } catch (error) {
     console.error("Admin candidates error:", error);
     return NextResponse.json({ error: "Intern feil" }, { status: 500 });
+  }
+}
+
+// Valid status values
+const VALID_STATUSES = ["new", "pending", "reviewed", "contacted", "interview", "offer", "hired", "rejected", "withdrawn"];
+
+// PATCH - Update candidate status
+export async function PATCH(req: Request) {
+  try {
+    // Check authentication
+    const user = await currentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Ikke innlogget" }, { status: 401 });
+    }
+
+    // Check admin access
+    const role = (user.publicMetadata as { role?: string })?.role;
+    const userEmail = user.emailAddresses[0]?.emailAddress?.toLowerCase();
+    const isAdmin = isAdminUser(userEmail, role);
+
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Ingen tilgang" }, { status: 403 });
+    }
+
+    const body = await req.json();
+    const { candidateId, status, notes } = body;
+
+    if (!candidateId) {
+      return NextResponse.json({ error: "Mangler kandidat-ID" }, { status: 400 });
+    }
+
+    if (status && !VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: "Ugyldig status" }, { status: 400 });
+    }
+
+    // Build update data
+    const updateData: Record<string, unknown> = {};
+    if (status) {
+      updateData.status = status;
+      updateData.status_updated_at = new Date().toISOString();
+      updateData.status_updated_by = userEmail;
+    }
+    if (notes !== undefined) {
+      updateData.admin_notes = notes;
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ error: "Ingen data å oppdatere" }, { status: 400 });
+    }
+
+    await updateSupabaseRow({
+      table: "candidates",
+      id: candidateId,
+      data: updateData,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Admin candidate update error:", error);
+    return NextResponse.json({ error: "Kunne ikke oppdatere kandidat" }, { status: 500 });
   }
 }

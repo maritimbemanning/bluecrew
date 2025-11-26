@@ -301,19 +301,6 @@ export default function MinSidePage() {
           </div>
         </div>
 
-        {/* Vipps Verification Badge (if verified) */}
-        {isVippsVerified && (
-          <div style={styles.vippsBadge}>
-            <BadgeCheck size={20} color="#16a34a" />
-            <span>Vipps-verifisert identitet</span>
-            {vippsVerifiedAt && (
-              <span style={styles.vippsBadgeDate}>
-                {formatDate(vippsVerifiedAt)}
-              </span>
-            )}
-          </div>
-        )}
-
         {/* Status cards */}
         <div style={styles.cardGrid}>
           {/* Registration status */}
@@ -341,7 +328,7 @@ export default function MinSidePage() {
                         {statusLabels[candidateStatusFromClerk]?.label || candidateStatusFromClerk}
                       </span>
                     )}
-                    {!candidateStatusFromClerk && candidateStatus.candidate?.submittedAt
+                    {!candidateStatusFromClerk && candidateStatus?.candidate?.submittedAt
                       ? formatDate(candidateStatus.candidate.submittedAt)
                       : ""}
                   </div>
@@ -360,41 +347,53 @@ export default function MinSidePage() {
             )}
           </div>
 
-          {/* Vipps verification status */}
-          <div style={{
-            ...styles.card,
-            borderColor: isVippsVerified ? "#86efac" : "#e2e8f0",
-          }}>
-            <div style={styles.cardIcon}>
-              {isVippsVerified ? (
-                <BadgeCheck size={24} color="#16a34a" />
-              ) : (
+          {/* Vipps verification status - only shown if NOT verified */}
+          {!isVippsVerified ? (
+            <div style={{
+              ...styles.card,
+              borderColor: "#e2e8f0",
+            }}>
+              <div style={styles.cardIcon}>
                 <Shield size={24} color="#94a3b8" />
-              )}
-            </div>
-            <div>
-              <div style={styles.cardTitle}>
-                {isVippsVerified ? "ID-verifisert" : "Ikke verifisert"}
               </div>
-              <div style={styles.cardSubtext}>
-                {isVippsVerified ? "Vipps BankID" : (
+              <div>
+                <div style={styles.cardTitle}>Ikke verifisert</div>
+                <div style={styles.cardSubtext}>
                   <Link href="/api/vipps/start" style={{ color: "#0369a1", textDecoration: "underline" }}>
                     Verifiser med Vipps
                   </Link>
-                )}
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div style={{
+              ...styles.card,
+              borderColor: "#86efac",
+              background: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)",
+            }}>
+              <div style={styles.cardIcon}>
+                <BadgeCheck size={24} color="#16a34a" />
+              </div>
+              <div>
+                <div style={styles.cardTitle}>Vipps-verifisert</div>
+                <div style={styles.cardSubtext}>
+                  {vippsVerifiedAt ? formatDate(vippsVerifiedAt) : "BankID"}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Applications count */}
+        {/* Applications count - includes candidate registration */}
         <div style={{ ...styles.card, borderColor: "#bfdbfe", marginBottom: 24 }}>
           <div style={styles.cardIcon}>
             <FileText size={24} color="#0369a1" />
           </div>
           <div>
             <div style={styles.cardTitle}>
-              {loadingApplications ? "..." : applications.length} søknad{applications.length !== 1 ? "er" : ""}
+              {loadingApplications || loadingCandidate ? "..." : (
+                applications.length + (isRegistered ? 1 : 0)
+              )} søknad{(applications.length + (isRegistered ? 1 : 0)) !== 1 ? "er" : ""}
             </div>
             <div style={styles.cardSubtext}>Sendt inn</div>
           </div>
@@ -666,6 +665,44 @@ export default function MinSidePage() {
                             <MapPin size={14} /> {cand.fylke}{cand.kommune ? `, ${cand.kommune}` : ""}
                           </span>
                         )}
+                      </div>
+                      {/* Status dropdown */}
+                      <div style={styles.adminStatusRow}>
+                        <label style={styles.adminStatusLabel}>Status:</label>
+                        <select
+                          value={cand.status || "pending"}
+                          onChange={async (e) => {
+                            const newStatus = e.target.value;
+                            try {
+                              const res = await fetch("/api/admin/candidates", {
+                                method: "PATCH",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ candidateId: cand.id, status: newStatus }),
+                              });
+                              if (res.ok) {
+                                // Update local state
+                                setAdminCandidates(prev =>
+                                  prev.map(c => c.id === cand.id ? { ...c, status: newStatus } : c)
+                                );
+                              } else {
+                                alert("Kunne ikke oppdatere status");
+                              }
+                            } catch {
+                              alert("Feil ved oppdatering");
+                            }
+                          }}
+                          style={styles.adminStatusSelect}
+                        >
+                          <option value="pending">Venter</option>
+                          <option value="new">Ny</option>
+                          <option value="reviewed">Under vurdering</option>
+                          <option value="contacted">Kontaktet</option>
+                          <option value="interview">Til intervju</option>
+                          <option value="offer">Tilbud sendt</option>
+                          <option value="hired">Ansatt</option>
+                          <option value="rejected">Avslått</option>
+                          <option value="withdrawn">Trukket</option>
+                        </select>
                       </div>
                       <div style={styles.adminItemActions}>
                         {cand.cvUrl && (
@@ -1073,26 +1110,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 4,
     marginLeft: 8,
   },
-  // 🎯 CLERK PRO: Vipps verification badge styles
-  vippsBadge: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    padding: "12px 16px",
-    background: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)",
-    border: "1px solid #86efac",
-    borderRadius: 12,
-    marginBottom: 16,
-    fontSize: 14,
-    fontWeight: 600,
-    color: "#166534",
-  },
-  vippsBadgeDate: {
-    marginLeft: "auto",
-    fontSize: 12,
-    fontWeight: 400,
-    color: "#15803d",
-  },
   clerkStatusBadge: {
     display: "inline-flex",
     alignItems: "center",
@@ -1101,5 +1118,30 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 6,
     fontSize: 12,
     fontWeight: 600,
+  },
+  // Admin status dropdown styles
+  adminStatusRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    padding: "10px 0",
+    borderTop: "1px solid #e2e8f0",
+    marginTop: 10,
+  },
+  adminStatusLabel: {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#475569",
+  },
+  adminStatusSelect: {
+    padding: "8px 12px",
+    borderRadius: 8,
+    border: "2px solid #e2e8f0",
+    background: "#fff",
+    fontSize: 13,
+    fontWeight: 500,
+    cursor: "pointer",
+    outline: "none",
+    transition: "border-color 0.2s",
   },
 };
