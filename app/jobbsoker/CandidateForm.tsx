@@ -396,10 +396,14 @@ export default function CandidateContent() {
       const name = String(formData.get("name") || "").trim();
       const email = String(formData.get("email") || "").trim();
       const phone = String(formData.get("phone") || "").trim();
+      const fylke = String(formData.get("fylke") || "").trim();
+      const kommune = String(formData.get("kommune") || "").trim();
 
       if (!name || name.length < 2) nextErrors.name = "Oppgi fullt navn";
       if (!email || !email.includes("@")) nextErrors.email = "Oppgi gyldig e-post";
       if (!phone || phone.length < 6) nextErrors.phone = "Oppgi telefonnummer";
+      if (!fylke) nextErrors.fylke = "Velg fylke";
+      if (!kommune) nextErrors.kommune = "Oppgi kommune";
     }
 
     if (step === 2) {
