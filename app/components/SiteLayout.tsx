@@ -314,11 +314,8 @@ export function SiteLayout({
           </Link>
           {/* Desktop navigation - med dropdowns */}
           <nav
-            style={{
-              ...sx.nav,
-              gap: 24,
-              ...(isMobile ? { display: "none" } : {}),
-            }}
+            className="desktopNav"
+            style={sx.nav}
             aria-label="Hovedmeny"
           >
             {NAV_ITEMS.map((item) => {
@@ -427,8 +424,7 @@ export function SiteLayout({
           </nav>
 
           {/* Desktop-only right cluster: CTA buttons */}
-          {!isMobile && (
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            <div className="desktopCta">
               <Link
                 href="/lonn/kalkulator"
                 style={{
@@ -494,6 +490,7 @@ export function SiteLayout({
               </Link>
               <Link
                 href={isSignedIn ? "/min-side" : "/logg-inn"}
+                className="authButton"
                 style={{
                   padding: "12px 20px",
                   background: isSignedIn
@@ -523,10 +520,9 @@ export function SiteLayout({
                 {isSignedIn ? "Min side" : "Logg inn"}
               </Link>
             </div>
-          )}
 
           {/* Mobile menu trigger */}
-          <div style={{ display: isMobile ? "block" : "none" }}>
+          <div className="mobileMenuTrigger">
             <button
               type="button"
               onClick={openMobileMenu}

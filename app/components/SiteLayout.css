@@ -189,6 +189,50 @@
   opacity: 1;
 }
 
+/* ========================================
+   CLS FIX: CSS-based responsive navigation
+   Prevents layout shift from JS-based isMobile state
+   ======================================== */
+
+/* Desktop navigation - visible by default, hidden on mobile */
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Desktop CTA cluster - visible by default, hidden on mobile */
+.desktopCta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Mobile menu button - hidden by default, shown on mobile */
+.mobileMenuTrigger {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktopNav {
+    display: none !important;
+  }
+
+  .desktopCta {
+    display: none !important;
+  }
+
+  .mobileMenuTrigger {
+    display: block !important;
+  }
+}
+
+/* Auth button - fixed width to prevent CLS when text changes */
+.authButton {
+  min-width: 120px;
+  justify-content: center;
+}
+
 /* Premium compact button - 'Meld interesse' */
 .microBtn{
   display: inline-flex;
