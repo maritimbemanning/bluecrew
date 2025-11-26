@@ -520,11 +520,20 @@ export default function CandidateContent() {
     async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      // Validate ALL steps before submission
-      const allStepsValid = [1, 2, 3, 4].every((step) => validateStep(step));
+      // Validate ALL steps and find first failing step
+      let firstFailedStep: number | null = null;
+      for (let step = 1; step <= 4; step++) {
+        if (!validateStep(step)) {
+          if (firstFailedStep === null) {
+            firstFailedStep = step;
+          }
+        }
+      }
 
-      if (!allStepsValid) {
+      if (firstFailedStep !== null) {
         setFormError("Kontroller feltene markert i rødt.");
+        setCurrentStep(firstFailedStep); // GO BACK TO FAILED STEP
+        window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
 
