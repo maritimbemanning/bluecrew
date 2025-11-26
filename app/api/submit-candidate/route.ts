@@ -250,13 +250,12 @@ export async function POST(req: Request) {
           work_main: data.work_main ?? [],
           skills: data.skills || null,
           other_comp: data.other_comp || null,
-          other_notes: data.other_notes || null,
           cv_key: cvPath,
           certs_key: certificatePath,
           submitted_at: submittedAt,
           source_ip: getClientIp(req),
           status: "pending",
-          clerk_user_id: clerkUserId || null, // 🎯 CLERK PRO: Link to Clerk user
+          clerk_user_id: clerkUserId || null,
         },
       }),
       sendNotificationEmail({

@@ -257,7 +257,6 @@ async function handleUserDeleted(data: WebhookEvent["data"]) {
       status: "deleted",
       skills: null,
       other_comp: null,
-      other_notes: null,
     }
   );
 
