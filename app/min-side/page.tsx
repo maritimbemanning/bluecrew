@@ -435,6 +435,16 @@ export default function MinSidePage() {
             </div>
             <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
           </Link>
+          <Link href="/min-side/meldinger" style={styles.portalLink}>
+            <div style={styles.portalLinkIcon}>
+              <Mail size={20} color="#059669" />
+            </div>
+            <div style={styles.portalLinkContent}>
+              <div style={styles.portalLinkTitle}>Meldinger</div>
+              <div style={styles.portalLinkDesc}>Chat med Bluecrew</div>
+            </div>
+            <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
+          </Link>
         </div>
 
         {/* Applications dropdown */}
