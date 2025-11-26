@@ -413,6 +413,20 @@ export default function MinSidePage() {
           </Link>
         )}
 
+        {/* Portal quick links */}
+        <div style={styles.portalLinks}>
+          <Link href="/min-side/soknader" style={styles.portalLink}>
+            <div style={styles.portalLinkIcon}>
+              <FileText size={20} color="#0369a1" />
+            </div>
+            <div style={styles.portalLinkContent}>
+              <div style={styles.portalLinkTitle}>Mine søknader</div>
+              <div style={styles.portalLinkDesc}>Se status og tidslinje</div>
+            </div>
+            <ChevronDown size={18} color="#94a3b8" style={{ transform: "rotate(-90deg)" }} />
+          </Link>
+        </div>
+
         {/* Applications dropdown */}
         <div style={styles.applicationsSection}>
           <button
@@ -421,7 +435,7 @@ export default function MinSidePage() {
           >
             <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <FileText size={18} />
-              Mine søknader ({applications.length})
+              Siste søknader ({applications.length})
             </span>
             {applicationsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
@@ -822,6 +836,48 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#64748b",
     fontSize: 14,
     textDecoration: "none",
+  },
+  // Portal links
+  portalLinks: {
+    display: "flex",
+    flexDirection: "column" as const,
+    gap: 8,
+    marginBottom: 24,
+  },
+  portalLink: {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "16px 18px",
+    background: "#fff",
+    border: "1px solid #e2e8f0",
+    borderRadius: 12,
+    textDecoration: "none",
+    color: "inherit",
+    transition: "border-color 0.2s, box-shadow 0.2s",
+  },
+  portalLinkIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 10,
+    background: "#f0f9ff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  },
+  portalLinkContent: {
+    flex: 1,
+  },
+  portalLinkTitle: {
+    fontWeight: 600,
+    fontSize: 15,
+    color: "#0f172a",
+  },
+  portalLinkDesc: {
+    fontSize: 13,
+    color: "#64748b",
+    marginTop: 2,
   },
   // Admin styles
   adminSection: {
