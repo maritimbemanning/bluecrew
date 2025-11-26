@@ -9,7 +9,10 @@
 import { NextResponse } from "next/server";
 import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { sendNotificationEmail } from "../../lib/server/email";
-import { uploadSupabaseObject, insertSupabaseRow } from "../../lib/server/supabase";
+import {
+  uploadSupabaseObject,
+  insertSupabaseRow,
+} from "../../lib/server/supabase";
 import { logger } from "../../lib/logger";
 import { createHash } from "node:crypto";
 import { getClientIp, escapeHtml as escHtml } from "../../lib/server/utils";
@@ -46,7 +49,10 @@ export async function POST(req: Request) {
     if (!rate.allowed) {
       return NextResponse.json(
         { error: "For mange forespørsler. Prøv igjen senere." },
-        { status: 429, headers: { "Retry-After": String(rate.resetSeconds || 60) } }
+        {
+          status: 429,
+          headers: { "Retry-After": String(rate.resetSeconds || 60) },
+        }
       );
     }
 
@@ -56,21 +62,26 @@ export async function POST(req: Request) {
 
     // Extract form fields
     const applicationData: ApplicationData = {
-      job_id: formData.get("job_id") as string || "",
-      job_title: formData.get("job_title") as string || "",
-      job_company: formData.get("job_company") as string || "",
-      job_location: formData.get("job_location") as string || "",
-      name: formData.get("name") as string || "",
-      email: formData.get("email") as string || "",
-      phone: formData.get("phone") as string || "",
-      cover_letter: formData.get("cover_letter") as string || "",
+      job_id: (formData.get("job_id") as string) || "",
+      job_title: (formData.get("job_title") as string) || "",
+      job_company: (formData.get("job_company") as string) || "",
+      job_location: (formData.get("job_location") as string) || "",
+      name: (formData.get("name") as string) || "",
+      email: (formData.get("email") as string) || "",
+      phone: (formData.get("phone") as string) || "",
+      cover_letter: (formData.get("cover_letter") as string) || "",
       vipps_verified: formData.get("vipps_verified") === "true",
-      vipps_sub: formData.get("vipps_sub") as string || undefined,
-      vipps_verified_at: formData.get("vipps_verified_at") as string || undefined,
+      vipps_sub: (formData.get("vipps_sub") as string) || undefined,
+      vipps_verified_at:
+        (formData.get("vipps_verified_at") as string) || undefined,
     };
 
     // Validate required fields
-    if (!applicationData.name || !applicationData.email || !applicationData.job_title) {
+    if (
+      !applicationData.name ||
+      !applicationData.email ||
+      !applicationData.job_title
+    ) {
       return NextResponse.json(
         { error: "Mangler påkrevde felt (navn, e-post, stilling)" },
         { status: 400 }
@@ -109,7 +120,9 @@ export async function POST(req: Request) {
       // Create storage path
       const submittedAt = new Date().toISOString();
       const storageBase = createHash("sha256")
-        .update(`${applicationData.email.toLowerCase()}|${submittedAt}|job-application`)
+        .update(
+          `${applicationData.email.toLowerCase()}|${submittedAt}|job-application`
+        )
         .digest("hex");
       cvPath = `job-applications/${storageBase}.pdf`;
 
@@ -153,7 +166,9 @@ export async function POST(req: Request) {
       });
       logger.info("✅ Job application stored in local database");
     } catch (error) {
-      logger.error("❌ Failed to store job application in local database", { error: String(error) });
+      logger.error("❌ Failed to store job application in local database", {
+        error: String(error),
+      });
     }
 
     // Sync to AdminCrew
@@ -235,12 +250,16 @@ Job ID: ${applicationData.job_id}
     </table>
   </div>
 
-  ${applicationData.cover_letter ? `
+  ${
+    applicationData.cover_letter
+      ? `
   <div style="margin-bottom: 16px;">
     <h3 style="margin: 0 0 8px; color: #0369a1;">Søknadstekst</h3>
     <p style="margin: 0; white-space: pre-wrap; background: #fff; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px;">${escHtml(applicationData.cover_letter)}</p>
   </div>
-  ` : ""}
+  `
+      : ""
+  }
 
   <p style="margin: 24px 0 0; padding-top: 16px; border-top: 1px solid #e2e8f0; color: #94a3b8; font-size: 12px;">
     Mottatt: ${submittedAt}<br>
@@ -250,7 +269,11 @@ Job ID: ${applicationData.job_id}
 `.trim();
 
     // Prepare attachments
-    const attachments: { filename: string; content: string; contentType?: string }[] = [];
+    const attachments: {
+      filename: string;
+      content: string;
+      contentType?: string;
+    }[] = [];
     if (cvBuffer) {
       attachments.push({
         filename: `CV_${applicationData.name.replace(/\s+/g, "_")}.pdf`,
@@ -269,29 +292,39 @@ Job ID: ${applicationData.job_id}
         attachments,
       });
       if (emailResult) {
-        logger.info("✅ Email notification sent", { emailId: (emailResult as { data?: { id?: string } }).data?.id });
+        logger.info("✅ Email notification sent", {
+          emailId: (emailResult as { data?: { id?: string } }).data?.id,
+        });
       } else {
         logger.warn("⚠️ Email not sent - check RESEND_API_KEY configuration");
       }
     } catch (emailErr) {
-      logger.error("❌ Failed to send email notification", { error: String(emailErr) });
+      logger.error("❌ Failed to send email notification", {
+        error: String(emailErr),
+      });
       // Continue - application is stored, email failure shouldn't block submission
     }
 
     // Send confirmation email to applicant
     try {
-      const { sendApplicationStatusUpdate } = await import("../../lib/server/email");
+      const { sendApplicationStatusUpdate } = await import(
+        "../../lib/server/email"
+      );
       const confirmResult = await sendApplicationStatusUpdate({
         name: applicationData.name,
         email: applicationData.email,
         jobTitle: applicationData.job_title,
-        status: 'reviewed',
+        status: "reviewed",
       });
       if (confirmResult) {
-        logger.info("✅ Confirmation email sent to applicant", { email: applicationData.email });
+        logger.info("✅ Confirmation email sent to applicant", {
+          email: applicationData.email,
+        });
       }
     } catch (confirmErr) {
-      logger.error("❌ Failed to send confirmation email to applicant", { error: String(confirmErr) });
+      logger.error("❌ Failed to send confirmation email to applicant", {
+        error: String(confirmErr),
+      });
       // Continue - don't block on confirmation email failure
     }
 
@@ -305,7 +338,6 @@ Job ID: ${applicationData.job_id}
       success: true,
       message: "Søknaden er sendt!",
     });
-
   } catch (err: unknown) {
     logger.error("❌ Error processing job application", err);
     return NextResponse.json(
@@ -314,4 +346,3 @@ Job ID: ${applicationData.job_id}
     );
   }
 }
-

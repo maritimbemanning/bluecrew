@@ -18,7 +18,7 @@ type SendEmailArgs = {
 };
 
 const resendKey = process.env.RESEND_API_KEY;
-const fromEmail = process.env.RESEND_FROM_EMAIL || "no-reply@send.bluecrew.no";
+const fromEmail = process.env.RESEND_FROM_EMAIL || "jobb@bluecrew.no";
 const toList = (process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,tf@bluecrew.no")
   .split(",")
   .map((s) => s.trim())
@@ -345,7 +345,7 @@ Bluecrew-teamet`;
 
   const html = `
   <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-    <div style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;padding:24px;border-radius:8px 8px 0 0">
+    <div style="background:linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);color:white;padding:24px;border-radius:8px 8px 0 0">
       <h1 style="margin:0;font-size:24px">Bluecrew</h1>
     </div>
     <div style="padding:24px;background:white;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px">
@@ -371,6 +371,7 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
+    replyTo: 'jobb@bluecrew.no',
   });
 }
 
@@ -441,7 +442,7 @@ Bluecrew-teamet`;
 
   const html = `
   <div style="font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.6">
-    <div style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);color:white;padding:24px;border-radius:8px 8px 0 0">
+    <div style="background:linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%);color:white;padding:24px;border-radius:8px 8px 0 0">
       <h1 style="margin:0;font-size:24px">Bluecrew</h1>
     </div>
     <div style="padding:24px;background:white;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 8px 8px">
@@ -483,5 +484,6 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
+    replyTo: 'jobb@bluecrew.no',
   });
 }
