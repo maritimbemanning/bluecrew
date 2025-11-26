@@ -19,7 +19,9 @@ type SendEmailArgs = {
 
 const resendKey = process.env.RESEND_API_KEY;
 const fromEmail = process.env.RESEND_FROM_EMAIL || "post@bluecrew.no";
-const toList = (process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,tf@bluecrew.no")
+const toList = (
+  process.env.RESEND_TO_EMAILS || "isak@bluecrew.no,tf@bluecrew.no"
+)
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
@@ -30,13 +32,19 @@ function warnMissingEmailConfig() {
   if (hasWarnedEmailConfig) return;
   hasWarnedEmailConfig = true;
   if (!resendKey) {
-    logger.warn("[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert.");
+    logger.warn(
+      "[email.ts] RESEND_API_KEY mangler – e-postsending er deaktivert."
+    );
   }
   if (!fromEmail) {
-    logger.warn("[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables.");
+    logger.warn(
+      "[email.ts] RESEND_FROM_EMAIL mangler – settes i Vercel → Environment Variables."
+    );
   }
   if (toList.length === 0) {
-    logger.warn("[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert.");
+    logger.warn(
+      "[email.ts] RESEND_TO_EMAILS mangler – ingen interne mottakere definert."
+    );
   }
 }
 
@@ -71,7 +79,10 @@ export type ContactPayload = {
 };
 
 function esc(s: string = "") {
-  return s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  return s
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function withComplianceText(text?: string) {
@@ -96,11 +107,20 @@ function withComplianceHtml(subject: string, html?: string, text?: string) {
   `;
 }
 
-async function sendEmail({ subject, html, text, to, replyTo, attachments }: SendEmailArgs) {
+async function sendEmail({
+  subject,
+  html,
+  text,
+  to,
+  replyTo,
+  attachments,
+}: SendEmailArgs) {
   // Warn lazily on first use rather than on import
   warnMissingEmailConfig();
   if (!resend || !fromEmail) return null;
-  const recipients = Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
+  const recipients = Array.isArray(to)
+    ? to.filter(Boolean)
+    : [to].filter(Boolean);
   if (recipients.length === 0) return null;
 
   const payload = {
@@ -134,7 +154,7 @@ function buildContactHtml(p: ContactPayload) {
       <tr><td style="padding:4px 8px"><b>Telefon</b></td><td style="padding:4px 8px">${esc(p.phone || "-")}</td></tr>
       <tr><td style="padding:4px 8px"><b>Selskap</b></td><td style="padding:4px 8px">${esc(p.company || "-")}</td></tr>
       <tr><td style="padding:4px 8px;vertical-align:top"><b>Melding</b></td><td style="padding:4px 8px;white-space:pre-wrap">${esc(
-        p.message,
+        p.message
       )}</td></tr>
     </table>
   </div>`;
@@ -193,7 +213,10 @@ export async function sendReceiptToSender(payload: ContactPayload) {
   });
 }
 
-export async function sendCandidateReceipt(payload: { name?: string; email?: string }) {
+export async function sendCandidateReceipt(payload: {
+  name?: string;
+  email?: string;
+}) {
   if (!payload.email) return null;
 
   const text = `Hei ${payload.name || ""},\n\nTakk for at du sendte inn jobbsøkerprofilen din til Bluecrew.\nVi går gjennom informasjonen din og tar kontakt så snart vi har et oppdrag som passer.\n\nHilsen Bluecrew-teamet`;
@@ -214,7 +237,11 @@ export async function sendCandidateReceipt(payload: { name?: string; email?: str
   });
 }
 
-export async function sendClientConfirmation(payload: { name?: string; email?: string; company?: string }) {
+export async function sendClientConfirmation(payload: {
+  name?: string;
+  email?: string;
+  company?: string;
+}) {
   if (!payload.email) return null;
 
   const text = `Hei ${payload.name || ""},\n\nTakk for henvendelsen${
@@ -237,7 +264,10 @@ export async function sendClientConfirmation(payload: { name?: string; email?: s
   });
 }
 
-export async function sendInterestReceipt(payload: { name?: string; email?: string }) {
+export async function sendInterestReceipt(payload: {
+  name?: string;
+  email?: string;
+}) {
   if (!payload.email) return null;
 
   const text = `Hei ${payload.name || ""},\n\nTakk for at du meldte interesse hos Bluecrew. Vi går gjennom informasjonen din og tar kontakt når vi har oppdrag som passer din erfaring.\n\nHilsen Bluecrew-teamet`;
@@ -285,7 +315,13 @@ export async function sendApplicationStatusUpdate(payload: {
   name: string;
   email: string;
   jobTitle?: string;
-  status: 'reviewed' | 'contacted' | 'interview' | 'rejected' | 'hired' | 'pending';
+  status:
+    | "reviewed"
+    | "contacted"
+    | "interview"
+    | "rejected"
+    | "hired"
+    | "pending";
   message?: string;
 }) {
   if (!payload.email) return null;
@@ -293,45 +329,47 @@ export async function sendApplicationStatusUpdate(payload: {
   // Status-specific messages in Norwegian
   const statusMessages = {
     reviewed: {
-      subject: 'Din søknad er mottatt og under vurdering',
-      greeting: 'Takk for din søknad!',
-      body: 'Vi har mottatt din søknad og går nå gjennom den. Du vil høre fra oss så snart vi har vurdert din profil.',
-      color: '#3b82f6' // blue
+      subject: "Din søknad er mottatt og under vurdering",
+      greeting: "Takk for din søknad!",
+      body: "Vi har mottatt din søknad og går nå gjennom den. Du vil høre fra oss så snart vi har vurdert din profil.",
+      color: "#3b82f6", // blue
     },
     contacted: {
-      subject: 'Vi ønsker å komme i kontakt med deg',
-      greeting: 'Vi er interessert i din profil!',
-      body: 'Vi har gjennomgått din søknad og ønsker å komme i kontakt med deg. En av våre rekrutterere vil kontakte deg snart.',
-      color: '#8b5cf6' // purple
+      subject: "Vi ønsker å komme i kontakt med deg",
+      greeting: "Vi er interessert i din profil!",
+      body: "Vi har gjennomgått din søknad og ønsker å komme i kontakt med deg. En av våre rekrutterere vil kontakte deg snart.",
+      color: "#8b5cf6", // purple
     },
     interview: {
-      subject: 'Invitasjon til intervju hos Bluecrew',
-      greeting: 'Gratulerer!',
-      body: 'Vi ønsker å invitere deg til intervju. Du vil snart motta mer informasjon om tid og sted.',
-      color: '#10b981' // green
+      subject: "Invitasjon til intervju hos Bluecrew",
+      greeting: "Gratulerer!",
+      body: "Vi ønsker å invitere deg til intervju. Du vil snart motta mer informasjon om tid og sted.",
+      color: "#10b981", // green
     },
     rejected: {
-      subject: 'Tilbakemelding på din søknad',
-      greeting: 'Takk for din interesse',
-      body: 'Etter nøye vurdering har vi dessverre besluttet å gå videre med andre kandidater denne gangen. Vi oppfordrer deg til å søke igjen når nye stillinger blir tilgjengelige.',
-      color: '#ef4444' // red
+      subject: "Tilbakemelding på din søknad",
+      greeting: "Takk for din interesse",
+      body: "Etter nøye vurdering har vi dessverre besluttet å gå videre med andre kandidater denne gangen. Vi oppfordrer deg til å søke igjen når nye stillinger blir tilgjengelige.",
+      color: "#ef4444", // red
     },
     hired: {
-      subject: 'Gratulerer med jobbtilbud fra Bluecrew!',
-      greeting: 'Gratulerer!',
-      body: 'Vi er glade for å kunne tilby deg stillingen! Du vil snart motta kontrakt og videre informasjon om oppstart.',
-      color: '#059669' // emerald
+      subject: "Gratulerer med jobbtilbud fra Bluecrew!",
+      greeting: "Gratulerer!",
+      body: "Vi er glade for å kunne tilby deg stillingen! Du vil snart motta kontrakt og videre informasjon om oppstart.",
+      color: "#059669", // emerald
     },
     pending: {
-      subject: 'Status på din søknad',
-      greeting: 'Oppdatering på din søknad',
-      body: 'Din søknad er fortsatt under behandling. Vi kommer tilbake til deg så snart vi har mer informasjon.',
-      color: '#f59e0b' // amber
-    }
+      subject: "Status på din søknad",
+      greeting: "Oppdatering på din søknad",
+      body: "Din søknad er fortsatt under behandling. Vi kommer tilbake til deg så snart vi har mer informasjon.",
+      color: "#f59e0b", // amber
+    },
   };
 
   const statusInfo = statusMessages[payload.status];
-  const jobInfo = payload.jobTitle ? ` for stillingen som ${payload.jobTitle}` : '';
+  const jobInfo = payload.jobTitle
+    ? ` for stillingen som ${payload.jobTitle}`
+    : "";
 
   const text = `Hei ${payload.name},
 
@@ -339,7 +377,7 @@ ${statusInfo.greeting}
 
 ${statusInfo.body}
 
-${payload.message ? `\nMelding fra rekrutterer:\n${payload.message}\n` : ''}
+${payload.message ? `\nMelding fra rekrutterer:\n${payload.message}\n` : ""}
 Med vennlig hilsen,
 Bluecrew-teamet`;
 
@@ -355,12 +393,16 @@ Bluecrew-teamet`;
       <p style="font-size:16px;color:#111827;margin:0 0 8px">Hei ${esc(payload.name)},</p>
       <p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 16px">${statusInfo.greeting}</p>
       <p style="font-size:14px;color:#4b5563;margin:0 0 16px">${statusInfo.body}</p>
-      ${payload.message ? `
+      ${
+        payload.message
+          ? `
       <div style="background:#f9fafb;border-left:4px solid ${statusInfo.color};padding:12px;margin:16px 0">
         <p style="font-weight:600;margin:0 0 8px;color:#111827">Melding fra rekrutterer:</p>
         <p style="margin:0;color:#4b5563">${esc(payload.message)}</p>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
       <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb"/>
       <p style="font-size:14px;color:#6b7280;margin:0">Med vennlig hilsen,<br><strong>Bluecrew-teamet</strong></p>
     </div>
@@ -371,7 +413,7 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
-    replyTo: 'post@bluecrew.no',
+    replyTo: "post@bluecrew.no",
   });
 }
 
@@ -381,7 +423,13 @@ Bluecrew-teamet`;
 export async function sendCandidateStatusUpdate(payload: {
   name: string;
   email: string;
-  status: 'new' | 'screening' | 'interviewed' | 'approved' | 'placed' | 'rejected';
+  status:
+    | "new"
+    | "screening"
+    | "interviewed"
+    | "approved"
+    | "placed"
+    | "rejected";
   role?: string;
   message?: string;
 }) {
@@ -390,45 +438,45 @@ export async function sendCandidateStatusUpdate(payload: {
   // Status-specific messages for candidate pipeline
   const statusMessages = {
     new: {
-      subject: 'Vi har mottatt din registrering',
-      greeting: 'Velkommen til Bluecrew!',
-      body: 'Vi har mottatt din registrering og vil gjennomgå din profil. Du hører fra oss snart.',
-      color: '#6b7280' // gray
+      subject: "Vi har mottatt din registrering",
+      greeting: "Velkommen til Bluecrew!",
+      body: "Vi har mottatt din registrering og vil gjennomgå din profil. Du hører fra oss snart.",
+      color: "#6b7280", // gray
     },
     screening: {
-      subject: 'Din profil er under vurdering',
-      greeting: 'Vi vurderer din profil',
-      body: 'Vi går nå gjennom din bakgrunn og kvalifikasjoner. En av våre rekrutterere vil kontakte deg hvis vi finner et passende oppdrag.',
-      color: '#3b82f6' // blue
+      subject: "Din profil er under vurdering",
+      greeting: "Vi vurderer din profil",
+      body: "Vi går nå gjennom din bakgrunn og kvalifikasjoner. En av våre rekrutterere vil kontakte deg hvis vi finner et passende oppdrag.",
+      color: "#3b82f6", // blue
     },
     interviewed: {
-      subject: 'Takk for intervjuet',
-      greeting: 'Takk for en god samtale!',
-      body: 'Vi setter pris på at du tok deg tid til å møte oss. Vi vurderer nå alle kandidater og kommer tilbake til deg snart.',
-      color: '#8b5cf6' // purple
+      subject: "Takk for intervjuet",
+      greeting: "Takk for en god samtale!",
+      body: "Vi setter pris på at du tok deg tid til å møte oss. Vi vurderer nå alle kandidater og kommer tilbake til deg snart.",
+      color: "#8b5cf6", // purple
     },
     approved: {
-      subject: 'Du er godkjent for oppdrag',
-      greeting: 'Gratulerer - du er godkjent!',
-      body: 'Din profil er godkjent og vi vil nå matche deg med passende oppdrag. Du hører fra oss så snart vi har et oppdrag som passer.',
-      color: '#10b981' // green
+      subject: "Du er godkjent for oppdrag",
+      greeting: "Gratulerer - du er godkjent!",
+      body: "Din profil er godkjent og vi vil nå matche deg med passende oppdrag. Du hører fra oss så snart vi har et oppdrag som passer.",
+      color: "#10b981", // green
     },
     placed: {
-      subject: 'Gratulerer med nytt oppdrag!',
-      greeting: 'Du har fått oppdrag!',
-      body: 'Vi er glade for å kunne bekrefte at du har fått oppdrag. Du vil snart motta all praktisk informasjon.',
-      color: '#059669' // emerald
+      subject: "Gratulerer med nytt oppdrag!",
+      greeting: "Du har fått oppdrag!",
+      body: "Vi er glade for å kunne bekrefte at du har fått oppdrag. Du vil snart motta all praktisk informasjon.",
+      color: "#059669", // emerald
     },
     rejected: {
-      subject: 'Tilbakemelding på din profil',
-      greeting: 'Takk for din interesse',
-      body: 'Etter vurdering passer dessverre ikke din profil våre nåværende behov. Vi oppfordrer deg til å registrere deg på nytt når din situasjon endrer seg.',
-      color: '#ef4444' // red
-    }
+      subject: "Tilbakemelding på din profil",
+      greeting: "Takk for din interesse",
+      body: "Etter vurdering passer dessverre ikke din profil våre nåværende behov. Vi oppfordrer deg til å registrere deg på nytt når din situasjon endrer seg.",
+      color: "#ef4444", // red
+    },
   };
 
   const statusInfo = statusMessages[payload.status];
-  const roleInfo = payload.role ? ` for rollen som ${payload.role}` : '';
+  const roleInfo = payload.role ? ` for rollen som ${payload.role}` : "";
 
   const text = `Hei ${payload.name},
 
@@ -436,7 +484,7 @@ ${statusInfo.greeting}
 
 ${statusInfo.body}
 
-${payload.message ? `\nMelding fra Bluecrew:\n${payload.message}\n` : ''}
+${payload.message ? `\nMelding fra Bluecrew:\n${payload.message}\n` : ""}
 Med vennlig hilsen,
 Bluecrew-teamet`;
 
@@ -452,26 +500,34 @@ Bluecrew-teamet`;
       <p style="font-size:16px;color:#111827;margin:0 0 8px">Hei ${esc(payload.name)},</p>
       <p style="font-size:18px;font-weight:600;color:#111827;margin:0 0 16px">${statusInfo.greeting}</p>
       <p style="font-size:14px;color:#4b5563;margin:0 0 16px">${statusInfo.body}</p>
-      ${payload.message ? `
+      ${
+        payload.message
+          ? `
       <div style="background:#f9fafb;border-left:4px solid ${statusInfo.color};padding:12px;margin:16px 0">
         <p style="font-weight:600;margin:0 0 8px;color:#111827">Tilleggsinfo:</p>
         <p style="margin:0;color:#4b5563">${esc(payload.message)}</p>
       </div>
-      ` : ''}
-      ${payload.role ? `
+      `
+          : ""
+      }
+      ${
+        payload.role
+          ? `
       <p style="font-size:14px;color:#6b7280;margin:16px 0">
         <strong>Rolle:</strong> ${esc(payload.role)}
       </p>
-      ` : ''}
+      `
+          : ""
+      }
       <div style="margin:24px 0;padding:16px;background:#f9fafb;border-radius:8px">
         <p style="margin:0 0 8px;font-weight:600;color:#111827">Dine neste steg:</p>
         <ul style="margin:0;padding:0 0 0 20px;color:#4b5563">
-          ${payload.status === 'new' ? '<li>Hold kontaktinformasjonen din oppdatert</li><li>Sjekk e-posten din regelmessig</li>' : ''}
-          ${payload.status === 'screening' ? '<li>Vær tilgjengelig på telefon</li><li>Forbered deg på eventuelle spørsmål om din erfaring</li>' : ''}
-          ${payload.status === 'interviewed' ? '<li>Vi kontakter deg innen kort tid</li><li>Hold deg oppdatert på e-post</li>' : ''}
-          ${payload.status === 'approved' ? '<li>Hold CV og sertifikater oppdatert</li><li>Vær klar for oppdrag på kort varsel</li>' : ''}
-          ${payload.status === 'placed' ? '<li>Sjekk e-posten for kontraktsinformasjon</li><li>Forbered deg på oppstart</li>' : ''}
-          ${payload.status === 'rejected' ? '<li>Oppdater din profil ved endringer</li><li>Følg med på nye stillinger på bluecrew.no</li>' : ''}
+          ${payload.status === "new" ? "<li>Hold kontaktinformasjonen din oppdatert</li><li>Sjekk e-posten din regelmessig</li>" : ""}
+          ${payload.status === "screening" ? "<li>Vær tilgjengelig på telefon</li><li>Forbered deg på eventuelle spørsmål om din erfaring</li>" : ""}
+          ${payload.status === "interviewed" ? "<li>Vi kontakter deg innen kort tid</li><li>Hold deg oppdatert på e-post</li>" : ""}
+          ${payload.status === "approved" ? "<li>Hold CV og sertifikater oppdatert</li><li>Vær klar for oppdrag på kort varsel</li>" : ""}
+          ${payload.status === "placed" ? "<li>Sjekk e-posten for kontraktsinformasjon</li><li>Forbered deg på oppstart</li>" : ""}
+          ${payload.status === "rejected" ? "<li>Oppdater din profil ved endringer</li><li>Følg med på nye stillinger på bluecrew.no</li>" : ""}
         </ul>
       </div>
       <hr style="margin:24px 0;border:none;border-top:1px solid #e5e7eb"/>
@@ -484,6 +540,6 @@ Bluecrew-teamet`;
     html,
     text,
     to: payload.email,
-    replyTo: 'post@bluecrew.no',
+    replyTo: "post@bluecrew.no",
   });
 }

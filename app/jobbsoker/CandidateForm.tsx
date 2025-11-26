@@ -317,13 +317,24 @@ export default function CandidateContent() {
             : null
         );
       } else {
-        router.push("/jobbsoker/registrer");
-        return;
+        // Skip redirect in development
+        const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+        if (!isDevelopment) {
+          router.push("/jobbsoker/registrer");
+          return;
+        }
+        // In development, show warning but allow form
+        setStatusMessage("⚠️ UTVIKLINGSMODUS: Vipps-verifisering er deaktivert");
       }
     } catch (error) {
       console.error("Failed to check Vipps session", error);
-      router.push("/jobbsoker/registrer");
-      return;
+      // Skip redirect in development
+      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+      if (!isDevelopment) {
+        router.push("/jobbsoker/registrer");
+        return;
+      }
+      setStatusMessage("⚠️ UTVIKLINGSMODUS: Vipps-verifisering er deaktivert");
     } finally {
       setCheckingSession(false);
     }
@@ -513,8 +524,9 @@ export default function CandidateContent() {
         return;
       }
 
-      // Vipps verification check
-      if (!vippsSession) {
+      // Vipps verification check - skip in development
+      const isDevelopment = process.env.NODE_ENV === 'development' || window.location.hostname === 'localhost';
+      if (!vippsSession && !isDevelopment) {
         setFormError("Du må verifisere identiteten din med Vipps først.");
         router.push("/jobbsoker/registrer");
         return;
