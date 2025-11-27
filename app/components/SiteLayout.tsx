@@ -505,6 +505,39 @@ export function SiteLayout({
 
           {/* Mobile menu trigger */}
           <div className="mobileMenuTrigger">
+            <Link
+              href={isSignedIn ? "/min-side" : "/logg-inn"}
+              className="mobileAuthButton"
+              style={{
+                padding: "10px 14px",
+                background: isSignedIn
+                  ? "linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)"
+                  : "linear-gradient(135deg, #475569 0%, #64748b 100%)",
+                color: "#fff",
+                borderRadius: 10,
+                fontWeight: 600,
+                fontSize: 13,
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.2)",
+                boxShadow: isSignedIn
+                  ? "0 2px 8px rgba(3, 105, 161, 0.3)"
+                  : "0 2px 8px rgba(71, 85, 105, 0.3)",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                minHeight: "44px",
+                touchAction: "manipulation",
+                WebkitTapHighlightColor: "transparent",
+                opacity: isLoaded ? 1 : 0.7,
+              }}
+              title={isSignedIn ? "Min side" : "Logg inn"}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              {isSignedIn ? "Min side" : "Logg inn"}
+            </Link>
             <button
               type="button"
               onClick={openMobileMenu}
