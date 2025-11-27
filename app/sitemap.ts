@@ -89,18 +89,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
 
-    // Kandidatsider
+    // Kandidatsider (jobbsøker)
     {
-      url: `${base}/kandidat/oppdrag`,
+      url: `${base}/jobbsoker`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${base}/jobbsoker/oppdrag`,
       lastModified: now,
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${base}/kandidat/registrer`,
+      url: `${base}/jobbsoker/registrer`,
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,
+    },
+    {
+      url: `${base}/meld-interesse`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
 
     // Karriere - Jobber (viktige SEO-sider - "hvordan bli X")
