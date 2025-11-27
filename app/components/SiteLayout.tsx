@@ -28,6 +28,17 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
+    href: "/stillinger",
+    label: "For sjøfolk",
+    key: "sjofolk",
+    children: [
+      { href: "/stillinger", label: "Ledige stillinger" },
+      { href: "/jobbsoker/registrer/skjema", label: "Registrer deg" },
+      { href: "/lonn/kalkulator", label: "Lønnskalkulator" },
+      { href: "/lonn/oversikt", label: "Lønnsguide 2025" },
+    ],
+  },
+  {
     href: "/kunde",
     label: "For bedrifter",
     key: "kunde",
@@ -426,35 +437,6 @@ export function SiteLayout({
           {/* Desktop-only right cluster: CTA buttons */}
             <div className="desktopCta">
               <Link
-                href="/lonn/kalkulator"
-                style={{
-                  padding: "12px",
-                  background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                  color: "#fff",
-                  borderRadius: 12,
-                  textDecoration: "none",
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  boxShadow: "0 4px 12px rgba(245, 158, 11, 0.3)",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                title="Lønnskalkulator"
-                aria-label="Lønnskalkulator"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="4" y="2" width="16" height="20" rx="2"/>
-                  <line x1="8" y1="6" x2="16" y2="6"/>
-                  <line x1="8" y1="10" x2="10" y2="10"/>
-                  <line x1="12" y1="10" x2="14" y2="10"/>
-                  <line x1="8" y1="14" x2="10" y2="14"/>
-                  <line x1="12" y1="14" x2="14" y2="14"/>
-                  <line x1="8" y1="18" x2="10" y2="18"/>
-                  <line x1="12" y1="18" x2="16" y2="18"/>
-                </svg>
-              </Link>
-              <Link
                 href="/jobbsoker/registrer/skjema"
                 style={{
                   padding: "12px 28px",
@@ -643,35 +625,7 @@ export function SiteLayout({
                           Søk jobb
                         </Link>
                       </li>
-                      <li style={{ ...sx.mobileNavItem, marginTop: 8, display: "flex", gap: 8 }}>
-                        <Link
-                          href="/lonn/kalkulator"
-                          style={{
-                            ...sx.mobileNavLink,
-                            background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                            color: "#fff",
-                            padding: "14px",
-                            borderRadius: 12,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flex: "0 0 auto",
-                          }}
-                          className="mobileLink"
-                          onClick={() => closeMobileMenu()}
-                          aria-label="Lønnskalkulator"
-                        >
-                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <rect x="4" y="2" width="16" height="20" rx="2"/>
-                            <line x1="8" y1="6" x2="16" y2="6"/>
-                            <line x1="8" y1="10" x2="10" y2="10"/>
-                            <line x1="12" y1="10" x2="14" y2="10"/>
-                            <line x1="8" y1="14" x2="10" y2="14"/>
-                            <line x1="12" y1="14" x2="14" y2="14"/>
-                            <line x1="8" y1="18" x2="10" y2="18"/>
-                            <line x1="12" y1="18" x2="16" y2="18"/>
-                          </svg>
-                        </Link>
+                      <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                         <Link
                           href={isSignedIn ? "/min-side" : "/logg-inn"}
                           style={{
@@ -688,7 +642,6 @@ export function SiteLayout({
                             alignItems: "center",
                             justifyContent: "center",
                             gap: 8,
-                            flex: 1,
                           }}
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
@@ -792,35 +745,7 @@ export function SiteLayout({
                         Søk jobb
                       </Link>
                     </li>
-                    <li style={{ ...sx.mobileNavItem, marginTop: 8, display: "flex", gap: 8 }}>
-                      <Link
-                        href="/lonn/kalkulator"
-                        style={{
-                          ...sx.mobileNavLink,
-                          background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
-                          color: "#fff",
-                          padding: "14px",
-                          borderRadius: 12,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          flex: "0 0 auto",
-                        }}
-                        className="mobileLink"
-                        onClick={() => closeMobileMenu()}
-                        aria-label="Lønnskalkulator"
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <rect x="4" y="2" width="16" height="20" rx="2"/>
-                          <line x1="8" y1="6" x2="16" y2="6"/>
-                          <line x1="8" y1="10" x2="10" y2="10"/>
-                          <line x1="12" y1="10" x2="14" y2="10"/>
-                          <line x1="8" y1="14" x2="10" y2="14"/>
-                          <line x1="12" y1="14" x2="14" y2="14"/>
-                          <line x1="8" y1="18" x2="10" y2="18"/>
-                          <line x1="12" y1="18" x2="16" y2="18"/>
-                        </svg>
-                      </Link>
+                    <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
                       <Link
                         href={isSignedIn ? "/min-side" : "/logg-inn"}
                         style={{
@@ -837,7 +762,6 @@ export function SiteLayout({
                           alignItems: "center",
                           justifyContent: "center",
                           gap: 8,
-                          flex: 1,
                         }}
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
