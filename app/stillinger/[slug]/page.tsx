@@ -2,8 +2,11 @@
  * JOB DETAIL PAGE
  * Route: bluecrew.no/stillinger/[slug]
  *
- * Shows full job posting details with "SØK PÅ STILLINGEN" button
- * Includes Google Jobs structured data for SEO
+ * Modern design with:
+ * - Full-width hero with gradient
+ * - Premium card layouts
+ * - Sticky sidebar with CTA
+ * - Google Jobs structured data for SEO
  */
 
 "use client";
@@ -24,6 +27,8 @@ import {
   Eye,
   Users,
   Ship,
+  FileText,
+  Award,
 } from "lucide-react";
 import Link from "next/link";
 import SiteLayout from "@/app/components/SiteLayout";
@@ -84,9 +89,10 @@ export default function JobDetailPage() {
       }
 
       const json = await response.json();
-      // AdminCrew returns { data: [...], pagination: {...} }
       const jobs = json.data || json;
-      const foundJob = Array.isArray(jobs) ? jobs.find((j: JobPosting) => j.slug === slug) : null;
+      const foundJob = Array.isArray(jobs)
+        ? jobs.find((j: JobPosting) => j.slug === slug)
+        : null;
 
       if (!foundJob) {
         setNotFound(true);
@@ -94,9 +100,6 @@ export default function JobDetailPage() {
       }
 
       setJob(foundJob);
-
-      // Note: View count tracking should be handled by AdminCrew API
-      // Removed PATCH request that was causing issues
     } catch (error) {
       console.error("Error loading job:", error);
       setNotFound(true);
@@ -123,7 +126,7 @@ export default function JobDetailPage() {
         (1000 * 60 * 60 * 24)
     );
     if (days < 0) return { text: "Utgått", isUrgent: false, isExpired: true };
-    if (days === 0) return { text: "I dag", isUrgent: true, isExpired: false };
+    if (days === 0) return { text: "I dag!", isUrgent: true, isExpired: false };
     if (days === 1) return { text: "1 dag", isUrgent: true, isExpired: false };
     return {
       text: `${days} dager`,
@@ -249,28 +252,41 @@ export default function JobDetailPage() {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
 
       <section className={styles.section}>
+        {/* Back Button */}
         <div className={styles.container}>
-          {/* Back link */}
           <Link href="/stillinger" className={styles.backButton}>
             <ArrowLeft size={18} />
             Tilbake til stillinger
           </Link>
+        </div>
 
-          {/* Hero Section */}
-          <div className={styles.hero}>
+        {/* Hero Section */}
+        <div className={styles.hero}>
+          <div className={styles.heroInner}>
+            {/* Badges */}
             <div className={styles.badges}>
-              <span className={styles.badge}>{job.job_type}</span>
+              <span
+                className={`${styles.badge} ${
+                  job.job_type === "Fast"
+                    ? styles.badgeFast
+                    : styles.badgeVikariat
+                }`}
+              >
+                {job.job_type}
+              </span>
               <span className={styles.badge}>{job.category}</span>
               {deadline && deadline.isUrgent && !deadline.isExpired && (
                 <span className={`${styles.badge} ${styles.badgeUrgent}`}>
-                  <Clock size={14} style={{ marginRight: 4 }} />
+                  <Clock size={14} />
                   Søk snart!
                 </span>
               )}
             </div>
 
+            {/* Title */}
             <h1 className={styles.title}>{job.title}</h1>
 
+            {/* Meta Row */}
             <div className={styles.metaRow}>
               {job.company_name && (
                 <span className={styles.metaItemLight}>
@@ -286,10 +302,11 @@ export default function JobDetailPage() {
               )}
               <span className={styles.metaItemLight}>
                 <MapPin size={18} />
-                {job.location}, {job.fylke}
+                {job.kommune}, {job.fylke}
               </span>
             </div>
 
+            {/* Salary */}
             {job.salary_text && (
               <div className={styles.salary}>
                 <DollarSign size={22} />
@@ -297,25 +314,37 @@ export default function JobDetailPage() {
               </div>
             )}
           </div>
+        </div>
 
-          {/* Main Grid */}
+        {/* Main Content Grid */}
+        <div className={styles.container}>
           <div className={styles.grid}>
             {/* Left Column - Main Content */}
             <div className={styles.mainContent}>
               {/* Description */}
               <div className={styles.card}>
-                <h2 className={styles.sectionTitle}>Om stillingen</h2>
+                <h2 className={styles.sectionTitle}>
+                  <FileText size={20} color="#0369a1" />
+                  Om stillingen
+                </h2>
                 <p className={styles.description}>{job.description}</p>
               </div>
 
               {/* Requirements */}
               {job.requirements && job.requirements.length > 0 && (
                 <div className={styles.card}>
-                  <h2 className={styles.sectionTitle}>Kvalifikasjoner</h2>
+                  <h2 className={styles.sectionTitle}>
+                    <Award size={20} color="#0369a1" />
+                    Kvalifikasjoner
+                  </h2>
                   <ul className={styles.list}>
                     {job.requirements.map((req, index) => (
                       <li key={index} className={styles.listItem}>
-                        <CheckCircle size={18} color="#22c55e" className={styles.listIcon} />
+                        <CheckCircle
+                          size={18}
+                          color="#22c55e"
+                          className={styles.listIcon}
+                        />
                         <span>{req}</span>
                       </li>
                     ))}
@@ -326,11 +355,18 @@ export default function JobDetailPage() {
               {/* Responsibilities */}
               {job.responsibilities && job.responsibilities.length > 0 && (
                 <div className={styles.card}>
-                  <h2 className={styles.sectionTitle}>Arbeidsoppgaver</h2>
+                  <h2 className={styles.sectionTitle}>
+                    <Briefcase size={20} color="#0369a1" />
+                    Arbeidsoppgaver
+                  </h2>
                   <ul className={styles.list}>
                     {job.responsibilities.map((resp, index) => (
                       <li key={index} className={styles.listItem}>
-                        <Briefcase size={18} color="#0369a1" className={styles.listIcon} />
+                        <Briefcase
+                          size={18}
+                          color="#0369a1"
+                          className={styles.listIcon}
+                        />
                         <span>{resp}</span>
                       </li>
                     ))}
@@ -341,11 +377,18 @@ export default function JobDetailPage() {
               {/* Benefits */}
               {job.benefits && job.benefits.length > 0 && (
                 <div className={styles.card}>
-                  <h2 className={styles.sectionTitle}>Vi tilbyr</h2>
+                  <h2 className={styles.sectionTitle}>
+                    <CheckCircle size={20} color="#22c55e" />
+                    Vi tilbyr
+                  </h2>
                   <ul className={styles.list}>
                     {job.benefits.map((benefit, index) => (
                       <li key={index} className={styles.listItem}>
-                        <CheckCircle size={18} color="#22c55e" className={styles.listIcon} />
+                        <CheckCircle
+                          size={18}
+                          color="#22c55e"
+                          className={styles.listIcon}
+                        />
                         <span>{benefit}</span>
                       </li>
                     ))}
@@ -360,8 +403,10 @@ export default function JobDetailPage() {
               <div className={styles.ctaCard}>
                 {deadline && deadline.isExpired ? (
                   <div className={styles.expiredCard}>
-                    <AlertCircle size={48} className={styles.expiredIcon} />
-                    <h3 className={styles.expiredTitle}>Søknadsfristen er utgått</h3>
+                    <AlertCircle className={styles.expiredIcon} />
+                    <h3 className={styles.expiredTitle}>
+                      Søknadsfristen er utgått
+                    </h3>
                     <p className={styles.expiredText}>
                       Denne stillingen tar ikke lenger imot søknader.
                     </p>
@@ -379,7 +424,13 @@ export default function JobDetailPage() {
                         <p className={styles.deadlineDate}>
                           {formatDate(job.application_deadline)}
                         </p>
-                        <p className={deadline.isUrgent ? styles.deadlineUrgent : styles.deadlineRemaining}>
+                        <p
+                          className={
+                            deadline.isUrgent
+                              ? styles.deadlineUrgent
+                              : styles.deadlineRemaining
+                          }
+                        >
                           {deadline.text} igjen
                         </p>
                       </div>
@@ -405,7 +456,9 @@ export default function JobDetailPage() {
                       <Calendar size={18} className={styles.detailIcon} />
                       <div className={styles.detailContent}>
                         <p className={styles.detailLabel}>Oppstart</p>
-                        <p className={styles.detailValue}>{formatDate(job.start_date)}</p>
+                        <p className={styles.detailValue}>
+                          {formatDate(job.start_date)}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -415,7 +468,9 @@ export default function JobDetailPage() {
                       <Clock size={18} className={styles.detailIcon} />
                       <div className={styles.detailContent}>
                         <p className={styles.detailLabel}>Varighet</p>
-                        <p className={styles.detailValue}>{job.duration_days} dager</p>
+                        <p className={styles.detailValue}>
+                          {job.duration_days} dager
+                        </p>
                       </div>
                     </div>
                   )}
@@ -432,7 +487,9 @@ export default function JobDetailPage() {
                     <Users size={18} className={styles.detailIcon} />
                     <div className={styles.detailContent}>
                       <p className={styles.detailLabel}>Søkere</p>
-                      <p className={styles.detailValue}>{job.application_count}</p>
+                      <p className={styles.detailValue}>
+                        {job.application_count}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -444,18 +501,40 @@ export default function JobDetailPage() {
               </div>
 
               {/* Contact */}
-              {(job.contact_person || job.contact_email || job.contact_phone) && (
+              {(job.contact_person ||
+                job.contact_email ||
+                job.contact_phone) && (
                 <div className={styles.detailsCard}>
                   <h3 className={styles.detailsTitle}>Kontakt</h3>
                   <div style={{ fontSize: "0.9rem", color: "#64748b" }}>
-                    {job.contact_person && <p style={{ fontWeight: 600, color: "#0f172a" }}>{job.contact_person}</p>}
+                    {job.contact_person && (
+                      <p style={{ fontWeight: 600, color: "#0f172a" }}>
+                        {job.contact_person}
+                      </p>
+                    )}
                     {job.contact_email && (
-                      <a href={`mailto:${job.contact_email}`} style={{ color: "#0369a1", display: "block", marginTop: 4 }}>
+                      <a
+                        href={`mailto:${job.contact_email}`}
+                        style={{
+                          color: "#0369a1",
+                          display: "block",
+                          marginTop: 8,
+                          fontWeight: 500,
+                        }}
+                      >
                         {job.contact_email}
                       </a>
                     )}
                     {job.contact_phone && (
-                      <a href={`tel:${job.contact_phone}`} style={{ color: "#0369a1", display: "block", marginTop: 4 }}>
+                      <a
+                        href={`tel:${job.contact_phone}`}
+                        style={{
+                          color: "#0369a1",
+                          display: "block",
+                          marginTop: 8,
+                          fontWeight: 500,
+                        }}
+                      >
                         {job.contact_phone}
                       </a>
                     )}
