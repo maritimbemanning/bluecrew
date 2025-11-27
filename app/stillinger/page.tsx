@@ -311,14 +311,13 @@ export default function StillingerPage() {
           {/* Jobs Grid */}
           {!loading && filteredJobs.length > 0 && (
             <div className={styles.jobsGrid}>
-              {filteredJobs.map((job, index) => {
+              {filteredJobs.map((job) => {
                 const deadline = formatDeadline(job.application_deadline);
                 return (
                   <Link
                     key={job.id}
                     href={`/stillinger/${job.slug}`}
                     className={styles.jobCard}
-                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div className={styles.jobCardContent}>
                       {/* Header with Logo */}
