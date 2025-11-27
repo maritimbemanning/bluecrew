@@ -223,8 +223,18 @@
   }
 
   .mobileMenuTrigger {
-    display: block !important;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
   }
+}
+
+/* Mobile auth button in header */
+.mobileAuthButton {
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  min-width: auto !important;
+  border-radius: 10px !important;
 }
 
 /* Auth button - fixed width to prevent CLS when text changes */
