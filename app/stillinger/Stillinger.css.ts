@@ -1,16 +1,5 @@
-import { style, keyframes } from "@vanilla-extract/css";
+import { style } from "@vanilla-extract/css";
 import { vars } from "../../styles/tokens.css";
-
-// Animations
-const fadeInUp = keyframes({
-  "0%": { opacity: 0, transform: "translateY(20px)" },
-  "100%": { opacity: 1, transform: "translateY(0)" },
-});
-
-const pulse = keyframes({
-  "0%, 100%": { opacity: 1 },
-  "50%": { opacity: 0.6 },
-});
 
 // Hero Section
 export const hero = style({
@@ -19,17 +8,6 @@ export const hero = style({
   overflow: "hidden",
   paddingTop: "clamp(60px, 10vw, 100px)",
   paddingBottom: "clamp(60px, 10vw, 100px)",
-  "::before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: "url('/images/wave-pattern.svg') repeat",
-    opacity: 0.03,
-    pointerEvents: "none",
-  },
 });
 
 export const heroInner = style({
@@ -48,8 +26,7 @@ export const heroLabel = style({
   alignItems: "center",
   gap: vars.space.xs,
   padding: "8px 16px",
-  background: "rgba(255,255,255,0.1)",
-  backdropFilter: "blur(8px)",
+  background: "rgba(30, 58, 95, 0.8)",
   borderRadius: "999px",
   fontSize: "0.875rem",
   fontWeight: 600,
@@ -314,17 +291,17 @@ export const jobCard = style({
   padding: "0",
   border: "1px solid #e2e8f0",
   boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-  transition: "all 250ms cubic-bezier(0.4, 0, 0.2, 1)",
+  transition: "transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease",
   cursor: "pointer",
   textDecoration: "none",
   color: "inherit",
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
-  animation: `${fadeInUp} 400ms ease-out`,
+  willChange: "transform",
   ":hover": {
-    boxShadow: "0 20px 40px rgba(0,0,0,0.08), 0 8px 16px rgba(0,0,0,0.06)",
-    transform: "translateY(-4px)",
+    boxShadow: "0 12px 24px rgba(0,0,0,0.08)",
+    transform: "translateY(-2px)",
     borderColor: "#cbd5e1",
   },
 });
@@ -432,7 +409,7 @@ export const jobBadgeCategory = style({
 export const jobBadgeUrgent = style({
   background: "#fef2f2",
   color: "#dc2626",
-  animation: `${pulse} 2s ease-in-out infinite`,
+  fontWeight: 700,
 });
 
 // Job Card Footer
@@ -474,13 +451,12 @@ export const jobCardArrow = style({
   alignItems: "center",
   justifyContent: "center",
   color: "#64748b",
-  transition: "all 200ms ease",
+  transition: "background 150ms ease, color 150ms ease",
   flexShrink: 0,
   selectors: {
     [`${jobCard}:hover &`]: {
       background: vars.color.primary,
       color: "#fff",
-      transform: "translateX(2px)",
     },
   },
 });
@@ -565,7 +541,6 @@ export const skeletonCard = style({
 });
 
 export const skeletonPulse = style({
-  animation: `${pulse} 1.5s ease-in-out infinite`,
   background: "#e2e8f0",
   borderRadius: vars.radius.sm,
 });
