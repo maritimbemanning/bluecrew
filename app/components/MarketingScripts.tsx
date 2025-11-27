@@ -48,23 +48,6 @@ export default function MarketingScripts() {
         }}
       />
 
-      {/* Google Ads - only with marketing consent */}
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
-        strategy="lazyOnload"
-      />
-      <Script
-        id="google-ads-init"
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-17731534362');
-          `,
-        }}
-      />
     </>
   );
 }
