@@ -21,7 +21,7 @@ async function getJob(slug: string): Promise<JobPosting | null> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_ADMIN_URL || "https://admincrew.no"}/api/job-postings?status=active`,
-      { next: { revalidate: 3600 } } // Cache for 1 hour
+      { cache: "no-store" } // Always fetch fresh data
     );
 
     if (!res.ok) return null;
