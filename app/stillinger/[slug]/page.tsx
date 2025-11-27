@@ -52,7 +52,7 @@ async function getJob(slug: string): Promise<JobPosting | null> {
 
   try {
     const response = await fetch(fullUrl, {
-      next: { revalidate: 60 }, // Cache for 60 seconds
+      cache: "no-store", // Always fetch fresh data
       headers: {
         Accept: "application/json",
         "User-Agent": "Bluecrew/1.0",
