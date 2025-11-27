@@ -19,8 +19,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
     if (response.ok) {
       const data = await response.json();
-      // Handle both array response and { jobs: [...] } response
-      jobs = Array.isArray(data) ? data : (data?.jobs || []);
+      // Handle various API response formats: array, { data: [...] }, or { jobs: [...] }
+      jobs = Array.isArray(data) ? data : (data?.data || data?.jobs || []);
     }
   } catch (error) {
     console.error("Failed to fetch jobs for sitemap:", error);
