@@ -44,7 +44,7 @@ export function TrustSection() {
             width={60}
             height={40}
             className={styles.partnerImage}
-            title="MS Akva Fighter | Foto: ZeonAqua AS"
+            title="MS Akva Fighter | Foto: Glenn Larsen"
           />
           <span className={styles.partnerText}>Stolt leverandør til</span>
           <span className={styles.partnerName}>ZeonAqua AS</span>
