@@ -199,6 +199,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
 
+    // Aktuelt / Nyheter
+    {
+      url: `${base}/aktuelt`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${base}/aktuelt/forste-leverte-oppdrag`,
+      lastModified: new Date("2025-11-28"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+
     // Juridiske sider (GDPR-påkrevd)
     {
       url: `${base}/personvern`,
