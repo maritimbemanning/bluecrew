@@ -42,10 +42,10 @@ export default function Page() {
   return (
     <SiteLayout active="home">
       <Hero />
+      <AktueltSection />
       <TrustSection />
       <ServiceCards />
       <JobsHighlight />
-      <AktueltSection />
       <InterestSection />
       <ContactSection />
     </SiteLayout>
