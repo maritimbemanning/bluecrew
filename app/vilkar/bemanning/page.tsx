@@ -123,7 +123,7 @@ export default function BemanningTermsPage() {
           <div style={ui.badgeRow}>
             <span style={ui.badge}>Oppdatert: 29. oktober 2025</span>
             <span style={ui.badge}>Gjelder: Innleie og vikarbruk</span>
-            <span style={ui.badge}>Kontakt: isak@bluecrew.no</span>
+            <span style={ui.badge}>Kontakt: post@bluecrew.no</span>
           </div>
         </div>
       </header>
@@ -226,8 +226,8 @@ export default function BemanningTermsPage() {
               </ul>
               <p style={ui.p}>
                 Kontakt oss på{" "}
-                <a href="mailto:isak@bluecrew.no" style={ui.a}>
-                  isak@bluecrew.no
+                <a href="mailto:post@bluecrew.no" style={ui.a}>
+                  post@bluecrew.no
                 </a>{" "}
                 for kopi av forsikringsbevis ved behov.
               </p>
@@ -303,12 +303,12 @@ export default function BemanningTermsPage() {
               <ul style={ui.ul}>
                 <li>
                   <strong>E-post:</strong>{" "}
-                  <a href="mailto:isak@bluecrew.no" style={ui.a}>
-                    isak@bluecrew.no
+                  <a href="mailto:post@bluecrew.no" style={ui.a}>
+                    post@bluecrew.no
                   </a>
                 </li>
                 <li>
-                  <strong>Telefon:</strong> 923 28 850
+                  <strong>Telefon:</strong> 77 02 90 00
                 </li>
                 <li>
                   <strong>Adresse:</strong> Ervikveien 110, 9402 Harstad

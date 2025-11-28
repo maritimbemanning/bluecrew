@@ -164,7 +164,7 @@ export default function Page() {
                   Registrer behov
                 </a>
                 <a
-                  href="tel:+4792328850"
+                  href="tel:+4777029000"
                   style={{
                     display: "inline-block",
                     background: "rgba(255,255,255,0.15)",
@@ -177,7 +177,7 @@ export default function Page() {
                     border: "2px solid rgba(255,255,255,0.3)",
                   }}
                 >
-                  Ring 923 28 850
+                  Ring 77 02 90 00
                 </a>
               </div>
             </section>

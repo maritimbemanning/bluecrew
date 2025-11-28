@@ -17,7 +17,7 @@ export default function Maintenance() {
         <h1 style={{fontSize:24, margin:"14px 0 6px"}}>Vi er straks tilbake</h1>
         <p style={{opacity:.9, lineHeight:1.6}}>
           Nettsiden er midlertidig utilgjengelig på grunn av vedlikehold.
-          Prøv igjen om litt – eller kontakt oss på <a href="mailto:isak@bluecrew.no" style={{color:"#fff", fontWeight:700}}>isak@bluecrew.no</a> / <a href="tel:92328850" style={{color:"#fff", fontWeight:700}}>923 28 850</a>.
+          Prøv igjen om litt – eller kontakt oss på <a href="mailto:post@bluecrew.no" style={{color:"#fff", fontWeight:700}}>post@bluecrew.no</a> / <a href="tel:77029000" style={{color:"#fff", fontWeight:700}}>77 02 90 00</a>.
         </p>
       </div>
     </main>

@@ -200,7 +200,7 @@ export default function TermsPage() {
               <h2 style={ui.h2}>Kontakt</h2>
               <p style={ui.p}>
                 Spørsmål om vilkår? Kontakt oss på{" "}
-                <a href="mailto:isak@bluecrew.no" style={ui.a}>isak@bluecrew.no</a>.
+                <a href="mailto:post@bluecrew.no" style={ui.a}>post@bluecrew.no</a>.
               </p>
             </section>
           </div>

@@ -318,14 +318,14 @@ export default function ClientContent() {
               <strong>innen 24 timer på dagtid</strong>
             </li>
             <li>
-              Akutte saker (&lt;48 timer) prioriteres – ring 923 28 850 ved
+              Akutte saker (&lt;48 timer) prioriteres – ring 77 02 90 00 ved
               behov
             </li>
           </ul>
         </div>
         <p style={ui.successBody}>
           Har du oppdateringer eller dokumentasjon? Send det direkte til{" "}
-          <strong>isak@bluecrew.no</strong> så legger vi det til saken.
+          <strong>post@bluecrew.no</strong> så legger vi det til saken.
         </p>
       </div>
     );
@@ -593,7 +593,7 @@ export default function ClientContent() {
           </button>
           <div style={ui.submitNote}>
             Vi ringer deg så snart vurderingen er gjort. Telefon:{" "}
-            <strong>923 28 850</strong>
+            <strong>77 02 90 00</strong>
           </div>
         </div>
       </form>
