@@ -4,6 +4,7 @@ import { Hero } from "./components/home/Hero";
 import { TrustSection } from "./components/home/TrustSection";
 import { ServiceCards } from "./components/home/ServiceCards";
 import { JobsHighlight } from "./components/home/JobsHighlight";
+import { AktueltSection } from "./components/home/AktueltSection";
 import { ContactSection } from "./components/home/ContactSection";
 import { InterestSection } from "./components/home/InterestSection";
 
@@ -44,6 +45,7 @@ export default function Page() {
       <TrustSection />
       <ServiceCards />
       <JobsHighlight />
+      <AktueltSection />
       <InterestSection />
       <ContactSection />
     </SiteLayout>
