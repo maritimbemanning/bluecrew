@@ -22,11 +22,11 @@ export const metadata: Metadata = {
   title: `${articleData.title} - Bluecrew Aktuelt`,
   description: articleData.description,
   keywords: [
-    "bluecrew oppdrag",
-    "zeonaqua bemanning",
+    "ms akva fighter",
+    "zeonaqua",
     "maritim bemanning",
-    "første oppdrag",
-    "havbruk bemanning",
+    "havbruk",
+    "servicefartøy",
   ],
   openGraph: {
     title: articleData.title,
