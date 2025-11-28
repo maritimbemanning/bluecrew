@@ -127,7 +127,7 @@ export default function ForsteLeverteOppdragPage() {
               src={articleData.image}
               alt={`${articleData.vessel} - servicefartøy tilhørende ${articleData.company}`}
               fill
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", objectPosition: "center 25%" }}
               priority
             />
             <span className={styles.photoCredit}>
