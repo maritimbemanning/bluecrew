@@ -40,10 +40,11 @@ export function TrustSection() {
         <div className={styles.partnerMention}>
           <Image
             src="/hero/zeonaqua.jpg"
-            alt="ZeonAqua servicefartøy"
+            alt="MS Akva Fighter - ZeonAqua servicefartøy"
             width={60}
             height={40}
             className={styles.partnerImage}
+            title="MS Akva Fighter | Foto: ZeonAqua AS"
           />
           <span className={styles.partnerText}>Stolt leverandør til</span>
           <span className={styles.partnerName}>ZeonAqua AS</span>
