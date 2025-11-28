@@ -7,16 +7,16 @@ import { ArrowRight, Calendar, Building2 } from "lucide-react";
 export const metadata: Metadata = {
   title: "Aktuelt - Nyheter fra Bluecrew",
   description:
-    "Les siste nytt fra Bluecrew AS. Oppdateringer om leverte oppdrag, samarbeid og nyheter fra maritim bemanning.",
+    "Bilder og historier fra hverdagen ute på sjøen. Følg med på livet om bord.",
   keywords: [
     "bluecrew nyheter",
-    "maritim bemanning aktuelt",
-    "maritime oppdrag",
-    "bemanningsoppdrag Norge",
+    "maritim bemanning",
+    "sjøfolk hverdag",
+    "livet til sjøs",
   ],
   openGraph: {
     title: "Aktuelt - Nyheter fra Bluecrew AS",
-    description: "Siste nytt om leverte oppdrag og samarbeid innen maritim bemanning.",
+    description: "Bilder og historier fra hverdagen ute på sjøen.",
     type: "website",
   },
   alternates: {
@@ -28,11 +28,10 @@ export const metadata: Metadata = {
 const articles = [
   {
     slug: "forste-leverte-oppdrag",
-    title: "Første leverte oppdrag til ZeonAqua",
-    excerpt: "Vi er stolte av å ha levert vårt aller første bemanningsoppdrag til ZeonAqua AS. Dette markerer en viktig milepæl for Bluecrew.",
+    title: "Hverdagen om bord i MS Akva Fighter",
+    excerpt: "En av våre kandidater rapporterer inn med flotte vinterbilder fra hverdagen om bord hos ZeonAqua.",
     date: "2025-11-28",
     company: "ZeonAqua AS",
-    image: "/aktuelt/zeonaqua-oppdrag.jpg",
   },
 ];
 
@@ -43,7 +42,7 @@ export default function AktueltPage() {
         <div style={sx.wrapNarrow}>
           <h1 style={{ ...sx.h2, marginBottom: 12 }}>Aktuelt</h1>
           <p style={{ ...sx.leadSmall, marginBottom: 40, maxWidth: 600 }}>
-            Nyheter og oppdateringer fra Bluecrew AS
+            Bilder og historier fra hverdagen ute på sjøen
           </p>
 
           <div style={{ display: "grid", gap: 24 }}>
