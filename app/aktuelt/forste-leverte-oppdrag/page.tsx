@@ -6,12 +6,14 @@ import { sx } from "../../lib/styles";
 import { ArrowLeft, Calendar, Building2, Linkedin, Facebook, ExternalLink } from "lucide-react";
 
 const articleData = {
-  title: "Første leverte oppdrag til ZeonAqua",
-  description: "Bluecrew AS har levert sitt første bemanningsoppdrag til ZeonAqua AS - en viktig milepæl for selskapet.",
+  title: "Hverdagen om bord i MS Akva Fighter",
+  description: "Vinterbilder og innblikk fra hverdagen om bord i MS Akva Fighter hos ZeonAqua.",
   date: "2025-11-28",
   dateISO: "2025-11-28T12:00:00+01:00",
   company: "ZeonAqua AS",
-  image: "/hero/zeonaqua.jpg",
+  vessel: "MS Akva Fighter",
+  image: "/hero/ZeonAqua.jpg",
+  photoCredit: "Glenn Larsen",
   linkedin: "https://www.linkedin.com/company/zeon-aqua/",
   facebook: "https://www.facebook.com/zeonaqua.as",
 };
@@ -149,11 +151,23 @@ export default function ForsteLeverteOppdragPage() {
           }}>
             <Image
               src={articleData.image}
-              alt={`${articleData.company} - Første oppdrag levert av Bluecrew`}
+              alt={`${articleData.vessel} - servicefartøy tilhørende ${articleData.company}`}
               fill
               style={{ objectFit: "cover" }}
               priority
             />
+            <span style={{
+              position: "absolute",
+              bottom: 12,
+              right: 12,
+              fontSize: 12,
+              color: "rgba(255,255,255,0.8)",
+              background: "rgba(0,0,0,0.5)",
+              padding: "4px 10px",
+              borderRadius: 6,
+            }}>
+              {articleData.vessel} | Foto: {articleData.photoCredit}
+            </span>
           </div>
 
           {/* Article content */}
@@ -170,23 +184,26 @@ export default function ForsteLeverteOppdragPage() {
               color: "#334155",
             }}>
               <p style={{ marginBottom: 24 }}>
-                <strong>Vi er stolte av å kunngjøre at Bluecrew AS har levert sitt aller første bemanningsoppdrag!</strong>
+                En av våre kandidater har sendt inn disse flotte vinterbildene fra
+                <strong> {articleData.vessel}</strong>.
               </p>
 
               <p style={{ marginBottom: 24 }}>
-                Oppdraget ble levert til <strong>ZeonAqua AS</strong>, et selskap som opererer innen havbruksnæringen.
-                Dette markerer en viktig milepæl for Bluecrew og viser at vi er i gang med å levere på vårt løfte
-                om kvalifisert maritim bemanning.
+                Fartøyet opererer for <strong>ZeonAqua AS</strong> i havbruksnæringen langs norskekysten.
+                Hverdagen om bord handler om å støtte operasjoner på oppdrettsanlegg - transport av utstyr
+                og personell, vedlikehold og service på merdene.
               </p>
 
               <p style={{ marginBottom: 24 }}>
-                Hos Bluecrew jobber vi tett med både mannskap og rederier for å sikre riktig kompetanse til rett tid.
-                Vi er takknemlige for tilliten ZeonAqua har vist oss, og ser frem til et fortsatt godt samarbeid.
+                Arbeidsforholdene varierer med årstidene. Om vinteren kan det være mørkt og kaldt,
+                men bildene viser at det også kan være spektakulært vakkert. Solnedganger over fjorden,
+                rolige dager mellom oppdragene.
               </p>
 
               <p style={{ marginBottom: 32 }}>
-                Dette er bare begynnelsen. Vi fortsetter å bygge et nettverk av kvalifiserte sjøfolk og
-                arbeidsgivere langs hele norskekysten.
+                Vi i Bluecrew setter pris på å høre fra folkene som er ute og jobber.
+                Det gir oss innblikk i hverdagen og hjelper oss å forstå hva som fungerer
+                - og hva som kan bli bedre.
               </p>
 
               {/* ZeonAqua social links */}

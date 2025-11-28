@@ -17,19 +17,19 @@ export function AktueltSection() {
         <Link href="/aktuelt/forste-leverte-oppdrag" className={styles.card}>
           <div className={styles.imageWrapper}>
             <Image
-              src="/hero/zeonaqua.jpg"
+              src="/hero/ZeonAqua.jpg"
               alt="MS Akva Fighter - servicefartøy i solnedgang"
               fill
               className={styles.image}
             />
-            <span className={styles.photoCredit}>Foto: Glenn Larsen</span>
+            <span className={styles.photoCredit}>MS Akva Fighter | Foto: Glenn Larsen</span>
           </div>
           <div className={styles.content}>
-            <span className={styles.tag}>Havbruk</span>
-            <h3 className={styles.cardTitle}>Hverdagen ombord i MS Akva Fighter</h3>
+            <span className={styles.tag}>Fra felten</span>
+            <h3 className={styles.cardTitle}>Vinterbilder fra MS Akva Fighter</h3>
             <p className={styles.cardDescription}>
-              Vi har levert vårt første bemanningsoppdrag til ZeonAqua AS.
-              En milepæl for Bluecrew og starten på et spennende samarbeid.
+              En av våre kandidater rapporterer inn med flotte bilder fra hverdagen
+              om bord hos ZeonAqua.
             </p>
             <span className={styles.readMore}>
               Les mer <ArrowRight size={14} />
