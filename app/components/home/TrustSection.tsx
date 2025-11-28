@@ -1,4 +1,17 @@
+import Image from 'next/image';
+import { Linkedin, Facebook } from 'lucide-react';
 import * as styles from './TrustSection.css';
+
+// Partners/clients data
+const partners = [
+  {
+    name: 'ZeonAqua AS',
+    type: 'Havbruk',
+    logo: '/hero/zeonaqua.jpg',
+    linkedin: 'https://www.linkedin.com/company/zeon-aqua/',
+    facebook: 'https://www.facebook.com/zeonaqua.as',
+  },
+];
 
 export function TrustSection() {
   return (
@@ -31,6 +44,54 @@ export function TrustSection() {
             <p className={styles.cardText}>
               Mindre byråkrati, mer havforståelse. Vi bryr oss fordi det er vårt navn på spill. Fra første kontakt til mannskap om bord – vi følger opp personlig og sikrer at bemanningen matcher dine behov.
             </p>
+          </div>
+        </div>
+
+        {/* Partners Section */}
+        <div className={styles.partnersSection}>
+          <div className={styles.partnersHeader}>
+            <p className={styles.partnersTitle}>Våre samarbeidspartnere</p>
+          </div>
+          <div className={styles.partnersGrid}>
+            {partners.map((partner) => (
+              <div key={partner.name} className={styles.partnerCard}>
+                <Image
+                  src={partner.logo}
+                  alt={partner.name}
+                  width={140}
+                  height={80}
+                  className={styles.partnerLogo}
+                />
+                <div className={styles.partnerInfo}>
+                  <p className={styles.partnerName}>{partner.name}</p>
+                  <p className={styles.partnerType}>{partner.type}</p>
+                </div>
+                <div className={styles.partnerLinks}>
+                  {partner.linkedin && (
+                    <a
+                      href={partner.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.partnerLink}
+                      aria-label={`${partner.name} LinkedIn`}
+                    >
+                      <Linkedin size={16} />
+                    </a>
+                  )}
+                  {partner.facebook && (
+                    <a
+                      href={partner.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.partnerLink}
+                      aria-label={`${partner.name} Facebook`}
+                    >
+                      <Facebook size={16} />
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
