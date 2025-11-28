@@ -64,7 +64,7 @@ export const title = style({
 export const imageWrapper = style({
   position: 'relative',
   width: '100%',
-  height: 'clamp(200px, 40vw, 400px)',
+  aspectRatio: '16/9',
   borderRadius: '16px',
   overflow: 'hidden',
   marginBottom: '32px',
