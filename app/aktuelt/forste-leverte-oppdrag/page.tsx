@@ -145,7 +145,7 @@ export default function ForsteLeverteOppdragPage() {
 
               <p className={styles.paragraph}>
                 Fartøyet opererer for <strong>ZeonAqua AS</strong> i havbruksnæringen langs norskekysten.
-                Hverdagen om bord handler om å støtte operasjoner på oppdrettsanlegg - transport av utstyr
+                Hverdagen om bord handler om å støtte operasjoner på oppdrettsanlegg. Transport av utstyr
                 og personell, vedlikehold og service på merdene.
               </p>
 
@@ -157,8 +157,8 @@ export default function ForsteLeverteOppdragPage() {
 
               <p className={styles.lastParagraph}>
                 Vi i Bluecrew setter pris på å høre fra folkene som er ute og jobber.
-                Det gir oss innblikk i hverdagen og hjelper oss å forstå hva som fungerer
-                - og hva som kan bli bedre.
+                Det gir oss innblikk i hverdagen og hjelper oss å forstå hva som fungerer,
+                og hva som kan bli bedre.
               </p>
 
               {/* ZeonAqua social links */}
