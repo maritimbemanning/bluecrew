@@ -1,3 +1,5 @@
+import Image from 'next/image';
+import { Linkedin, Facebook } from 'lucide-react';
 import * as styles from './TrustSection.css';
 
 export function TrustSection() {
@@ -31,6 +33,40 @@ export function TrustSection() {
             <p className={styles.cardText}>
               Mindre byråkrati, mer havforståelse. Vi bryr oss fordi det er vårt navn på spill. Fra første kontakt til mannskap om bord – vi følger opp personlig og sikrer at bemanningen matcher dine behov.
             </p>
+          </div>
+        </div>
+
+        {/* Subtle partner mention with image */}
+        <div className={styles.partnerMention}>
+          <Image
+            src="/hero/zeonaqua.jpg"
+            alt="MS Akva Fighter - ZeonAqua servicefartøy"
+            width={60}
+            height={40}
+            className={styles.partnerImage}
+            title="MS Akva Fighter | Foto: Glenn Larsen"
+          />
+          <span className={styles.partnerText}>Stolt leverandør til</span>
+          <span className={styles.partnerName}>ZeonAqua AS</span>
+          <div className={styles.partnerLinks}>
+            <a
+              href="https://www.linkedin.com/company/zeon-aqua/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.partnerLink}
+              aria-label="ZeonAqua LinkedIn"
+            >
+              <Linkedin size={14} />
+            </a>
+            <a
+              href="https://www.facebook.com/zeonaqua.as"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.partnerLink}
+              aria-label="ZeonAqua Facebook"
+            >
+              <Facebook size={14} />
+            </a>
           </div>
         </div>
       </div>
