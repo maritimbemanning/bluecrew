@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import { SalaryCalculator } from "./SalaryCalculator";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no";
@@ -81,6 +82,15 @@ export default function LonnKalkulatorPage() {
 
   return (
     <>
+      <Script id="gads-conversion-kalkulator" strategy="afterInteractive">
+        {`
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17731534362/WdQxCN7Fu8QbEJr8hodC',
+            'value': 1.0,
+            'currency': 'NOK'
+          });
+        `}
+      </Script>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

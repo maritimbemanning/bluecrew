@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import Script from "next/script";
 import SiteLayout from "./components/SiteLayout";
 import { Hero } from "./components/home/Hero";
 import { TrustSection } from "./components/home/TrustSection";
@@ -40,7 +41,17 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <SiteLayout active="home">
+    <>
+      <Script id="gads-conversion-home" strategy="afterInteractive">
+        {`
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17731534362/WdQxCN7Fu8QbEJr8hodC',
+            'value': 1.0,
+            'currency': 'NOK'
+          });
+        `}
+      </Script>
+      <SiteLayout active="home">
       <Hero />
       <AktueltSection />
       <TrustSection />
@@ -49,5 +60,6 @@ export default function Page() {
       <InterestSection />
       <ContactSection />
     </SiteLayout>
+    </>
   );
 }

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import SiteLayout from "../components/SiteLayout";
 import { sx } from "../lib/styles";
 
@@ -36,7 +37,17 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <SiteLayout active="kunde">
+    <>
+      <Script id="gads-conversion-kunde" strategy="afterInteractive">
+        {`
+          gtag('event', 'conversion', {
+            'send_to': 'AW-17731534362/WdQxCN7Fu8QbEJr8hodC',
+            'value': 1.0,
+            'currency': 'NOK'
+          });
+        `}
+      </Script>
+      <SiteLayout active="kunde">
       <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
           <h1 style={sx.h2}>Bemanningspartner for hele den maritime næringen</h1>
@@ -72,6 +83,7 @@ export default function Page() {
         </div>
       </section>
     </SiteLayout>
+    </>
   );
 }
 
