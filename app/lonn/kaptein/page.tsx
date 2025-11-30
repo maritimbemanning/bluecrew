@@ -46,6 +46,7 @@ export default function Page() {
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'AW-17731534362');
+          gtag('config', 'G-T4LZ5PSGP9');
         `}
       </Script>
       <SiteLayout active="jobbsoker">

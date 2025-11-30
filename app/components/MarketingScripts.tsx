@@ -5,10 +5,11 @@ import Script from "next/script";
 import { getConsent } from "../lib/consent";
 
 /**
- * Loads Google Ads (gtag.js) and Meta Pixel only when user has given marketing consent.
+ * Loads Google Ads (gtag.js), Google Analytics 4, and Meta Pixel only when user has given marketing consent.
  * GDPR-compliant: no tracking without explicit opt-in.
  *
  * Google Ads ID: AW-17731534362
+ * Google Analytics 4 ID: G-T4LZ5PSGP9
  * Meta Pixel ID: 1367183524887510
  */
 export default function MarketingScripts() {
@@ -46,6 +47,7 @@ export default function MarketingScripts() {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'AW-17731534362');
+            gtag('config', 'G-T4LZ5PSGP9');
           `,
         }}
       />
