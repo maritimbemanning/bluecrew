@@ -318,6 +318,17 @@ export default function CandidateForm() {
     [vippsSession, router, csrfToken]
   );
 
+  // Fire Google Ads conversion event on success
+  useEffect(() => {
+    if (submitted && typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "conversion", {
+        send_to: "AW-17731534362/WdQxCN7Fu8QbEJr8hodC",
+        value: 1.0,
+        currency: "NOK",
+      });
+    }
+  }, [submitted]);
+
   // Success state
   if (submitted) {
     return (
