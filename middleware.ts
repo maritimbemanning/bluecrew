@@ -19,12 +19,12 @@ const csp = [
   "form-action 'self' https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com",
   "frame-ancestors 'none'",
   "frame-src 'self' https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://challenges.cloudflare.com https://www.googletagmanager.com",
-  "img-src 'self' data: blob: https://clerk.bluecrew.no https://accounts.bluecrew.no https://img.clerk.com https://*.clerk.com https://*.clerk.dev https://*.clerk.accounts.dev https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://clerk.bluecrew.no https://accounts.bluecrew.no https://img.clerk.com https://*.clerk.com https://*.clerk.dev https://*.clerk.accounts.dev https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com",
   "font-src 'self' https://fonts.gstatic.com data:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com",
   `script-src 'self' 'unsafe-inline' ${isDevelopment ? "'unsafe-eval'" : ""} https://plausible.io https://cdn.jsdelivr.net https://vercel.live https://www.googletagmanager.com https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://challenges.cloudflare.com blob:`,
   "worker-src 'self' blob:",
-  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com https://admincrew.no https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.ingest.de.sentry.io https://*.ingest.us.sentry.io",
+  "connect-src 'self' https://api.resend.com https://*.supabase.co https://*.supabase.net https://*.upstash.io https://plausible.io https://api.vipps.no https://data.brreg.no https://vercel.live https://clerk.bluecrew.no https://accounts.bluecrew.no https://*.clerk.accounts.dev https://*.clerk.dev https://*.clerk.com https://clerk-telemetry.com https://challenges.cloudflare.com https://admincrew.no https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.ingest.de.sentry.io https://*.ingest.us.sentry.io",
   ...(isDevelopment ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
