@@ -42,6 +42,19 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
+        strategy="afterInteractive"
+      />
+      <Script id="gads-init-home" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-17731534362');
+          gtag('config', 'G-T4LZ5PSGP9');
+        `}
+      </Script>
       <Script id="gads-conversion-home" strategy="afterInteractive">
         {`
           gtag('event', 'conversion', {
