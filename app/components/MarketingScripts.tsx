@@ -5,8 +5,11 @@ import Script from "next/script";
 import { getConsent } from "../lib/consent";
 
 /**
- * Loads Meta Pixel and Google Ads only when user has given marketing consent.
+ * Loads Google Ads (gtag.js) and Meta Pixel only when user has given marketing consent.
  * GDPR-compliant: no tracking without explicit opt-in.
+ *
+ * Google Ads ID: AW-17731534362
+ * Meta Pixel ID: 1367183524887510
  */
 export default function MarketingScripts() {
   const [hasConsent, setHasConsent] = useState(false);
@@ -28,6 +31,25 @@ export default function MarketingScripts() {
 
   return (
     <>
+      {/* Google Ads (gtag.js) - only with marketing consent */}
+      <Script
+        id="gtag-js"
+        strategy="lazyOnload"
+        src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
+      />
+      <Script
+        id="gtag-init"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-17731534362');
+          `,
+        }}
+      />
+
       {/* Meta Pixel - only with marketing consent */}
       <Script
         id="meta-pixel"
