@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import SiteLayout from "../../components/SiteLayout";
 import { sx } from "../../lib/styles";
 
@@ -34,8 +35,21 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <SiteLayout active="jobbsoker">
-      <section style={sx.sectionAlt}>
+    <>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
+        strategy="afterInteractive"
+      />
+      <Script id="google-ads-init" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-17731534362');
+        `}
+      </Script>
+      <SiteLayout active="jobbsoker">
+        <section style={sx.sectionAlt}>
         <div style={sx.wrapNarrow}>
           <div style={{ 
             marginBottom: 32, 
@@ -561,6 +575,7 @@ export default function Page() {
         </div>
       </section>
     </SiteLayout>
+    </>
   );
 }
 

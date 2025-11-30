@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import SiteLayout from "../../components/SiteLayout";
 
 export const metadata: Metadata = {
@@ -35,8 +36,21 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <SiteLayout active="jobbsoker">
-      <main style={{ background: "#f8fafc" }}>
+    <>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=AW-17731534362"
+        strategy="afterInteractive"
+      />
+      <Script id="google-ads-maskinoffiser" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-17731534362');
+        `}
+      </Script>
+      <SiteLayout active="jobbsoker">
+        <main style={{ background: "#f8fafc" }}>
         {/* Hero */}
         <section style={{ padding: "80px 0 40px", background: "linear-gradient(180deg, rgba(2,6,23,0.03), rgba(2,6,23,0))" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 20px" }}>
@@ -644,6 +658,7 @@ export default function Page() {
         </section>
       </main>
     </SiteLayout>
+    </>
   );
 }
 
