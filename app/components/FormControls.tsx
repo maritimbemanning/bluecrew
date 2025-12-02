@@ -79,10 +79,18 @@ export function Textarea({
 }) {
   const id = `${name}-id`;
   return (
-    <label style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }} htmlFor={id}>
-      <span>{label}{required ? " *" : ""}</span>
+    <label
+      style={{ ...sx.label, gridColumn: full ? "1 / -1" : undefined }}
+      htmlFor={id}
+    >
+      <span>
+        {label}
+        {required ? " *" : ""}
+      </span>
       {description ? (
-        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>{description}</span>
+        <span style={{ fontSize: 12, color: "#475569", fontWeight: 500 }}>
+          {description}
+        </span>
       ) : null}
       <textarea
         id={id}
@@ -92,7 +100,11 @@ export function Textarea({
         maxLength={maxLength}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-err` : undefined}
-        style={{ ...sx.input, height: rows * 24, ...(error ? sx.inputErr : null) }}
+        style={{
+          ...sx.input,
+          height: rows * 24,
+          ...(error ? sx.inputErr : null),
+        }}
         onChange={onChange}
         onBlur={onBlur}
       />
@@ -197,7 +209,11 @@ export function FileInput({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
-        style={{ ...sx.input, cursor: "pointer", ...(error ? sx.inputErr : null) }}
+        style={{
+          ...sx.input,
+          cursor: "pointer",
+          ...(error ? sx.inputErr : null),
+        }}
         onChange={onChange}
       />
       {error ? (
@@ -208,4 +224,3 @@ export function FileInput({
     </label>
   );
 }
-

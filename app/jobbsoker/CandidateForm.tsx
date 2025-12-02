@@ -1,12 +1,13 @@
 "use client";
 // Cache-bust: 2025-12-02-CSRF
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import type { CSSProperties } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { CSSProperties } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { FileInput, Input, Textarea } from "../components/FormControls";
 import { WORK } from "../lib/constants";
+import { useCsrf } from "../lib/hooks/useCsrf";
 import { sx } from "../lib/styles";
 import {
   candidateSchema,
@@ -14,7 +15,6 @@ import {
   type CandidateFormValues,
 } from "../lib/validation";
 import { VippsVerifiedBadge } from "./VippsLogin";
-import { useCsrf } from "../lib/hooks/useCsrf";
 
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
@@ -611,9 +611,7 @@ export default function CandidateContent() {
               name="email"
               type="email"
               required
-              defaultValue={
-                (vippsSession?.email || draftValues?.email) ?? ""
-              }
+              defaultValue={(vippsSession?.email || draftValues?.email) ?? ""}
               error={fieldErrors.email}
               onChange={() => clearFieldError("email")}
             />
@@ -778,78 +776,78 @@ export default function CandidateContent() {
             <p style={{ fontSize: 14, color: "#64748b", marginBottom: 12 }}>
               Huk av relevante fagområder. Åpne flere kategorier ved behov.
             </p>
-          
-          <div style={{ display: "grid", gap: 12 }}>
-            {workEntries.map(([main, subs]) => {
-              const open = !!openMain[main];
-              return (
-                <div key={main} style={ui.workPanel}>
-                  <label
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={open}
-                      onChange={() => toggleMain(main)}
-                    />
-                    <span style={{ fontWeight: 700, color: "#0b1f3a" }}>
-                      {main}
-                    </span>
-                  </label>
-                  {open ? (
-                    <div>
-                      <div style={sx.tags}>
-                        {(subs as string[]).map((sub) =>
-                          sub === "Annet" ? (
-                            <div key={sub} style={{ flex: 1, minWidth: 240 }}>
-                              <label style={sx.label}>
-                                <span>Annet (kort beskrivelse)</span>
+
+            <div style={{ display: "grid", gap: 12 }}>
+              {workEntries.map(([main, subs]) => {
+                const open = !!openMain[main];
+                return (
+                  <div key={main} style={ui.workPanel}>
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={open}
+                        onChange={() => toggleMain(main)}
+                      />
+                      <span style={{ fontWeight: 700, color: "#0b1f3a" }}>
+                        {main}
+                      </span>
+                    </label>
+                    {open ? (
+                      <div>
+                        <div style={sx.tags}>
+                          {(subs as string[]).map((sub) =>
+                            sub === "Annet" ? (
+                              <div key={sub} style={{ flex: 1, minWidth: 240 }}>
+                                <label style={sx.label}>
+                                  <span>Annet (kort beskrivelse)</span>
+                                  <input
+                                    name={`other_${main}`}
+                                    placeholder="Skriv kort om ønsket arbeid"
+                                    value={otherText[main] || ""}
+                                    onChange={(e) =>
+                                      setOtherText((prev) => ({
+                                        ...prev,
+                                        [main]: e.target.value,
+                                      }))
+                                    }
+                                    style={sx.input}
+                                  />
+                                </label>
+                              </div>
+                            ) : (
+                              <label key={sub} style={sx.tagItem}>
                                 <input
-                                  name={`other_${main}`}
-                                  placeholder="Skriv kort om ønsket arbeid"
-                                  value={otherText[main] || ""}
-                                  onChange={(e) =>
-                                    setOtherText((prev) => ({
-                                      ...prev,
-                                      [main]: e.target.value,
-                                    }))
-                                  }
-                                  style={sx.input}
+                                  type="checkbox"
+                                  name="work_main"
+                                  value={`${main}:${sub}`}
+                                  onChange={() => clearFieldError("work_main")}
                                 />
+                                <span>{sub}</span>
                               </label>
-                            </div>
-                          ) : (
-                            <label key={sub} style={sx.tagItem}>
-                              <input
-                                type="checkbox"
-                                name="work_main"
-                                value={`${main}:${sub}`}
-                                onChange={() => clearFieldError("work_main")}
-                              />
-                              <span>{sub}</span>
-                            </label>
-                          )
-                        )}
+                            )
+                          )}
+                        </div>
+                        <small style={{ color: "#64748b" }}>
+                          Fyll inn «Annet» dersom spesifikke stillinger mangler
+                        </small>
                       </div>
-                      <small style={{ color: "#64748b" }}>
-                        Fyll inn «Annet» dersom spesifikke stillinger mangler
-                      </small>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-          {fieldErrors.work_main ? (
-            <div style={sx.errText} role="alert">
-              {fieldErrors.work_main}
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
-          ) : null}
+            {fieldErrors.work_main ? (
+              <div style={sx.errText} role="alert">
+                {fieldErrors.work_main}
+              </div>
+            ) : null}
           </div>
         </div>
 
