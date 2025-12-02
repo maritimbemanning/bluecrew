@@ -1008,6 +1008,18 @@ export const sx: Record<string, CSSProperties> = {
   },
   inputErr: { borderColor: "#ef4444", boxShadow: "0 0 0 3px rgba(239, 68, 68, 0.15)" },
   errText: { color: "#b91c1c", fontSize: 12 },
+  errContainer: {
+    padding: 12,
+    borderRadius: 12,
+    border: "2px solid #ef4444",
+    background: "rgba(239, 68, 68, 0.05)",
+  },
+  errContainerLg: {
+    padding: 16,
+    borderRadius: 16,
+    border: "2px solid #ef4444",
+    background: "rgba(239, 68, 68, 0.05)",
+  },
   honeypot: {
     position: "absolute",
     left: "-9999px",

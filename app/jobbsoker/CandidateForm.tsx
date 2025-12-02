@@ -710,16 +710,7 @@ export default function CandidateContent() {
           </div>
 
           <div
-            style={{
-              padding: fieldErrors.wants_temporary ? 12 : 0,
-              borderRadius: 12,
-              border: fieldErrors.wants_temporary
-                ? "2px solid #ef4444"
-                : "none",
-              background: fieldErrors.wants_temporary
-                ? "rgba(239, 68, 68, 0.05)"
-                : "transparent",
-            }}
+            style={fieldErrors.wants_temporary ? sx.errContainer : undefined}
           >
             <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
               Er du åpen for midlertidige oppdrag? *
@@ -755,12 +746,7 @@ export default function CandidateContent() {
           <div
             style={{
               marginTop: 12,
-              padding: fieldErrors.work_main ? 16 : 0,
-              borderRadius: 16,
-              border: fieldErrors.work_main ? "2px solid #ef4444" : "none",
-              background: fieldErrors.work_main
-                ? "rgba(239, 68, 68, 0.05)"
-                : "transparent",
+              ...(fieldErrors.work_main ? sx.errContainerLg : {}),
             }}
           >
             <div
@@ -914,10 +900,7 @@ export default function CandidateContent() {
             style={{
               ...ui.consentBox,
               ...(fieldErrors.stcw_confirm || fieldErrors.gdpr
-                ? {
-                    border: "2px solid #ef4444",
-                    background: "rgba(239, 68, 68, 0.08)",
-                  }
+                ? { border: sx.errContainer.border, background: sx.errContainer.background }
                 : {}),
             }}
           >
