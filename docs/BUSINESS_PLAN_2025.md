@@ -403,7 +403,7 @@ Med 10-15 placements År 1 → break-even Q3/Q4
 **Frontend (bluecrew.no)**
 - Next.js 15 (app router, SSR, SEO-optimized)
 - TypeScript (type-safe, maintainable)
-- Vanilla Extract CSS (modern styling)
+- Inline React styles + CSS (minimal dependencies)
 - Vercel Analytics (performance tracking)
 
 **Admin Platform (admin.bluecrew.no)**
