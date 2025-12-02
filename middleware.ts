@@ -71,13 +71,14 @@ function applySecurityHeaders(res: NextResponse) {
  */
 export function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
-  const { pathname } = url;
+  const { pathname, host } = url;
 
-  // Hard guard: Never expose /admin routes from this public site
-  if (pathname.startsWith("/admin")) {
-    // Return 404 to avoid leaking that an admin area exists
-    const res = new NextResponse("Not Found", { status: 404 });
-    return applySecurityHeaders(res);
+  // Redirect www.bluecrew.no → bluecrew.no (canonical domain)
+  // This ensures Google indexes only the non-www version
+  if (host === "www.bluecrew.no") {
+    const redirectUrl = new URL(req.url);
+    redirectUrl.host = "bluecrew.no";
+    return NextResponse.redirect(redirectUrl, 301);
   }
 
   // Read maintenance flag from env (supports true/1/on). Evaluated at runtime in Edge.
