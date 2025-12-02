@@ -687,9 +687,20 @@ export default function CandidateContent() {
             />
           </div>
 
-          <div>
+          <div
+            style={{
+              padding: fieldErrors.wants_temporary ? 12 : 0,
+              borderRadius: 12,
+              border: fieldErrors.wants_temporary
+                ? "2px solid #ef4444"
+                : "none",
+              background: fieldErrors.wants_temporary
+                ? "rgba(239, 68, 68, 0.05)"
+                : "transparent",
+            }}
+          >
             <div style={{ fontWeight: 700, marginBottom: 8, color: "#0b1f3a" }}>
-              Er du åpen for midlertidige oppdrag?
+              Er du åpen for midlertidige oppdrag? *
             </div>
             <div style={sx.inlineRadios}>
               <label style={sx.radioLabel}>
@@ -719,7 +730,17 @@ export default function CandidateContent() {
             ) : null}
           </div>
 
-          <div style={{ marginTop: 12 }}>
+          <div
+            style={{
+              marginTop: 12,
+              padding: fieldErrors.work_main ? 16 : 0,
+              borderRadius: 16,
+              border: fieldErrors.work_main ? "2px solid #ef4444" : "none",
+              background: fieldErrors.work_main
+                ? "rgba(239, 68, 68, 0.05)"
+                : "transparent",
+            }}
+          >
             <div
               style={{
                 fontWeight: 700,
@@ -728,12 +749,12 @@ export default function CandidateContent() {
                 fontSize: 16,
               }}
             >
-              Ønsket arbeid
+              Ønsket arbeid *
             </div>
             <p style={{ fontSize: 14, color: "#64748b", marginBottom: 12 }}>
               Huk av relevante fagområder. Åpne flere kategorier ved behov.
             </p>
-          </div>
+          
           <div style={{ display: "grid", gap: 12 }}>
             {workEntries.map(([main, subs]) => {
               const open = !!openMain[main];
@@ -805,6 +826,7 @@ export default function CandidateContent() {
               {fieldErrors.work_main}
             </div>
           ) : null}
+          </div>
         </div>
 
         <div style={ui.divider} />
@@ -866,14 +888,24 @@ export default function CandidateContent() {
             />
           </div>
 
-          <div style={ui.consentBox}>
+          <div
+            style={{
+              ...ui.consentBox,
+              ...(fieldErrors.stcw_confirm || fieldErrors.gdpr
+                ? {
+                    border: "2px solid #ef4444",
+                    background: "rgba(239, 68, 68, 0.08)",
+                  }
+                : {}),
+            }}
+          >
             <label
               style={{
                 display: "flex",
                 alignItems: "flex-start",
                 gap: 10,
                 fontSize: 14.5,
-                color: "#0b1f3a",
+                color: fieldErrors.stcw_confirm ? "#b91c1c" : "#0b1f3a",
                 cursor: "pointer",
               }}
             >
@@ -889,7 +921,7 @@ export default function CandidateContent() {
               <span>
                 Jeg bekrefter at jeg har eller vil skaffe{" "}
                 <strong>STCW grunnleggende sikkerhetskurs</strong> og
-                <strong> gyldig helseattest</strong> før oppdrag.
+                <strong> gyldig helseattest</strong> før oppdrag. *
               </span>
             </label>
             {fieldErrors.stcw_confirm ? (
@@ -904,7 +936,7 @@ export default function CandidateContent() {
                 alignItems: "flex-start",
                 gap: 10,
                 fontSize: 14.5,
-                color: "#0b1f3a",
+                color: fieldErrors.gdpr ? "#b91c1c" : "#0b1f3a",
                 cursor: "pointer",
               }}
             >
@@ -921,7 +953,7 @@ export default function CandidateContent() {
               <span>
                 Jeg samtykker til at Bluecrew AS lagrer og behandler
                 personopplysninger, CV og sertifikater for å matche meg mot
-                oppdrag. Data lagres i <strong>12–24 måneder</strong>. {""}
+                oppdrag. Data lagres i <strong>12–24 måneder</strong>. *{" "}
                 <Link
                   href="/personvern"
                   style={{
