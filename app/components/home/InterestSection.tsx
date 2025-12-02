@@ -46,9 +46,15 @@ export function InterestSection() {
 
     const res = await fetch("/api/submit-interest", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
       body: JSON.stringify(payload),
     });
+
+    // Debug logging
+    console.log("[InterestSection] API response status:", res.status);
 
     if (res.ok) {
       setState("success");

@@ -25,10 +25,13 @@ function getClientIp(req: Request) {
 }
 
 export async function POST(req: Request) {
+  logger.info("[submit-interest] POST request received");
+
   try {
     // CSRF Protection
     try {
       await requireCsrfToken(req);
+      logger.info("[submit-interest] CSRF validation passed");
     } catch (error) {
       logger.error("CSRF validation failed:", error);
       return NextResponse.json(
@@ -68,14 +71,19 @@ export async function POST(req: Request) {
     const ip = getClientIp(req);
     const user_agent = req.headers.get("user-agent") || null;
 
+    logger.info("[submit-interest] Parsed data:", { name, email, role, consent, region });
+
     const errors: string[] = [];
     if (name.length < 2) errors.push("Oppgi fullt navn.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("Oppgi gyldig e-post.");
     if (!role) errors.push("Velg rolle.");
     if (!consent) errors.push("Samtykke mangler.");
     if (errors.length) {
+      logger.error("[submit-interest] Validation errors:", errors);
       return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
     }
+
+    logger.info("[submit-interest] Validation passed, proceeding to save and email");
 
     // Store in Supabase (best effort)
     try {
