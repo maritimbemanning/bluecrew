@@ -18,7 +18,8 @@
       "Bash(curl:*)",
       "Bash(dir:*)",
       "Bash(findstr:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git ls-tree:*)"
     ],
     "deny": [],
     "ask": []
