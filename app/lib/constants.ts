@@ -178,7 +178,7 @@ export const FAQS = [
   },
   {
     q: "Hvordan kommer jeg i kontakt med dere?",
-    a: "Ring oss på 923 28 850 eller send e-post til isak@bluecrew.no. Vi svarer raskt og følger opp alle henvendelser personlig.",
+    a: "Ring oss på 77 02 90 00 eller send e-post til post@bluecrew.no. Vi svarer raskt og følger opp alle henvendelser personlig.",
   },
 ];
 
@@ -567,8 +567,8 @@ export const MUNICIPALITIES_BY_COUNTY: Record<string, string[]> = {
 };
 
 export const CONTACT_POINTS = [
-  { label: "Ring oss", value: "923 28 850", href: "tel:92328850" },
-  { label: "Send e-post", value: "isak@bluecrew.no", href: "mailto:isak@bluecrew.no" },
+  { label: "Ring oss", value: "77 02 90 00", href: "tel:77029000" },
+  { label: "Send e-post", value: "post@bluecrew.no", href: "mailto:post@bluecrew.no" },
   { label: "Besøk oss", value: "Ervikveien 110, 9402 Harstad" },
 ];
 

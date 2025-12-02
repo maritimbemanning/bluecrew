@@ -504,8 +504,8 @@ export default function CandidateContent() {
         </div>
         <p style={ui.successBody}>
           Spørsmål eller oppdateringer? Send e-post til{" "}
-          <strong>isak@bluecrew.no</strong> eller ring{" "}
-          <strong>923 28 850</strong>.
+          <strong>post@bluecrew.no</strong> eller ring{" "}
+          <strong>77 02 90 00</strong>.
         </p>
         <Link
           href="/"

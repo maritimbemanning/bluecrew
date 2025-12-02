@@ -119,7 +119,7 @@ export default function TermsPage() {
           </p>
           <div style={ui.badgeRow}>
             <span style={ui.badge}>Oppdatert: {new Date().toLocaleDateString("no-NO")}</span>
-            <span style={ui.badge}>Bluecrew AS · Org.nr: 936 321 194</span>
+            <span style={ui.badge}>Bluecrew AS · Org.nr: 936 463 843</span>
           </div>
         </div>
       </header>
@@ -200,7 +200,7 @@ export default function TermsPage() {
               <h2 style={ui.h2}>Kontakt</h2>
               <p style={ui.p}>
                 Spørsmål om vilkår? Kontakt oss på{" "}
-                <a href="mailto:isak@bluecrew.no" style={ui.a}>isak@bluecrew.no</a>.
+                <a href="mailto:post@bluecrew.no" style={ui.a}>post@bluecrew.no</a>.
               </p>
             </section>
           </div>

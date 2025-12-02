@@ -317,7 +317,7 @@ export default function ClientContent() {
         </div>
         <p style={ui.successBody}>
           Har du oppdateringer eller dokumentasjon? Send det direkte til{" "}
-          <strong>isak@bluecrew.no</strong> så legger vi det til saken.
+          <strong>post@bluecrew.no</strong> så legger vi det til saken.
         </p>
       </div>
     );

@@ -8,7 +8,10 @@
       "Bash(npm run build:*)",
       "Bash(npm outdated:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nsecurity: Enable CSRF protection on all forms\n\n- Add /api/csrf endpoint for token generation\n- Add useCsrf hook for client-side token management\n- Enable CSRF validation on submit-candidate, submit-client, submit-interest\n- Add rate limiting to /api/contact\n- All forms now fetch CSRF token on mount and include in submissions\n\nSecurity improvements:\n- CSRF tokens stored in httpOnly cookies with HMAC signature\n- Tokens valid for 1 hour\n- Automatic token refresh after failed submissions\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+      "Bash(git commit -m \"$(cat <<''EOF''\nsecurity: Enable CSRF protection on all forms\n\n- Add /api/csrf endpoint for token generation\n- Add useCsrf hook for client-side token management\n- Enable CSRF validation on submit-candidate, submit-client, submit-interest\n- Add rate limiting to /api/contact\n- All forms now fetch CSRF token on mount and include in submissions\n\nSecurity improvements:\n- CSRF tokens stored in httpOnly cookies with HMAC signature\n- Tokens valid for 1 hour\n- Automatic token refresh after failed submissions\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql"
     ],
     "deny": [],
     "ask": []

@@ -134,8 +134,8 @@ export default function PersonvernPage() {
           </p>
           <div style={ui.badgeRow}>
             <span style={ui.badge}>Oppdatert: 6. november 2025</span>
-            <span style={ui.badge}>Org.nr: 936 321 194</span>
-            <span style={ui.badge}>Kontakt: isak@bluecrew.no</span>
+            <span style={ui.badge}>Org.nr: 936 463 843</span>
+            <span style={ui.badge}>Kontakt: post@bluecrew.no</span>
           </div>
         </div>
       </header>
@@ -157,8 +157,8 @@ export default function PersonvernPage() {
             <section style={ui.card}>
               <h2 style={ui.h2}>Behandlingsansvarlig</h2>
               <p style={ui.p}>
-                Bluecrew AS (Org.nr: 936 321 194), Ervikveien 110, 9402 Harstad. E-post:{" "}
-                <a href="mailto:isak@bluecrew.no" style={ui.a}>isak@bluecrew.no</a>.
+                Bluecrew AS (Org.nr: 936 463 843), Ervikveien 110, 9402 Harstad. E-post:{" "}
+                <a href="mailto:post@bluecrew.no" style={ui.a}>post@bluecrew.no</a>.
               </p>
             </section>
 
@@ -272,7 +272,7 @@ export default function PersonvernPage() {
               <h2 style={ui.h2}>Kontakt</h2>
               <p style={ui.p}>
                 Spørsmål om personvern? Skriv til{" "}
-                <a href="mailto:isak@bluecrew.no" style={ui.a}>isak@bluecrew.no</a>.
+                <a href="mailto:post@bluecrew.no" style={ui.a}>post@bluecrew.no</a>.
               </p>
             </section>
           </div>

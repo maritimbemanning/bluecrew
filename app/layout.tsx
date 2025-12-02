@@ -96,7 +96,7 @@ export default function RootLayout({
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+47-923-28-850",
+      telephone: "+47-77-02-90-00",
       contactType: "customer service",
       areaServed: "NO",
       availableLanguage: ["Norwegian", "English"],
@@ -114,7 +114,7 @@ export default function RootLayout({
     "@id": "https://bluecrew.no/#organization",
     name: "Bluecrew AS",
     image: logoUrl,
-    telephone: "+47-923-28-850",
+    telephone: "+47-77-02-90-00",
     email: "post@bluecrew.no",
     address: {
       "@type": "PostalAddress",

@@ -46,7 +46,7 @@ export function ContactSection(){
               ))}
             </ul>
             <p className={styles.legal}>
-              Org.nr: 936 321 194 • GDPR-tilpasset behandling av persondata
+              Org.nr: 936 463 843 • GDPR-tilpasset behandling av persondata
             </p>
           </aside>
         </div>
