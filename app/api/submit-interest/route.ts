@@ -100,25 +100,42 @@ export async function POST(req: Request) {
       // continue with email notifications even if DB fails
     }
 
-    // Internal notification
-    await sendNotificationEmail({
-      subject: "Ny interesse fra kandidat",
-      text: [
-        "NY INTERESSE",
-        `Navn: ${name}`,
-        `E-post: ${email}`,
-        `Telefon: ${phone || "-"}`,
-        `Rolle: ${role}`,
-        `Region: ${region || "-"}`,
-        `Erfaring: ${experience ?? "-"}`,
-        `Oppstart: ${start_from || "-"}`,
-        `Sertifikater: ${certificates || "-"}`,
-        `Tilleggsinfo: ${notes || "-"}`,
-      ].join("\n"),
-    });
+    // Internal notification - MUST succeed
+    try {
+      const emailResult = await sendNotificationEmail({
+        subject: "Ny interesse fra kandidat",
+        text: [
+          "NY INTERESSE",
+          `Navn: ${name}`,
+          `E-post: ${email}`,
+          `Telefon: ${phone || "-"}`,
+          `Rolle: ${role}`,
+          `Region: ${region || "-"}`,
+          `Erfaring: ${experience ?? "-"}`,
+          `Oppstart: ${start_from || "-"}`,
+          `Sertifikater: ${certificates || "-"}`,
+          `Tilleggsinfo: ${notes || "-"}`,
+        ].join("\n"),
+      });
 
-    // Candidate receipt
-    await sendInterestReceipt({ name, email });
+      if (!emailResult) {
+        logger.error("[submit-interest] sendNotificationEmail returned null - email not configured");
+        return NextResponse.json({ error: "E-post er ikke konfigurert. Kontakt oss på post@bluecrew.no" }, { status: 500 });
+      }
+
+      logger.info("[submit-interest] Notification email sent successfully", { id: emailResult?.data?.id });
+    } catch (emailError) {
+      logger.error("[submit-interest] Failed to send notification email:", emailError);
+      return NextResponse.json({ error: "Kunne ikke sende e-post. Prøv igjen eller kontakt oss direkte." }, { status: 500 });
+    }
+
+    // Candidate receipt - best effort (don't fail if this fails)
+    try {
+      await sendInterestReceipt({ name, email });
+      logger.info("[submit-interest] Receipt sent to candidate", { email });
+    } catch (receiptError) {
+      logger.error("[submit-interest] Failed to send receipt (non-critical):", receiptError);
+    }
 
     // Respond
     const wantsJson = (req.headers.get("accept") || "").includes("application/json");
