@@ -24,6 +24,8 @@ export function InterestSection() {
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    console.log("[InterestSection] Form submitted - onSubmit called");
+
     setError(null);
     setState("submitting");
     const form = e.currentTarget;
@@ -34,8 +36,19 @@ export function InterestSection() {
       typeof fd.get("company") === "string" &&
       (fd.get("company") as string).trim()
     ) {
+      console.log("[InterestSection] Honeypot triggered");
       setState("success");
       form.reset();
+      return;
+    }
+
+    // Check CSRF token
+    console.log("[InterestSection] CSRF token status:", { csrfToken, loading: !csrfToken });
+
+    if (!csrfToken) {
+      console.error("[InterestSection] No CSRF token available!");
+      setError("Vennligst vent mens siden laster inn, og prøv igjen.");
+      setState("error");
       return;
     }
 
@@ -44,42 +57,55 @@ export function InterestSection() {
       csrf_token: csrfToken,
     };
 
-    const res = await fetch("/api/submit-interest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    console.log("[InterestSection] Sending payload to API...");
 
-    // Debug logging
-    console.log("[InterestSection] API response status:", res.status);
+    try {
+      console.log("[InterestSection] About to call fetch...");
+      const res = await fetch("/api/submit-interest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      setState("success");
-      form.reset();
-      try {
-        if (typeof window !== "undefined" && window.plausible) {
-          window.plausible("Interest Submitted", {
-            props: { form: "candidate_interest" },
-          });
-        }
-        // Track to Google Ads (Candidate Lead Conversion)
-        if (typeof window !== "undefined" && window.gtag) {
-          window.gtag("event", "conversion", {
-            send_to: "AW-17715214678/YYYYYY", // 👈 Erstatt YYYYYY med conversion label for kandidater
-            value: 0.5,
-            currency: "NOK",
-            transaction_id: `candidate_${Date.now()}`,
-          });
-        }
-      } catch {}
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data?.error || "Noe gikk galt. Prøv igjen senere.");
+      console.log("[InterestSection] Fetch completed, status:", res.status);
+
+      if (res.ok) {
+        console.log("[InterestSection] Success! Resetting form...");
+        setState("success");
+        form.reset();
+        try {
+          if (typeof window !== "undefined" && window.plausible) {
+            window.plausible("Interest Submitted", {
+              props: { form: "candidate_interest" },
+            });
+          }
+          // Track to Google Ads (Candidate Lead Conversion)
+          if (typeof window !== "undefined" && window.gtag) {
+            window.gtag("event", "conversion", {
+              send_to: "AW-17715214678/YYYYYY", // 👈 Erstatt YYYYYY med conversion label for kandidater
+              value: 0.5,
+              currency: "NOK",
+              transaction_id: `candidate_${Date.now()}`,
+            });
+          }
+        } catch {}
+      } else {
+        console.log("[InterestSection] API returned error status:", res.status);
+        const data = await res.json().catch(() => ({}));
+        console.log("[InterestSection] Error response data:", data);
+        setError(data?.error || "Noe gikk galt. Prøv igjen senere.");
+        setState("error");
+        refreshCsrf(); // Get new CSRF token after failed attempt
+      }
+    } catch (fetchError) {
+      // THIS WAS MISSING! Catches network errors, CORS issues, etc.
+      console.error("[InterestSection] Fetch failed with error:", fetchError);
+      setError("Nettverksfeil. Sjekk internett og prøv igjen.");
       setState("error");
-      refreshCsrf(); // Get new CSRF token after failed attempt
+      refreshCsrf();
     }
   }
 

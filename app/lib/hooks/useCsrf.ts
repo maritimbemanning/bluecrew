@@ -12,18 +12,21 @@ export function useCsrf() {
   const [error, setError] = useState<string | null>(null);
 
   const fetchToken = async () => {
+    console.log("[useCsrf] Fetching CSRF token...");
     try {
       setLoading(true);
       setError(null);
       const response = await fetch("/api/csrf");
+      console.log("[useCsrf] CSRF response status:", response.status);
       if (!response.ok) {
-        throw new Error("Failed to fetch CSRF token");
+        throw new Error(`Failed to fetch CSRF token: ${response.status}`);
       }
       const data = await response.json();
+      console.log("[useCsrf] CSRF token received:", data.token ? "yes" : "no");
       setToken(data.token);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
-      console.error("CSRF token fetch failed:", err);
+      console.error("[useCsrf] CSRF token fetch FAILED:", err);
     } finally {
       setLoading(false);
     }
