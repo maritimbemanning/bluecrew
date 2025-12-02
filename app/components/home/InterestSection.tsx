@@ -31,12 +31,10 @@ export function InterestSection() {
     const form = e.currentTarget;
     const fd = new FormData(form);
 
-    // Honeypot
-    if (
-      typeof fd.get("company") === "string" &&
-      (fd.get("company") as string).trim()
-    ) {
-      console.log("[InterestSection] Honeypot triggered");
+    // Honeypot - use obscure name that autofill won't recognize
+    const honeypotValue = fd.get("website_url_confirm");
+    if (typeof honeypotValue === "string" && honeypotValue.trim()) {
+      console.log("[InterestSection] Honeypot triggered - likely bot");
       setState("success");
       form.reset();
       return;
@@ -124,7 +122,7 @@ export function InterestSection() {
         <form onSubmit={onSubmit} style={sx.form}>
           {/* Honeypot: off-screen text input for bots; hidden from assistive tech */}
           <input
-            name="company"
+            name="website_url_confirm"
             type="text"
             autoComplete="off"
             tabIndex={-1}
