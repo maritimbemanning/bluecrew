@@ -900,7 +900,10 @@ export default function CandidateContent() {
             style={{
               ...ui.consentBox,
               ...(fieldErrors.stcw_confirm || fieldErrors.gdpr
-                ? { border: sx.errContainer.border, background: sx.errContainer.background }
+                ? {
+                    border: sx.errContainer.border,
+                    background: sx.errContainer.background,
+                  }
                 : {}),
             }}
           >
