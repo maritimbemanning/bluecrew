@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { sx } from "@/app/lib/styles";
+import { useCsrf } from "@/app/lib/hooks/useCsrf";
 
 // Analytics types
 declare global {
@@ -17,6 +18,9 @@ type State = "idle" | "submitting" | "success" | "error";
 export function InterestSection() {
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState<string | null>(null);
+
+  // CSRF protection
+  const { token: csrfToken, refresh: refreshCsrf } = useCsrf();
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,7 +39,10 @@ export function InterestSection() {
       return;
     }
 
-    const payload = Object.fromEntries(fd.entries());
+    const payload = {
+      ...Object.fromEntries(fd.entries()),
+      csrf_token: csrfToken,
+    };
 
     const res = await fetch("/api/submit-interest", {
       method: "POST",
@@ -66,6 +73,7 @@ export function InterestSection() {
       const data = await res.json().catch(() => ({}));
       setError(data?.error || "Noe gikk galt. Prøv igjen senere.");
       setState("error");
+      refreshCsrf(); // Get new CSRF token after failed attempt
     }
   }
 

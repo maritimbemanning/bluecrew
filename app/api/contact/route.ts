@@ -6,10 +6,22 @@ import {
   type ContactPayload,
 } from "@/app/lib/server/email";
 import { requireCsrfToken } from "../../lib/server/csrf";
+import { enforceRateLimit } from "../../lib/server/rate-limit";
 import { logger } from "../../lib/logger";
+
+export const runtime = "nodejs";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function getClientIp(req: Request) {
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return req.headers.get("x-real-ip") || "unknown";
 }
 
 function readField(data: Record<string, unknown>, key: string) {
@@ -27,14 +39,25 @@ function readField(data: Record<string, unknown>, key: string) {
 
 export async function POST(req: Request) {
   try {
+    // Rate limiting
+    const rateKey = `contact:${getClientIp(req)}`;
+    const rate = await enforceRateLimit(rateKey);
+    if (!rate.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "For mange forespørsler. Prøv igjen senere." },
+        { status: 429, headers: { "Retry-After": String(rate.resetSeconds || 60) } }
+      );
+    }
+
     // CSRF Protection
     try {
       await requireCsrfToken(req);
     } catch (error) {
       logger.error("CSRF validation failed:", error);
-      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
-        status: 403,
-      });
+      return NextResponse.json(
+        { ok: false, error: "Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen." },
+        { status: 403 }
+      );
     }
 
     const unknownData = (await req.json().catch(() => ({}))) as unknown;

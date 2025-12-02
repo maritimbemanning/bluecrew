@@ -2,12 +2,13 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import type { CSSProperties } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Input, Select, Textarea } from "../components/FormControls";
 import { WORK } from "../lib/constants";
 import { sx } from "../lib/styles";
 import { clientSchema, extractClientForm } from "../lib/validation";
+import { useCsrf } from "../lib/hooks/useCsrf";
 
 type FieldErrors = Record<string, string>;
 
@@ -129,8 +130,12 @@ const ui = {
 } satisfies Record<string, CSSProperties>;
 
 export default function ClientContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const submitted = searchParams.get("sent") === "client";
+
+  // CSRF protection
+  const { token: csrfToken, refresh: refreshCsrf } = useCsrf();
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -223,7 +228,8 @@ export default function ClientContent() {
     setFormError(null);
   }, []);
 
-  const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const values = extractClientForm(formData);
     const parsed = clientSchema.safeParse(values);
@@ -240,14 +246,12 @@ export default function ClientContent() {
 
     // Honeypot check
     if (values.honey) {
-      event.preventDefault();
       setFieldErrors({});
       setFormError(null);
       return;
     }
 
     if (Object.keys(nextErrors).length > 0) {
-      event.preventDefault();
       setFieldErrors(nextErrors);
       setFormError("Kontroller feltene markert i rødt.");
       setIsSubmitting(false);
@@ -258,7 +262,35 @@ export default function ClientContent() {
     setFieldErrors({});
     setFormError(null);
     setIsSubmitting(true);
-  }, []);
+
+    // Add CSRF token
+    if (csrfToken) {
+      formData.append("csrf_token", csrfToken);
+    }
+
+    try {
+      const response = await fetch("/api/submit-client", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(message || "Innsending feilet");
+      }
+
+      // Redirect on success
+      router.push("/kunde/registrer-behov?sent=client");
+    } catch (error) {
+      console.error("Submission error:", error);
+      setFormError(
+        error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen."
+      );
+      setIsSubmitting(false);
+      refreshCsrf();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [csrfToken, refreshCsrf, router]);
 
   if (submitted) {
     return (
@@ -294,8 +326,6 @@ export default function ClientContent() {
   return (
     <div style={ui.wrap}>
       <form
-        action="/api/submit-client"
-        method="POST"
         noValidate
         onSubmit={handleSubmit}
         style={ui.formShell}

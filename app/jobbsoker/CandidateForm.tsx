@@ -1,5 +1,5 @@
 "use client";
-// Cache-bust: 2025-11-01-17:05
+// Cache-bust: 2025-12-02-CSRF
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
@@ -14,6 +14,7 @@ import {
   type CandidateFormValues,
 } from "../lib/validation";
 import { VippsVerifiedBadge } from "./VippsLogin";
+import { useCsrf } from "../lib/hooks/useCsrf";
 
 const FORM_STORAGE_KEY = "bluecrew:candidateFormDraft";
 
@@ -218,6 +219,9 @@ export default function CandidateContent() {
   const isVerified = searchParams.get("verified") === "true";
   const requireVipps =
     (process.env.NEXT_PUBLIC_REQUIRE_VIPPS ?? "true").toLowerCase() !== "false";
+
+  // CSRF protection
+  const { token: csrfToken, refresh: refreshCsrf } = useCsrf();
 
   useEffect(() => {
     if (!submitted || typeof window === "undefined") return;
@@ -432,6 +436,11 @@ export default function CandidateContent() {
 
       console.log("🚀 Submitting form to API...");
 
+      // Add CSRF token to form data
+      if (csrfToken) {
+        formData.append("csrf_token", csrfToken);
+      }
+
       try {
         const response = await fetch("/api/submit-candidate", {
           method: "POST",
@@ -462,10 +471,11 @@ export default function CandidateContent() {
           error instanceof Error ? error.message : "Noe gikk galt. Prøv igjen."
         );
         setIsSubmitting(false);
+        refreshCsrf(); // Get new CSRF token after failed attempt
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
     },
-    [vippsSession, requireVipps, router]
+    [vippsSession, requireVipps, router, csrfToken, refreshCsrf]
   );
 
   if (submitted) {

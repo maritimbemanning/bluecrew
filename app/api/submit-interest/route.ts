@@ -26,18 +26,16 @@ function getClientIp(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    // CSRF Protection - TEMPORARILY DISABLED
-    // TODO: Re-enable after adding CSRF token to forms
-    /*
+    // CSRF Protection
     try {
       await requireCsrfToken(req);
     } catch (error) {
       logger.error("CSRF validation failed:", error);
-      return new Response("Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen.", {
-        status: 403,
-      });
+      return NextResponse.json(
+        { error: "Ugyldig forespørsel. Vennligst last inn siden på nytt og prøv igjen." },
+        { status: 403 }
+      );
     }
-    */
 
     const rateKey = `interest:${getClientIp(req)}`;
     const rate = await enforceRateLimit(rateKey);
