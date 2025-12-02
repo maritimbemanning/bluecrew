@@ -51,7 +51,7 @@ export default function Page() {
             }}
           >
             <Image
-              src="/guides/lonnsguide-maritime-operasjoner.jpeg"
+              src="/guides/lonnsguide-maritime-operasjoner.webp"
               alt="Maritime operasjoner og mannskap i aksjon - lønnsguide for skipsfører styrmann matros og maskinoffiser Norge 2025"
               width={1200}
               height={675}

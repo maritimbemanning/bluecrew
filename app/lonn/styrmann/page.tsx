@@ -46,7 +46,7 @@ export default function Page() {
             height: 400
           }}>
             <Image 
-              src="/guides/skipsforer-navigasjon.jpeg" 
+              src="/guides/skipsforer-navigasjon.webp" 
               alt="Styrmann og kaptein på broen navigerer fartøy - maritim bemanning Norge - karriere og lønn" 
               width={1200}
               height={675}

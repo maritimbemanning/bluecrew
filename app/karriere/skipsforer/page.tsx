@@ -50,7 +50,7 @@ export default function Page() {
             }}
           >
             <Image
-              src="/guides/skipsforer-navigasjon.jpeg"
+              src="/guides/skipsforer-navigasjon.webp"
               alt="Erfaren skipsfører navigerer fra broen på servicefartøy i norske farvann - maritim bemanning"
               width={1200}
               height={675}

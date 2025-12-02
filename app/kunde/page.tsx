@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Sertifisert mannskap til havbruk, service- og spesialfartøy. Screening, referansesjekk og dokumentkontroll.",
     type: "website",
     images: [
-      { url: "/hero/maritime-hero.jpeg", width: 1920, height: 1080, alt: "Maritim bemanning – Bluecrew" },
+      { url: "/hero/maritime-hero.webp", width: 1920, height: 1080, alt: "Maritim bemanning – Bluecrew" },
     ],
   },
   twitter: {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "Maritim bemanning og rekruttering | Bluecrew AS",
     description:
       "Sertifisert mannskap til havbruk, service- og spesialfartøy. Screening, referansesjekk og dokumentkontroll.",
-    images: ["/hero/maritime-hero.jpeg"],
+    images: ["/hero/maritime-hero.webp"],
   },
   alternates: { canonical: "/kunde" },
 };

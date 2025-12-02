@@ -49,7 +49,7 @@ export default function Page() {
             </p>
             <div style={{ marginTop: 32 }}>
               <Image
-                src="/guides/Dekksoffiser-navigasjon.jpeg"
+                src="/guides/skipsforer-navigasjon.webp"
                 alt="Dekksoffiser studerer nautiske kart og navigasjonsutstyr på broen - maritime operasjoner"
                 width={1200}
                 height={675}

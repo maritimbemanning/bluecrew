@@ -7,7 +7,7 @@ const styles = {
   hero: {
     position: 'relative' as const,
     background: 'linear-gradient(135deg, #0B1F3A 0%, #1e3a5f 50%, #0B1F3A 100%)',
-    backgroundImage: 'url(/hero/maritime-hero.jpeg)',
+    backgroundImage: 'url(/hero/maritime-hero.webp)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',

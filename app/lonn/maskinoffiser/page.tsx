@@ -49,7 +49,7 @@ export default function Page() {
             </p>
             <div style={{ marginTop: 32 }}>
               <Image
-                src="/guides/Maskinoffiser-maskinrom.jpeg"
+                src="/guides/Maskinoffiser-maskinrom.webp"
                 alt="Maskinoffiser inspiserer teknisk utstyr og motorer i maskinrom på brønnbåt - maritime tekniske operasjoner"
                 width={1200}
                 height={675}

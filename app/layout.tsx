@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
+import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import BreadcrumbsSchema from "./components/BreadcrumbsSchema";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-mono",
+});
 
 const title = "Bluecrew AS – Maritim bemanning i Norge";
 const description =
@@ -154,7 +168,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="no">
+    <html lang="no" className={`${inter.variable} ${ibmPlexMono.variable}`}>
       <head>
         {/* Fallback title for static scanners (Next.js will override when metadata is applied) */}
         <title>Bluecrew AS – Maritim bemanning i Norge</title>

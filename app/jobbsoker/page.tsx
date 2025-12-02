@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/hero/maritime-hero.jpeg",
+        url: "/hero/maritime-hero.webp",
         width: 1920,
         height: 1080,
         alt: "Maritime jobber – Bluecrew AS",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title: "Maritime jobber – Bluecrew AS",
     description:
       "Registrer deg for maritime oppdrag innen havbruk, servicefartøy og offshore. STCW-krav og forutsigbar turnus.",
-    images: ["/hero/maritime-hero.jpeg"],
+    images: ["/hero/maritime-hero.webp"],
   },
   alternates: { canonical: "/jobbsoker" },
 };

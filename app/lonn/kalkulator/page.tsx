@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteUrl}/hero/maritime-hero.jpeg`,
+        url: `${siteUrl}/hero/maritime-hero.webp`,
         width: 1920,
         height: 1080,
         alt: "Maritim lønnkalkulator",

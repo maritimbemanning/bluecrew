@@ -49,7 +49,7 @@ export default function Page() {
             </p>
             <div style={{ marginTop: 32 }}>
               <Image
-                src="/guides/Matros-dekksarbeid.jpeg"
+                src="/guides/Matros-dekksarbeid.webp"
                 alt="Matros utfører profesjonelt dekksarbeid med tau og fortøyning på havbruksfartøy Nord-Norge - maritim bemanning"
                 width={1200}
                 height={675}
