@@ -456,7 +456,7 @@ export function SiteLayout({
                 title="Verifiser med Vipps"
               >
                 <Image
-                  src="/icons/vipps-logo.jpeg"
+                  src="/icons/vipps-logo.webp"
                   alt="Vipps"
                   width={20}
                   height={20}
@@ -609,7 +609,7 @@ export function SiteLayout({
                           onClick={() => closeMobileMenu()}
                         >
                           <Image
-                            src="/icons/vipps-logo.jpeg"
+                            src="/icons/vipps-logo.webp"
                             alt="Vipps"
                             width={24}
                             height={24}
@@ -730,7 +730,7 @@ export function SiteLayout({
                         onClick={() => closeMobileMenu()}
                       >
                         <Image
-                          src="/icons/vipps-logo.jpeg"
+                          src="/icons/vipps-logo.webp"
                           alt="Vipps"
                           width={24}
                           height={24}

@@ -1,66 +1,78 @@
 #!/usr/bin/env node
 /**
- * Optimize hero images - convert large PNGs to WebP
+ * Optimize all images - convert to WebP
  * Run with: node scripts/optimize-images.mjs
  */
 
 import sharp from 'sharp';
-import { readdir, stat } from 'fs/promises';
+import { readdir, stat, unlink } from 'fs/promises';
 import { join, parse } from 'path';
 
-const HERO_DIR = './public/hero';
-const MAX_WIDTH = 1920; // Max width for hero images
-const QUALITY = 80; // WebP quality (0-100)
+const DIRS = ['./public/hero', './public/guides', './public/icons'];
+const MAX_WIDTH = 1920;
+const QUALITY = 75; // Lower = smaller file
 
 async function optimizeImages() {
-  console.log('🖼️  Optimizing hero images...\n');
+  console.log('🖼️  Optimizing all images...\n');
 
-  const files = await readdir(HERO_DIR);
+  let totalSaved = 0;
 
-  for (const file of files) {
-    const filePath = join(HERO_DIR, file);
-    const stats = await stat(filePath);
+  for (const dir of DIRS) {
+    console.log(`\n📁 Processing ${dir}...\n`);
 
-    // Skip if not a file or if it's already small
-    if (!stats.isFile()) continue;
-
-    const ext = parse(file).ext.toLowerCase();
-    if (!['.png', '.jpg', '.jpeg'].includes(ext)) continue;
-
-    const sizeMB = stats.size / (1024 * 1024);
-
-    // Only optimize files larger than 500KB
-    if (stats.size < 500 * 1024) {
-      console.log(`⏭️  ${file} (${(stats.size / 1024).toFixed(0)}KB) - already small, skipping`);
+    let files;
+    try {
+      files = await readdir(dir);
+    } catch {
+      console.log(`   ⏭️  Directory not found, skipping`);
       continue;
     }
 
-    console.log(`📦 ${file} (${sizeMB.toFixed(2)}MB)`);
+    for (const file of files) {
+      const filePath = join(dir, file);
+      const stats = await stat(filePath);
 
-    try {
+      if (!stats.isFile()) continue;
+
+      const ext = parse(file).ext.toLowerCase();
+      if (!['.png', '.jpg', '.jpeg'].includes(ext)) continue;
+
+      const sizeKB = stats.size / 1024;
       const { name } = parse(file);
-      const outputPath = join(HERO_DIR, `${name}.webp`);
 
-      // Convert to WebP
-      const result = await sharp(filePath)
-        .resize(MAX_WIDTH, null, {
-          withoutEnlargement: true,
-          fit: 'inside'
-        })
-        .webp({ quality: QUALITY })
-        .toFile(outputPath);
+      // Skip if webp version already exists and is smaller
+      const webpPath = join(dir, `${name}.webp`);
 
-      const newSizeKB = result.size / 1024;
-      const savings = ((stats.size - result.size) / stats.size * 100).toFixed(1);
+      console.log(`📦 ${file} (${sizeKB.toFixed(0)}KB)`);
 
-      console.log(`   ✅ → ${name}.webp (${newSizeKB.toFixed(0)}KB) - ${savings}% smaller\n`);
+      try {
+        const result = await sharp(filePath)
+          .resize(MAX_WIDTH, null, {
+            withoutEnlargement: true,
+            fit: 'inside'
+          })
+          .webp({ quality: QUALITY })
+          .toFile(webpPath);
 
-    } catch (err) {
-      console.error(`   ❌ Failed: ${err.message}\n`);
+        const newSizeKB = result.size / 1024;
+        const saved = stats.size - result.size;
+        totalSaved += saved;
+        const savings = (saved / stats.size * 100).toFixed(1);
+
+        console.log(`   ✅ → ${name}.webp (${newSizeKB.toFixed(0)}KB) - ${savings}% smaller`);
+
+        // Delete original after successful conversion
+        await unlink(filePath);
+        console.log(`   🗑️  Deleted original ${file}\n`);
+
+      } catch (err) {
+        console.error(`   ❌ Failed: ${err.message}\n`);
+      }
     }
   }
 
-  console.log('\n✨ Done! Remember to update image references in code to use .webp');
+  console.log(`\n✨ Done! Total saved: ${(totalSaved / 1024 / 1024).toFixed(2)}MB`);
+  console.log('⚠️  Remember to update image references in code to use .webp');
 }
 
 optimizeImages().catch(console.error);

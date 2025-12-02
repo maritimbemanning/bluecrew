@@ -197,7 +197,7 @@ export function FileInput({
         required={required}
         aria-invalid={!!error}
         aria-describedby={error ? errId : undefined}
-        style={{ ...sx.input, cursor: "pointer" }}
+        style={{ ...sx.input, cursor: "pointer", ...(error ? sx.inputErr : null) }}
         onChange={onChange}
       />
       {error ? (

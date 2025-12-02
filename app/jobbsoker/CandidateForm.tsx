@@ -643,7 +643,10 @@ export default function CandidateContent() {
                 <select
                   name="region"
                   required
-                  style={sx.input}
+                  style={{
+                    ...sx.input,
+                    ...(fieldErrors.region ? sx.inputErr : null),
+                  }}
                   onChange={() => clearFieldError("region")}
                 >
                   <option value="">Velg region</option>

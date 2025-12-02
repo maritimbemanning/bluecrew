@@ -15,7 +15,10 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nchore: Update contact info - email, phone, org.nr\n\n- Email: isak@bluecrew.no → post@bluecrew.no\n- Phone: 923 28 850 → 77 02 90 00\n- Org.nr: 936 321 194 → 936 463 843\n\nUpdated across all public pages, forms, email templates,\nschema.org data, and footer components.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git commit:*)",
       "Bash(npx vercel:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []
