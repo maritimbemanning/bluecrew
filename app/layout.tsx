@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "../styles/global.css";
 import CookieBanner from "./components/CookieBanner";
 import PlausibleLoader from "./components/PlausibleLoader";
 import Script from "next/script";

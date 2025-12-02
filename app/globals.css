@@ -37,3 +37,181 @@ body {
     opacity: 0.85;
   }
 }
+
+/* ===== Button hover states ===== */
+.btn-primary-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+  background: #7dd3fc !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.candidate-btn:hover {
+  background: #7dd3fc !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+.candidate-btn:active {
+  transform: translateY(0);
+}
+
+/* Hero overlay gradient */
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to right, rgba(11, 31, 58, 0.85), rgba(11, 31, 58, 0.6));
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Hero radial gradient overlay */
+.hero-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ===== Service Cards ===== */
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(11, 31, 58, 0.12);
+  border-color: #38bdf8 !important;
+}
+
+.service-card-link:hover {
+  color: #075985;
+}
+
+/* ===== Contact Section ===== */
+.contact-cta:hover {
+  background: #7dd3fc !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.5);
+}
+
+.contact-value:hover {
+  color: #7dd3fc;
+}
+
+/* ===== List bullet points ===== */
+.list-bullet::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+}
+
+/* ===== Journey buttons ===== */
+.btn-journey:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Trust Section ===== */
+.trust-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(11, 31, 58, 0.1);
+  border-color: #cbd5e1 !important;
+}
+
+/* ===== Jobs Highlight ===== */
+.jobs-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(11, 31, 58, 0.92) 0%, rgba(30, 58, 95, 0.88) 100%);
+  z-index: 0;
+}
+
+.jobs-btn-primary:hover {
+  background: #7dd3fc !important;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(56, 189, 248, 0.6);
+}
+
+.jobs-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-2px);
+}
+
+/* ===== Floating Phone ===== */
+.floating-phone:hover {
+  background-color: #0ea5e9 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.floating-phone:active {
+  transform: translateY(0);
+}
+
+/* ===== Salary Calculator ===== */
+.calc-form:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08), 0 16px 32px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.calc-select:hover {
+  border-color: #1976d2 !important;
+}
+
+.calc-select:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+}
+
+.calc-checkbox-label:hover {
+  background-color: #e3f2fd;
+  border-color: #1976d2 !important;
+}
+
+.calc-cta-box:hover {
+  border-color: #1976d2 !important;
+  background-color: #f0f7ff;
+  transform: translateY(-2px);
+}
+
+.calc-cta-button:hover {
+  background-color: #1565c0 !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(25, 118, 210, 0.3), 0 0 20px rgba(25, 118, 210, 0.2);
+}
+
+.calc-cta-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Result card gradient overlay */
+.calc-result-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}

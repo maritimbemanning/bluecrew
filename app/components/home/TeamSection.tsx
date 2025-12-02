@@ -1,6 +1,56 @@
 import React from 'react';
 import Image from 'next/image';
-import * as styles from './TeamSection.css';
+
+const styles = {
+  section: {
+    padding: '40px 0',
+  },
+  container: {
+    maxWidth: 1100,
+    margin: '0 auto',
+    padding: '0 16px',
+  },
+  header: {
+    textAlign: 'center' as const,
+    marginBottom: 24,
+  },
+  teamAccent: {
+    color: '#0369a1',
+    fontWeight: 700,
+  },
+  teamGrid: {
+    display: 'grid',
+    gap: 16,
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+  },
+  teamCard: {
+    background: '#fff',
+    borderRadius: 6,
+    overflow: 'hidden',
+    boxShadow: '0 1px 2px rgba(2,6,23,0.06)',
+  },
+  teamPortrait: {
+    width: '100%',
+    height: 200,
+    position: 'relative' as const,
+  },
+  teamQuote: {
+    padding: 16,
+    fontStyle: 'italic',
+    color: '#64748b',
+  },
+  teamMeta: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '0 16px 16px 16px',
+  },
+  teamName: {
+    fontWeight: 700,
+  },
+  teamRole: {
+    color: '#64748b',
+  },
+};
 
 const crewStories = [
   {
@@ -29,24 +79,24 @@ const crewStories = [
   },
 ];
 
-export function TeamSection(){
+export function TeamSection() {
   return (
-    <section aria-labelledby="team-heading" style={{padding:'var(--space-xl) 0'}}>
-      <div style={{maxWidth:1100, margin:'0 auto', padding:'0 var(--space-md)'}}>
-        <div style={{textAlign:'center', marginBottom:24}}>
-          <span className={styles.teamAccent}>Menneskene i Bluecrew</span>
+    <section aria-labelledby="team-heading" style={styles.section}>
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <span style={styles.teamAccent}>Menneskene i Bluecrew</span>
           <h2 id="team-heading">Virkelige sjøfolk. Virkelige historier.</h2>
         </div>
-        <div className={styles.teamGrid}>
-          {crewStories.map((s)=> (
-            <article key={s.name} className={styles.teamCard}>
-              <div className={styles.teamPortrait} aria-hidden="true">
-                <Image src={s.image} alt={`${s.name} – ${s.role}`} fill style={{objectFit:'cover'}} />
+        <div style={styles.teamGrid}>
+          {crewStories.map((s) => (
+            <article key={s.name} style={styles.teamCard}>
+              <div style={styles.teamPortrait} aria-hidden="true">
+                <Image src={s.image} alt={`${s.name} – ${s.role}`} fill style={{objectFit: 'cover'}} />
               </div>
-              <p className={styles.teamQuote}>“{s.quote}”</p>
-              <div className={styles.teamMeta}>
-                <span className={styles.teamName}>{s.name}</span>
-                <span className={styles.teamRole}>{s.role}</span>
+              <p style={styles.teamQuote}>&ldquo;{s.quote}&rdquo;</p>
+              <div style={styles.teamMeta}>
+                <span style={styles.teamName}>{s.name}</span>
+                <span style={styles.teamRole}>{s.role}</span>
               </div>
             </article>
           ))}
@@ -57,4 +107,3 @@ export function TeamSection(){
 }
 
 export default TeamSection;
-

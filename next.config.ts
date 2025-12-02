@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const baseConfig: NextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -23,18 +23,4 @@ const baseConfig: NextConfig = {
   },
 };
 
-export default async function loadConfig(): Promise<NextConfig> {
-  try {
-    const { createVanillaExtractPlugin } = await import("@vanilla-extract/next-plugin");
-    const withVanillaExtract = createVanillaExtractPlugin();
-    const configWithVanilla = withVanillaExtract(baseConfig);
-
-    // Return config without Sentry wrapper
-    return configWithVanilla;
-  } catch {
-    console.warn("@vanilla-extract/next-plugin not found — running without vanilla-extract integration.");
-
-    // Return base config
-    return baseConfig;
-  }
-}
+export default nextConfig;
