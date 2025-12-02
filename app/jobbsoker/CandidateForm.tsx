@@ -595,6 +595,8 @@ export default function CandidateContent() {
               Oppgi navn, kontaktinformasjon og bostedsadresse.
             </p>
           </div>
+
+          {/* Rad 1: Navn, E-post, Telefon */}
           <div style={ui.fieldGrid}>
             <Input
               label="Fullt navn"
@@ -624,14 +626,40 @@ export default function CandidateContent() {
               onChange={() => clearFieldError("phone")}
             />
           </div>
-          <div style={ui.fieldGrid}>
+
+          {/* Rad 2: Gateadresse (full bredde) */}
+          <Input
+            label="Gateadresse (valgfritt)"
+            name="street_address"
+            placeholder="Eksempel: Storgata 15"
+            defaultValue={(draftValues?.street_address as string) ?? ""}
+            error={fieldErrors.street_address}
+            onChange={() => clearFieldError("street_address")}
+          />
+
+          {/* Rad 3: Postnr, Poststed, Region */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "100px 1fr 1fr",
+              gap: 16,
+            }}
+          >
             <Input
-              label="Gateadresse (valgfritt)"
-              name="street_address"
-              placeholder="Eksempel: Storgata 15"
-              defaultValue={(draftValues?.street_address as string) ?? ""}
-              error={fieldErrors.street_address}
-              onChange={() => clearFieldError("street_address")}
+              label="Postnr."
+              name="postal_code"
+              placeholder="0150"
+              defaultValue={(draftValues?.postal_code as string) ?? ""}
+              error={fieldErrors.postal_code}
+              onChange={() => clearFieldError("postal_code")}
+            />
+            <Input
+              label="Poststed"
+              name="postal_city"
+              placeholder="OSLO"
+              defaultValue={(draftValues?.postal_city as string) ?? ""}
+              error={fieldErrors.postal_city}
+              onChange={() => clearFieldError("postal_city")}
             />
             <div>
               <label style={sx.label}>
@@ -659,31 +687,6 @@ export default function CandidateContent() {
                 </div>
               ) : null}
             </div>
-          </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "120px 1fr",
-              gap: 12,
-              maxWidth: 400,
-            }}
-          >
-            <Input
-              label="Postnummer"
-              name="postal_code"
-              placeholder="0150"
-              defaultValue={(draftValues?.postal_code as string) ?? ""}
-              error={fieldErrors.postal_code}
-              onChange={() => clearFieldError("postal_code")}
-            />
-            <Input
-              label="Poststed"
-              name="postal_city"
-              placeholder="OSLO"
-              defaultValue={(draftValues?.postal_city as string) ?? ""}
-              error={fieldErrors.postal_city}
-              onChange={() => clearFieldError("postal_city")}
-            />
           </div>
         </div>
 
