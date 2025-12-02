@@ -413,7 +413,27 @@ export default function CandidateContent() {
         console.log("File errors:", nextFileErrors);
         setFieldErrors(nextErrors);
         setFileErrors(nextFileErrors);
-        setFormError("Kontroller feltene markert i rødt.");
+
+        // Build a more helpful error message
+        const errorFields: string[] = [];
+        if (nextErrors.name) errorFields.push("Navn");
+        if (nextErrors.email) errorFields.push("E-post");
+        if (nextErrors.phone) errorFields.push("Telefon");
+        if (nextErrors.region) errorFields.push("Region");
+        if (nextErrors.wants_temporary)
+          errorFields.push("Midlertidige oppdrag (ja/nei)");
+        if (nextErrors.work_main) errorFields.push("Ønsket arbeid");
+        if (nextErrors.stcw_confirm) errorFields.push("STCW-bekreftelse");
+        if (nextErrors.gdpr) errorFields.push("Personvernsamtykke");
+        if (nextFileErrors.cv) errorFields.push("CV");
+        if (nextFileErrors.certs) errorFields.push("Sertifikater");
+
+        const errorMessage =
+          errorFields.length > 0
+            ? `Fyll ut følgende felt: ${errorFields.join(", ")}`
+            : "Kontroller feltene markert i rødt.";
+
+        setFormError(errorMessage);
         window.scrollTo({ top: 0, behavior: "smooth" });
         return;
       }
@@ -879,9 +899,9 @@ export default function CandidateContent() {
               onChange={() => clearFileError("cv")}
             />
             <FileInput
-              label="Sertifikater/Helseattest (PDF/ZIP, maks 10 MB)"
+              label="Sertifikater/Helseattest (PDF/ZIP/DOC, maks 10 MB)"
               name="certs"
-              accept=".pdf,.zip"
+              accept=".pdf,.zip,.doc,.docx"
               required
               error={fileErrors.certs}
               onChange={() => clearFileError("certs")}
