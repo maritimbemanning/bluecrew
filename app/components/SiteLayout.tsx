@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   FocusEvent,
-  KeyboardEvent,
   ReactNode,
   useCallback,
   useEffect,
@@ -455,11 +455,11 @@ export function SiteLayout({
                 }}
                 title="Verifiser med Vipps"
               >
-                <img
+                <Image
                   src="/icons/vipps-logo.jpeg"
                   alt="Vipps"
-                  width="20"
-                  height="20"
+                  width={20}
+                  height={20}
                   style={{ borderRadius: 4 }}
                 />
                 Vipps
@@ -608,11 +608,11 @@ export function SiteLayout({
                           className="mobileLink"
                           onClick={() => closeMobileMenu()}
                         >
-                          <img
+                          <Image
                             src="/icons/vipps-logo.jpeg"
                             alt="Vipps"
-                            width="24"
-                            height="24"
+                            width={24}
+                            height={24}
                             style={{ borderRadius: 4 }}
                           />
                           Verifiser med Vipps
@@ -729,11 +729,11 @@ export function SiteLayout({
                         className="mobileLink"
                         onClick={() => closeMobileMenu()}
                       >
-                        <img
+                        <Image
                           src="/icons/vipps-logo.jpeg"
                           alt="Vipps"
-                          width="24"
-                          height="24"
+                          width={24}
+                          height={24}
                           style={{ borderRadius: 4 }}
                         />
                         Verifiser med Vipps

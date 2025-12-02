@@ -7,19 +7,23 @@ type Props = {
   text?: string;
 };
 
-export default function ShareRow({ url, text }: Props) {
+// Plausible types
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: { props?: Record<string, string> }) => void;
+  }
+}
+
+export default function ShareRow({ url }: Props) {
   const shareUrl = url || `${process.env.NEXT_PUBLIC_SITE_URL || "https://bluecrew.no"}/meld-interesse`;
-  const shareText =
-    text ||
-    "Bluecrew – bemanning for havbruk og kystfart. Meld interesse uforpliktende; vi tar kontakt når noe passer.";
 
   const liUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
   const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
 
   const onClick = (network: string) => {
     try {
-      if (typeof window !== "undefined" && (window as any).plausible) {
-        (window as any).plausible("Share Click", { props: { network, page: "/meld-interesse" } });
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("Share Click", { props: { network, page: "/meld-interesse" } });
       }
     } catch {}
   };

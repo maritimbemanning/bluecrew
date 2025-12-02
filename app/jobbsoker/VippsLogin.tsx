@@ -16,9 +16,11 @@ interface VippsSession {
   name: string;
   givenName: string;
   familyName: string;
-  phone: string;
+  phone?: string;
+  phone_number?: string;
   birthDate: string;
-  verifiedAt: string;
+  verifiedAt?: string;
+  verified_at?: string;
 }
 
 interface VippsLoginProps {
@@ -256,8 +258,8 @@ export default function VippsLogin({ onVerified }: VippsLoginProps) {
  */
 export function VippsVerifiedBadge({ session }: { session: VippsSession }) {
   // Be tolerant to backend field names: phone vs phone_number, verifiedAt vs verified_at
-  const phone = (session as any).phone ?? (session as any).phone_number ?? "";
-  const verifiedAt = (session as any).verifiedAt ?? (session as any).verified_at ?? null;
+  const phone = session.phone ?? session.phone_number ?? "";
+  const verifiedAt = session.verifiedAt ?? session.verified_at ?? null;
   return (
     <div style={ui.verifiedBox}>
       <div style={ui.verifiedIcon}>✅</div>

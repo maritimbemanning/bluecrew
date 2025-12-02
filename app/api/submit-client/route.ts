@@ -6,7 +6,7 @@ import {
   sendNotificationEmail,
 } from "../../lib/server/email";
 import { insertSupabaseRow } from "../../lib/server/supabase";
-import { requireCsrfToken } from "../../lib/server/csrf";
+import { requireCsrfToken } from "../../lib/server/csrf"; // TODO: Re-enable CSRF
 import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";

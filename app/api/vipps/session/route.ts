@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Redis } from "@upstash/redis";
 
@@ -7,7 +7,7 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const cookieStore = await cookies();
   const sessionIdCookie = cookieStore.get("vipps_session_id");
 

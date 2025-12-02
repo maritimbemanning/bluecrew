@@ -3,7 +3,7 @@ import { style } from '@vanilla-extract/css';
 export const section = style({
   padding: '120px 20px',
   background: 'linear-gradient(135deg, #0B1F3A 0%, #1e3a5f 100%)',
-  backgroundImage: 'url(/hero/skipper_matros_lønn.png)',
+  backgroundImage: 'url(/hero/skipper_matros_lønn.webp)',
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',

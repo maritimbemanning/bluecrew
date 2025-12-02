@@ -199,9 +199,12 @@ type VippsSession = {
   name: string;
   givenName: string;
   familyName: string;
-  phone: string;
+  phone?: string;
+  phone_number?: string;
+  email?: string;
   birthDate: string;
-  verifiedAt: string;
+  verifiedAt?: string;
+  verified_at?: string;
 };
 
 type StoredCandidateDraft = Partial<CandidateFormValues> & {
@@ -577,7 +580,7 @@ export default function CandidateContent() {
               type="email"
               required
               defaultValue={
-                ((vippsSession as any)?.email || draftValues?.email) ?? ""
+                (vippsSession?.email || draftValues?.email) ?? ""
               }
               error={fieldErrors.email}
               onChange={() => clearFieldError("email")}

@@ -12,7 +12,7 @@ import {
   createCandidateStorageBase,
   extractExtension,
 } from "../../lib/server/candidate-files";
-import { requireCsrfToken } from "../../lib/server/csrf";
+import { requireCsrfToken } from "../../lib/server/csrf"; // TODO: Re-enable CSRF
 import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";

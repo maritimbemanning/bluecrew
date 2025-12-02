@@ -79,7 +79,7 @@ async function fetchWithTimeout(
     } catch (err) {
       clearTimeout(timer);
       lastError = err;
-      const isAbort = (err as any)?.name === "AbortError";
+      const isAbort = err instanceof Error && err.name === "AbortError";
       if (attempt < retries && isAbort) {
         // retry once on timeout
         continue;

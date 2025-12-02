@@ -4,6 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { sx } from "@/app/lib/styles";
 
+// Analytics types
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: { props?: Record<string, string> }) => void;
+    gtag?: (command: string, action: string, params?: Record<string, unknown>) => void;
+  }
+}
+
 type State = "idle" | "submitting" | "success" | "error";
 
 export function InterestSection() {
@@ -39,14 +47,14 @@ export function InterestSection() {
       setState("success");
       form.reset();
       try {
-        if (typeof window !== "undefined" && (window as any).plausible) {
-          (window as any).plausible("Interest Submitted", {
+        if (typeof window !== "undefined" && window.plausible) {
+          window.plausible("Interest Submitted", {
             props: { form: "candidate_interest" },
           });
         }
         // Track to Google Ads (Candidate Lead Conversion)
-        if (typeof window !== "undefined" && (window as any).gtag) {
-          (window as any).gtag("event", "conversion", {
+        if (typeof window !== "undefined" && window.gtag) {
+          window.gtag("event", "conversion", {
             send_to: "AW-17715214678/YYYYYY", // 👈 Erstatt YYYYYY med conversion label for kandidater
             value: 0.5,
             currency: "NOK",

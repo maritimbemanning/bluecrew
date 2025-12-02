@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/optimize-images.mjs:*)",
+      "Bash(npm run lint)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

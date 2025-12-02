@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { enforceRateLimit } from "@/app/lib/server/rate-limit";
 import { supabaseServer } from "@/app/lib/server/supabase";
 import { sendInterestReceipt, sendNotificationEmail } from "@/app/lib/server/email";
-import { requireCsrfToken } from "../../lib/server/csrf";
+import { requireCsrfToken } from "../../lib/server/csrf"; // TODO: Re-enable CSRF
 import { logger } from "../../lib/logger";
 
 export const runtime = "nodejs";
