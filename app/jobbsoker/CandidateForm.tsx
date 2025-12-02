@@ -633,30 +633,6 @@ export default function CandidateContent() {
               error={fieldErrors.street_address}
               onChange={() => clearFieldError("street_address")}
             />
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: 12,
-              }}
-            >
-              <Input
-                label="Postnummer"
-                name="postal_code"
-                placeholder="0150"
-                defaultValue={(draftValues?.postal_code as string) ?? ""}
-                error={fieldErrors.postal_code}
-                onChange={() => clearFieldError("postal_code")}
-              />
-              <Input
-                label="Poststed"
-                name="postal_city"
-                placeholder="OSLO"
-                defaultValue={(draftValues?.postal_city as string) ?? ""}
-                error={fieldErrors.postal_city}
-                onChange={() => clearFieldError("postal_city")}
-              />
-            </div>
             <div>
               <label style={sx.label}>
                 <span>Region *</span>
@@ -683,6 +659,31 @@ export default function CandidateContent() {
                 </div>
               ) : null}
             </div>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "120px 1fr",
+              gap: 12,
+              maxWidth: 400,
+            }}
+          >
+            <Input
+              label="Postnummer"
+              name="postal_code"
+              placeholder="0150"
+              defaultValue={(draftValues?.postal_code as string) ?? ""}
+              error={fieldErrors.postal_code}
+              onChange={() => clearFieldError("postal_code")}
+            />
+            <Input
+              label="Poststed"
+              name="postal_city"
+              placeholder="OSLO"
+              defaultValue={(draftValues?.postal_city as string) ?? ""}
+              error={fieldErrors.postal_city}
+              onChange={() => clearFieldError("postal_city")}
+            />
           </div>
         </div>
 
