@@ -436,7 +436,7 @@ export function SiteLayout({
               >
                 Registrer deg
               </Link>
-              <Link
+              <a
                 href="/api/vipps/start"
                 style={{
                   padding: "10px 16px",
@@ -463,7 +463,7 @@ export function SiteLayout({
                   style={{ borderRadius: 4 }}
                 />
                 Vipps
-              </Link>
+              </a>
             </div>
           )}
 
@@ -590,7 +590,7 @@ export function SiteLayout({
                         </Link>
                       </li>
                       <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
-                        <Link
+                        <a
                           href="/api/vipps/start"
                           style={{
                             ...sx.mobileNavLink,
@@ -616,7 +616,7 @@ export function SiteLayout({
                             style={{ borderRadius: 4 }}
                           />
                           Verifiser med Vipps
-                        </Link>
+                        </a>
                       </li>
                     </ul>
                   </div>
@@ -711,7 +711,7 @@ export function SiteLayout({
                       </Link>
                     </li>
                     <li style={{ ...sx.mobileNavItem, marginTop: 8 }}>
-                      <Link
+                      <a
                         href="/api/vipps/start"
                         style={{
                           ...sx.mobileNavLink,
@@ -737,7 +737,7 @@ export function SiteLayout({
                           style={{ borderRadius: 4 }}
                         />
                         Verifiser med Vipps
-                      </Link>
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -839,9 +839,9 @@ export function SiteLayout({
               <h2 style={sx.footerHeading}>Retningslinjer & adresse</h2>
               <ul style={sx.footerList}>
                 <li style={sx.footerListItem}>
-                  <Link href="/api/vipps/start" style={sx.footerLink}>
+                  <a href="/api/vipps/start" style={sx.footerLink}>
                     Verifiser med Vipps
-                  </Link>
+                  </a>
                 </li>
                 <li style={sx.footerListItem}>
                   <Link href="/personvern" style={sx.footerLink}>
