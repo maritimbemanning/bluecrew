@@ -18,6 +18,8 @@ type SendEmailArgs = {
 };
 
 const resendKey = process.env.RESEND_API_KEY;
+// IMPORTANT: From email MUST be from verified Resend domain (send.bluecrew.no)
+// The RESEND_FROM_EMAIL env var should be like "no-reply@send.bluecrew.no"
 const fromEmail = process.env.RESEND_FROM_EMAIL || "no-reply@send.bluecrew.no";
 const toList = (process.env.RESEND_TO_EMAILS || "post@bluecrew.no")
   .split(",")
@@ -99,9 +101,18 @@ function withComplianceHtml(subject: string, html?: string, text?: string) {
 async function sendEmail({ subject, html, text, to, replyTo, attachments }: SendEmailArgs) {
   // Warn lazily on first use rather than on import
   warnMissingEmailConfig();
-  if (!resend || !fromEmail) return null;
+  if (!resend || !fromEmail) {
+    logger.error("[email.ts] Cannot send email - missing resend client or fromEmail", {
+      hasResend: !!resend,
+      fromEmail: fromEmail || "(not set)",
+    });
+    return null;
+  }
   const recipients = Array.isArray(to) ? to.filter(Boolean) : [to].filter(Boolean);
-  if (recipients.length === 0) return null;
+  if (recipients.length === 0) {
+    logger.error("[email.ts] Cannot send email - no recipients");
+    return null;
+  }
 
   const payload = {
     from: `Bluecrew <${fromEmail}>`,
@@ -121,7 +132,15 @@ async function sendEmail({ subject, html, text, to, replyTo, attachments }: Send
     })),
   };
 
-  return resend.emails.send(payload);
+  try {
+    logger.debug("[email.ts] Sending email", { to: recipients, subject, from: fromEmail });
+    const result = await resend.emails.send(payload);
+    logger.success("[email.ts] Email sent successfully", { id: result?.data?.id });
+    return result;
+  } catch (error) {
+    logger.error("[email.ts] Failed to send email", { error, to: recipients, subject });
+    throw error;
+  }
 }
 
 function buildContactHtml(p: ContactPayload) {
